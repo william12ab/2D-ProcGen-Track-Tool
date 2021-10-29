@@ -1019,21 +1019,6 @@ void pathway2(std::vector<sf::RectangleShape>& shape, int points)
 }
 
 
-void findit()
-{
-	int p = 0;
-	for (int j = 0; j < GRID_SIZE_X; j++)
-	{
-		for (int y = 0; y < GRID_SIZE_X; y++)
-		{
-			if (gridArray[j][y]==it)
-			{
-				p++;
-			}
-		}
-	}
-	int s = 0;
-}
 
 int main()
 {
@@ -1146,7 +1131,6 @@ int main()
  			initGrid();
 			//fillGrid();
 			firstPhase();
-			findit();
 			findNumbers();
 			pathway(pathShape, numberofPos1);
 		}
