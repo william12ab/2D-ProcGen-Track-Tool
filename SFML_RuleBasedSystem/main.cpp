@@ -12,6 +12,13 @@
 #define SITES 25
 
 
+
+#include <chrono>
+
+using std::chrono::duration_cast;
+using std::chrono::milliseconds;
+using the_clock = std::chrono::steady_clock;
+
 // A GLOBAL!!! 
 bool grid[GRID_SIZE_Y][GRID_SIZE_X] = { false };			//used to draw - check if used
 UINT32 tempGrid[GRID_SIZE_Y][GRID_SIZE_X] = { 0 };			//used to store the colours 0= edge
@@ -324,7 +331,10 @@ void findPointOnEdge(sf::RectangleShape &shape)
 	bool found = false;
 	while (found==false)
 	{
-		int x = rand() % 80+20;
+		//range of 20-80
+		int x = rand() % 20 + 80;
+
+		//50-750
 		int y = rand() %700+50;
 
 		if (tempGrid[x][y]==0)
@@ -349,7 +359,10 @@ void findPointOnRight(sf::RectangleShape& shape)
 	bool found = false;
 	while (found == false)
 	{
+		//700-780
 		int x = rand()%80 + 700;
+
+		//50-750
 		int y = rand()%700 + 50;
 
 		
@@ -1057,17 +1070,53 @@ int main()
 	std::vector<sf::RectangleShape> pathShape;
 	std::vector<sf::RectangleShape> pathShape2;
 
-	//s.setPosition(6, 734);
-	CreateColors();
+
+
+	
+	//creates the sites
 	RandomPlace();
+
+
+
+	//actual voronoi construction, stored in tempGrid[][]
 	Zones();
+
+
+	//changes the tempgrid so that it has just the borders now.
 	Borders();
+
+	//changes the edges of the diagram to be not part of the diagram
 	OutsideEdges();
+
+	//render work
 	findZeros();
 	setPositions(shape, numberofPos);
+
+
+	//choosing end and start points
+	findPointOnEdge(shape3);
+	findPointOnRight(shape4);
+
+
+	initGrid();
+	the_clock::time_point startTime = the_clock::now();
+	firstPhase();
+		the_clock::time_point end = the_clock::now();
+
+	auto timetaken = duration_cast<milliseconds> (end - startTime).count();
+
+	findNumbers();
+	pathway(pathShape, numberofPos1);
+
+
+
+	/*
+	phaseTwo();
+
+	findPath();
+	pathway2(pathShape2, numberofPos2);
+	*/
 	
-
-
 	// While the window is open, update
 	while (window.isOpen())
 	{
@@ -1098,7 +1147,7 @@ int main()
 			}
 		}
 
-
+		//used to regen the vd
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		{
 			RandomPlace();
