@@ -42,6 +42,8 @@ int countHolder = 0;
 bool foundEnd = false;
 int it;
 bool end = false;
+
+
 std::vector<DWORD> colors_;
 
 int numberofPos = 0;
@@ -127,18 +129,13 @@ int getMin(int arr[], int n)
 
 void Zones()
 {
-	int d[SITES];
-
 	int d1=0;
-	UINT32 c[20] = { 0x0000FFFF,0x373737FF,0x551414ff,0xff7f00ff,0x283405ff,0x149605ff,0x64c082ff,0x00ffffff,0x00bfffff,0x90b0ffff,0xe3e3ffff,0x7f007fff,0xe61e78ff,0xbd1039ff,0xffff00ff, 0x372737FF,0x413737FF,0x373722FF,0x376237FF,0x374317FF };
 	int incr[SITES] = { 0 };
-
 	for (int i = 0; i < SITES; i++)
 	{
 		incr[i] = i;
 	}
 	incr[0] = 101;
-	//j=z i=x
 
 	for (int j = 0; j < (GRID_SIZE_Y); j++)
 	{
