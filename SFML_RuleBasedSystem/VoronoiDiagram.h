@@ -6,7 +6,7 @@ public:
 	VoronoiDiagram();
 	
 	void RandomPlaceSites();					//distrubutes the sites
-	void DistanceSqrt(int x, int y, int x2, int y2);		//the distance formula
+	int DistanceSqrt(int x, int y, int x2, int y2);		//the distance formula
 	void CreateDiagram();						//creates the voronoi diagram
 	void SetEdges();							//sets the edges of voronoi diagram, so it is just the edges in the vector
 	void SetBorders();							//removes the borders from the structure as we dont want them
