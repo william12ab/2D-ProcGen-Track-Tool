@@ -1081,7 +1081,7 @@ int main()
 	Voronoi_Diagram.InitVector(Voronoi_Diagram.GetGridSize());
 	Voronoi_Diagram.CreateDiagram(Voronoi_Diagram.GetNumberOfSites(), Voronoi_Diagram.GetGridSize());
 	Voronoi_Diagram.SetEdges(Voronoi_Diagram.GetGridSize());
-	Voronoi_Diagram.SetBorders(Voronoi_Diagram.GetGridSize());
+	//Voronoi_Diagram.SetBorders(Voronoi_Diagram.GetGridSize());
 	Voronoi_Diagram.DrawVoronoiDiagram(voronoi_d, Voronoi_Diagram.GetGridSize());
 	
 	

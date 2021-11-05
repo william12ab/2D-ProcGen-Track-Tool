@@ -60,15 +60,14 @@ void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size)
 	}
 	incr.at(0) = 101;			//cant be zero as zero is for the edge i think
 
-	for (int i = 0; i < grid_size; i++)
+	for (int j = 0; j < grid_size; j++)
 	{
-		for (int j=0;j< grid_size;j++)
+		for (int i=0;i< grid_size;i++)
 		{
 			int ind = -1, dist = INT_MAX;
 
 			for (int p = 0; p < num_sites; p++)
 			{
-				//might throw an error out of bounds
 				for (int q = 0; q < 1; q++)
 				{
 					d = DistanceSqrt(sites_v[p][q], sites_v[p][q+1], j, i);
@@ -89,7 +88,7 @@ void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size)
 					temp_g_v.push_back(incr.at(ind));
 				}
 				grid_v.push_back(temp_g_v);*/
-				grid_v[j][i] = ind;
+				grid_v[j][i] = incr[ind];
 			}
 		}
 	}
