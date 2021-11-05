@@ -1072,8 +1072,8 @@ int main()
 	
 
 	
-	Voronoi_Diagram.SetGridSize(800);
-	Voronoi_Diagram.SetNumberOfSites(25);
+	Voronoi_Diagram.SetGridSize(40);
+	Voronoi_Diagram.SetNumberOfSites(20);
 	Voronoi_Diagram.RandomPlaceSites(Voronoi_Diagram.GetNumberOfSites(),Voronoi_Diagram.GetGridSize());
 
 	sf::VertexArray voronoi_d(sf::Points, (Voronoi_Diagram.GetGridSize()*Voronoi_Diagram.GetGridSize()));
@@ -1082,6 +1082,7 @@ int main()
 	Voronoi_Diagram.CreateDiagram(Voronoi_Diagram.GetNumberOfSites(), Voronoi_Diagram.GetGridSize());
 	Voronoi_Diagram.SetEdges(Voronoi_Diagram.GetGridSize());
 	//Voronoi_Diagram.SetBorders(Voronoi_Diagram.GetGridSize());
+
 	Voronoi_Diagram.DrawVoronoiDiagram(voronoi_d, Voronoi_Diagram.GetGridSize());
 	
 	
