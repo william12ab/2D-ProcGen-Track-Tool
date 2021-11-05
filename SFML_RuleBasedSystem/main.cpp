@@ -3,6 +3,7 @@
 #include <iostream>
 #include <windows.h>
 #include <list>
+#include "MainHeader.h"
 // The defines that state the size of the grid and the speed of the game.
 #define GRID_SIZE_X 800
 #define GRID_SIZE_Y 800
@@ -1068,43 +1069,57 @@ int main()
 	std::vector<sf::RectangleShape> pathShape2;
 
 
+	
 
 	
-	//creates the sites
-	RandomPlace();
+	Voronoi_Diagram.SetGridSize(800);
+	Voronoi_Diagram.SetNumberOfSites(25);
+	Voronoi_Diagram.RandomPlaceSites(Voronoi_Diagram.GetNumberOfSites(),Voronoi_Diagram.GetGridSize());
+
+	sf::VertexArray voronoi_d(sf::Points, (Voronoi_Diagram.GetGridSize()*Voronoi_Diagram.GetGridSize()));
+	
+	Voronoi_Diagram.InitVector(Voronoi_Diagram.GetGridSize());
+	Voronoi_Diagram.CreateDiagram(Voronoi_Diagram.GetNumberOfSites(), Voronoi_Diagram.GetGridSize());
+	Voronoi_Diagram.SetEdges(Voronoi_Diagram.GetGridSize());
+	Voronoi_Diagram.SetBorders(Voronoi_Diagram.GetGridSize());
+	Voronoi_Diagram.DrawVoronoiDiagram(voronoi_d, Voronoi_Diagram.GetGridSize());
+	
+	
+	////creates the sites
+	//RandomPlace();
 
 
 
-	//actual voronoi construction, stored in tempGrid[][]
-	Zones();
+	////actual voronoi construction, stored in tempGrid[][]
+	//Zones();
 
 
-	//changes the tempgrid so that it has just the borders now.
-	Borders();
+	////changes the tempgrid so that it has just the borders now.
+	//Borders();
 
-	//changes the edges of the diagram to be not part of the diagram
-	OutsideEdges();
+	////changes the edges of the diagram to be not part of the diagram
+	//OutsideEdges();
 
-	//render work
-	findZeros();
-	setPositions(shape, numberofPos);
-
+	////render work
+	//findZeros();
+	//setPositions(shape, numberofPos);
+	//
 
 	//choosing end and start points
-	findPointOnEdge(shape3);
-	findPointOnRight(shape4);
+	//findPointOnEdge(shape3);
+	//findPointOnRight(shape4);
 
 
-	initGrid();
-	the_clock::time_point startTime = the_clock::now();
-	firstPhase();
-		the_clock::time_point end = the_clock::now();
+	//initGrid();
+	//the_clock::time_point startTime = the_clock::now();
+	//firstPhase();
+	//	the_clock::time_point end = the_clock::now();
 
-	auto timetaken = duration_cast<milliseconds> (end - startTime).count();
+	//auto timetaken = duration_cast<milliseconds> (end - startTime).count();
 
-	findNumbers();
-	pathway(pathShape, numberofPos1);
-
+	//findNumbers();
+	//pathway(pathShape, numberofPos1);
+	
 
 
 	/*
@@ -1127,22 +1142,7 @@ int main()
 			
 		}
 
-		// Update clock. If enough time has elapsed, perform an update
-		elapsed += clock.restart().asSeconds();
-		if (elapsed > (1.f / (float)FRAMES_PER_SECOND))
-		{
-			elapsed = 0.0f;
-			if (event_playing)
-			{
-				counter++;
-				//run_rules();
-				if (counter >= 5)
-				{
-					//randPlace();
-
-				}
-			}
-		}
+		
 
 		//used to regen the vd
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
@@ -1210,6 +1210,8 @@ int main()
 		}
 		window.draw(shape3);
 		window.draw(shape4);
+
+		window.draw(voronoi_d);
 		window.display();
 	}
 
