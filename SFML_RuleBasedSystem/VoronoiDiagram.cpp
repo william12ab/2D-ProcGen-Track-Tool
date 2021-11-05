@@ -34,7 +34,11 @@ int VoronoiDiagram::DistanceSqrt(int x, int y, int x2, int y2)
 	return (xd * xd) + (yd * yd);
 }
 
-
+//the vector of ints "incr" is used in replace of the colors for the bruteforce method 
+//the loop pushes back i into the vector at the amount of sites.
+//each element is a sites "colour" 
+//the distance is found at each site in comparison to the index of the loop in x and y direction.
+//relative to the distance the cell is found of the diagram.
 void VoronoiDiagram::CreateDiagram()
 {
 	int d = 0;											
@@ -54,8 +58,12 @@ void VoronoiDiagram::CreateDiagram()
 
 			for (int p = 0; p < num_of_sites; p++)
 			{
-				//
-				d = DistanceSqrt(sites_v[0][p],sites_v[p][0],j,i);
+				//might throw an error out of bounds
+				for (int q = 0; q < 1; q++)
+				{
+					d = DistanceSqrt(sites_v[p][q], sites_v[p][q+1], j, i);
+				}
+				
 				if (d<dist)
 				{
 					dist = d;
@@ -64,7 +72,12 @@ void VoronoiDiagram::CreateDiagram()
 			}
 			if (ind>-1)
 			{
-				
+				std::vector<int>temp_g_v;
+				for (int j = 0; j < grid_size_x; j++)
+				{
+					temp_g_v.push_back(incr.at(ind));
+				}
+				grid_v.push_back(temp_g_v);
 			}
 		}
 	}
@@ -72,7 +85,7 @@ void VoronoiDiagram::CreateDiagram()
 
 void VoronoiDiagram::SetEdges()
 {
-
+	
 }
 
 void VoronoiDiagram::SetBorders()
