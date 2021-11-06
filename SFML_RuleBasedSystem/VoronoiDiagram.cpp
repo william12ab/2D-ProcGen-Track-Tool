@@ -51,10 +51,6 @@ int VoronoiDiagram::DistanceSqrt(int x, int y, int x2, int y2)
 //relative to the distance the cell is found of the diagram.
 void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size)
 {
-	//if (!grid_v.empty())
-	//{
-	//	grid_v.clear();
-	//}
 	int d = 0;											
 	std::vector<int>incr;
 
@@ -177,6 +173,9 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 	{
 		points_v.clear();
 	}
+
+	//resize vector to the right dimensions and then push back the points 
+
 
 	//zero is loop, 1 is p2p
 	switch (type)
