@@ -51,6 +51,10 @@ int VoronoiDiagram::DistanceSqrt(int x, int y, int x2, int y2)
 //relative to the distance the cell is found of the diagram.
 void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size)
 {
+	//if (!grid_v.empty())
+	//{
+	//	grid_v.clear();
+	//}
 	int d = 0;											
 	std::vector<int>incr;
 
@@ -72,7 +76,6 @@ void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size)
 				{
 					d = DistanceSqrt(sites_v[p][q], sites_v[p][q+1], j, i);
 				}
-				
 				if (d<dist)
 				{
 					dist = d;
@@ -82,16 +85,11 @@ void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size)
 			//so if this point has a distance which all points do
 			if (ind>-1)
 			{
-				/*std::vector<int>temp_g_v;
-				for (int j = 0; j < grid_size; j++)
-				{
-					temp_g_v.push_back(incr.at(ind));
-				}
-				grid_v.push_back(temp_g_v);*/
 				grid_v[j][i] = incr[ind];
 			}
 		}
 	}
+
 }
 
 void VoronoiDiagram::SetEdges(int grid_size)
@@ -154,11 +152,62 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 			{
 				vertexarray[i * grid_size + j].position = sf::Vector2f(i, j);
 			}
+			if (grid_v[i][j]==700)
+			{
+				vertexarray[i * grid_size + j].position = sf::Vector2f(i, j);
+				vertexarray[i * grid_size + j].color = sf::Color::Red;
+			}
 		}
 	}
+	
 }
 
-void VoronoiDiagram::SetPoint()
+//clear the vector if empty
+//find out what type and then how many points
+//two different methods, loop needs to go in a loop, point to point needs to go from one side to other.
+//loop needs minimun of 3 points, p2p needs 2 min.
+
+//cirlce
+//loop over num of points
+//point 1
+//
+void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 {
+	if (!points_v.empty())
+	{
+		points_v.clear();
+	}
+
+	//zero is loop, 1 is p2p
+	switch (type)
+	{
+	case 0:
+		break;
+
+	case 1:
+		int iter = grid_size / num_points;
+		int start = 1;
+		for (int i = 0; i < num_points; i++)
+		{
+			
+			bool found = false;
+			while (!found)
+			{
+				//so first is between 0 and grid_size/numpoints, second is iter and iter+iter, etc
+				int x = rand()% iter+start;	
+				int y = rand()% (int)(grid_size/1.1)+(grid_size/16);
+				if (grid_v[x][y] == 0)
+				{
+					found = true;
+					grid_v[x][y] = 700;		//starting point
+					//need to push back the position into the points vector
+				}
+			}
+			start += iter;
+			//iter += iter;
+			
+		}
+		break;
+	}
 
 }

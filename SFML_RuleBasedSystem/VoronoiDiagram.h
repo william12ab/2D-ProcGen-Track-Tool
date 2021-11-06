@@ -11,7 +11,7 @@ public:
 	void CreateDiagram(int num_sites,int grid_size);					//creates the voronoi diagram
 	void SetEdges(int grid_size);										//sets the edges of voronoi diagram, so it is just the edges in the vector
 	void SetBorders(int grid_size);										//removes the borders from the structure as we dont want them
-	void SetPoint();													//Sets the point(s) for the distance.
+	void SetPoint(int grid_size, int num_points, int type);				//Sets the point(s) for the distance.
 	void InitVector(int grid_size);										//inits the vector to correct size;
 
 
@@ -21,12 +21,16 @@ public:
 	std::vector<std::vector<int>>GetPointsVector() { return points_v; }	//returns the points vector		
 	int GetNumberOfSites() { return num_of_sites; }						//returns the number of sites
 	int GetGridSize() { return grid_size_x; };							//returns the size of the grid
-	
+	int GetType() { return type; };										//returns the type of track, closed or open
+	int GetNumberOfPoints() { return num_of_points; }					//returns the number of points
+
 	//setters
 	void SetNumberOfSites(int p) { num_of_sites = p; }					//sets the number of sites
 	void SetGridSize(int p) { grid_size_x=p; }							//sets the x and y of the grid
-	void SetNumberOfPoints(int p) { num_of_points = p; }
-	
+	void SetNumberOfPoints(int p) { num_of_points = p; }				//sets the number of points in the track
+	void SetType(int p) { type = p; }									//sets the type of track
+
+
 	void DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
 private:
 	std::vector<std::vector<int>> grid_v;		//contains the positions of the voronoi diagram,
@@ -35,6 +39,7 @@ private:
 
 	int num_of_sites;							//number of sites that form the diagram
 	int num_of_points;							//number of points that form the track.
+	int type;
 
 	int grid_size_x;							//size in the x axis of the diagram
 	int grid_size_y;							//size in the y axis of the diagram
