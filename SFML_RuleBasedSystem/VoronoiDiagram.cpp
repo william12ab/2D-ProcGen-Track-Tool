@@ -32,6 +32,7 @@ void VoronoiDiagram::RandomPlaceSites(int num_sites, int grid_size)
 		for (int j = 0; j < 2; j++)
 		{
 			temp_s_v.push_back(rand() % grid_size);
+
 		}
 		sites_v.push_back(temp_s_v);
 	}
@@ -200,6 +201,11 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 					found = true;
 					grid_v[x][y] = 700;		//starting point
 					//need to push back the position into the points vector
+					std::vector<int>temp_s_v;
+					temp_s_v.push_back(x);
+					temp_s_v.push_back(y);
+					points_v.push_back(temp_s_v);
+					
 				}
 			}
 			start += iter;
@@ -210,3 +216,4 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 	}
 
 }
+
