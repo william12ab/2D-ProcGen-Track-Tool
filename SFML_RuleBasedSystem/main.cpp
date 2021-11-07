@@ -1070,20 +1070,36 @@ int main()
 
 
 	
-
-	
+	//set the size, number of sites and points. this will take input 
 	Voronoi_Diagram.SetGridSize(800);
 	Voronoi_Diagram.SetNumberOfSites(25);
 	Voronoi_Diagram.SetNumberOfPoints(3);
+
+	//resize the arrays
+	Voronoi_Diagram.InitVector(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetNumberOfPoints(),Voronoi_Diagram.GetNumberOfSites());
+	
+	//places the sites
 	Voronoi_Diagram.RandomPlaceSites(Voronoi_Diagram.GetNumberOfSites(),Voronoi_Diagram.GetGridSize());
 
+	//sets up the vertex array
 	sf::VertexArray voronoi_d(sf::Points, (Voronoi_Diagram.GetGridSize()*Voronoi_Diagram.GetGridSize()));
-	
-	Voronoi_Diagram.InitVector(Voronoi_Diagram.GetGridSize());
+
+
+	//creates the vd in grid_v_1
+
 	Voronoi_Diagram.CreateDiagram(Voronoi_Diagram.GetNumberOfSites(), Voronoi_Diagram.GetGridSize());
+	
+
+
+
+	//makes the structure just contain edges
 	Voronoi_Diagram.SetEdges(Voronoi_Diagram.GetGridSize());
 	//Voronoi_Diagram.SetBorders(Voronoi_Diagram.GetGridSize());
+
+	//sets the points in the structure
 	Voronoi_Diagram.SetPoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetNumberOfPoints(), 1);
+
+	//draws
 	Voronoi_Diagram.DrawVoronoiDiagram(voronoi_d, Voronoi_Diagram.GetGridSize());
 	
 	
