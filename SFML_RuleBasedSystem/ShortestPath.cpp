@@ -75,46 +75,46 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 						{
 							found_end= true;
 							count_holder= it;
-							x_holder= x - 1;
+							x_holder= y - 1;
 							y_holder= y;
 							break;
 						}
 					}
 
-					//checks the "south" wall
-					if (y < h - 1)
+					//checks the "east" wall
+					if (x < grid_size - 1)
 					{
-						int& south = gridArray[x][y + 1];
-						if (south == -1)
+						int& east = grid[(y * grid_size) + (x+1)];
+						if (east == -1)
 						{
-							south = it + 1;
+							east = it + 1;
 							found_empty = true;
 						}
-						else if (south == -3)
+						else if (east == -3)
 						{
 							found_end= true;
 							count_holder= it;
-							x_holder= x;
-							y_holder = y + 1;
+							x_holder= x+1;
+							y_holder = y;
 							break;
 						}
 					}
 
 					//checks "north" wall
-					if (y > 0)
+					if (x > 0)
 					{
-						int& north = gridArray[x][y - 1];
-						if (north == -1)
+						int& west= grid[(y * grid_size) + (x - 1)];
+						if (west == -1)
 						{
-							north = it + 1;
+							west = it + 1;
 							found_empty = true;
 						}
-						else if (north == -3)
+						else if (west == -3)
 						{
 							found_end= true;
 							count_holder= it;
-							x_holder= x;
-							y_holder= y - 1;
+							x_holder= x-1;
+							y_holder= y ;
 							break;
 						}
 					}
