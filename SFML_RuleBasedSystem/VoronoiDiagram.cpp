@@ -151,11 +151,11 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 			}
 
 			//code to display the points needs changed anyway
-			/*if (grid_v_1[(i * grid_size) + j] ==700)
+			if (grid_v_1[(i * grid_size) + j] == 2002)
 			{
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::Red;
-			}*/
+			}
 		}
 	}
 	
