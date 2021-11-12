@@ -747,11 +747,6 @@ void phaseTwo()
 			foundStart = true;
 
 			//prints out lists using iterators, looping until end pos.
-
-
-
-
-
 			std::list<int>::iterator iter = positionx.begin();
 			std::list<int>::iterator itera = positiony.begin();
 			while (iter != positionx.end() && itera != positiony.end())
@@ -1071,81 +1066,92 @@ int main()
 
 	
 	//set the size, number of sites and points. this will take input 
-	//Voronoi_Diagram.SetGridSize(800);
-	//Voronoi_Diagram.SetNumberOfSites(25);
-	//Voronoi_Diagram.SetNumberOfPoints(3);
+	Voronoi_Diagram.SetGridSize(800);
+	Voronoi_Diagram.SetNumberOfSites(25);
+	Voronoi_Diagram.SetNumberOfPoints(2);
 
-	////resize the arrays
-	//Voronoi_Diagram.InitVector(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetNumberOfPoints(),Voronoi_Diagram.GetNumberOfSites());
-	//
-	////places the sites
-	//Voronoi_Diagram.RandomPlaceSites(Voronoi_Diagram.GetNumberOfSites(),Voronoi_Diagram.GetGridSize());
-
-	////sets up the vertex array
-	//sf::VertexArray voronoi_d(sf::Points, (Voronoi_Diagram.GetGridSize()*Voronoi_Diagram.GetGridSize()));
-
-
-	////creates the vd in grid_v_1
-
-	//Voronoi_Diagram.CreateDiagram(Voronoi_Diagram.GetNumberOfSites(), Voronoi_Diagram.GetGridSize());
-	//
-
-
-
-	////makes the structure just contain edges
-	//Voronoi_Diagram.SetEdges(Voronoi_Diagram.GetGridSize());
-	////Voronoi_Diagram.SetBorders(Voronoi_Diagram.GetGridSize());
-
-	////sets the points in the structure
-	//Voronoi_Diagram.SetPoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetNumberOfPoints(), 1);
-
-	////draws
-	//Voronoi_Diagram.DrawVoronoiDiagram(voronoi_d, Voronoi_Diagram.GetGridSize());
+	//resize the arrays
+	Voronoi_Diagram.InitVector(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetNumberOfPoints(),Voronoi_Diagram.GetNumberOfSites());
 	
-	
-	////creates the sites
-	RandomPlace();
+	//places the sites
+	Voronoi_Diagram.RandomPlaceSites(Voronoi_Diagram.GetNumberOfSites(),Voronoi_Diagram.GetGridSize());
+
+	//sets up the vertex array
+	sf::VertexArray voronoi_d(sf::Points, (Voronoi_Diagram.GetGridSize()*Voronoi_Diagram.GetGridSize()));
 
 
+	//creates the vd in grid_v_1
 
-	//actual voronoi construction, stored in tempGrid[][]
-	Zones();
-
-
-	//changes the tempgrid so that it has just the borders now.
-	Borders();
-
-	//changes the edges of the diagram to be not part of the diagram
-	OutsideEdges();
-
-	//render work
-	findZeros();
-	setPositions(shape, numberofPos);
+	Voronoi_Diagram.CreateDiagram(Voronoi_Diagram.GetNumberOfSites(), Voronoi_Diagram.GetGridSize());
 	
 
-	//choosing end and start points
-	findPointOnEdge(shape3);
-	findPointOnRight(shape4);
 
 
-	initGrid();
+	//makes the structure just contain edges
+	Voronoi_Diagram.SetEdges(Voronoi_Diagram.GetGridSize());
+	//Voronoi_Diagram.SetBorders(Voronoi_Diagram.GetGridSize());
+
+	//sets the points in the structure
+	Voronoi_Diagram.SetPoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetNumberOfPoints(), 1);
+
 	the_clock::time_point startTime = the_clock::now();
-	firstPhase();
-		the_clock::time_point end = the_clock::now();
+
+
+
+	
+	shortest_path_.Initgrid(Voronoi_Diagram.GetGridSize(),Voronoi_Diagram.GetGrid());
+	shortest_path_.PhaseOne(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(),shortest_path_.GetCountHolder(),shortest_path_.bGetFoundEnd(),shortest_path_.GetIt(),shortest_path_.bGetEnd(),shortest_path_.GetXHolder(),shortest_path_.GetYHolder());
+	the_clock::time_point end = the_clock::now();
 
 	auto timetaken = duration_cast<milliseconds> (end - startTime).count();
-
-	findNumbers();
-	pathway(pathShape, numberofPos1);
+	shortest_path_.PhaseTwo(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), shortest_path_.GetCountHolder());
+	//draws
+	Voronoi_Diagram.DrawVoronoiDiagram(voronoi_d, Voronoi_Diagram.GetGridSize());
 	
+	
+	//creates the sites
+	//RandomPlace();
 
 
-	/*
-	phaseTwo();
 
-	findPath();
-	pathway2(pathShape2, numberofPos2);
-	*/
+	////actual voronoi construction, stored in tempGrid[][]
+	//Zones();
+
+
+	////changes the tempgrid so that it has just the borders now.
+	//Borders();
+
+	////changes the edges of the diagram to be not part of the diagram
+	//OutsideEdges();
+
+	////render work
+	//findZeros();
+	//setPositions(shape, numberofPos);
+	//
+
+	////choosing end and start points
+	//findPointOnEdge(shape3);
+	//findPointOnRight(shape4);
+
+
+	//initGrid();
+	//the_clock::time_point startTime = the_clock::now();
+	//firstPhase();
+	//	the_clock::time_point end = the_clock::now();
+
+	//auto timetaken = duration_cast<milliseconds> (end - startTime).count();
+
+	//findNumbers();
+	//pathway(pathShape, numberofPos1);
+	//
+
+
+	//
+	//phaseTwo();
+
+	//findPath();
+	//pathway2(pathShape2, numberofPos2);
+	
 	
 	// While the window is open, update
 	while (window.isOpen())
@@ -1229,7 +1235,7 @@ int main()
 		window.draw(shape3);
 		window.draw(shape4);
 
-		//window.draw(voronoi_d);
+		window.draw(voronoi_d);
 		window.display();
 	}
 

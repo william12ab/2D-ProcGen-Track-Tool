@@ -145,15 +145,17 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 	{
 		for (int j=0;j<grid_size;j++)
 		{
-			if (grid_v_1[(i * grid_size) + j]==0)
+			if (grid_v_1[(i * grid_size) + j]== -12303)
 			{
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 			}
-			if (grid_v_1[(i * grid_size) + j] ==700)
+
+			//code to display the points needs changed anyway
+			/*if (grid_v_1[(i * grid_size) + j] ==700)
 			{
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::Red;
-			}
+			}*/
 		}
 	}
 	
@@ -194,10 +196,24 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 				if (grid_v_1[(y * grid_size) + x] == 0)
 				{
 					found = true;
-					grid_v_1[(y * grid_size) + x] = 700;		//starting point
+					
 					point_v_1[position] = x;
 					point_v_1[position+1] = y;
 					position += 2;
+
+					//setting the points 
+					switch (i)
+					{
+					case 0:
+						grid_v_1[(y * grid_size) + x] = 2000;		//starting point
+						break;
+					case 1:
+						grid_v_1[(y * grid_size) + x] = 2001;		//starting point
+						break;
+					case 2:
+						grid_v_1[(y * grid_size) + x] = 2002;		//starting point
+						break;
+					}
 				}
 			}
 			start += iter;
