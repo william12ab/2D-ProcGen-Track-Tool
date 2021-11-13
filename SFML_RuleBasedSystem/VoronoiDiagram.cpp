@@ -211,19 +211,20 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 					point_v_1[position+1] = y;
 					position += 2;
 
+					grid_v_1[(y * grid_size) + x] = 2000 + i;
 					//setting the points 
-					switch (i)
-					{
-					case 0:
-						grid_v_1[(y * grid_size) + x] = 2000;		//starting point
-						break;
-					case 1:
-						grid_v_1[(y * grid_size) + x] = 2001;		//starting point
-						break;
-					case 2:
-						grid_v_1[(y * grid_size) + x] = 2002;		//starting point
-						break;
-					}
+					//switch (i)
+					//{
+					//case 0:
+					//	grid_v_1[(y * grid_size) + x] = 2000;		//starting point
+					//	break;
+					//case 1:
+					//	grid_v_1[(y * grid_size) + x] = 2001;		//starting point
+					//	break;
+					//case 2:
+					//	grid_v_1[(y * grid_size) + x] = 2002;		//starting point
+					//	break;
+					//}
 				}
 			}
 			start += iter;

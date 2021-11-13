@@ -1067,8 +1067,8 @@ int main()
 	
 	//set the size, number of sites and points. this will take input 
 	Voronoi_Diagram.SetGridSize(800);
-	Voronoi_Diagram.SetNumberOfSites(25);
-	Voronoi_Diagram.SetNumberOfPoints(3);
+	Voronoi_Diagram.SetNumberOfSites(50);
+	Voronoi_Diagram.SetNumberOfPoints(2);
 
 	//resize the arrays
 	Voronoi_Diagram.InitVector(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetNumberOfPoints(),Voronoi_Diagram.GetNumberOfSites());
@@ -1108,11 +1108,18 @@ int main()
 	shortest_path_.PhaseTwo(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), shortest_path_.GetCountHolder(), 0);
 	//draws
 
-	shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), 0, -1234);
+
+	//init grid with how many points
+	//loop over the number of points
+	//phase 1 and 2 with first start and end 
+	//change current start and end to max value
+	//start and end becomes next start and end
+
+	/*shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), 0, -1234);
 	shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), -3, 0);
 	shortest_path_.PhaseOne(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), shortest_path_.GetCountHolder(), shortest_path_.bGetFoundEnd(),0, shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(),-4);
 	
-	shortest_path_.PhaseTwo(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), shortest_path_.GetCountHolder(),0);
+	shortest_path_.PhaseTwo(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), shortest_path_.GetCountHolder(),0);*/
 	Voronoi_Diagram.DrawVoronoiDiagram(voronoi_d, Voronoi_Diagram.GetGridSize());
 	
 	shortest_path_.PrintOutStartEnd(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid());

@@ -10,6 +10,14 @@ ShortestPath::ShortestPath()
 //else set to -1 which is a possible path
 void ShortestPath::Initgrid(int grid_size, int* grid)
 {
+	for (int i = 0; i < num_points; i++)
+	{
+		if (grid[(i * grid_size) + j] == 2000 +i)
+		{
+			grid[(i * grid_size) + j] = -2 * i;
+		}
+	}
+
 	for (int i = 0; i < grid_size; i++)
 	{
 		for (int j = 0; j < grid_size; j++)
