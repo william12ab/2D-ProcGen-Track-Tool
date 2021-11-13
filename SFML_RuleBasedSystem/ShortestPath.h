@@ -4,9 +4,11 @@ class ShortestPath
 public:
 	ShortestPath();
 	void Initgrid(int grid_size, int*grid);
-	void PhaseOne(int grid_size, int *grid, int count_holder, bool found_end,int it,bool end, int x_holder, int y_holder);
-	void PhaseTwo(int grid_size, int *grid, bool end, int x_holder, int y_holder, int count_holder);
+	void PhaseOne(int grid_size, int *grid, int count_holder, bool found_end,int it,bool end, int x_holder, int y_holder, int end_n);
+	void PhaseTwo(int grid_size, int *grid, bool end, int x_holder, int y_holder, int count_holder, int end_n);
 
+	void ChangePoint(int grid_size, int* grid, int point, int new_point);
+	void PrintOutStartEnd(int grid_size, int* grid);
 
 	bool bGetFoundEnd() { return found_end; }
 	int GetCountHolder() { return count_holder_; }

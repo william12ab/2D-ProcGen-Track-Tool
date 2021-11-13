@@ -39,7 +39,7 @@ void ShortestPath::Initgrid(int grid_size, int* grid)
 }
 
 //x=y/z y=x lol
-void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool found_end, int it, bool end, int x_holder, int y_holder)
+void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool found_end, int it, bool end, int x_holder, int y_holder, int end_n)
 {
 	count_holder = 0;
 	found_end = false;
@@ -67,7 +67,7 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 							//south = it + 1;			//
 							found_empty = true;
 						}
-						else if (south == -3)
+						else if (south == end_n)
 						{
 							found_end = true;		//if the east cell is -3 then this is the end cell. set the bool to true, exiits loop
 							count_holder_= it;		//holds the it value at -3
@@ -88,7 +88,7 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 							//south = it + 1;			//
 							found_empty = true;
 						}
-						else if (south == -3)
+						else if (south == end_n)
 						{
 							found_end = true;		//if the east cell is -3 then this is the end cell. set the bool to true, exiits loop
 							count_holder_ = it;		//holds the it value at -3
@@ -109,7 +109,7 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 							//south = it + 1;			//
 							found_empty = true;
 						}
-						else if (south == -3)
+						else if (south == end_n)
 						{
 							found_end = true;		//if the east cell is -3 then this is the end cell. set the bool to true, exiits loop
 							count_holder_ = it;		//holds the it value at -3
@@ -130,7 +130,7 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 							//north = it + 1;
 							found_empty = true;
 						}
-						else if (north == -3)
+						else if (north == end_n)
 						{
 							found_end= true;
 							count_holder_ = it;
@@ -150,7 +150,7 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 							//north = it + 1;
 							found_empty = true;
 						}
-						else if (north == -3)
+						else if (north == end_n)
 						{
 							found_end = true;
 							count_holder_ = it;
@@ -169,7 +169,7 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 							//north = it + 1;
 							found_empty = true;
 						}
-						else if (north == -3)
+						else if (north == end_n)
 						{
 							found_end = true;
 							count_holder_ = it;
@@ -189,7 +189,7 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 							//east = it + 1;
 							found_empty = true;
 						}
-						else if (east == -3)
+						else if (east == end_n)
 						{
 							found_end= true;
 							count_holder_ = it;
@@ -209,7 +209,7 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 							//west = it + 1;
 							found_empty = true;
 						}
-						else if (west == -3)
+						else if (west == end_n)
 						{
 							found_end= true;
 							count_holder_ = it;
@@ -236,25 +236,58 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 	}
 }
 
-//from phase one you use the x and y holder vars and count holder and end
-void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, int y_holder, int count_holder)
-{
-	bool found_start = false;
 
-	//not needed becasues now we get it from the other function so remove this when you have a chance
-	//i =y/z, j=x
+void ShortestPath::ChangePoint(int grid_size, int* grid, int point, int new_point)
+{
+	for (int i = 0; i < grid_size; i++)
+	{
+		for (int j = 0; j < grid_size; j++)
+		{
+			if (grid[(i * grid_size) + j] == point)
+			{
+				grid[(i * grid_size) + j] = new_point;
+			}
+		}
+	}
+}
+
+void ShortestPath::PrintOutStartEnd(int grid_size, int* grid)
+{
 	for (int i = 0; i < grid_size; i++)
 	{
 		for (int j = 0; j < grid_size; j++)
 		{
 			if (grid[(i * grid_size) + j] == -3)
 			{
-				x_holder = j;
-				y_holder = i;
-				break;											//?
+				int s = 2;
+			}
+			if (grid[(i * grid_size) + j] == -4)
+			{
+				int s = 2;
 			}
 		}
 	}
+}
+
+//from phase one you use the x and y holder vars and count holder and end
+void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, int y_holder, int count_holder, int end_n)
+{
+	bool found_start = false;
+
+	//not needed becasues now we get it from the other function so remove this when you have a chance
+	////i =y/z, j=x
+	//for (int i = 0; i < grid_size; i++)
+	//{
+	//	for (int j = 0; j < grid_size; j++)
+	//	{
+	//		if (grid[(i * grid_size) + j] == -3)
+	//		{
+	//			x_holder = j;
+	//			y_holder = i;
+	//			break;											//?
+	//		}
+	//	}
+	//}
 
 	while (!found_start && !end)
 	{
@@ -341,7 +374,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 			}
 		}
 		
-		if (count_holder<=0)
+		if (count_holder<=end_n)
 		{
 			found_start = true;
 			end = true;

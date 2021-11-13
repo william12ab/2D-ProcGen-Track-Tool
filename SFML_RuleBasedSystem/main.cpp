@@ -1068,7 +1068,7 @@ int main()
 	//set the size, number of sites and points. this will take input 
 	Voronoi_Diagram.SetGridSize(800);
 	Voronoi_Diagram.SetNumberOfSites(25);
-	Voronoi_Diagram.SetNumberOfPoints(2);
+	Voronoi_Diagram.SetNumberOfPoints(3);
 
 	//resize the arrays
 	Voronoi_Diagram.InitVector(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetNumberOfPoints(),Voronoi_Diagram.GetNumberOfSites());
@@ -1095,20 +1095,29 @@ int main()
 	Voronoi_Diagram.SetPoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetNumberOfPoints(), 1);
 
 	the_clock::time_point startTime = the_clock::now();
-
-
-
-	
-	shortest_path_.Initgrid(Voronoi_Diagram.GetGridSize(),Voronoi_Diagram.GetGrid());
-	shortest_path_.PhaseOne(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(),shortest_path_.GetCountHolder(),shortest_path_.bGetFoundEnd(),shortest_path_.GetIt(),shortest_path_.bGetEnd(),shortest_path_.GetXHolder(),shortest_path_.GetYHolder());
 	the_clock::time_point end = the_clock::now();
 
 	auto timetaken = duration_cast<milliseconds> (end - startTime).count();
-	shortest_path_.PhaseTwo(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), shortest_path_.GetCountHolder());
+
+
+	//init grid should be fine, no need to change.
+	shortest_path_.Initgrid(Voronoi_Diagram.GetGridSize(),Voronoi_Diagram.GetGrid());
+
+	//pass in the start and end to both these functions
+	shortest_path_.PhaseOne(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(),shortest_path_.GetCountHolder(),shortest_path_.bGetFoundEnd(),shortest_path_.GetIt(),shortest_path_.bGetEnd(),shortest_path_.GetXHolder(),shortest_path_.GetYHolder(), -3);
+	shortest_path_.PhaseTwo(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), shortest_path_.GetCountHolder(), 0);
 	//draws
+
+	shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), 0, -1234);
+	shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), -3, 0);
+	shortest_path_.PhaseOne(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), shortest_path_.GetCountHolder(), shortest_path_.bGetFoundEnd(),0, shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(),-4);
+	
+	shortest_path_.PhaseTwo(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), shortest_path_.GetCountHolder(),0);
 	Voronoi_Diagram.DrawVoronoiDiagram(voronoi_d, Voronoi_Diagram.GetGridSize());
 	
-	
+	shortest_path_.PrintOutStartEnd(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid());
+
+
 	//creates the sites
 	//RandomPlace();
 
