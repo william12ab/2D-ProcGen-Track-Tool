@@ -8,15 +8,38 @@ ShortestPath::ShortestPath()
 //i =z/y, j=x
 //if a position isnt = to zero or 700 then set it to -2 which signals a blocked path
 //else set to -1 which is a possible path
-void ShortestPath::Initgrid(int grid_size, int* grid)
+void ShortestPath::Initgrid(int grid_size, int* grid, int num_points)
 {
-	for (int i = 0; i < num_points; i++)
-	{
-		if (grid[(i * grid_size) + j] == 2000 +i)
+	int start = -3;
+	
+		for (int i = 0; i < grid_size; i++)
 		{
-			grid[(i * grid_size) + j] = -2 * i;
+			for (int j = 0; j < grid_size; j++)
+			{
+				if (grid[(i * grid_size) + j]==0)
+				{
+					grid[(i * grid_size) + j] = -1;
+				}
+				if (grid[(i * grid_size) + j] == 2000)
+				{
+					grid[(i * grid_size) + j] = 0;
+				}
+				for (int p = 0; p < (num_points-1); p++)
+				{
+				if(grid[(i * grid_size) + j] == 2001 + p)
+				{
+					grid[(i * grid_size) + j] = start - p;
+				}
+				}
+				if(grid[(i * grid_size) + j]>0 )
+				{
+					grid[(i * grid_size) + j] = -2;
+				}
+			}
 		}
-	}
+}
+
+/*
 
 	for (int i = 0; i < grid_size; i++)
 	{
@@ -44,7 +67,8 @@ void ShortestPath::Initgrid(int grid_size, int* grid)
 			}
 		}
 	}
-}
+	*/
+//}
 
 //x=y/z y=x lol
 void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool found_end, int it, bool end, int x_holder, int y_holder, int end_n)
