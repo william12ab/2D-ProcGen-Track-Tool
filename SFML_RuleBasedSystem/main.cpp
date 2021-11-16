@@ -45,7 +45,7 @@ int main()
 	
 	//set the size, number of sites and points. this will take input 
 	Voronoi_Diagram.SetGridSize(800);
-	Voronoi_Diagram.SetNumberOfSites(50);
+	Voronoi_Diagram.SetNumberOfSites(200);
 	Voronoi_Diagram.SetNumberOfPoints(3);
 
 	//resize the arrays

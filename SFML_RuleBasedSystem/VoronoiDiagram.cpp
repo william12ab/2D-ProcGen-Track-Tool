@@ -178,7 +178,7 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 			if (grid_v_1[(i * grid_size) + j] == -1234)
 			{
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-				vertexarray[i * grid_size + j].color = sf::Color::Yellow;
+				vertexarray[i * grid_size + j].color = sf::Color::Blue;
 				
 			}
 			//end/middle
