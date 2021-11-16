@@ -39,36 +39,6 @@ void ShortestPath::Initgrid(int grid_size, int* grid, int num_points)
 		}
 }
 
-/*
-
-	for (int i = 0; i < grid_size; i++)
-	{
-		for (int j = 0; j < grid_size; j++)
-		{
-			if (grid[(i * grid_size) + j] != 0 && grid[(i * grid_size) + j] != 2000 && grid[(i * grid_size) + j] != 2001 && grid[(i * grid_size) + j] != 2002)
-			{
-				grid[(i * grid_size) + j] = -2;
-			}
-			else if (grid[(i * grid_size) + j]==0)
-			{
-				grid[(i * grid_size) + j] = -1;
-			}
-			else if (grid[(i * grid_size) + j] == 2000)
-			{
-				grid[(i * grid_size) + j] = 0;
-			}
-			else if (grid[(i * grid_size) + j] == 2001)
-			{
-				grid[(i * grid_size) + j] = -3;
-			}
-			else if (grid[(i * grid_size) + j] == 2002)
-			{
-				grid[(i * grid_size) + j] = -4;
-			}
-		}
-	}
-	*/
-//}
 
 
 void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool found_end, int it, bool end, int x_holder, int y_holder, int end_n)
@@ -254,15 +224,15 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 			}
 		}
 
-
+		//i think its fine not to have this code
 		//need to do something with this instead of printing out a message that is not practical or good.
-		if (!found_empty && !found_end)
+		/*if (!found_empty && !found_end)
 		{
 			end_ = true;
 			std::cout << "There is no solution to this maze.";
 			std::cout << std::endl;
 			break;
-		}
+		}*/
 
 		it++;
 	}
@@ -297,6 +267,10 @@ void ShortestPath::PrintOutStartEnd(int grid_size, int* grid)
 			{
 				int s = 2;
 			}
+			if (grid[(i * grid_size) + j] == -3)
+			{
+				int s = 0;
+			}
 		}
 	}
 }
@@ -306,20 +280,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 {
 	bool found_start = false;
 
-	//not needed becasues now we get it from the other function so remove this when you have a chance
-	////i =y/z, j=x
-	//for (int i = 0; i < grid_size; i++)
-	//{
-	//	for (int j = 0; j < grid_size; j++)
-	//	{
-	//		if (grid[(i * grid_size) + j] == -3)
-	//		{
-	//			x_holder = j;
-	//			y_holder = i;
-	//			break;											//?
-	//		}
-	//	}
-	//}
+
 
 	while (!found_start && !end)
 	{
@@ -405,8 +366,9 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				//	break;
 			}
 
-			/*if (count_holder!=north&& count_holder != northE && count_holder != northW && count_holder != south && count_holder != southE && count_holder != southW)
+		/*	if (count_holder!=north&& count_holder != northE && count_holder != northW && count_holder != south && count_holder != southE && count_holder != southW)
 			{
+				int s = grid[(y_holder * grid_size) + x_holder];
 				break;
 			}*/
 		}

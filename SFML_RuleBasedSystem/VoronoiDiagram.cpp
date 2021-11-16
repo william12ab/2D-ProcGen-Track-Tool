@@ -153,6 +153,7 @@ void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int gr
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::Blue;
 			}
+
 		}
 	}
 
@@ -177,7 +178,7 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 			if (grid_v_1[(i * grid_size) + j] == -1234)
 			{
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-				vertexarray[i * grid_size + j].color = sf::Color::Red;
+				vertexarray[i * grid_size + j].color = sf::Color::Yellow;
 				
 			}
 			//end/middle
@@ -190,8 +191,11 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 			if (grid_v_1[(i * grid_size) + j] == -3)
 			{
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-				vertexarray[i * grid_size + j].color = sf::Color::Red;
+				vertexarray[i * grid_size + j].color = sf::Color::Blue;
 			}
+
+
+		
 		}
 	}
 	
