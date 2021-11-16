@@ -284,17 +284,16 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 
 	while (!found_start && !end)
 	{
-
+		int how_many = 0;
 		if (count_holder != 0)
 		{
 			int& north = grid[((y_holder - 1) * grid_size) + x_holder];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
 			if (north == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 			{
 				y_holder -= 1;
-				//positionx.push_back(xHolder);
-				//positiony.push_back(yHolder);
 				count_holder -= 1;
 				grid[(y_holder * grid_size) + x_holder]=-12303;
+				how_many++;
 			}
 			int& northE = grid[((y_holder - 1) * grid_size) + (x_holder + 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
 			if (northE == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
@@ -303,7 +302,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				x_holder += 1;
 				grid[(y_holder * grid_size) + x_holder] = -12303;
 				count_holder -= 1;
-
+				how_many++;
 				//	break;
 			}
 			int& northW = grid[((y_holder - 1) * grid_size) + (x_holder - 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
@@ -313,7 +312,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				x_holder -= 1;
 				grid[(y_holder * grid_size) + x_holder] = -12303;
 				count_holder -= 1;
-
+				how_many++;
 				//	break;
 			}
 
@@ -324,7 +323,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				grid[(y_holder * grid_size) + x_holder] = -12303;
 				count_holder -= 1;
 				//		break;
-
+				how_many++;
 			}
 
 			int& east = grid[(y_holder * grid_size) + (x_holder + 1)];		//east 
@@ -334,7 +333,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				grid[(y_holder * grid_size) + x_holder] = -12303;
 				count_holder -= 1;
 				//			break;
-
+				how_many++;
 			}
 
 			int& south = grid[((y_holder + 1) * grid_size) + x_holder];
@@ -343,7 +342,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				y_holder += 1;
 				grid[(y_holder * grid_size) + x_holder] = -12303;
 				count_holder -= 1;
-
+				how_many++;
 			}
 			int& southE = grid[((y_holder + 1) * grid_size) + (x_holder + 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
 			if (southE == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
@@ -352,7 +351,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				y_holder += 1;
 				grid[(y_holder * grid_size) + x_holder] = -12303;
 				count_holder -= 1;
-
+				how_many++;
 				//	break;
 			}
 			int& southW = grid[((y_holder + 1) * grid_size) + (x_holder - 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
@@ -362,15 +361,23 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				x_holder -= 1;
 				grid[(y_holder * grid_size) + x_holder] = -12303;
 				count_holder -= 1;
-
+				how_many++;
 				//	break;
 			}
 
-		/*	if (count_holder!=north&& count_holder != northE && count_holder != northW && count_holder != south && count_holder != southE && count_holder != southW)
+			/*if (count_holder!=north&& count_holder != northE && count_holder != northW && count_holder != south && count_holder != southE && count_holder != southW)
 			{
 				int s = grid[(y_holder * grid_size) + x_holder];
 				break;
 			}*/
+			if (how_many == 0)
+			{
+				break;
+			}
+			//this is just a quick fix
+			//so if no points have been changes then exit the loop to stop it going on forever/
+			//this happens when there is a problem with the pathway
+			//the output from this explains it well
 		}
 		
 		if (count_holder<=end_n)
