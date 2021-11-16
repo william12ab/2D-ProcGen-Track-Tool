@@ -70,7 +70,7 @@ void ShortestPath::Initgrid(int grid_size, int* grid, int num_points)
 	*/
 //}
 
-//x=y/z y=x lol
+
 void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool found_end, int it, bool end, int x_holder, int y_holder, int end_n)
 {
 	count_holder = 0;
@@ -405,10 +405,10 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				//	break;
 			}
 
-			if (count_holder!=north&& count_holder != northE && count_holder != northW && count_holder != south && count_holder != southE && count_holder != southW)
+			/*if (count_holder!=north&& count_holder != northE && count_holder != northW && count_holder != south && count_holder != southE && count_holder != southW)
 			{
 				break;
-			}
+			}*/
 		}
 		
 		if (count_holder<=end_n)

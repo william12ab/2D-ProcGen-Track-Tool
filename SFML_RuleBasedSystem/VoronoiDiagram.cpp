@@ -148,6 +148,11 @@ void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int gr
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::Green;
 			}
+			if (grid_v_1[(i * grid_size) + j] > 0)
+			{
+				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+				vertexarray[i * grid_size + j].color = sf::Color::Blue;
+			}
 		}
 	}
 
@@ -165,21 +170,23 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::White;
 			}
-		
+			//pathway
 
 
-			//code to display the points needs changed anyway
+			//start
 			if (grid_v_1[(i * grid_size) + j] == -1234)
 			{
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::Red;
 				
 			}
+			//end/middle
 			if (grid_v_1[(i * grid_size) + j] == 0)
 			{
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::Red;
 			}
+			//end
 			if (grid_v_1[(i * grid_size) + j] == -3)
 			{
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
