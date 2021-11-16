@@ -137,7 +137,22 @@ void VoronoiDiagram::SetBorders(int grid_size)
 		x = grid_size - 1;
 	}
 }
+void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size)
+{
+	for (int i = 0; i < grid_size; i++)
+	{
+		for (int j = 0; j < grid_size; j++)
+		{
+			if (grid_v_1[(i * grid_size) + j] == -2)
+			{
+				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+				vertexarray[i * grid_size + j].color = sf::Color::Green;
+			}
+		}
+	}
 
+
+}
 
 void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size)
 {
@@ -150,12 +165,15 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::White;
 			}
+		
+
 
 			//code to display the points needs changed anyway
 			if (grid_v_1[(i * grid_size) + j] == -1234)
 			{
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::Red;
+				
 			}
 			if (grid_v_1[(i * grid_size) + j] == 0)
 			{
@@ -213,19 +231,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 					position += 2;
 
 					grid_v_1[(y * grid_size) + x] = 2000 + i;
-					//setting the points 
-					//switch (i)
-					//{
-					//case 0:
-					//	grid_v_1[(y * grid_size) + x] = 2000;		//starting point
-					//	break;
-					//case 1:
-					//	grid_v_1[(y * grid_size) + x] = 2001;		//starting point
-					//	break;
-					//case 2:
-					//	grid_v_1[(y * grid_size) + x] = 2002;		//starting point
-					//	break;
-					//}
+		
 				}
 			}
 			start += iter;

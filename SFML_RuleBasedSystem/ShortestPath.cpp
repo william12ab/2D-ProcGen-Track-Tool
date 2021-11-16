@@ -258,7 +258,7 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 		//need to do something with this instead of printing out a message that is not practical or good.
 		if (!found_empty && !found_end)
 		{
-			end = true;
+			end_ = true;
 			std::cout << "There is no solution to this maze.";
 			std::cout << std::endl;
 			break;
@@ -404,6 +404,11 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 
 				//	break;
 			}
+
+		/*	if (count_holder!=north&& count_holder != northE && count_holder != northW && count_holder != south && count_holder != southE && count_holder != southW)
+			{
+				break;
+			}*/
 		}
 		
 		if (count_holder<=end_n)

@@ -13,7 +13,7 @@ public:
 	bool bGetFoundEnd() { return found_end; }
 	int GetCountHolder() { return count_holder_; }
 	int GetIt() { return it; }
-	bool bGetEnd() { return end;}
+	bool bGetEnd() { return end_;}
 	int GetXHolder() { return x_holder_; }
 	int GetYHolder() { return y_holder_; }
 private:
@@ -23,7 +23,7 @@ private:
 	bool found_end;				//start as false;
 	int count_holder_;
 	int it;
-	bool end;					//start as false;
+	bool end_;					//start as false;
 	int x_holder_, y_holder_;
 };
 

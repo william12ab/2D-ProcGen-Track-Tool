@@ -37,6 +37,9 @@ public:
 
 
 	void DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
+
+
+	void DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
 private:
 	std::vector<std::vector<int>> grid_v;		//contains the positions of the voronoi diagram,
 	std::vector<std::vector<int>> sites_v;		//contains the positions of the sites

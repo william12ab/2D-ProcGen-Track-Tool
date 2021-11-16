@@ -1196,12 +1196,7 @@ int main()
 		//used to regen the vd
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		{
-			RandomPlace();
-			Zones();
-			Borders();
-			OutsideEdges();
-			findZeros();
-			setPositions(shape, numberofPos);
+			Voronoi_Diagram.DrawFullVoronoiDiagram(voronoi_d, Voronoi_Diagram.GetGridSize());
 		}
 
 
