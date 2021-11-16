@@ -1053,15 +1053,7 @@ int main()
 
 	int counter = 0;
 
-	std::vector<sf::RectangleShape> shape;
 
-	std::vector<sf::RectangleShape> shape2;
-
-	sf::RectangleShape shape3;
-	sf::RectangleShape shape4;
-
-	std::vector<sf::RectangleShape> pathShape;
-	std::vector<sf::RectangleShape> pathShape2;
 
 
 	
@@ -1131,53 +1123,9 @@ int main()
 	shortest_path_.PhaseTwo(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), shortest_path_.GetCountHolder(),0);*/
 	Voronoi_Diagram.DrawVoronoiDiagram(voronoi_d, Voronoi_Diagram.GetGridSize());
 	
-	shortest_path_.PrintOutStartEnd(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid());
-
-
-	//creates the sites
-	//RandomPlace();
 
 
 
-	////actual voronoi construction, stored in tempGrid[][]
-	//Zones();
-
-
-	////changes the tempgrid so that it has just the borders now.
-	//Borders();
-
-	////changes the edges of the diagram to be not part of the diagram
-	//OutsideEdges();
-
-	////render work
-	//findZeros();
-	//setPositions(shape, numberofPos);
-	//
-
-	////choosing end and start points
-	//findPointOnEdge(shape3);
-	//findPointOnRight(shape4);
-
-
-	//initGrid();
-	//the_clock::time_point startTime = the_clock::now();
-	//firstPhase();
-	//	the_clock::time_point end = the_clock::now();
-
-	//auto timetaken = duration_cast<milliseconds> (end - startTime).count();
-
-	//findNumbers();
-	//pathway(pathShape, numberofPos1);
-	//
-
-
-	//
-	//phaseTwo();
-
-	//findPath();
-	//pathway2(pathShape2, numberofPos2);
-	
-	
 	// While the window is open, update
 	while (window.isOpen())
 	{
@@ -1197,63 +1145,12 @@ int main()
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		{
 			Voronoi_Diagram.DrawFullVoronoiDiagram(voronoi_d, Voronoi_Diagram.GetGridSize());
+			shortest_path_.PrintOutStartEnd(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid());
+
 		}
 
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-		{
-			RandomPlace();
-			Zones();
-			Borders();
-			OutsideEdges();
-			findZeros();
-			setPositions(shape2, numberofPos);
-		}
-
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-		{
-			findPointOnEdge(shape3);
-			findPointOnRight(shape4);
-		
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
-		{
- 			initGrid();
-			//fillGrid();
-			firstPhase();
-			findNumbers();
-			pathway(pathShape, numberofPos1);
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::G))
-		{
-			
-			phaseTwo();
-			findPath();
-			pathway2(pathShape2, numberofPos2);
-		}
-		// Clear window, draw everything, display window
-		window.clear();
-		
-		for (int i = 0; i < shape.size(); i++)
-		{
-			window.draw(shape.at(i));
-		}
-		for (int i = 0; i < shape2.size(); i++)
-		{
-			window.draw(shape2.at(i));
-		}
-
-		for (int i = 0; i < pathShape.size(); i++)
-		{
-			window.draw(pathShape.at(i));
-		}
-
-		for (int i = 0; i < pathShape2.size(); i++)
-		{
-			window.draw(pathShape2.at(i));
-		}
-		window.draw(shape3);
-		window.draw(shape4);
+	
 
 		window.draw(voronoi_d);
 		window.display();

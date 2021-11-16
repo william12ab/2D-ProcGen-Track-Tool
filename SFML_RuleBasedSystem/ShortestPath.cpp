@@ -289,11 +289,11 @@ void ShortestPath::PrintOutStartEnd(int grid_size, int* grid)
 	{
 		for (int j = 0; j < grid_size; j++)
 		{
-			if (grid[(i * grid_size) + j] == -3)
+			if (grid[(i * grid_size) + j] == 1234)
 			{
 				int s = 2;
 			}
-			if (grid[(i * grid_size) + j] == -4)
+			if (grid[(i * grid_size) + j] == 0)
 			{
 				int s = 2;
 			}
@@ -405,10 +405,10 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				//	break;
 			}
 
-		/*	if (count_holder!=north&& count_holder != northE && count_holder != northW && count_holder != south && count_holder != southE && count_holder != southW)
+			if (count_holder!=north&& count_holder != northE && count_holder != northW && count_holder != south && count_holder != southE && count_holder != southW)
 			{
 				break;
-			}*/
+			}
 		}
 		
 		if (count_holder<=end_n)
