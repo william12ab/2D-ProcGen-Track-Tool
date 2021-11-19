@@ -5,7 +5,7 @@ class VoronoiDiagram
 {
 public:
 	VoronoiDiagram();
-	
+	~VoronoiDiagram();
 	void RandomPlaceSites(int num_sites, int grid_size);				//distrubutes the sites
 	int DistanceSqrt(int x, int y, int x2, int y2);						//the distance formula
 	void CreateDiagram(int num_sites,int grid_size);					//creates the voronoi diagram
@@ -50,7 +50,7 @@ private:
 	int type;
 
 	int grid_size_x;							//size in the x axis of the diagram
-	int grid_size_y;							//size in the y axis of the diagram
+	//int grid_size_y;							//size in the y axis of the diagram
 
 
 	int* sites_v_1;

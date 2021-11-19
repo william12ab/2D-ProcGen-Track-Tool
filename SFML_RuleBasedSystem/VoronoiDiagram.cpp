@@ -6,14 +6,26 @@ VoronoiDiagram::VoronoiDiagram()
 	//set the defaults in here
 	
 	grid_size_x = 0;
+
 	num_of_points = 0;
 	num_of_sites = 0;
+
+	grid_v_1 = nullptr;
+	sites_v_1 = nullptr;
+	point_v_1 = nullptr;
+}
+
+VoronoiDiagram::~VoronoiDiagram()
+{
+	delete[] grid_v_1;
+	delete[] sites_v_1;
+	delete[] point_v_1;
 }
 
 void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
 {
-	//grid_v.resize(grid_size,std::vector<int>(grid_size));
-	grid_v_1 = new int[grid_size * grid_size];
+	grid_size_x = grid_size;
+	grid_v_1 = new int[grid_size_x * grid_size_x];
 	sites_v_1 = new int[num_sites*2];
 	point_v_1 = new int[num_points];
 }

@@ -59,6 +59,65 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 			{
 				if (grid[(y * grid_size) + x] == it)
 				{
+					if (y > 0)
+					{
+						int& north = grid[((y - 1) * grid_size) + x];
+						if (north == -1)
+						{
+							grid[((y - 1) * grid_size) + x] = it + 1;
+							//north = it + 1;
+							found_empty = true;
+						}
+						else if (north == end_n)
+						{
+							found_end = true;
+							count_holder_ = it;
+							x_holder_ = x;
+							y_holder_ = y - 1;
+							break;
+						}
+					}
+
+					//checks the nortth east cell
+					if (y > 0 && x < grid_size - 1)
+					{
+						int& north = grid[((y - 1) * grid_size) + (x + 1)];
+						if (north == -1)
+						{
+							grid[((y - 1) * grid_size) + (x + 1)] = it + 1;
+							//north = it + 1;
+							found_empty = true;
+						}
+						else if (north == end_n)
+						{
+							found_end = true;
+							count_holder_ = it;
+							x_holder_ = x + 1;
+							y_holder_ = y - 1;
+							break;
+						}
+					}
+
+					//checks the "east" wall
+					if (x < grid_size - 1)
+					{
+						int& east = grid[(y * grid_size) + (x + 1)];
+						if (east == -1)
+						{
+							grid[(y * grid_size) + (x + 1)] = it + 1;
+							//east = it + 1;
+							found_empty = true;
+						}
+						else if (east == end_n)
+						{
+							found_end = true;
+							count_holder_ = it;
+							x_holder_ = x + 1;
+							y_holder_ = y;
+							break;
+						}
+					}
+
 					//check the "south" cell, 
 					if (y < grid_size - 1)
 					{
@@ -121,46 +180,27 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 
 						}
 					}
-
-					//checks the "north" cell
-					if (y > 0)
+					//checks "west" wall
+					if (x > 0)
 					{
-						int& north= grid[((y - 1) * grid_size) + x];
-						if (north == -1)
+						int& west = grid[(y * grid_size) + (x - 1)];
+						if (west == -1)
 						{
-							grid[((y - 1) * grid_size) + x] = it + 1;
-							//north = it + 1;
+							grid[(y * grid_size) + (x - 1)] = it + 1;
+							//west = it + 1;
 							found_empty = true;
 						}
-						else if (north == end_n)
-						{
-							found_end= true;
-							count_holder_ = it;
-							x_holder_ = x;
-							y_holder_= y-1;
-							break;
-						}
-					}
-
-					//checks the nortth east cell
-					if (y > 0 && x < grid_size - 1)
-					{
-						int& north = grid[((y - 1) * grid_size) + (x+1)];
-						if (north == -1)
-						{
-							grid[((y - 1) * grid_size) + (x+1)] = it + 1;
-							//north = it + 1;
-							found_empty = true;
-						}
-						else if (north == end_n)
+						else if (west == end_n)
 						{
 							found_end = true;
 							count_holder_ = it;
-							x_holder_ = x + 1;
-							y_holder_ = y-1;
+							x_holder_ = x - 1;
+							y_holder_ = y;
 							break;
 						}
 					}
+					//checks the "north" cell
+					
 					//checks the nortth west cell
 					if (y > 0 && x > 0)
 					{
@@ -181,45 +221,9 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 						}
 					}
 
-					//checks the "east" wall
-					if (x < grid_size - 1)
-					{
-						int& east = grid[(y * grid_size) + (x+1)];
-						if (east == -1)
-						{
-							grid[(y * grid_size) + (x + 1)] = it + 1;
-							//east = it + 1;
-							found_empty = true;
-						}
-						else if (east == end_n)
-						{
-							found_end= true;
-							count_holder_ = it;
-							x_holder_= x+1;
-							y_holder_ = y;
-							break;
-						}
-					}
+					
 
-					//checks "west" wall
-					if (x > 0)
-					{
-						int& west= grid[(y * grid_size) + (x - 1)];
-						if (west == -1)
-						{
-							grid[(y * grid_size) + (x - 1)] = it + 1;
-							//west = it + 1;
-							found_empty = true;
-						}
-						else if (west == end_n)
-						{
-							found_end= true;
-							count_holder_ = it;
-							x_holder_= x-1;
-							y_holder_= y ;
-							break;
-						}
-					}
+					
 				}
 			}
 		}
@@ -259,17 +263,20 @@ void ShortestPath::PrintOutStartEnd(int grid_size, int* grid)
 	{
 		for (int j = 0; j < grid_size; j++)
 		{
-			if (grid[(i * grid_size) + j] == 1234)
-			{
-				int s = 2;
-			}
 			if (grid[(i * grid_size) + j] == 0)
 			{
 				int s = 2;
+				std::cout << "first x "<< j <<" y " << i; std::cout << std::endl;
 			}
 			if (grid[(i * grid_size) + j] == -3)
 			{
+				int s = 2;
+				std::cout << "second x " << j << " y " << i; std::cout << std::endl;
+			}
+			if (grid[(i * grid_size) + j] == -4)
+			{
 				int s = 0;
+				std::cout << "third x " << j << " y " <<i; std::cout << std::endl;
 			}
 		}
 	}
@@ -287,47 +294,32 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 		int how_many = 0;
 		if (count_holder != 0)
 		{
+
 			int& north = grid[((y_holder - 1) * grid_size) + x_holder];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
+			int& northE = grid[((y_holder - 1) * grid_size) + (x_holder + 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
+			int& east = grid[(y_holder * grid_size) + (x_holder + 1)];		//east 
+			int& south = grid[((y_holder + 1) * grid_size) + x_holder];
+			int& southE = grid[((y_holder + 1) * grid_size) + (x_holder + 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
+			int& southW = grid[((y_holder + 1) * grid_size) + (x_holder - 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
+			int& west = grid[(y_holder * grid_size) + (x_holder - 1)];	//west
+			int& northW = grid[((y_holder - 1) * grid_size) + (x_holder - 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
 			if (north == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 			{
 				y_holder -= 1;
 				count_holder -= 1;
 				grid[(y_holder * grid_size) + x_holder]=-12303;
 				how_many++;
+				
 			}
-			int& northE = grid[((y_holder - 1) * grid_size) + (x_holder + 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
-			if (northE == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
+			else if (northE == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 			{
 				y_holder -= 1;
 				x_holder += 1;
 				grid[(y_holder * grid_size) + x_holder] = -12303;
 				count_holder -= 1;
 				how_many++;
-				//	break;
 			}
-			int& northW = grid[((y_holder - 1) * grid_size) + (x_holder - 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
-			if (northW == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
-			{
-				y_holder -= 1;
-				x_holder -= 1;
-				grid[(y_holder * grid_size) + x_holder] = -12303;
-				count_holder -= 1;
-				how_many++;
-				//	break;
-			}
-
-			int& west = grid[(y_holder * grid_size) + (x_holder - 1)];	//west
-			if (west == count_holder)
-			{
-				x_holder -= 1;
-				grid[(y_holder * grid_size) + x_holder] = -12303;
-				count_holder -= 1;
-				//		break;
-				how_many++;
-			}
-
-			int& east = grid[(y_holder * grid_size) + (x_holder + 1)];		//east 
-			if (east == count_holder)
+			else if (east == count_holder)
 			{
 				x_holder += 1;
 				grid[(y_holder * grid_size) + x_holder] = -12303;
@@ -335,17 +327,14 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				//			break;
 				how_many++;
 			}
-
-			int& south = grid[((y_holder + 1) * grid_size) + x_holder];
-			if (south == count_holder)
+			else if (south == count_holder)
 			{
 				y_holder += 1;
 				grid[(y_holder * grid_size) + x_holder] = -12303;
 				count_holder -= 1;
 				how_many++;
 			}
-			int& southE = grid[((y_holder + 1) * grid_size) + (x_holder + 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
-			if (southE == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
+			else if (southE == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 			{
 				x_holder += 1;
 				y_holder += 1;
@@ -354,8 +343,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				how_many++;
 				//	break;
 			}
-			int& southW = grid[((y_holder + 1) * grid_size) + (x_holder - 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
-			if (southW == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
+			else if (southW == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 			{
 				y_holder += 1;
 				x_holder -= 1;
@@ -364,12 +352,24 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				how_many++;
 				//	break;
 			}
-
-			/*if (count_holder!=north&& count_holder != northE && count_holder != northW && count_holder != south && count_holder != southE && count_holder != southW)
+			else if (west == count_holder)
 			{
-				int s = grid[(y_holder * grid_size) + x_holder];
-				break;
-			}*/
+				x_holder -= 1;
+				grid[(y_holder * grid_size) + x_holder] = -12303;
+				count_holder -= 1;
+				//		break;
+				how_many++;
+			}
+			else if (northW == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
+			{
+				y_holder -= 1;
+				x_holder -= 1;
+				grid[(y_holder * grid_size) + x_holder] = -12303;
+				count_holder -= 1;
+				how_many++;
+				//	break;
+			}
+
 			if (how_many == 0)
 			{
 				break;
