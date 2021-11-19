@@ -228,15 +228,10 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 			}
 		}
 
-		//i think its fine not to have this code
-		//need to do something with this instead of printing out a message that is not practical or good.
-		/*if (!found_empty && !found_end)
+		if (it>2000)
 		{
-			end_ = true;
-			std::cout << "There is no solution to this maze.";
-			std::cout << std::endl;
 			break;
-		}*/
+		}
 
 		it++;
 	}

@@ -58,7 +58,7 @@ int main()
 	Voronoi_Diagram.SetGridSize(resolution_);
 	Voronoi_Diagram.SetNumberOfSites(sites_);
 	Voronoi_Diagram.SetNumberOfPoints(points_);
-
+	Voronoi_Diagram.~VoronoiDiagram();
 	//resize the arrays
 	Voronoi_Diagram.InitVector(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetNumberOfPoints(),Voronoi_Diagram.GetNumberOfSites());
 	
@@ -122,7 +122,7 @@ int main()
 		if (ImGui::Button("Regenerate"))
 		{
 			voronoi_d.clear();
-			
+			Voronoi_Diagram.~VoronoiDiagram();
 			Voronoi_Diagram.SetGridSize(resolution_);
 			Voronoi_Diagram.SetNumberOfSites(sites_);
 			Voronoi_Diagram.SetNumberOfPoints(points_);

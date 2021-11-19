@@ -12,14 +12,14 @@ VoronoiDiagram::VoronoiDiagram()
 
 	grid_v_1 = nullptr;
 	sites_v_1 = nullptr;
-	point_v_1 = nullptr;
+	//point_v_1 = nullptr;
 }
 
 VoronoiDiagram::~VoronoiDiagram()
 {
 	delete[] grid_v_1;
 	delete[] sites_v_1;
-	delete[] point_v_1;
+	//delete[] point_v_1;
 }
 
 void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
@@ -27,7 +27,7 @@ void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
 	grid_size_x = grid_size;
 	grid_v_1 = new int[grid_size_x * grid_size_x];
 	sites_v_1 = new int[num_sites*2];
-	point_v_1 = new int[num_points];
+	//point_v_1 = new int[num_points];
 }
 
 
@@ -90,6 +90,7 @@ void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size)
 			}
 		}
 	}
+	delete[] incr;
 
 }
 
@@ -248,11 +249,6 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 				if (grid_v_1[(y * grid_size) + x] == 0)
 				{
 					found = true;
-					
-					point_v_1[position] = x;
-					point_v_1[position+1] = y;
-					position += 2;
-
 					grid_v_1[(y * grid_size) + x] = 2000 + i;
 		
 				}

@@ -22,7 +22,7 @@ public:
 
 	int* GetGrid() { return grid_v_1; }
 	int* GetSites() { return sites_v_1; }
-	int* GetPoints() { return point_v_1; }
+
 
 	int GetNumberOfSites() { return num_of_sites; }						//returns the number of sites
 	int GetGridSize() { return grid_size_x; };							//returns the size of the grid
@@ -55,6 +55,6 @@ private:
 
 	int* sites_v_1;
 	int* grid_v_1;
-	int* point_v_1;
+	//int* point_v_1;
 };
 
