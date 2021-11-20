@@ -3,23 +3,18 @@
 
 VoronoiDiagram::VoronoiDiagram()
 {
-	//set the defaults in here
-	
+	type = 1;
 	grid_size_x = 0;
-
 	num_of_points = 0;
 	num_of_sites = 0;
-
 	grid_v_1 = nullptr;
 	sites_v_1 = nullptr;
-	//point_v_1 = nullptr;
 }
 
 VoronoiDiagram::~VoronoiDiagram()
 {
 	delete[] grid_v_1;
 	delete[] sites_v_1;
-	//delete[] point_v_1;
 }
 
 void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
@@ -27,7 +22,6 @@ void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
 	grid_size_x = grid_size;
 	grid_v_1 = new int[grid_size_x * grid_size_x];
 	sites_v_1 = new int[num_sites*2];
-	//point_v_1 = new int[num_points];
 }
 
 
@@ -128,28 +122,8 @@ void VoronoiDiagram::SetEdges(int grid_size)
 	}
 }
 
-//unused? needs changed anyway
-void VoronoiDiagram::SetBorders(int grid_size)
-{
-	int y = 0;
-	for (int i = 0; i < 2; i++)
-	{
-		for (int j = 0; j < (grid_size); j++)
-		{
-			grid_v[y][j] = 90;
-		}
-		y = grid_size - 1;
-	}
-	int x = 0;
-	for (int i = 0; i < 2; i++)
-	{
-		for (int j = 0; j < (grid_size); j++)
-		{
-			grid_v[j][x] = 90;
-		}
-		x = grid_size - 1;
-	}
-}
+
+
 void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size)
 {
 	for (int i = 0; i < grid_size; i++)
@@ -225,12 +199,39 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 //
 void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 {
-
-
 	//zero is loop, 1 is p2p
 	switch (type)
 	{
 	case 0:
+	{
+		int itera = grid_size / num_points;
+		int starta = 1;
+		int positiona = 0;
+		int y_start = grid_size / 1.2f;
+		for (int i = 0; i < num_points; i++)
+		{
+
+			bool found = false;
+			while (!found)
+			{
+				//so first is between 0 and grid_size/numpoints, second is iter and iter+iter, etc
+				int x = rand() % itera + starta;
+				int y = rand()% (grid_size/(grid_size/100))+y_start;
+				if (grid_v_1[(y * grid_size) + x] == 0)
+				{
+					found = true;
+					grid_v_1[(y * grid_size) + x] = 2000 + i;
+
+				}
+			}
+			starta += itera;
+			y_start -= grid_size / 1.2f;
+			if (y_start<0)
+			{
+				y_start = grid_size / 1.2f;
+			}
+		}
+	}
 		break;
 
 	case 1:

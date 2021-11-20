@@ -2,7 +2,11 @@
 #include <iostream>
 ShortestPath::ShortestPath()
 {
-
+	found_end = false;				//start as false;
+	count_holder_ = 0;
+	it = 0;
+	end_ = 0;					//start as false;
+	x_holder_=0, y_holder_=0;
 }
 
 //i =z/y, j=x
@@ -40,14 +44,11 @@ void ShortestPath::Initgrid(int grid_size, int* grid, int num_points)
 }
 
 
-
+//you could remove the north and all that stuff from here and just check the position directly 
 void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool found_end, int it, bool end, int x_holder, int y_holder, int end_n)
 {
 	count_holder = 0;
 	found_end = false;
-
-
-
 	while (!found_end)
 	{
 		bool found_empty = false;
@@ -65,7 +66,6 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 						if (north == -1)
 						{
 							grid[((y - 1) * grid_size) + x] = it + 1;
-							//north = it + 1;
 							found_empty = true;
 						}
 						else if (north == end_n)
@@ -277,6 +277,22 @@ void ShortestPath::PrintOutStartEnd(int grid_size, int* grid)
 	}
 }
 
+
+void ShortestPath::CleanGrid(int grid_size, int* grid)
+{
+	for (int i = 0; i < grid_size; i++)
+	{
+		for (int j = 0; j < grid_size; j++)
+		{
+			if (grid[(i * grid_size) + j]>0)
+			{
+				grid[(i * grid_size) + j] = -1;
+			}
+		}
+	}
+}
+
+//same here remove the north and all that
 //from phase one you use the x and y holder vars and count holder and end
 void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, int y_holder, int count_holder, int end_n)
 {
@@ -382,3 +398,4 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 		}
 	}
 }
+
