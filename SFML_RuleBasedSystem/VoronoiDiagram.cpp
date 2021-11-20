@@ -1,4 +1,5 @@
 #include "VoronoiDiagram.h"
+#include <iostream>
 
 
 VoronoiDiagram::VoronoiDiagram()
@@ -200,62 +201,120 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 {
 	//zero is loop, 1 is p2p
+
 	switch (type)
 	{
 	case 0:
 	{
-		int itera = grid_size / num_points;
-		int starta = 1;
-		int positiona = 0;
-		int y_start = grid_size / 1.2f;
+		int x_pos_one = (grid_size * 0.08);
+		int x_pos_two = (grid_size * 0.02);
+		int y_pos_one = (grid_size * 0.15);
+		int y_pos_two = (grid_size * 0.80);
 		for (int i = 0; i < num_points; i++)
 		{
-
 			bool found = false;
+			int counter = 0;
 			while (!found)
 			{
-				//so first is between 0 and grid_size/numpoints, second is iter and iter+iter, etc
-				int x = rand() % itera + starta;
-				int y = rand()% (grid_size/(grid_size/100))+y_start;
+				int x = rand() % x_pos_one + x_pos_two;
+				int y = rand() % y_pos_one + y_pos_two;
 				if (grid_v_1[(y * grid_size) + x] == 0)
 				{
 					found = true;
 					grid_v_1[(y * grid_size) + x] = 2000 + i;
-
+				}
+				counter++;
+				if (counter>200)
+				{
+					break;
 				}
 			}
-			starta += itera;
-			y_start -= grid_size / 1.2f;
-			if (y_start<0)
+			std::cout <<"counter: "<< counter<<std::endl;
+			if (i==0)
 			{
-				y_start = grid_size / 1.2f;
+				x_pos_one = (grid_size * 0.10);
+				x_pos_two = (grid_size * 0.45);
+				y_pos_one = (grid_size * 0.08);
+				y_pos_two = (grid_size * 0.02);
+			}
+			if (i == 1)
+			{
+				x_pos_one = (grid_size * 0.15);
+				x_pos_two = (grid_size * 0.80);
+				y_pos_one = (grid_size * 0.15);
+				y_pos_two = (grid_size * 0.80);
 			}
 		}
 	}
 		break;
 
 	case 1:
+	{
 		int iter = grid_size / num_points;
 		int start = 1;
 		int position = 0;
 		for (int i = 0; i < num_points; i++)
 		{
-			
+
 			bool found = false;
 			while (!found)
 			{
 				//so first is between 0 and grid_size/numpoints, second is iter and iter+iter, etc
-				int x = rand()% iter+start;	
-				int y = rand()% (int)(grid_size/1.1)+(grid_size/16);
+				int x = rand() % iter + start;
+				int y = rand() % (int)(grid_size / 1.1) + (grid_size / 16);
 				if (grid_v_1[(y * grid_size) + x] == 0)
 				{
 					found = true;
 					grid_v_1[(y * grid_size) + x] = 2000 + i;
-		
+
 				}
 			}
 			start += iter;
 		}
+	}
+		break;
+	case 2:
+	{
+		int x_pos_one = (grid_size * 0.08);
+		int x_pos_two = (grid_size * 0.02);
+		int y_pos_one = (grid_size * 0.10);
+		int y_pos_two = (grid_size * 0.45);
+		for (int i = 0; i < num_points; i++)
+		{
+			bool found = false;
+			int counter = 0;
+			while (!found)
+			{
+				int x = rand() % x_pos_one + x_pos_two;
+				int y = rand() % y_pos_one + y_pos_two;
+				if (grid_v_1[(y * grid_size) + x] == 0)
+				{
+					found = true;
+					grid_v_1[(y * grid_size) + x] = 2000 + i;
+				}
+				counter++;
+				if (counter > 200)
+				{
+					break;
+				}
+			}
+			std::cout << "counter: " << counter << std::endl;
+			if (i == 0)
+			{
+				x_pos_one = (grid_size * 0.10);
+				x_pos_two = (grid_size * 0.45);
+				y_pos_one = (grid_size * 0.10);
+				y_pos_two = (grid_size * 0.20);
+			}
+			if (i == 1)
+			{
+				x_pos_one = (grid_size * 0.15);
+				x_pos_two = (grid_size * 0.80);
+				y_pos_one = (grid_size * 0.10);
+				y_pos_two = (grid_size * 0.45);
+			}
+		}
+	}
 		break;
 	}
 
