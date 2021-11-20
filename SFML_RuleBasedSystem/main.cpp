@@ -189,6 +189,16 @@ int main()
 					shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), 0, -1234);
 					shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), -3, 0);
 					shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), start - i, -3);
+
+					the_clock::time_point startTime = the_clock::now();
+					shortest_path_.CleanGrid(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid());
+
+					the_clock::time_point endTime = the_clock::now();
+
+					auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+
+					std::cout << time_taken; std::cout << std::endl;
+
 				}
 			}
 			
