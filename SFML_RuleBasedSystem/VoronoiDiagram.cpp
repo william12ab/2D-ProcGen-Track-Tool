@@ -131,7 +131,7 @@ void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int gr
 	{
 		for (int j = 0; j < grid_size; j++)
 		{
-			if (grid_v_1[(i * grid_size) + j] == -2)
+			if (grid_v_1[(i * grid_size) + j] == -1)
 			{
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::Green;

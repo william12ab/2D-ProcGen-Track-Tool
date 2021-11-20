@@ -116,7 +116,7 @@ int main()
 		ImGui::SliderInt("Sites", &sites_, 5, 100);
 		ImGui::SliderInt("Points", &points_, 2, 5);
 		ImGui::SliderInt("Track Type",&track_type_, 0, 2);
-		ImGui::Text("0=loop,1=point to point");
+		ImGui::Text("0 = triangular\n1 = point to point\n2 = obtuse triangle");
 		if (ImGui::Button("Regenerate"))
 		{
 			Voronoi_Diagram.SetType(track_type_);
