@@ -311,7 +311,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 				x_pos_one = (grid_size * 0.15);
 				x_pos_two = (grid_size * 0.80);
 				y_pos_one = (grid_size * 0.10);
-				y_pos_two = (grid_size * 0.45);
+				y_pos_two = (grid_size * 0.65);
 			}
 		}
 	}

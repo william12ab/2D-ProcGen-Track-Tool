@@ -228,7 +228,7 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 			}
 		}
 
-		if (it>2000)
+		if (it>1000)
 		{
 			break;
 		}

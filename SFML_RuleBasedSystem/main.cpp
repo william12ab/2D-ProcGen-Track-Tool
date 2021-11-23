@@ -21,7 +21,31 @@ void SettingText()
 
 void TrackCreation()
 {
+	Voronoi_Diagram.SetGridSize(resolution_);
+	Voronoi_Diagram.SetNumberOfSites(sites_);
+	Voronoi_Diagram.SetNumberOfPoints(points_);
+	Voronoi_Diagram.~VoronoiDiagram();
+	//resize the arrays
+	Voronoi_Diagram.InitVector(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetNumberOfPoints(), Voronoi_Diagram.GetNumberOfSites());
 
+	//places the sites
+	Voronoi_Diagram.RandomPlaceSites(Voronoi_Diagram.GetNumberOfSites(), Voronoi_Diagram.GetGridSize());
+
+	the_clock::time_point startTime = the_clock::now();
+	Voronoi_Diagram.CreateDiagram(Voronoi_Diagram.GetNumberOfSites(), Voronoi_Diagram.GetGridSize());
+	Voronoi_Diagram.SetEdges(Voronoi_Diagram.GetGridSize());
+	the_clock::time_point endTime = the_clock::now();
+
+	auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+	Voronoi_Diagram.SetPoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetNumberOfPoints(), track_type_);
+
+
+
+
+	//init grid should be fine, no need to change.
+	shortest_path_.Initgrid(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), Voronoi_Diagram.GetNumberOfPoints());
+	int start = -4;
+	shortest_path_.PrintOutStartEnd(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid());
 }
 
 int main()
@@ -90,7 +114,7 @@ int main()
 		shortest_path_.PhaseTwo(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), shortest_path_.GetCountHolder(), 0);
 		//changes start point first then the end point to start point, and second end point to 1st end point
 		//so p0=p-1, p1=0,p2=1
-		std::cout << time_taken; std::cout << std::endl;
+		std::cout <<"time: "<< time_taken; std::cout << std::endl;
 		shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), 0, -1234);
 		shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), -3, 0);
 		shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), start - i, -3);
@@ -150,28 +174,55 @@ int main()
 			int start = -4;
 			shortest_path_.PrintOutStartEnd(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid());
 			
+			if (Voronoi_Diagram.GetType() == 2)
+			{
+				for (int i = 0; i < (Voronoi_Diagram.GetNumberOfPoints() ); i++)
+				{
+					shortest_path_.PhaseOne(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), shortest_path_.GetCountHolder(), shortest_path_.bGetFoundEnd(), shortest_path_.GetIt(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), -3);
+					shortest_path_.PhaseTwo(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), shortest_path_.GetCountHolder(), 0);
+					//changes start point first then the end point to start point, and second end point to 1st end point
+					//so p0=p-1, p1=0,p2=1
+					if (i==1)
+					{
+						shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), -1234, -5);
+					}
+					shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), 0, -1234);
+					shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), -3, 0);
+					shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), start - i, -3);
+
+					the_clock::time_point startTime = the_clock::now();
+					shortest_path_.CleanGrid(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid());
+
+					the_clock::time_point endTime = the_clock::now();
+
+					auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+
+					std::cout << "time taken: " << time_taken; std::cout << std::endl;
+				}
+
+			}
+			else
+			{
 				for (int i = 0; i < (Voronoi_Diagram.GetNumberOfPoints() - 1); i++)
 				{
 					shortest_path_.PhaseOne(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), shortest_path_.GetCountHolder(), shortest_path_.bGetFoundEnd(), shortest_path_.GetIt(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), -3);
 					shortest_path_.PhaseTwo(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), shortest_path_.GetCountHolder(), 0);
 					//changes start point first then the end point to start point, and second end point to 1st end point
 					//so p0=p-1, p1=0,p2=1
-
 					shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), 0, -1234);
 					shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), -3, 0);
 					shortest_path_.ChangePoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), start - i, -3);
 
 					the_clock::time_point startTime = the_clock::now();
-					shortest_path_.CleanGrid(Voronoi_Diagram.GetGridSize(),Voronoi_Diagram.GetGrid());
+					shortest_path_.CleanGrid(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid());
 
 					the_clock::time_point endTime = the_clock::now();
 
 					auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
 
-					std::cout << "time taken: "<<time_taken; std::cout << std::endl;
+					std::cout << "time taken: " << time_taken; std::cout << std::endl;
 				}
-			
-			
+			}
 			
 			Voronoi_Diagram.DrawVoronoiDiagram(voronoi_d, Voronoi_Diagram.GetGridSize());
 		}
