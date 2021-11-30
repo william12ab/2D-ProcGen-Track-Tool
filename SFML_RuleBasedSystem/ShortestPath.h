@@ -3,17 +3,18 @@ class ShortestPath
 {
 public:
 	ShortestPath();
-	void Initgrid(int grid_size, int*grid, int num_points);
-	void PhaseOne(int grid_size, int *grid, int count_holder, bool found_end,int it,bool end, int x_holder, int y_holder, int end_n);
-	void PhaseTwo(int grid_size, int *grid, bool end, int x_holder, int y_holder, int count_holder, int end_n);
+	void Initgrid(int grid_size, int*grid, int num_points);																				//inits the grid to the correct numbers
+	void PhaseOne(int grid_size, int *grid, int count_holder, bool found_end,int it,bool end, int x_holder, int y_holder, int end_n);	//finds the distances between start and end
+	void PhaseTwo(int grid_size, int *grid, bool end, int x_holder, int y_holder, int count_holder, int end_n);							//finds a pathway between start and end
 
-	void CleanGrid(int grid_size, int* grid);
+	void CleanGrid(int grid_size, int* grid);																							//removes numbers found by phase 1
 
 
-	void ChangePoint(int grid_size, int* grid, int point, int new_point);
-	void PrintOutStartEnd(int grid_size, int* grid);
+	void ChangePoint(int grid_size, int* grid, int point, int new_point);																//changes the point passed in
+	void PrintOutStartEnd(int grid_size, int* grid);																					//prints out the points in the track, useful for debugging
 
-	bool bGetFoundEnd() { return found_end; }
+	//getters
+	bool bGetFoundEnd() { return found_end; }								
 	int GetCountHolder() { return count_holder_; }
 	int GetIt() { return it; }
 	bool bGetEnd() { return end_;}

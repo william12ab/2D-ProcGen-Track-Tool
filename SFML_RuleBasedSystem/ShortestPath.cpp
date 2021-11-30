@@ -45,6 +45,9 @@ void ShortestPath::Initgrid(int grid_size, int* grid, int num_points)
 
 
 //you could remove the north and all that stuff from here and just check the position directly 
+//fills the data structure with numbers that equal a distance from the starting point, increasing in distance apart.
+//runs until the end position has been found or if it cant find the end position, run a number of times then exit the loop
+//stores the end position for reference in phasse 2
 void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool found_end, int it, bool end, int x_holder, int y_holder, int end_n)
 {
 	count_holder = 0;
@@ -228,6 +231,7 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 			}
 		}
 
+		//just in case it cant find the end position and needs to break out of the loop so that it doesnt get stuck in it
 		if (it>1000)
 		{
 			break;
@@ -237,7 +241,7 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 	}
 }
 
-
+//passes in the current point, finds it and then changes it to the new number
 void ShortestPath::ChangePoint(int grid_size, int* grid, int point, int new_point)
 {
 	for (int i = 0; i < grid_size; i++)
@@ -277,7 +281,7 @@ void ShortestPath::PrintOutStartEnd(int grid_size, int* grid)
 	}
 }
 
-
+//removes all numbers found by the initial phase, so that the method can run again and be used to find another path
 void ShortestPath::CleanGrid(int grid_size, int* grid)
 {
 	for (int i = 0; i < grid_size; i++)

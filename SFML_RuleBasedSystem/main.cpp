@@ -19,34 +19,6 @@ void SettingText()
 
 }
 
-void TrackCreation()
-{
-	Voronoi_Diagram.SetGridSize(resolution_);
-	Voronoi_Diagram.SetNumberOfSites(sites_);
-	Voronoi_Diagram.SetNumberOfPoints(points_);
-	Voronoi_Diagram.~VoronoiDiagram();
-	//resize the arrays
-	Voronoi_Diagram.InitVector(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetNumberOfPoints(), Voronoi_Diagram.GetNumberOfSites());
-
-	//places the sites
-	Voronoi_Diagram.RandomPlaceSites(Voronoi_Diagram.GetNumberOfSites(), Voronoi_Diagram.GetGridSize());
-
-	the_clock::time_point startTime = the_clock::now();
-	Voronoi_Diagram.CreateDiagram(Voronoi_Diagram.GetNumberOfSites(), Voronoi_Diagram.GetGridSize());
-	Voronoi_Diagram.SetEdges(Voronoi_Diagram.GetGridSize());
-	the_clock::time_point endTime = the_clock::now();
-
-	auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-	Voronoi_Diagram.SetPoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetNumberOfPoints(), track_type_);
-
-
-
-
-	//init grid should be fine, no need to change.
-	shortest_path_.Initgrid(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid(), Voronoi_Diagram.GetNumberOfPoints());
-	int start = -4;
-	shortest_path_.PrintOutStartEnd(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid());
-}
 
 int main()
 {
@@ -68,14 +40,14 @@ int main()
 	float elapsed = 0.0f;
 
 	//set the defaults for the application
-	resolution_ = 400;
-	sites_ = 400;
+	resolution_ = 800;
+	sites_ = 100;
 	points_ =2;
 	regen_ = false;
 	track_type_ = 1;  //1=p2p,0=loop
 
 
-	int counter = 0;
+	
 	//set the size, number of sites and points. this will take input 
 	Voronoi_Diagram.SetGridSize(resolution_);
 	Voronoi_Diagram.SetNumberOfSites(sites_);
@@ -98,7 +70,7 @@ int main()
 
 	auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
 	Voronoi_Diagram.SetPoint(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetNumberOfPoints(), track_type_);
-
+	//sets the points to connect the distance
 
 
 
@@ -174,6 +146,7 @@ int main()
 			int start = -4;
 			shortest_path_.PrintOutStartEnd(Voronoi_Diagram.GetGridSize(), Voronoi_Diagram.GetGrid());
 			
+			//if type 2, then need to loop over number of points differently and check when the index is = 1 so that the starting point can be changed to the end
 			if (Voronoi_Diagram.GetType() == 2)
 			{
 				the_clock::time_point startTime = the_clock::now();

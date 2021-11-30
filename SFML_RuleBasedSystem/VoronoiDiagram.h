@@ -12,10 +12,10 @@ public:
 	void SetEdges(int grid_size);										//sets the edges of voronoi diagram, so it is just the edges in the vector
 	
 	void SetPoint(int grid_size, int num_points, int type);				//Sets the point(s) for the distance.
-	void InitVector(int grid_size, int num_points, int num_sites);										//inits the vector to correct size;
+	void InitVector(int grid_size, int num_points, int num_sites);		//inits the vector to correct size;
 
 
-	//getters			need to get the get vectors
+	//getters		
 
 
 	int* GetGrid() { return grid_v_1; }
@@ -35,8 +35,6 @@ public:
 
 
 	void DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
-
-
 	void DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
 private:
 	int num_of_sites;							//number of sites that form the diagram
@@ -45,8 +43,8 @@ private:
 
 	int grid_size_x;							//size in the x axis of the diagram
 
-	int* sites_v_1;
-	int* grid_v_1;
+	int* sites_v_1;								//stores the sites in dynamic array
+	int* grid_v_1;								//stores the grid in dynamic array
 
 };
 

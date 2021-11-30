@@ -10,6 +10,8 @@ sf::Font font;
 
 sf::Text title_name_;
 
+
+//the defaults for the application.
 int resolution_;
 int sites_;
 int points_;
