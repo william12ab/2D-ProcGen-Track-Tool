@@ -36,6 +36,82 @@ void VoronoiDiagram::RandomPlaceSites(int num_sites, int grid_size)
 	}
 }
 
+
+void VoronoiDiagram::EqualDSites(int num_sites, int grid_size)
+{
+	long long int site_iterator = 0;
+	bool loop_cond = false;
+
+
+	
+	sites_v_1[site_iterator] = 0;
+	site_iterator++;
+	sites_v_1[site_iterator] = 0;
+	site_iterator++;
+
+	
+	sites_v_1[site_iterator] = 0;
+	site_iterator++;
+	sites_v_1[site_iterator] = (grid_size-1);
+	site_iterator++;
+
+
+	
+	sites_v_1[site_iterator] = grid_size;
+	site_iterator++;
+	sites_v_1[site_iterator] = (grid_size)-1;
+	site_iterator++;
+
+	
+	sites_v_1[site_iterator] = grid_size;
+	site_iterator++;
+	sites_v_1[site_iterator] = (grid_size - 1);
+	site_iterator++;
+	
+	grid_v_1[0] = 64;//bl
+	grid_v_1[grid_size- 1] = 64;//br
+	grid_v_1[grid_size * (grid_size)-1] = 64;//tr
+	grid_v_1[grid_size * (grid_size - 1)] = 64;//tl
+
+
+	for (int sideLength = grid_size - 1; sideLength >= 256; sideLength /= 2)
+	{
+		int halfSide = sideLength / 2;
+
+		//diamond
+		for (int y = 0; y < (grid_size - 1); y += sideLength)
+		{
+			for (int x = 0; x < (grid_size - 1); x += sideLength)
+			{
+				sites_v_1[site_iterator] = (x + halfSide);
+				site_iterator++;
+				sites_v_1[site_iterator] = y + halfSide;
+				site_iterator++;
+				grid_v_1[((y+halfSide) * grid_size) + (x+halfSide)] = 64;
+			}
+		}
+
+
+
+			//square
+		for (int j = 0; j < (grid_size ); j += halfSide)
+		{
+			for (int i = (j + halfSide) % sideLength; i < (grid_size ); i += sideLength)
+			{
+
+				sites_v_1[site_iterator] = i;
+				site_iterator++;
+				sites_v_1[site_iterator] = j;
+				site_iterator++;
+				grid_v_1[(j * grid_size) + i] = 64;
+			}
+
+		}
+
+	}
+}
+
+
 int VoronoiDiagram::DistanceSqrt(int x, int y, int x2, int y2)
 {
 	int xd = x2 - x;
@@ -183,7 +259,14 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 			}
 
 
+			if (grid_v_1[(i * grid_size) + j] == 64)
+			{
+				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+				vertexarray[i * grid_size + j].color = sf::Color::Blue;
+			}
+
 		
+
 		}
 	}
 	

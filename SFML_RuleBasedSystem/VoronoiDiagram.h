@@ -7,6 +7,10 @@ public:
 	VoronoiDiagram();
 	~VoronoiDiagram();
 	void RandomPlaceSites(int num_sites, int grid_size);				//distrubutes the sites
+	void EqualDSites(int num_sites, int grid_size);
+
+
+
 	int DistanceSqrt(int x, int y, int x2, int y2);						//the distance formula
 	void CreateDiagram(int num_sites,int grid_size);					//creates the voronoi diagram
 	void SetEdges(int grid_size);										//sets the edges of voronoi diagram, so it is just the edges in the vector
