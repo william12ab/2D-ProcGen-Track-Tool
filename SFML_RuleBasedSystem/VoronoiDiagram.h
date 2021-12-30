@@ -6,9 +6,11 @@ class VoronoiDiagram
 public:
 	VoronoiDiagram();
 	~VoronoiDiagram();
+	
 	void RandomPlaceSites(int num_sites, int grid_size);				//distrubutes the sites
 	void EqualDSites(int num_sites, int grid_size);
-
+	void DisplacePoints(int num_sites, int grid_size);
+	void DistributeSites(int num_sites, int grid_size);
 
 
 	int DistanceSqrt(int x, int y, int x2, int y2);						//the distance formula
@@ -50,5 +52,7 @@ private:
 	int* sites_v_1;								//stores the sites in dynamic array
 	int* grid_v_1;								//stores the grid in dynamic array
 
+
+	int site_iterator = 0;
 };
 

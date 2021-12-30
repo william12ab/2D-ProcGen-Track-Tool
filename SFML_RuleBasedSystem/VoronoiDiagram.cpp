@@ -36,10 +36,61 @@ void VoronoiDiagram::RandomPlaceSites(int num_sites, int grid_size)
 	}
 }
 
+void VoronoiDiagram::DisplacePoints(int num_sites, int grid_size)
+{
+	for (int i = 0; i < site_iterator; i++)
+	{
+		if (sites_v_1[i]<(grid_size-10) && sites_v_1[i]>10)
+		{
+			int s = rand() % 18 + (-9);
+			sites_v_1[i] += rand() % 18 + (-9);
+			i++;
+			sites_v_1[i] += rand() % 18 + (-9);
+			grid_v_1[(sites_v_1[i-1] * grid_size) + sites_v_1[i]] = 64;
+
+		}
+	}
+}
+
+void VoronoiDiagram::DistributeSites(int num_sites, int grid_size)
+{
+	for (int i = 0; i < (num_sites * 2); i++)
+	{
+		
+		sites_v_1[i] = rand() % (grid_size);
+		i++;
+		sites_v_1[i] = rand() % (grid_size );
+	}
+	sites_v_1[24] = grid_size/2;
+	sites_v_1[25] = grid_size/2;
+	for (int i = 0; i < (num_sites * 2); i++)
+	{
+		//if x is within the x of number 24 and if y is within y of 25
+		if (i != 24)
+		{
+			if (sites_v_1[i] > (sites_v_1[24] - 50) && sites_v_1[i]< (sites_v_1[24] + 50) && sites_v_1[i + 1] > (sites_v_1[25] - 50) && sites_v_1[i+1] < (sites_v_1[25] + 50))
+			{
+				int s = sites_v_1[24]-sites_v_1[i];
+				sites_v_1[i] -= rand() % 50+ 100;
+				i++;
+				int a = sites_v_1[25] - sites_v_1[i];
+				sites_v_1[i] -= rand() % 50 + 100;
+			}
+			else
+			{
+				i++;
+			}
+		}
+		else
+		{
+			i++;
+		}
+	}
+}
 
 void VoronoiDiagram::EqualDSites(int num_sites, int grid_size)
 {
-	long long int site_iterator = 0;
+	
 	bool loop_cond = false;
 
 
@@ -68,10 +119,10 @@ void VoronoiDiagram::EqualDSites(int num_sites, int grid_size)
 	sites_v_1[site_iterator] = (grid_size - 1);
 	site_iterator++;
 	
-	grid_v_1[0] = 64;//bl
-	grid_v_1[grid_size- 1] = 64;//br
-	grid_v_1[grid_size * (grid_size)-1] = 64;//tr
-	grid_v_1[grid_size * (grid_size - 1)] = 64;//tl
+	//grid_v_1[0] = 64;//bl
+	//grid_v_1[grid_size- 1] = 64;//br
+	//grid_v_1[grid_size * (grid_size)-1] = 64;//tr
+	//grid_v_1[grid_size * (grid_size - 1)] = 64;//tl
 
 
 	for (int sideLength = grid_size - 1; sideLength >= 256; sideLength /= 2)
@@ -87,7 +138,7 @@ void VoronoiDiagram::EqualDSites(int num_sites, int grid_size)
 				site_iterator++;
 				sites_v_1[site_iterator] = y + halfSide;
 				site_iterator++;
-				grid_v_1[((y+halfSide) * grid_size) + (x+halfSide)] = 64;
+				//grid_v_1[((y+halfSide) * grid_size) + (x+halfSide)] = 64;
 			}
 		}
 
@@ -103,7 +154,7 @@ void VoronoiDiagram::EqualDSites(int num_sites, int grid_size)
 				site_iterator++;
 				sites_v_1[site_iterator] = j;
 				site_iterator++;
-				grid_v_1[(j * grid_size) + i] = 64;
+				//grid_v_1[(j * grid_size) + i] = 64;
 			}
 
 		}
@@ -226,6 +277,7 @@ void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int gr
 
 void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size)
 {
+
 	for (int i = 0; i < grid_size; i++)
 	{
 		for (int j=0;j<grid_size;j++)
@@ -259,11 +311,7 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 			}
 
 
-			if (grid_v_1[(i * grid_size) + j] == 64)
-			{
-				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-				vertexarray[i * grid_size + j].color = sf::Color::Blue;
-			}
+			
 
 		
 
