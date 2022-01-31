@@ -216,6 +216,9 @@ void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size)
 
 }
 
+
+
+
 //loop over all points
 //the out if statements are to check if the index is still in bounds of the grid_size in x and y direction
 //j =y/z, i=x
