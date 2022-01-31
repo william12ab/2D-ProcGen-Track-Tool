@@ -46,7 +46,7 @@ int main()
 
 	//set the defaults for the application
 	resolution_ = 800;
-	sites_ = 500;
+	sites_ = 25;
 	points_ =2;
 	regen_ = false;
 	track_type_ = 1;  //1=p2p,0=loop
@@ -70,8 +70,10 @@ int main()
 	sf::VertexArray voronoi_d(sf::Points, (v_d_p->GetGridSize()*v_d_p->GetGridSize()));
 
 	//creates the vd in grid_v_1
-	the_clock::time_point startTime = the_clock::now();
 	
+	the_clock::time_point startTime = the_clock::now();
+
+
 
 	thread th(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(),0, 200);
 	thread th2(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 200, 400);
@@ -87,6 +89,7 @@ int main()
 	the_clock::time_point endTime = the_clock::now();
 	v_d_p->SetEdges(v_d_p->GetGridSize());
 	auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+	std::cout << "time(v d): " << time_taken; std::cout << std::endl;
 	v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_);
 	//sets the points to connect the distance
 
@@ -98,17 +101,23 @@ int main()
 	//pass in the start and end to both these functions
 	int start = -4;
 	shortest_path_.PrintOutStartEnd(v_d_p->GetGridSize(), v_d_p->GetGrid());
+	the_clock::time_point startTime_path = the_clock::now();
+
 	for (int i = 0; i < (v_d_p->GetNumberOfPoints()-1); i++)
 	{
 		shortest_path_.PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), shortest_path_.GetCountHolder(), shortest_path_.bGetFoundEnd(), shortest_path_.GetIt(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), -3);
 		shortest_path_.PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), shortest_path_.GetCountHolder(), 0);
 		//changes start point first then the end point to start point, and second end point to 1st end point
 		//so p0=p-1, p1=0,p2=1
-		std::cout <<"time: "<< time_taken; std::cout << std::endl;
+
 		shortest_path_.ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), 0, -1234);
 		shortest_path_.ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
 		shortest_path_.ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
 	}
+
+	the_clock::time_point endTime_path = the_clock::now();
+	auto time_taken_path = duration_cast<milliseconds>(endTime_path - startTime_path).count();
+	std::cout << "time(path): " << time_taken_path; std::cout << std::endl;
 	v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize());
 	// While the window is open, update
 	while (window.isOpen())
@@ -150,11 +159,12 @@ int main()
 			//creates the vd in grid_v_1
 		
 			//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(),0,400);
+			int s_e= resolution_/4;
 
-			thread th(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 0, 200);
-			thread th2(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 200, 400);
-			thread th3(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 400, 600);
-			thread th4(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 600, 800);
+			thread th(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 0, s_e);
+			thread th2(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), s_e, s_e *2);
+			thread th3(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), s_e *2, s_e * 3);
+			thread th4(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), s_e * 3, s_e * 4);
 			th.join();
 			th2.join();
 			th3.join();
@@ -201,7 +211,7 @@ int main()
 
 				auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
 
-				std::cout << "time taken: " << time_taken; std::cout << std::endl;
+				std::cout << "time taken (path type2): " << time_taken; std::cout << std::endl;
 			}
 			else
 			{
@@ -225,7 +235,7 @@ int main()
 
 				auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
 
-				std::cout << "time taken 1 or 0: " << time_taken; std::cout << std::endl;
+				std::cout << "time taken 1 or 0(path): " << time_taken; std::cout << std::endl;
 			}
 			
 			v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize());
