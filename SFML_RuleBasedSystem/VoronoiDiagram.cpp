@@ -175,7 +175,7 @@ int VoronoiDiagram::DistanceSqrt(int x, int y, int x2, int y2)
 //each element is a sites "colour" 
 //the distance is found at each site in comparison to the index of the loop in x and y direction.
 //relative to the distance the cell is found of the diagram.
-void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size)
+void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size, int start, int end)
 {
 	int d = 0;											
 	int* incr;
@@ -185,7 +185,7 @@ void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size)
 	{
 		incr[i] = i+1;
 	}
-	for (int j = 0; j < grid_size; j++)
+	for (int j = start; j < end; j++)
 	{
 		for (int i=0;i< grid_size;i++)
 		{

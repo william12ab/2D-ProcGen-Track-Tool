@@ -45,8 +45,8 @@ int main()
 	float elapsed = 0.0f;
 
 	//set the defaults for the application
-	resolution_ = 500;
-	sites_ = 200;
+	resolution_ = 800;
+	sites_ = 500;
 	points_ =2;
 	regen_ = false;
 	track_type_ = 1;  //1=p2p,0=loop
@@ -73,12 +73,19 @@ int main()
 	the_clock::time_point startTime = the_clock::now();
 	
 
+	thread th(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(),0, 200);
+	thread th2(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 200, 400);
+	thread th3(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 400, 600);
+	thread th4(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 600, 800);
+	th.join();
+	th2.join();
+	th3.join();
+	th4.join();
 
-
-	v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
-	v_d_p->SetEdges(v_d_p->GetGridSize());
+	//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+	
 	the_clock::time_point endTime = the_clock::now();
-
+	v_d_p->SetEdges(v_d_p->GetGridSize());
 	auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
 	v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_);
 	//sets the points to connect the distance
@@ -142,7 +149,7 @@ int main()
 
 			//creates the vd in grid_v_1
 		
-			v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+			v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(),0,400);
 			v_d_p->SetEdges(v_d_p->GetGridSize());
 	
 			v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_);

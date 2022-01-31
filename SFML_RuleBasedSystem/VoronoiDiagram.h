@@ -14,7 +14,7 @@ public:
 
 
 	int DistanceSqrt(int x, int y, int x2, int y2);						//the distance formula
-	void CreateDiagram(int num_sites,int grid_size);					//creates the voronoi diagram
+	void CreateDiagram(int num_sites,int grid_size, int start, int end);					//creates the voronoi diagram
 	void SetEdges(int grid_size);										//sets the edges of voronoi diagram, so it is just the edges in the vector
 	
 	void SetPoint(int grid_size, int num_points, int type);				//Sets the point(s) for the distance.
