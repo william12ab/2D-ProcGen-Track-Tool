@@ -36,6 +36,8 @@ int main()
 	SettingText();
 
 
+	std::vector<thread> thread_vector;
+
 	// Create the window and UI bar on the right
 	sf::RenderWindow window(sf::VideoMode(1000,800), "2D Track Generator", sf::Style::Close);
 
@@ -50,6 +52,7 @@ int main()
 	points_ =2;
 	regen_ = false;
 	track_type_ = 1;  //1=p2p,0=loop
+	num_threads_ = 8;
 
 	VoronoiDiagram* v_d_p = new VoronoiDiagram();
 	
@@ -73,23 +76,28 @@ int main()
 	
 	the_clock::time_point startTime = the_clock::now();
 
+	int start_ = 0;
+	for (int i = 0; i < num_threads_; i++)
+	{
+		thread_vector.push_back(thread(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), start_, start_+(resolution_ / num_threads_)));
+		start_ += resolution_/ num_threads_;
+	}
 
-
-	thread th(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(),0, 200);
-	thread th2(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 200, 400);
-	thread th3(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 400, 600);
-	thread th4(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 600, 800);
-	th.join();
-	th2.join();
-	th3.join();
-	th4.join();
+	for (thread& th : thread_vector)
+	{
+		// If thread Object is Joinable then Join that thread.
+		if (th.joinable())
+			th.join();
+	}
 
 	//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 	
 	the_clock::time_point endTime = the_clock::now();
-	v_d_p->SetEdges(v_d_p->GetGridSize());
+	
 	auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
 	std::cout << "time(v d): " << time_taken; std::cout << std::endl;
+
+	v_d_p->SetEdges(v_d_p->GetGridSize());
 	v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_);
 	//sets the points to connect the distance
 
@@ -119,6 +127,9 @@ int main()
 	auto time_taken_path = duration_cast<milliseconds>(endTime_path - startTime_path).count();
 	std::cout << "time(path): " << time_taken_path; std::cout << std::endl;
 	v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize());
+
+
+
 	// While the window is open, update
 	while (window.isOpen())
 	{
@@ -135,6 +146,7 @@ int main()
 		ImGui::SFML::Update(window, deltaClock.restart());
 
 		ImGui::Begin("Options");
+		ImGui::SliderInt("Num Threads", &num_threads_, 1, 16);
 		ImGui::SliderInt("Resolution", &resolution_, 100, 800);
 		ImGui::SliderInt("Sites", &sites_, 5, 100);
 		ImGui::SliderInt("Points", &points_, 2, 5);
@@ -159,22 +171,26 @@ int main()
 			//creates the vd in grid_v_1
 		
 			//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(),0,400);
-			int s_e= resolution_/4;
+			int start_ = 0;
+			the_clock::time_point startTime = the_clock::now();
+			for (int i = 0; i < num_threads_; i++)
+			{
+				thread_vector.push_back(thread(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), start_, start_ + (resolution_ / num_threads_)));
+				start_ += resolution_ / num_threads_;
+			}
+			for (thread& th : thread_vector)
+			{
+				// If thread Object is Joinable then Join that thread.
+				if (th.joinable())
+					th.join();
+			}
+			the_clock::time_point endTime = the_clock::now();
 
-			thread th(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 0, s_e);
-			thread th2(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), s_e, s_e *2);
-			thread th3(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), s_e *2, s_e * 3);
-			thread th4(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), s_e * 3, s_e * 4);
-			th.join();
-			th2.join();
-			th3.join();
-			th4.join();
+			auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
 
+			std::cout << "time taken (v_d ui): " << time_taken; std::cout << std::endl;
 			v_d_p->SetEdges(v_d_p->GetGridSize());
-	
 			v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_);
-
-
 
 
 			//init grid should be fine, no need to change.
@@ -187,7 +203,7 @@ int main()
 			//if type 2, then need to loop over number of points differently and check when the index is = 1 so that the starting point can be changed to the end
 			if (v_d_p->GetType() == 2)
 			{
-				the_clock::time_point startTime = the_clock::now();
+				
 				for (int i = 0; i < (v_d_p->GetNumberOfPoints() ); i++)
 				{
 					shortest_path_.PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), shortest_path_.GetCountHolder(), shortest_path_.bGetFoundEnd(), shortest_path_.GetIt(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), -3);
@@ -207,11 +223,7 @@ int main()
 
 				
 				}
-				the_clock::time_point endTime = the_clock::now();
 
-				auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-
-				std::cout << "time taken (path type2): " << time_taken; std::cout << std::endl;
 			}
 			else
 			{

@@ -17,3 +17,4 @@ int sites_;
 int points_;
 bool regen_;
 int track_type_;
+int num_threads_;
