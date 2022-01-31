@@ -149,7 +149,17 @@ int main()
 
 			//creates the vd in grid_v_1
 		
-			v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(),0,400);
+			//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(),0,400);
+
+			thread th(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 0, 200);
+			thread th2(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 200, 400);
+			thread th3(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 400, 600);
+			thread th4(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 600, 800);
+			th.join();
+			th2.join();
+			th3.join();
+			th4.join();
+
 			v_d_p->SetEdges(v_d_p->GetGridSize());
 	
 			v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_);
