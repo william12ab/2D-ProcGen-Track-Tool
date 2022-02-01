@@ -248,12 +248,12 @@ void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int gr
 	{
 		for (int j = 0; j < grid_size; j++)
 		{
-			if (grid_v_1[(i * grid_size) + j] == -1)
+			if (grid_v_1[(i * grid_size) + j] == -1)							//diagram
 			{
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::Green;
 			}
-			if (grid_v_1[(i * grid_size) + j] > 0)
+			if (grid_v_1[(i * grid_size) + j] > 0)								//pathway
 			{
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::Blue;
@@ -341,12 +341,13 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 					grid_v_1[(y * grid_size) + x] = 2000 + i;
 				}
 				counter++;
-				if (counter>200)
+				if (counter>500)
 				{
 					break;
+					std::cout << "didnt set a point\n";
 				}
 			}
-			std::cout <<"counter: "<< counter<<std::endl;
+			std::cout <<"counter(how many iters to find point): "<< counter<<std::endl;
 			if (i==0)
 			{
 				x_pos_one = (grid_size * 0.20);
@@ -417,12 +418,13 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 					grid_v_1[(y * grid_size) + x] = 2000 + i;
 				}
 				counter++;
-				if (counter > 200)
+				if (counter > 500)
 				{
 					break;
+					std::cout << "didnt set a point\n";
 				}
 			}
-			std::cout << "counter: " << counter << std::endl;
+			std::cout << "counter(how many iters to find point): " << counter << std::endl;
 			if (i == 0)
 			{
 				x_pos_one = (grid_size * 0.10);

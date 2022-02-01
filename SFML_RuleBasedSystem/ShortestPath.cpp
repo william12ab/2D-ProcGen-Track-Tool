@@ -383,6 +383,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 			if (how_many == 0)
 			{
 				break;
+				std::cout << "hit how many\n";
 			}
 			//this is just a quick fix
 			//so if no points have been changes then exit the loop to stop it going on forever/

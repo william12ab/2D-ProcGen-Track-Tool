@@ -196,9 +196,6 @@ int main()
 			//places the sites
 			v_d_p->RandomPlaceSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 
-
-			//creates the vd in grid_v_1
-		
 			//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(),0,400);
 			the_clock::time_point startTime = the_clock::now();
 			thread_vector.clear();
@@ -209,8 +206,14 @@ int main()
 
 			std::cout << "time taken (v_d ui): " << time_taken; std::cout << std::endl;
 			v_d_p->SetEdges(v_d_p->GetGridSize());
-			v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_);
 
+			the_clock::time_point startTimea = the_clock::now();
+			v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_);
+			the_clock::time_point endTimea = the_clock::now();
+
+			auto time_takena = duration_cast<milliseconds>(endTimea - startTimea).count();
+
+			std::cout << "time taken (set point ui): " << time_takena; std::cout << std::endl;
 
 			//init grid should be fine, no need to change.
 			s_p_p->Initgrid(v_d_p->GetGridSize(), v_d_p->GetGrid(), v_d_p->GetNumberOfPoints());
@@ -227,8 +230,6 @@ int main()
 				{
 					thread_vector_path.clear();
 					//ThreadFuncPath(thread_vector, v_d_p, s_p_p);
-
-
 					s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3,0, v_d_p->GetGridSize());
 					s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
 					//changes start point first then the end point to start point, and second end point to 1st end point
@@ -241,8 +242,7 @@ int main()
 					s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
 					s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
 					s_p_p->CleanGrid(v_d_p->GetGridSize(), v_d_p->GetGrid());
-
-				
+					std::cout << "successful path\n";
 				}
 
 			}
@@ -253,8 +253,6 @@ int main()
 				{
 					int start_p = 0;
 					//ThreadFuncPath(thread_vector, v_d_p, s_p_p);
-
-
 					s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, 0, v_d_p->GetGridSize());
 					s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
 					//changes start point first then the end point to start point, and second end point to 1st end point
@@ -262,11 +260,7 @@ int main()
 					s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), 0, -1234);
 					s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
 					s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
-
-	
-					s_p_p->CleanGrid(v_d_p->GetGridSize(), v_d_p->GetGrid());
-
-		
+					s_p_p->CleanGrid(v_d_p->GetGridSize(), v_d_p->GetGrid());	
 				}
 				the_clock::time_point endTime = the_clock::now();
 
@@ -283,7 +277,7 @@ int main()
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		{
 			v_d_p->DrawFullVoronoiDiagram(voronoi_d, v_d_p->GetGridSize());
-			s_p_p->PrintOutStartEnd(v_d_p->GetGridSize(), v_d_p->GetGrid());
+			//s_p_p->PrintOutStartEnd(v_d_p->GetGridSize(), v_d_p->GetGrid());
 
 		}
 		window.clear();
