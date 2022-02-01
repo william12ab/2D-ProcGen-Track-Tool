@@ -4,7 +4,7 @@ class ShortestPath
 public:
 	ShortestPath();
 	void Initgrid(int grid_size, int*grid, int num_points);																				//inits the grid to the correct numbers
-	void PhaseOne(int grid_size, int *grid, int count_holder, bool found_end,int it,bool end, int x_holder, int y_holder, int end_n);	//finds the distances between start and end
+	void PhaseOne(int grid_size, int *grid, int count_holder, bool found_end,int it,bool end, int x_holder, int y_holder, int end_n, int start_p, int end_p);	//finds the distances between start and end
 	void PhaseTwo(int grid_size, int *grid, bool end, int x_holder, int y_holder, int count_holder, int end_n);							//finds a pathway between start and end
 
 	void CleanGrid(int grid_size, int* grid);																							//removes numbers found by phase 1

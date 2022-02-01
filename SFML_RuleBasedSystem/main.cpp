@@ -37,6 +37,7 @@ int main()
 
 
 	std::vector<thread> thread_vector;
+	std::vector<thread> thread_vector_path;
 
 	// Create the window and UI bar on the right
 	sf::RenderWindow window(sf::VideoMode(1000,800), "2D Track Generator", sf::Style::Close);
@@ -55,7 +56,8 @@ int main()
 	num_threads_ = 8;
 
 	VoronoiDiagram* v_d_p = new VoronoiDiagram();
-	
+	ShortestPath* s_p_p = new ShortestPath();
+
 	//set the size, number of sites and points. this will take input 
 	v_d_p->SetGridSize(resolution_);
 	v_d_p->SetNumberOfSites(sites_);
@@ -82,11 +84,13 @@ int main()
 		thread_vector.push_back(thread(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), start_, start_+(resolution_ / num_threads_)));
 		start_ += resolution_/ num_threads_;
 	}
-
+	int a = 0;
 	for (thread& th : thread_vector)
 	{
 		// If thread Object is Joinable then Join that thread.
 		if (th.joinable())
+			std::cout << "vd_" <<a<<"\n";
+			a++;	
 			th.join();
 	}
 
@@ -104,23 +108,40 @@ int main()
 
 
 	//init grid should be fine, no need to change.
-	shortest_path_.Initgrid(v_d_p->GetGridSize(),v_d_p->GetGrid(),v_d_p->GetNumberOfPoints());
+	s_p_p->Initgrid(v_d_p->GetGridSize(),v_d_p->GetGrid(),v_d_p->GetNumberOfPoints());
 
 	//pass in the start and end to both these functions
 	int start = -4;
-	shortest_path_.PrintOutStartEnd(v_d_p->GetGridSize(), v_d_p->GetGrid());
+	s_p_p->PrintOutStartEnd(v_d_p->GetGridSize(), v_d_p->GetGrid());
 	the_clock::time_point startTime_path = the_clock::now();
 
 	for (int i = 0; i < (v_d_p->GetNumberOfPoints()-1); i++)
 	{
-		shortest_path_.PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), shortest_path_.GetCountHolder(), shortest_path_.bGetFoundEnd(), shortest_path_.GetIt(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), -3);
-		shortest_path_.PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), shortest_path_.GetCountHolder(), 0);
+		int start_p = 0;
+		for (int i = 0; i < num_threads_; i++)
+		{
+			thread_vector_path.push_back(thread(&ShortestPath::PhaseOne, s_p_p , v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3,start_p, start_p + (resolution_ / num_threads_)));
+			start_p += resolution_ / num_threads_;
+		}
+		int a = 0;
+		for (thread& th : thread_vector_path)
+		{
+			
+			// If thread Object is Joinable then Join that thread.
+			if (th.joinable())
+				std::cout << "path_" << a<<"\n";
+				a++;
+				th.join();
+
+		}
+		//s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3,0,v_d_p->GetGridSize());
+		s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
 		//changes start point first then the end point to start point, and second end point to 1st end point
 		//so p0=p-1, p1=0,p2=1
 
-		shortest_path_.ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), 0, -1234);
-		shortest_path_.ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
-		shortest_path_.ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
+		s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), 0, -1234);
+		s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
+		s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
 	}
 
 	the_clock::time_point endTime_path = the_clock::now();
@@ -173,6 +194,7 @@ int main()
 			//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(),0,400);
 			int start_ = 0;
 			the_clock::time_point startTime = the_clock::now();
+			thread_vector.clear();
 			for (int i = 0; i < num_threads_; i++)
 			{
 				thread_vector.push_back(thread(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), start_, start_ + (resolution_ / num_threads_)));
@@ -194,11 +216,11 @@ int main()
 
 
 			//init grid should be fine, no need to change.
-			shortest_path_.Initgrid(v_d_p->GetGridSize(), v_d_p->GetGrid(), v_d_p->GetNumberOfPoints());
+			s_p_p->Initgrid(v_d_p->GetGridSize(), v_d_p->GetGrid(), v_d_p->GetNumberOfPoints());
 
 			//pass in the start and end to both these functions
 			int start = -4;
-			shortest_path_.PrintOutStartEnd(v_d_p->GetGridSize(), v_d_p->GetGrid());
+			s_p_p->PrintOutStartEnd(v_d_p->GetGridSize(), v_d_p->GetGrid());
 			
 			//if type 2, then need to loop over number of points differently and check when the index is = 1 so that the starting point can be changed to the end
 			if (v_d_p->GetType() == 2)
@@ -206,20 +228,39 @@ int main()
 				
 				for (int i = 0; i < (v_d_p->GetNumberOfPoints() ); i++)
 				{
-					shortest_path_.PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), shortest_path_.GetCountHolder(), shortest_path_.bGetFoundEnd(), shortest_path_.GetIt(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), -3);
-					shortest_path_.PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), shortest_path_.GetCountHolder(), 0);
+					thread_vector_path.clear();
+					int start_p = 0;
+					for (int i = 0; i < num_threads_; i++)
+					{
+						thread_vector_path.push_back(thread(&ShortestPath::PhaseOne, s_p_p, v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, start_p, start_p + (resolution_ / num_threads_)));
+						start_p += resolution_ / num_threads_;
+					}
+					int a = 0;
+					for (thread& th : thread_vector_path)
+					{
+
+						// If thread Object is Joinable then Join that thread.
+						if (th.joinable())
+							std::cout << "path_" << a << "\n";
+						a++;
+						th.join();
+
+					}
+
+					//s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3,0, v_d_p->GetGridSize());
+					s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
 					//changes start point first then the end point to start point, and second end point to 1st end point
 					//so p0=p-1, p1=0,p2=1
 					if (i==1)
 					{
-						shortest_path_.ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -1234, -5);
+						s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -1234, -5);
 					}
-					shortest_path_.ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), 0, -1234);
-					shortest_path_.ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
-					shortest_path_.ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
+					s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), 0, -1234);
+					s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
+					s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
 
 			
-					shortest_path_.CleanGrid(v_d_p->GetGridSize(), v_d_p->GetGrid());
+					s_p_p->CleanGrid(v_d_p->GetGridSize(), v_d_p->GetGrid());
 
 				
 				}
@@ -230,16 +271,35 @@ int main()
 				the_clock::time_point startTime = the_clock::now();
 				for (int i = 0; i < (v_d_p->GetNumberOfPoints() - 1); i++)
 				{
-					shortest_path_.PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), shortest_path_.GetCountHolder(), shortest_path_.bGetFoundEnd(), shortest_path_.GetIt(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), -3);
-					shortest_path_.PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), shortest_path_.bGetEnd(), shortest_path_.GetXHolder(), shortest_path_.GetYHolder(), shortest_path_.GetCountHolder(), 0);
+					int start_p = 0;
+					thread_vector_path.clear();
+					for (int i = 0; i < num_threads_; i++)
+					{
+						thread_vector_path.push_back(thread(&ShortestPath::PhaseOne, s_p_p, v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, start_p, start_p + (resolution_ / num_threads_)));
+						start_p += resolution_ / num_threads_;
+					}
+					int a = 0;
+					for (thread& th : thread_vector_path)
+					{
+
+						// If thread Object is Joinable then Join that thread.
+						if (th.joinable())
+							std::cout << "path_" << a << "\n";
+						a++;
+						th.join();
+
+					}
+
+					//s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, 0, v_d_p->GetGridSize());
+					s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
 					//changes start point first then the end point to start point, and second end point to 1st end point
 					//so p0=p-1, p1=0,p2=1
-					shortest_path_.ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), 0, -1234);
-					shortest_path_.ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
-					shortest_path_.ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
+					s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), 0, -1234);
+					s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
+					s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
 
 	
-					shortest_path_.CleanGrid(v_d_p->GetGridSize(), v_d_p->GetGrid());
+					s_p_p->CleanGrid(v_d_p->GetGridSize(), v_d_p->GetGrid());
 
 		
 				}
@@ -258,7 +318,7 @@ int main()
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		{
 			v_d_p->DrawFullVoronoiDiagram(voronoi_d, v_d_p->GetGridSize());
-			shortest_path_.PrintOutStartEnd(v_d_p->GetGridSize(), v_d_p->GetGrid());
+			s_p_p->PrintOutStartEnd(v_d_p->GetGridSize(), v_d_p->GetGrid());
 
 		}
 		window.clear();
@@ -269,6 +329,7 @@ int main()
 	}
 
 	delete v_d_p;
+	delete s_p_p;
 	ImGui::SFML::Shutdown();
 	return 0;
 }
