@@ -90,40 +90,27 @@ void VoronoiDiagram::DistributeSites(int num_sites, int grid_size)
 
 void VoronoiDiagram::EqualDSites(int num_sites, int grid_size)
 {
-	
 	bool loop_cond = false;
 
-
-	
 	sites_v_1[site_iterator] = 0;
 	site_iterator++;
 	sites_v_1[site_iterator] = 0;
 	site_iterator++;
 
-	
 	sites_v_1[site_iterator] = 0;
 	site_iterator++;
 	sites_v_1[site_iterator] = (grid_size-1);
 	site_iterator++;
 
-
-	
 	sites_v_1[site_iterator] = grid_size;
 	site_iterator++;
 	sites_v_1[site_iterator] = (grid_size)-1;
 	site_iterator++;
 
-	
 	sites_v_1[site_iterator] = grid_size;
 	site_iterator++;
 	sites_v_1[site_iterator] = (grid_size - 1);
 	site_iterator++;
-	
-	//grid_v_1[0] = 64;//bl
-	//grid_v_1[grid_size- 1] = 64;//br
-	//grid_v_1[grid_size * (grid_size)-1] = 64;//tr
-	//grid_v_1[grid_size * (grid_size - 1)] = 64;//tl
-
 
 	for (int sideLength = grid_size - 1; sideLength >= 256; sideLength /= 2)
 	{
@@ -313,11 +300,6 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 				vertexarray[i * grid_size + j].color = sf::Color::Blue;
 			}
 
-
-			
-
-		
-
 		}
 	}
 	
@@ -351,6 +333,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 			while (!found)
 			{
 				int x = rand() % x_pos_one + x_pos_two;
+				std::cout << "pos x " << x<<"\n";
 				int y = rand() % y_pos_one + y_pos_two;
 				if (grid_v_1[(y * grid_size) + x] == 0)
 				{
@@ -366,7 +349,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 			std::cout <<"counter: "<< counter<<std::endl;
 			if (i==0)
 			{
-				x_pos_one = (grid_size * 0.10);
+				x_pos_one = (grid_size * 0.20);
 				x_pos_two = (grid_size * 0.45);
 				y_pos_one = (grid_size * 0.08);
 				y_pos_two = (grid_size * 0.02);

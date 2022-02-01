@@ -88,7 +88,7 @@ int main()
 
 	//set the defaults for the application
 	resolution_ = 800;
-	sites_ = 25;
+	sites_ = 100;
 	points_ =2;
 	regen_ = false;
 	track_type_ = 1;  //1=p2p,0=loop
