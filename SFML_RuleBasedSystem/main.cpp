@@ -36,8 +36,8 @@ int main()
 	SettingText();
 
 
-	std::vector<thread> thread_vector;
-	std::vector<thread> thread_vector_path;
+	std::vector<thread*> thread_vector;
+	std::vector<thread*> thread_vector_path;
 
 	// Create the window and UI bar on the right
 	sf::RenderWindow window(sf::VideoMode(1000,800), "2D Track Generator", sf::Style::Close);
@@ -81,17 +81,18 @@ int main()
 	int start_ = 0;
 	for (int i = 0; i < num_threads_; i++)
 	{
-		thread_vector.push_back(thread(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), start_, start_+(resolution_ / num_threads_)));
+		thread_vector.push_back(new thread(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), start_, start_+(resolution_ / num_threads_)));
 		start_ += resolution_/ num_threads_;
 	}
 	int a = 0;
-	for (thread& th : thread_vector)
+	for (thread *th : thread_vector)
 	{
 		// If thread Object is Joinable then Join that thread.
-		if (th.joinable())
+		if (th->joinable())
 			std::cout << "vd_" <<a<<"\n";
 			a++;	
-			th.join();
+			th->join();
+			delete th;
 	}
 
 	//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
@@ -120,18 +121,18 @@ int main()
 		int start_p = 0;
 		for (int i = 0; i < num_threads_; i++)
 		{
-			thread_vector_path.push_back(thread(&ShortestPath::PhaseOne, s_p_p , v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3,start_p, start_p + (resolution_ / num_threads_)));
+			thread_vector_path.push_back(new thread(&ShortestPath::PhaseOne, s_p_p , v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3,start_p, start_p + (resolution_ / num_threads_)));
 			start_p += resolution_ / num_threads_;
 		}
 		int a = 0;
-		for (thread& th : thread_vector_path)
+		for (thread *th : thread_vector_path)
 		{
-			
 			// If thread Object is Joinable then Join that thread.
-			if (th.joinable())
+			if (th->joinable())
 				std::cout << "path_" << a<<"\n";
 				a++;
-				th.join();
+				th->join();
+				delete th;
 
 		}
 		//s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3,0,v_d_p->GetGridSize());
@@ -197,14 +198,15 @@ int main()
 			thread_vector.clear();
 			for (int i = 0; i < num_threads_; i++)
 			{
-				thread_vector.push_back(thread(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), start_, start_ + (resolution_ / num_threads_)));
+				thread_vector.push_back(new thread(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), start_, start_ + (resolution_ / num_threads_)));
 				start_ += resolution_ / num_threads_;
 			}
-			for (thread& th : thread_vector)
+			for (thread *th : thread_vector)
 			{
 				// If thread Object is Joinable then Join that thread.
-				if (th.joinable())
-					th.join();
+				if (th->joinable())
+					th->join();
+					delete th;
 			}
 			the_clock::time_point endTime = the_clock::now();
 
@@ -232,19 +234,19 @@ int main()
 					int start_p = 0;
 					for (int i = 0; i < num_threads_; i++)
 					{
-						thread_vector_path.push_back(thread(&ShortestPath::PhaseOne, s_p_p, v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, start_p, start_p + (resolution_ / num_threads_)));
+						thread_vector_path.push_back(new thread(&ShortestPath::PhaseOne, s_p_p, v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, start_p, start_p + (resolution_ / num_threads_)));
 						start_p += resolution_ / num_threads_;
 					}
 					int a = 0;
-					for (thread& th : thread_vector_path)
+					for (thread *th : thread_vector_path)
 					{
 
 						// If thread Object is Joinable then Join that thread.
-						if (th.joinable())
+						if (th->joinable())
 							std::cout << "path_" << a << "\n";
 						a++;
-						th.join();
-
+						th->join();
+						delete th;
 					}
 
 					//s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3,0, v_d_p->GetGridSize());
@@ -275,18 +277,18 @@ int main()
 					thread_vector_path.clear();
 					for (int i = 0; i < num_threads_; i++)
 					{
-						thread_vector_path.push_back(thread(&ShortestPath::PhaseOne, s_p_p, v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, start_p, start_p + (resolution_ / num_threads_)));
+						thread_vector_path.push_back(new thread(&ShortestPath::PhaseOne, s_p_p, v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, start_p, start_p + (resolution_ / num_threads_)));
 						start_p += resolution_ / num_threads_;
 					}
 					int a = 0;
-					for (thread& th : thread_vector_path)
+					for (thread *th : thread_vector_path)
 					{
 
 						// If thread Object is Joinable then Join that thread.
-						if (th.joinable())
+						if (th->joinable())
 							std::cout << "path_" << a << "\n";
 						a++;
-						th.join();
+						th->join();
 
 					}
 

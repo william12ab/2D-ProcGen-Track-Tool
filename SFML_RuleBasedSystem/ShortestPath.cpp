@@ -55,8 +55,6 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 	while (!found_end)
 	{
 		bool found_empty = false;
-
-
 		for (int y = start_p; y < end_p&& !found_end; y++)
 		{
 			for (int x = 0; x < grid_size; x++)
@@ -223,10 +221,6 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 							break;
 						}
 					}
-
-					
-
-					
 				}
 			}
 		}
@@ -234,6 +228,7 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 		//just in case it cant find the end position and needs to break out of the loop so that it doesnt get stuck in it
 		if (it>1000)
 		{
+			std::cout << "hit the break in phase 1\n";
 			break;
 		}
 
