@@ -368,12 +368,18 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 	case 1:
 	{
 		int iter = grid_size / num_points;
+		iter -= (iter) / 2;
 		int start = 1;
 		int position = 0;
 		for (int i = 0; i < num_points; i++)
 		{
 
 			bool found = false;
+			if (start+iter>grid_size)
+			{
+				int difference_ = (start + iter) - grid_size;
+				start -= difference_;
+			}
 			while (!found)
 			{
 				//so first is between 0 and grid_size/numpoints, second is iter and iter+iter, etc
@@ -386,6 +392,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 
 				}
 			}
+			iter = grid_size / num_points;
 			start += iter;
 		}
 	}
