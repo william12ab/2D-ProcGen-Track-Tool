@@ -140,9 +140,9 @@ int main()
 
 	for (int i = 0; i < (v_d_p->GetNumberOfPoints()-1); i++)
 	{
-		ThreadFuncPath(thread_vector, v_d_p,s_p_p);
+		//ThreadFuncPath(thread_vector, v_d_p,s_p_p);
 
-		//s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3,0,v_d_p->GetGridSize());
+		s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3,0,v_d_p->GetGridSize());
 		s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
 		//changes start point first then the end point to start point, and second end point to 1st end point
 		//so p0=p-1, p1=0,p2=1
@@ -226,10 +226,10 @@ int main()
 				for (int i = 0; i < (v_d_p->GetNumberOfPoints() ); i++)
 				{
 					thread_vector_path.clear();
-					ThreadFuncPath(thread_vector, v_d_p, s_p_p);
+					//ThreadFuncPath(thread_vector, v_d_p, s_p_p);
 
 
-					//s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3,0, v_d_p->GetGridSize());
+					s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3,0, v_d_p->GetGridSize());
 					s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
 					//changes start point first then the end point to start point, and second end point to 1st end point
 					//so p0=p-1, p1=0,p2=1
@@ -252,10 +252,10 @@ int main()
 				for (int i = 0; i < (v_d_p->GetNumberOfPoints() - 1); i++)
 				{
 					int start_p = 0;
-					ThreadFuncPath(thread_vector, v_d_p, s_p_p);
+					//ThreadFuncPath(thread_vector, v_d_p, s_p_p);
 
 
-					//s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, 0, v_d_p->GetGridSize());
+					s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, 0, v_d_p->GetGridSize());
 					s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
 					//changes start point first then the end point to start point, and second end point to 1st end point
 					//so p0=p-1, p1=0,p2=1
