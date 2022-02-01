@@ -23,7 +23,46 @@ void SettingText()
 
 
 }
+void threadfunc(std::vector<thread*> thread_vector, VoronoiDiagram* v_d_p)
+{
+	int start_ = 0;
+	for (int i = 0; i < num_threads_; i++)
+	{
+		thread_vector.push_back(new thread(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), start_, start_ + (resolution_ / num_threads_)));
+		start_ += resolution_ / num_threads_;
+	}
+	int a = 0;
+	for (thread* th : thread_vector)
+	{
+		// If thread Object is Joinable then Join that thread.
+		if (th->joinable())
+			std::cout << "vd_" << a << "\n";
+		a++;
+		th->join();
+		delete th;
+	}
+}
 
+void ThreadFuncPath(std::vector<thread*> thread_vector_path, VoronoiDiagram* v_d_p, ShortestPath* s_p_p)
+{
+	int start_p = 0;
+	for (int i = 0; i < num_threads_; i++)
+	{
+		thread_vector_path.push_back(new thread(&ShortestPath::PhaseOne, s_p_p, v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, start_p, start_p + (resolution_ / num_threads_)));
+		start_p += resolution_ / num_threads_;
+	}
+	int a = 0;
+	for (thread* th : thread_vector_path)
+	{
+		// If thread Object is Joinable then Join that thread.
+		if (th->joinable())
+			std::cout << "path_" << a << "\n";
+		a++;
+		th->join();
+		delete th;
+
+	}
+}
 
 int main()
 {
@@ -77,24 +116,7 @@ int main()
 	//creates the vd in grid_v_1
 	
 	the_clock::time_point startTime = the_clock::now();
-
-	int start_ = 0;
-	for (int i = 0; i < num_threads_; i++)
-	{
-		thread_vector.push_back(new thread(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), start_, start_+(resolution_ / num_threads_)));
-		start_ += resolution_/ num_threads_;
-	}
-	int a = 0;
-	for (thread *th : thread_vector)
-	{
-		// If thread Object is Joinable then Join that thread.
-		if (th->joinable())
-			std::cout << "vd_" <<a<<"\n";
-			a++;	
-			th->join();
-			delete th;
-	}
-
+	threadfunc(thread_vector, v_d_p);
 	//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 	
 	the_clock::time_point endTime = the_clock::now();
@@ -118,23 +140,8 @@ int main()
 
 	for (int i = 0; i < (v_d_p->GetNumberOfPoints()-1); i++)
 	{
-		int start_p = 0;
-		for (int i = 0; i < num_threads_; i++)
-		{
-			thread_vector_path.push_back(new thread(&ShortestPath::PhaseOne, s_p_p , v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3,start_p, start_p + (resolution_ / num_threads_)));
-			start_p += resolution_ / num_threads_;
-		}
-		int a = 0;
-		for (thread *th : thread_vector_path)
-		{
-			// If thread Object is Joinable then Join that thread.
-			if (th->joinable())
-				std::cout << "path_" << a<<"\n";
-				a++;
-				th->join();
-				delete th;
+		ThreadFuncPath(thread_vector, v_d_p,s_p_p);
 
-		}
 		//s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3,0,v_d_p->GetGridSize());
 		s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
 		//changes start point first then the end point to start point, and second end point to 1st end point
@@ -193,21 +200,9 @@ int main()
 			//creates the vd in grid_v_1
 		
 			//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(),0,400);
-			int start_ = 0;
 			the_clock::time_point startTime = the_clock::now();
 			thread_vector.clear();
-			for (int i = 0; i < num_threads_; i++)
-			{
-				thread_vector.push_back(new thread(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), start_, start_ + (resolution_ / num_threads_)));
-				start_ += resolution_ / num_threads_;
-			}
-			for (thread *th : thread_vector)
-			{
-				// If thread Object is Joinable then Join that thread.
-				if (th->joinable())
-					th->join();
-					delete th;
-			}
+			threadfunc(thread_vector, v_d_p);
 			the_clock::time_point endTime = the_clock::now();
 
 			auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
@@ -231,23 +226,8 @@ int main()
 				for (int i = 0; i < (v_d_p->GetNumberOfPoints() ); i++)
 				{
 					thread_vector_path.clear();
-					int start_p = 0;
-					for (int i = 0; i < num_threads_; i++)
-					{
-						thread_vector_path.push_back(new thread(&ShortestPath::PhaseOne, s_p_p, v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, start_p, start_p + (resolution_ / num_threads_)));
-						start_p += resolution_ / num_threads_;
-					}
-					int a = 0;
-					for (thread *th : thread_vector_path)
-					{
+					ThreadFuncPath(thread_vector, v_d_p, s_p_p);
 
-						// If thread Object is Joinable then Join that thread.
-						if (th->joinable())
-							std::cout << "path_" << a << "\n";
-						a++;
-						th->join();
-						delete th;
-					}
 
 					//s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3,0, v_d_p->GetGridSize());
 					s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
@@ -260,8 +240,6 @@ int main()
 					s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), 0, -1234);
 					s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
 					s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
-
-			
 					s_p_p->CleanGrid(v_d_p->GetGridSize(), v_d_p->GetGrid());
 
 				
@@ -274,23 +252,8 @@ int main()
 				for (int i = 0; i < (v_d_p->GetNumberOfPoints() - 1); i++)
 				{
 					int start_p = 0;
-					thread_vector_path.clear();
-					for (int i = 0; i < num_threads_; i++)
-					{
-						thread_vector_path.push_back(new thread(&ShortestPath::PhaseOne, s_p_p, v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, start_p, start_p + (resolution_ / num_threads_)));
-						start_p += resolution_ / num_threads_;
-					}
-					int a = 0;
-					for (thread *th : thread_vector_path)
-					{
+					ThreadFuncPath(thread_vector, v_d_p, s_p_p);
 
-						// If thread Object is Joinable then Join that thread.
-						if (th->joinable())
-							std::cout << "path_" << a << "\n";
-						a++;
-						th->join();
-
-					}
 
 					//s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, 0, v_d_p->GetGridSize());
 					s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
