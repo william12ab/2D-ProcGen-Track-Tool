@@ -438,7 +438,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 				x_pos_one = (grid_size * 0.05);
 				x_pos_two = (grid_size * 0.80);			//x is between 80% and 85%
 				y_pos_one = (grid_size * 0.10);
-				y_pos_two = (grid_size * 0.65);			//y is between 65% and 75%
+				y_pos_two = (grid_size * 0.45);			//y is between 45% and 55%
 			}
 		}
 	}
