@@ -400,44 +400,45 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 		break;
 	case 2:
 	{
-		int x_pos_one = (grid_size * 0.08);
-		int x_pos_two = (grid_size * 0.02);
-		int y_pos_one = (grid_size * 0.10);
+		int x_pos_one = (grid_size * 0.05);					//setting initial points so start point ranges
+		int x_pos_two = (grid_size * 0.15);					//so its between 15% and 20% of x 
+		int y_pos_one = (grid_size * 0.10);					//45% and 55% of y
 		int y_pos_two = (grid_size * 0.45);
-		for (int i = 0; i < num_points; i++)
+		for (int i = 0; i < num_points; i++)				//run for number of points needed(3)
 		{
 			bool found = false;
 			int counter = 0;
-			while (!found)
+			while (!found)									//create a point in the ranges until that point exists on the v_d
 			{
 				int x = rand() % x_pos_one + x_pos_two;
 				int y = rand() % y_pos_one + y_pos_two;
-				if (grid_v_1[(y * grid_size) + x] == 0)
+				if (grid_v_1[(y * grid_size) + x] == 0)			//if found then set the grid structure to be the starting/middle/end point
 				{
 					found = true;
 					grid_v_1[(y * grid_size) + x] = 2000 + i;
 				}
 				counter++;
-				if (counter > 500)
+				if (counter > 500)								//this is used incase there is no point that could be this - so if its taken too long to search for a point, give up and let the main program know that youve given up so it can make a decision from there
 				{
 					break;
 					std::cout << "didnt set a point\n";
 				}
 			}
 			std::cout << "counter(how many iters to find point): " << counter << std::endl;
-			if (i == 0)
+
+			if (i == 0)					//now change the point selection based on the iterator, so change to the middle and then the end for the selection
 			{
 				x_pos_one = (grid_size * 0.10);
-				x_pos_two = (grid_size * 0.45);
-				y_pos_one = (grid_size * 0.10);
+				x_pos_two = (grid_size * 0.45);			//x is between 45% and 55%
+				y_pos_one = (grid_size * 0.10);			//y is between 20% and 30%
 				y_pos_two = (grid_size * 0.20);
 			}
 			if (i == 1)
 			{
-				x_pos_one = (grid_size * 0.15);
-				x_pos_two = (grid_size * 0.80);
+				x_pos_one = (grid_size * 0.05);
+				x_pos_two = (grid_size * 0.80);			//x is between 80% and 85%
 				y_pos_one = (grid_size * 0.10);
-				y_pos_two = (grid_size * 0.65);
+				y_pos_two = (grid_size * 0.65);			//y is between 65% and 75%
 			}
 		}
 	}
