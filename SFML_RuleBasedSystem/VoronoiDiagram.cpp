@@ -10,6 +10,7 @@ VoronoiDiagram::VoronoiDiagram()
 	num_of_sites = 0;
 	grid_v_1 = nullptr;
 	sites_v_1 = nullptr;
+	failed_ = false;
 }
 
 VoronoiDiagram::~VoronoiDiagram()
@@ -392,7 +393,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 				}
 				if (counter > 200)
 				{
-					b_failed = true;
+					failed_ = true;
 					break;
 					std::cout << "didnt set a point\n";
 				}
@@ -424,7 +425,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 				counter++;
 				if (counter > 200)								//this is used incase there is no point that could be this - so if its taken too long to search for a point, give up and let the main program know that youve given up so it can make a decision from there
 				{
-					b_failed = true;
+					failed_ = true;
 					break;
 					std::cout << "didnt set a point\n";
 				}

@@ -7,6 +7,7 @@ ShortestPath::ShortestPath()
 	it = 0;
 	end_ = 0;					//start as false;
 	x_holder_=0, y_holder_=0;
+	failed_ = false;
 }
 
 //i =z/y, j=x
@@ -229,7 +230,7 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 		if (it>1000)
 		{
 			std::cout << "hit the break in phase 1\n";
-			b_failed_ = true;
+			failed_ = true;
 			break;
 		}
 

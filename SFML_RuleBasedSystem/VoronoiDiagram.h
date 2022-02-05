@@ -39,7 +39,7 @@ public:
 	void SetGridSize(int p) { grid_size_x=p; }							//sets the x and y of the grid
 	void SetNumberOfPoints(int p) { num_of_points = p; }				//sets the number of points in the track
 	void SetType(int p) { type = p; }									//sets the type of track
-	void SetFaile() { failed_ = false; }
+	void SetFaile(bool f) { failed_ = f; }
 
 
 	void DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);

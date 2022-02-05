@@ -22,7 +22,7 @@ public:
 	int GetYHolder() { return y_holder_; }
 
 	//failled and restarting
-	void SetFailed() { failed_ = false; }
+	void SetFailed(bool f) { failed_ = f; }
 	bool GetFailed() { return failed_; }
 private:
 
