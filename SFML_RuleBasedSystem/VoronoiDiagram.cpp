@@ -329,7 +329,6 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 			while (!found)
 			{
 				int x = rand() % x_pos_one + x_pos_two;
-				std::cout << "pos x " << x<<"\n";
 				int y = rand() % y_pos_one + y_pos_two;
 				if (grid_v_1[(y * grid_size) + x] == 0)
 				{
