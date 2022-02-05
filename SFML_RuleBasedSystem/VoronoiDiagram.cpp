@@ -322,7 +322,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 	{
 	case 0:
 	{
-		int x_pos_one = (grid_size * 0.08);
+		int x_pos_one = (grid_size * 0.13);
 		int x_pos_two = (grid_size * 0.02);
 		int y_pos_one = (grid_size * 0.15);
 		int y_pos_two = (grid_size * 0.80);
@@ -341,7 +341,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 					grid_v_1[(y * grid_size) + x] = 2000 + i;
 				}
 				counter++;
-				if (counter>500)
+				if (counter>200)
 				{
 					break;
 					std::cout << "didnt set a point\n";
@@ -352,7 +352,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 			{
 				x_pos_one = (grid_size * 0.20);
 				x_pos_two = (grid_size * 0.45);
-				y_pos_one = (grid_size * 0.08);
+				y_pos_one = (grid_size * 0.13);
 				y_pos_two = (grid_size * 0.02);
 			}
 			if (i == 1)
@@ -418,7 +418,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 					grid_v_1[(y * grid_size) + x] = 2000 + i;
 				}
 				counter++;
-				if (counter > 500)								//this is used incase there is no point that could be this - so if its taken too long to search for a point, give up and let the main program know that youve given up so it can make a decision from there
+				if (counter > 200)								//this is used incase there is no point that could be this - so if its taken too long to search for a point, give up and let the main program know that youve given up so it can make a decision from there
 				{
 					break;
 					std::cout << "didnt set a point\n";
