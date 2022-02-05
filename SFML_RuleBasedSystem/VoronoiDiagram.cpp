@@ -125,12 +125,8 @@ void VoronoiDiagram::EqualDSites(int num_sites, int grid_size)
 				site_iterator++;
 				sites_v_1[site_iterator] = y + halfSide;
 				site_iterator++;
-				//grid_v_1[((y+halfSide) * grid_size) + (x+halfSide)] = 64;
 			}
 		}
-
-
-
 			//square
 		for (int j = 0; j < (grid_size ); j += halfSide)
 		{
@@ -141,7 +137,6 @@ void VoronoiDiagram::EqualDSites(int num_sites, int grid_size)
 				site_iterator++;
 				sites_v_1[site_iterator] = j;
 				site_iterator++;
-				//grid_v_1[(j * grid_size) + i] = 64;
 			}
 
 		}
@@ -314,7 +309,7 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 //loop over num of points
 //point 1
 //
-void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
+void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_failed)
 {
 	//zero is loop, 1 is p2p
 
@@ -343,6 +338,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 				counter++;
 				if (counter>200)
 				{
+					b_failed = true;
 					break;
 					std::cout << "didnt set a point\n";
 				}
@@ -381,8 +377,11 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 				int difference_ = (start + iter) - grid_size;
 				start -= difference_;
 			}
+			int counter = 0;
+
 			while (!found)
 			{
+				counter++;
 				//so first is between 0 and grid_size/numpoints, second is iter and iter+iter, etc
 				int x = rand() % iter + start;
 				int y = rand() % (int)(grid_size / 1.1) + (grid_size / 16);
@@ -390,7 +389,12 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 				{
 					found = true;
 					grid_v_1[(y * grid_size) + x] = 2000 + i;
-
+				}
+				if (counter > 200)
+				{
+					b_failed = true;
+					break;
+					std::cout << "didnt set a point\n";
 				}
 			}
 			iter = grid_size / num_points;
@@ -420,6 +424,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type)
 				counter++;
 				if (counter > 200)								//this is used incase there is no point that could be this - so if its taken too long to search for a point, give up and let the main program know that youve given up so it can make a decision from there
 				{
+					b_failed = true;
 					break;
 					std::cout << "didnt set a point\n";
 				}

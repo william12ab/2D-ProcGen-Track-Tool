@@ -43,26 +43,7 @@ void threadfunc(std::vector<thread*> thread_vector, VoronoiDiagram* v_d_p)
 	}
 }
 
-void ThreadFuncPath(std::vector<thread*> thread_vector_path, VoronoiDiagram* v_d_p, ShortestPath* s_p_p)
-{
-	int start_p = 0;
-	for (int i = 0; i < num_threads_; i++)
-	{
-		thread_vector_path.push_back(new thread(&ShortestPath::PhaseOne, s_p_p, v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, start_p, start_p + (resolution_ / num_threads_)));
-		start_p += resolution_ / num_threads_;
-	}
-	int a = 0;
-	for (thread* th : thread_vector_path)
-	{
-		// If thread Object is Joinable then Join that thread.
-		if (th->joinable())
-			std::cout << "path_" << a << "\n";
-		a++;
-		th->join();
-		delete th;
 
-	}
-}
 
 int main()
 {
@@ -125,7 +106,7 @@ int main()
 	std::cout << "time(v d): " << time_taken; std::cout << std::endl;
 
 	v_d_p->SetEdges(v_d_p->GetGridSize());
-	v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_);
+	v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
 	//sets the points to connect the distance
 
 
@@ -140,13 +121,10 @@ int main()
 
 	for (int i = 0; i < (v_d_p->GetNumberOfPoints()-1); i++)
 	{
-		//ThreadFuncPath(thread_vector, v_d_p,s_p_p);
-
-		s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3,0,v_d_p->GetGridSize());
+		s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, s_p_p->GetFailed(),0,v_d_p->GetGridSize());
 		s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
 		//changes start point first then the end point to start point, and second end point to 1st end point
 		//so p0=p-1, p1=0,p2=1
-
 		s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), 0, -1234);
 		s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
 		s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
@@ -208,7 +186,7 @@ int main()
 			v_d_p->SetEdges(v_d_p->GetGridSize());
 
 			the_clock::time_point startTimea = the_clock::now();
-			v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_);
+			v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
 			the_clock::time_point endTimea = the_clock::now();
 
 			auto time_takena = duration_cast<milliseconds>(endTimea - startTimea).count();
@@ -230,7 +208,7 @@ int main()
 				{
 					
 					//ThreadFuncPath(thread_vector, v_d_p, s_p_p);
-					s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3,0, v_d_p->GetGridSize());
+					s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, s_p_p->GetFailed(), 0, v_d_p->GetGridSize());
 					s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
 					//changes start point first then the end point to start point, and second end point to 1st end point
 					//so p0=p-1, p1=0,p2=1
@@ -253,7 +231,7 @@ int main()
 				{
 					
 					//ThreadFuncPath(thread_vector, v_d_p, s_p_p);
-					s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, 0, v_d_p->GetGridSize());
+					s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, s_p_p->GetFailed(), 0, v_d_p->GetGridSize());
 					s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
 					//changes start point first then the end point to start point, and second end point to 1st end point
 					//so p0=p-1, p1=0,p2=1

@@ -48,7 +48,7 @@ void ShortestPath::Initgrid(int grid_size, int* grid, int num_points)
 //fills the data structure with numbers that equal a distance from the starting point, increasing in distance apart.
 //runs until the end position has been found or if it cant find the end position, run a number of times then exit the loop
 //stores the end position for reference in phasse 2
-void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool found_end, int it, bool end, int x_holder, int y_holder, int end_n, int start_p, int end_p)
+void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool found_end, int it, bool end, int x_holder, int y_holder, int end_n, bool b_failed_, int start_p, int end_p)
 {
 	count_holder = 0;
 	found_end = false;
@@ -229,6 +229,7 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 		if (it>1000)
 		{
 			std::cout << "hit the break in phase 1\n";
+			b_failed_ = true;
 			break;
 		}
 
@@ -383,7 +384,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 			if (how_many == 0)
 			{
 				break;
-				std::cout << "hit how many\n";
+				std::cout << "hit how many phase 2\n";
 			}
 			//this is just a quick fix
 			//so if no points have been changes then exit the loop to stop it going on forever/
