@@ -21,6 +21,9 @@ public:
 	void InitVector(int grid_size, int num_points, int num_sites);		//inits the vector to correct size;
 
 
+	void DiagramAMP(int num_sites, int grid_size);
+
+
 	//getters		
 
 	bool GetFailed() { return failed_; }
@@ -54,6 +57,7 @@ private:
 	int* sites_v_1;								//stores the sites in dynamic array
 	int* grid_v_1;								//stores the grid in dynamic array
 
+	int a_g[5];
 
 	int site_iterator = 0;
 

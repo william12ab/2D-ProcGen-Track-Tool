@@ -41,6 +41,19 @@ void threadfunc(std::vector<thread*> thread_vector, VoronoiDiagram* v_d_p)
 	}
 }
 
+//pass in the thing and v_d_p
+void testing(sf::VertexArray& vertexarray, VoronoiDiagram* v_)
+{
+	for (int i = 0; i < v_->GetGridSize(); i++)
+	{
+		for (int j = 0; j < v_->GetGridSize(); j++)
+		{
+
+		}
+	}
+}
+
+
 
 
 int main()
@@ -67,7 +80,7 @@ int main()
 
 	//set the defaults for the application
 	resolution_ = 400;
-	sites_ = 100;
+	sites_ = 500;
 	points_ =2;
 	regen_ = false;
 	track_type_ = 1;  //1=p2p,0=loop
@@ -85,12 +98,16 @@ int main()
 	
 	//places the sites
 	//sets up the vertex array
-	sf::VertexArray voronoi_d(sf::Points, (v_d_p->GetGridSize()*v_d_p->GetGridSize()));
+	sf::VertexArray voronoi_d(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+	
+	sf::VertexArray height_map(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+
 	//creates the vd in grid_v_1
 
 	v_d_p->InitVector(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), v_d_p->GetNumberOfSites());
 
-
+//	v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+		
 	do 
 	{
 		if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition

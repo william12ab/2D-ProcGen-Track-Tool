@@ -1,6 +1,7 @@
 #include "VoronoiDiagram.h"
 #include <iostream>
-
+#include <amp.h>
+using namespace concurrency;
 
 VoronoiDiagram::VoronoiDiagram()
 {
@@ -152,6 +153,28 @@ int VoronoiDiagram::DistanceSqrt(int x, int y, int x2, int y2)
 	int yd = y2 - y;
 	return (xd * xd) + (yd * yd);
 }
+
+
+void VoronoiDiagram::DiagramAMP(int num_sites, int grid_size)
+{
+	extent<1> e(5);
+	concurrency::array_view<int> av3(5, a_g);
+	av3.discard_data();
+	try
+	{
+		concurrency::parallel_for_each(av3.extent, [=](concurrency::index<1> idx)  restrict(amp)
+			{
+				av3[idx] = 1;
+			});
+		av3.synchronize();
+	}
+	catch (const Concurrency::runtime_exception& ex)
+	{
+		MessageBoxA(NULL, ex.what(), "Error", MB_ICONERROR);
+	}
+
+}
+
 
 //the vector of ints "incr" is used in replace of the colors for the bruteforce method 
 //the loop pushes back i into the vector at the amount of sites.
