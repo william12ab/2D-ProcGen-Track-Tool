@@ -48,7 +48,7 @@ public:
 	void DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
 	void DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
 
-	void DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites);
+	void DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_);
 
 
 private:
@@ -60,6 +60,8 @@ private:
 
 	int* sites_v_1;								//stores the sites in dynamic array
 	int* grid_v_1;								//stores the grid in dynamic array
+
+	int* grid_distance;
 
 	int a_g[5];
 

@@ -11,6 +11,7 @@ VoronoiDiagram::VoronoiDiagram()
 	num_of_sites = 0;
 	grid_v_1 = nullptr;
 	sites_v_1 = nullptr;
+	grid_distance = nullptr;
 	failed_ = false;
 }
 
@@ -18,12 +19,14 @@ VoronoiDiagram::~VoronoiDiagram()
 {
 	delete[] grid_v_1;
 	delete[] sites_v_1;
+	delete[] grid_distance;
 }
 
 void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
 {
 	grid_size_x = grid_size;
 	grid_v_1 = new int[grid_size_x * grid_size_x];
+	grid_distance = new int[ grid_size_x * grid_size_x ];
 	sites_v_1 = new int[num_sites*2];
 }
 
@@ -215,6 +218,7 @@ void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size, int start, int 
 				int s = grid_v_1[(j * grid_size) + i];
 				int p = incr[ind];
 				grid_v_1[(j* grid_size)+i]=incr[ind];
+				grid_distance[(j * grid_size) + i] = dist;
 				int w = grid_v_1[(j * grid_size) + i];
 			}
 		}
@@ -260,7 +264,7 @@ void VoronoiDiagram::SetEdges(int grid_size)
 	}
 }
 
-void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites)
+void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_)
 {
 	for (int i = 0; i < grid_size; i++)
 	{
@@ -271,19 +275,24 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 				if (grid_v_1[(i * grid_size) + j] == a)
 				{
 					float s = float((float)a / (float)num_sites);							//gets the thing as a percentage
-					sf::Uint8 n = s * 255;
-					sf::Uint8 c = 255 - n;													
+					if (s>c_)
+					{
+						s = c_;
+					}
+					int d = grid_distance[(i * grid_size) + j]/(float)num_;			//the distance 
+					int n = s * 255;										//percentage * 255
+					int r = n + d;
+					if (r>255)
+					{
+						r = 255;
+					}
+					sf::Uint8 c = 255- r;			// used to be 255-r	
 					vertextarray[i * grid_size + j].position = sf::Vector2f(j, i);
 					vertextarray[i * grid_size + j].color = sf::Color{ c , c , c };
-					
 				}
-			}
-
-
-			
+			}	
 		}
 	}
-
 }
 
 void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size)
