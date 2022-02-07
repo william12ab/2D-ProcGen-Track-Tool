@@ -88,7 +88,9 @@ int main()
 	render_height_map_ = false;
 
 	number_ = 75;
+	div_ = 1.0f;
 	catch_ = 0.6f;
+	mult_ = 1;
 
 	VoronoiDiagram* v_d_p = new VoronoiDiagram();
 	ShortestPath* s_p_p = new ShortestPath();
@@ -127,7 +129,9 @@ int main()
 		v_d_p->DistributeSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 		//the_clock::time_point startTime = the_clock::now();
 		threadfunc(thread_vector, v_d_p);
-		v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_);
+		//v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_, div_);
+
+		v_d_p->DrawWave(height_map, v_d_p->GetGridSize(), mult_);
 
 		//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 		//the_clock::time_point endTime = the_clock::now();
@@ -186,8 +190,10 @@ int main()
 		ImGui::SliderInt("Sites", &sites_, 5, 100);
 		ImGui::SliderInt("Points", &points_, 2, 5);
 		ImGui::SliderInt("Track Type",&track_type_, 0, 2);
-		ImGui::SliderInt("number", &number_, 0, 1000);
+		ImGui::SliderInt("number", &number_, 0, 100);
 		ImGui::SliderFloat("catch", &catch_, 0.01f, 1.0f);
+		ImGui::SliderFloat("div", &div_, 0.0f, 2.0f);
+		ImGui::SliderInt("multiplyer", &mult_, 1, 100);
 		ImGui::Text("0 = triangular\n1 = point to point\n2 = obtuse triangle");
 		if (ImGui::Button("Regenerate"))
 		{
@@ -222,7 +228,8 @@ int main()
 				//the_clock::time_point startTime = the_clock::now();
 				thread_vector.clear();
 				threadfunc(thread_vector, v_d_p);
-				v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_);
+				//v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_, div_);
+				v_d_p->DrawWave(height_map, v_d_p->GetGridSize(), mult_);
 
 				//the_clock::time_point endTime = the_clock::now();
 

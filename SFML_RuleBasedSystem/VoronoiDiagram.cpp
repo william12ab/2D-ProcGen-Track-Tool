@@ -264,8 +264,43 @@ void VoronoiDiagram::SetEdges(int grid_size)
 	}
 }
 
-void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_)
+
+void VoronoiDiagram::DrawWave(sf::VertexArray& vertexarray, int grid_size, int mult)
 {
+	for (int i = 0; i < grid_size; i++)
+	{
+		for (int j = 0; j < grid_size; j++)
+		{
+			
+			float height = (sin((float)j * 0.1f)) * 1.0f+1;
+			//height	+= (cos((float)j * 0.033f )) * 1.0f+1;
+			//height += (cos((float)i * 0.033f)) * 1.0f+1;
+			height *= mult;
+			sf::Uint8 c = height;
+			vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+			vertexarray[i * grid_size + j].color = sf::Color{ c , c , c };
+		}
+	}
+}
+
+void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_, float div_a)
+{
+	int s = 0;
+	int di = 0;
+	std::vector<int> ds;
+	int dist = INT_MAX;
+	int ind = -1;
+	for (int p = 0; p < num_sites; p++)
+	{
+		di = DistanceSqrt(sites_v_1[s], sites_v_1[s + 1], 0, 0);
+		ds.push_back(di);
+		s += 2;
+		if (di < dist)
+		{
+			dist = di;				//just records the distances from the first position in the diagram againnst all sites
+		}
+	}
+
 	for (int i = 0; i < grid_size; i++)
 	{
 		for (int j = 0; j < grid_size; j++)
@@ -274,7 +309,7 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 			{
 				if (grid_v_1[(i * grid_size) + j] == a)
 				{
-					float s = float((float)a / (float)num_sites);							//gets the thing as a percentage
+					float s = float((float)1 / (float)num_sites);							//gets the thing as a percentage
 					if (s>c_)
 					{
 						s = c_;
@@ -287,6 +322,7 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 						r = 255;
 					}
 					sf::Uint8 c = 255- r;			// used to be 255-r	
+					c /= div_a;
 					vertextarray[i * grid_size + j].position = sf::Vector2f(j, i);
 					vertextarray[i * grid_size + j].color = sf::Color{ c , c , c };
 				}

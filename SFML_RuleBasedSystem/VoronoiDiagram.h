@@ -48,8 +48,8 @@ public:
 	void DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
 	void DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
 
-	void DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_);
-
+	void DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_, float div_a);
+	void DrawWave(sf::VertexArray& vertexarray, int grid_size, int mult);
 
 private:
 	int num_of_sites;							//number of sites that form the diagram

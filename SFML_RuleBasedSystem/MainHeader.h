@@ -23,3 +23,5 @@ bool render_height_map_;
 
 int number_;
 float catch_;
+float div_;
+int mult_;
