@@ -18,3 +18,4 @@ int points_;
 bool regen_;
 int track_type_;
 int num_threads_;
+bool render_height_map_;

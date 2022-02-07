@@ -47,6 +47,10 @@ public:
 
 	void DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
 	void DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
+
+	void DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites);
+
+
 private:
 	int num_of_sites;							//number of sites that form the diagram
 	int num_of_points;							//number of points that form the track.

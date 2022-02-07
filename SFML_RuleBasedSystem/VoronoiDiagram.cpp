@@ -202,6 +202,7 @@ void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size, int start, int 
 			{
 				d = DistanceSqrt(sites_v_1[s], sites_v_1[s+1], j, i);
 				s += 2;
+		
 				if (d<dist)
 				{
 					dist = d;
@@ -234,13 +235,13 @@ void VoronoiDiagram::SetEdges(int grid_size)
 	{
 		for (int i=0; i< grid_size; i++)
 		{
-			if (i+1<grid_size)
+			if (i+1<grid_size)		//if in the bounds
 			{
-				if (grid_v_1[(j * grid_size) + i] != 0 && grid_v_1[(j * grid_size) + (i + 1)] != 0)
+				if (grid_v_1[(j * grid_size) + i] != 0 && grid_v_1[(j * grid_size) + (i + 1)] != 0)		//if current position isnt 0 and position one to left is not 0 
 				{
-					if (grid_v_1[(j * grid_size) + i] != grid_v_1[(j * grid_size) + (i + 1)])
+					if (grid_v_1[(j * grid_size) + i] != grid_v_1[(j * grid_size) + (i + 1)])		//if the current pos and pos 1 to the left are not the same
 					{
-						grid_v_1[(j * grid_size) + i] = 0;
+						grid_v_1[(j * grid_size) + i] = 0;			//set to path way
 					}
 				}
 			}
@@ -259,7 +260,31 @@ void VoronoiDiagram::SetEdges(int grid_size)
 	}
 }
 
+void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites)
+{
+	for (int i = 0; i < grid_size; i++)
+	{
+		for (int j = 0; j < grid_size; j++)
+		{
+			for (int a = 1; a <= num_sites; a++)
+			{
+				if (grid_v_1[(i * grid_size) + j] == a)
+				{
+					float s = float((float)a / (float)num_sites);							//gets the thing as a percentage
+					sf::Uint8 n = s * 255;
+					sf::Uint8 c = 255 - n;													
+					vertextarray[i * grid_size + j].position = sf::Vector2f(j, i);
+					vertextarray[i * grid_size + j].color = sf::Color{ c , c , c };
+					
+				}
+			}
 
+
+			
+		}
+	}
+
+}
 
 void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size)
 {
