@@ -268,8 +268,6 @@ void VoronoiDiagram::SetEdges(int grid_size)
 
 void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_, float div_a)
 {
-
-
 	for (int i = 0; i < grid_size; i++)
 	{
 		for (int j = 0; j < grid_size; j++)
