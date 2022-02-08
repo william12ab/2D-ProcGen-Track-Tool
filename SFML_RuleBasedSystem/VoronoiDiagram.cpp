@@ -394,6 +394,34 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 	
 }
 
+void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size)
+{
+	for (int i = 0; i < grid_size; i++)
+	{
+		for (int j = 0; j < grid_size; j++)
+		{
+			float height = (float)perlin_.noise(j, i, (pFrequency)) * pHeightRange;
+			
+			if (height<0.0f)
+			{
+				//height *= -255.0f;
+			}
+			else
+			{
+				height *= 255.0f;
+			}
+			sf::Uint8 c = height;
+
+			vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+
+			vertexarray[i * grid_size + j].color = sf::Color{ c , c , c };
+
+		}
+
+	}
+}
+
+
 //clear the vector if empty
 //find out what type and then how many points
 //two different methods, loop needs to go in a loop, point to point needs to go from one side to other.

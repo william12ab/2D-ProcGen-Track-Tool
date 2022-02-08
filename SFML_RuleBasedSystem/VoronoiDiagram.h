@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics/VertexArray.hpp>
+#include "SimplexNoise.h"
 class VoronoiDiagram
 {
 public:
@@ -43,6 +44,9 @@ public:
 	void SetNumberOfPoints(int p) { num_of_points = p; }				//sets the number of points in the track
 	void SetType(int p) { type = p; }									//sets the type of track
 	void SetFaile(bool f) { failed_ = f; }
+	void SetF(float f) { pFrequency = f; }
+	void SetH(float h) { pHeightRange = h; }
+
 
 
 	void DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
@@ -50,8 +54,12 @@ public:
 
 	void DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_, float div_a);
 	void DrawWave(sf::VertexArray& vertexarray, int grid_size, int mult);
+	void DrawNoise(sf::VertexArray& vertexarray, int grid_size);
 
 private:
+	SimplexNoise perlin_;
+
+
 	int num_of_sites;							//number of sites that form the diagram
 	int num_of_points;							//number of points that form the track.
 	int type;
@@ -68,5 +76,8 @@ private:
 	int site_iterator = 0;
 
 	bool failed_;
+
+	float pFrequency = 1.0f;	//simplex noise frequency
+	float pHeightRange = 1.5f;
 };
 

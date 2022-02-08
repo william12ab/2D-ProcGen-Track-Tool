@@ -25,3 +25,6 @@ int number_;
 float catch_;
 float div_;
 int mult_;
+
+float frequency_;
+float height_;
