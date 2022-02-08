@@ -265,46 +265,16 @@ void VoronoiDiagram::SetEdges(int grid_size)
 }
 
 
-void VoronoiDiagram::DrawWave(sf::VertexArray& vertexarray, int grid_size, int mult)
-{
-	for (int i = 0; i < grid_size; i++)
-	{
-		for (int j = 0; j < grid_size; j++)
-		{
-			
-			float height = (sin((float)j * 0.1f)) * 1.0f+1;
-			//height	+= (cos((float)j * 0.033f )) * 1.0f+1;
-			//height += (cos((float)i * 0.033f)) * 1.0f+1;
-			height *= mult;
-			sf::Uint8 c = height;
-			vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-			vertexarray[i * grid_size + j].color = sf::Color{ c , c , c };
-		}
-	}
-}
 
 void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_, float div_a)
 {
-	int s = 0;
-	int di = 0;
-	std::vector<int> ds;
-	int dist = INT_MAX;
-	int ind = -1;
-	for (int p = 0; p < num_sites; p++)
-	{
-		di = DistanceSqrt(sites_v_1[s], sites_v_1[s + 1], 0, 0);
-		ds.push_back(di);
-		s += 2;
-		if (di < dist)
-		{
-			dist = di;				//just records the distances from the first position in the diagram againnst all sites
-		}
-	}
+
 
 	for (int i = 0; i < grid_size; i++)
 	{
 		for (int j = 0; j < grid_size; j++)
 		{
+		
 			for (int a = 1; a <= num_sites; a++)
 			{
 				if (grid_v_1[(i * grid_size) + j] == a)
@@ -314,15 +284,17 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 					{
 						s = c_;
 					}
-					int d = grid_distance[(i * grid_size) + j]/(float)num_;			//the distance 
+					int d = grid_distance[(i * grid_size) + j]/ (float)num_;			//the distance divided by a number, so makes the distance smaller or bigger
 					int n = s * 255;										//percentage * 255
 					int r = n + d;
+					//so the further away the distance is higher r
 					if (r>255)
 					{
-						r = 255;
+						r = 255;				//keeps the values within range
 					}
 					sf::Uint8 c = 255- r;			// used to be 255-r	
-					c /= div_a;
+					//so end color, closer to the site you are - brighter, further away - darker
+					c /= div_a;						//makes the colour smaller
 					vertextarray[i * grid_size + j].position = sf::Vector2f(j, i);
 					vertextarray[i * grid_size + j].color = sf::Color{ c , c , c };
 				}
@@ -396,29 +368,64 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 
 void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size)
 {
-	
+	const float scale = 100.0f / (float)grid_size;
+
 	for (int i = 0; i < grid_size; i++)
 	{
 		for (int j = 0; j < grid_size; j++)
 		{
+			float height = (float)perlin_.noise(j, i, (pFrequency*scale)) *pHeightRange;
 
-
-			float height = (float)perlin_.noise(j, i, (pFrequency)) *pHeightRange;
-
+		
 			height = 0.5f * (height + 1.0f);
-			float co =int(height* 255.0f);
+			float co =int(height* 255);
 			
+
 			sf::Uint8 c = co;
 
 			vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-
 			vertexarray[i * grid_size + j].color = sf::Color{ c , c , c };
 
 		}
 
 	}
 }
+void VoronoiDiagram::DrawFBM(sf::VertexArray& vertexarray, int grid_size)
+{
+	const float scale = 100.0f / (float)grid_size;
 
+	for (int j = 0; j < grid_size; j++)
+	{
+		for (int i = 0; i < grid_size; i++)
+		{
+			float a = 1.0f;						//controls the height.
+			float mul =scale* 1.0f;
+			float height = 0.0f;
+			for (int o = 0; o < octaves_; o++)
+			{
+
+				height += (perlin_.noise(i*mul, j * mul, pFrequency)) * a;
+				a *= 0.5f;
+				mul *= 2.0f;
+			}
+			height *= pHeightRange;
+			
+			
+
+			//height = 0.5f * (height + 1.0f);
+			float co = int(height * 255.0f);
+
+			sf::Uint8 c = co;
+
+			vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+			vertexarray[i * grid_size + j].color = sf::Color{ c , c , c };
+
+
+			//heightMap[(j * grid_size) + i] = height - (pHeightRange);
+
+		}
+	}
+}
 
 //clear the vector if empty
 //find out what type and then how many points

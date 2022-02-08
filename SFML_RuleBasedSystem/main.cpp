@@ -90,10 +90,10 @@ int main()
 	number_ = 75;
 	div_ = 1.0f;
 	catch_ = 0.6f;
-	mult_ = 1;
 
 	height_ = 1.0f;
 	frequency_ = 1.0f;
+	octaves_ = 8;
 
 	VoronoiDiagram* v_d_p = new VoronoiDiagram();
 	ShortestPath* s_p_p = new ShortestPath();
@@ -196,11 +196,12 @@ int main()
 		ImGui::SliderInt("number", &number_, 0, 100);
 		ImGui::SliderFloat("catch", &catch_, 0.01f, 1.0f);
 		ImGui::SliderFloat("div", &div_, 0.0f, 2.0f);
-		ImGui::SliderInt("multiplyer", &mult_, 1, 100);
 		ImGui::SliderFloat("Perlin Frequency", &frequency_, 0.0010, 0.035);
 		ImGui::SliderFloat("Perlin Height", &height_, 0.0f, 1.0f);
+		ImGui::SliderInt("Octaves", &octaves_, 1, 8);
 		v_d_p->SetF(frequency_);
 		v_d_p->SetH(height_);
+		v_d_p->SetO(octaves_);
 
 		ImGui::Text("0 = triangular\n1 = point to point\n2 = obtuse triangle");
 
@@ -236,7 +237,7 @@ int main()
 				//the_clock::time_point startTime = the_clock::now();
 				thread_vector.clear();
 				threadfunc(thread_vector, v_d_p);
-				//v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_, div_);
+				v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_, div_);
 
 				//the_clock::time_point endTime = the_clock::now();
 
@@ -314,6 +315,7 @@ int main()
 		{
 			height_map.clear();
 			v_d_p->SetGridSize(resolution_);
+			
 			height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 			v_d_p->DrawNoise(height_map, v_d_p->GetGridSize());
 		}

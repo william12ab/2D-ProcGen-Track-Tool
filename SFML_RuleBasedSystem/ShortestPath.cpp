@@ -23,7 +23,7 @@ void ShortestPath::Initgrid(int grid_size, int* grid, int num_points)
 			{
 				if (grid[(i * grid_size) + j]==0)
 				{
-					grid[(i * grid_size) + j] = -1;
+					grid[(i * grid_size) + j] = -1;			//possible path
 				}
 				if (grid[(i * grid_size) + j] == 2000)
 				{

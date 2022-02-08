@@ -21,10 +21,10 @@ int num_threads_;
 bool render_height_map_;
 
 
-int number_;
-float catch_;
-float div_;
-int mult_;
+int number_;		//make this high
+float catch_;		//unused
+float div_;			//make this high too
 
 float frequency_;
 float height_;
+int octaves_;

@@ -46,16 +46,15 @@ public:
 	void SetFaile(bool f) { failed_ = f; }
 	void SetF(float f) { pFrequency = f; }
 	void SetH(float h) { pHeightRange = h; }
-
+	void SetO(int o) { octaves_ = o; }
 
 
 	void DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
 	void DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
 
 	void DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_, float div_a);
-	void DrawWave(sf::VertexArray& vertexarray, int grid_size, int mult);
 	void DrawNoise(sf::VertexArray& vertexarray, int grid_size);
-
+	void DrawFBM(sf::VertexArray& vertexarray, int grid_size);
 private:
 	SimplexNoise perlin_;
 
@@ -79,5 +78,6 @@ private:
 
 	float pFrequency = 1.0f;	//simplex noise frequency
 	float pHeightRange = 1.5f;
+	int octaves_ = 8;
 };
 
