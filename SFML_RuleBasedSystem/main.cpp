@@ -79,7 +79,7 @@ int main()
 	float elapsed = 0.0f;
 
 	//set the defaults for the application
-	resolution_ = 400;
+	resolution_ = 513;
 	sites_ = 25;
 	points_ =2;
 	regen_ = false;
@@ -134,7 +134,7 @@ int main()
 		threadfunc(thread_vector, v_d_p);
 		//v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_, div_);
 
-		v_d_p->DrawWave(height_map, v_d_p->GetGridSize(), mult_);
+		//v_d_p->DrawWave(height_map, v_d_p->GetGridSize(), mult_);
 
 		//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 		//the_clock::time_point endTime = the_clock::now();
@@ -203,16 +203,16 @@ int main()
 		v_d_p->SetH(height_);
 
 		ImGui::Text("0 = triangular\n1 = point to point\n2 = obtuse triangle");
+
 		if (ImGui::Button("Regenerate"))
 		{
 			v_d_p->SetType(track_type_);
 			voronoi_d.clear();
-			height_map.clear();
+			
 			v_d_p->~VoronoiDiagram();
 			v_d_p->SetGridSize(resolution_);
 			v_d_p->SetNumberOfSites(sites_);
 			v_d_p->SetNumberOfPoints(points_);
-			height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 			voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 			//resize the arrays
 			v_d_p->InitVector(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), v_d_p->GetNumberOfSites());
@@ -223,8 +223,8 @@ int main()
 				if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
 				{
 					voronoi_d.clear();
-					height_map.clear();
-					height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+					/*height_map.clear();
+					height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));*/
 					voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 					v_d_p->SetFaile(false);
 					s_p_p->SetFailed(false);
@@ -237,7 +237,6 @@ int main()
 				thread_vector.clear();
 				threadfunc(thread_vector, v_d_p);
 				//v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_, div_);
-				v_d_p->DrawNoise(height_map, v_d_p->GetGridSize());
 
 				//the_clock::time_point endTime = the_clock::now();
 
@@ -311,7 +310,13 @@ int main()
 
 			v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize());
 		}
-
+		if (ImGui::Button("Noise"))
+		{
+			height_map.clear();
+			v_d_p->SetGridSize(resolution_);
+			height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+			v_d_p->DrawNoise(height_map, v_d_p->GetGridSize());
+		}
 		ImGui::End();
 		//used to display the whole voronoi diagram
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))

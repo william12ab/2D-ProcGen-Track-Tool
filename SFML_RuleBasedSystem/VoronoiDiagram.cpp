@@ -396,16 +396,16 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 
 void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size)
 {
+	
 	for (int i = 0; i < grid_size; i++)
 	{
 		for (int j = 0; j < grid_size; j++)
 		{
-			float height = (float)perlin_.noise(j, i, (pFrequency)) * pHeightRange;
+
+
+			float height = (float)perlin_.noise(j, i, (pFrequency)) *pHeightRange;
 
 			height = 0.5f * (height + 1.0f);
-			/*height = (height > 1.0f) ? 1.0f : height;
-			height = (height < 0.0f) ? 0.0f : height;*/
-
 			float co =int(height* 255.0f);
 			
 			sf::Uint8 c = co;
