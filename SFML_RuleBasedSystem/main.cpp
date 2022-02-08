@@ -198,7 +198,7 @@ int main()
 		ImGui::SliderFloat("div", &div_, 0.0f, 2.0f);
 		ImGui::SliderInt("multiplyer", &mult_, 1, 100);
 		ImGui::SliderFloat("Perlin Frequency", &frequency_, 0.0010, 0.035);
-		ImGui::SliderFloat("Perlin Height", &height_, 1.0f, 15.0f);
+		ImGui::SliderFloat("Perlin Height", &height_, 0.0f, 1.0f);
 		v_d_p->SetF(frequency_);
 		v_d_p->SetH(height_);
 

@@ -401,16 +401,14 @@ void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size)
 		for (int j = 0; j < grid_size; j++)
 		{
 			float height = (float)perlin_.noise(j, i, (pFrequency)) * pHeightRange;
+
+			height = 0.5f * (height + 1.0f);
+			/*height = (height > 1.0f) ? 1.0f : height;
+			height = (height < 0.0f) ? 0.0f : height;*/
+
+			float co =int(height* 255.0f);
 			
-			if (height<0.0f)
-			{
-				//height *= -255.0f;
-			}
-			else
-			{
-				height *= 255.0f;
-			}
-			sf::Uint8 c = height;
+			sf::Uint8 c = co;
 
 			vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 
