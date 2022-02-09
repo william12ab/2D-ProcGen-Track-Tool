@@ -74,6 +74,7 @@ private:
 
 	int* grid_distance;
 	float* heightmap_;
+	int* noise_heightmap_;
 
 	int a_g[5];
 

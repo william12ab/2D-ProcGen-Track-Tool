@@ -19,6 +19,7 @@ VoronoiDiagram::VoronoiDiagram()
 	sites_v_1 = nullptr;
 	grid_distance = nullptr;
 	heightmap_ = nullptr;
+	noise_heightmap_ = nullptr;
 	failed_ = false;
 }
 
@@ -28,6 +29,7 @@ VoronoiDiagram::~VoronoiDiagram()
 	delete[] sites_v_1;
 	delete[] grid_distance;
 	delete[] heightmap_;
+	delete[] noise_heightmap_;
 }
 
 void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
@@ -36,6 +38,7 @@ void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
 	grid_v_1 = new int[grid_size_x * grid_size_x];
 	grid_distance = new int[ grid_size_x * grid_size_x ];
 	heightmap_ = new float[grid_size_x * grid_size_x];
+	noise_heightmap_ = new int[grid_size_x * grid_size_x];
 	sites_v_1 = new int[num_sites*2];
 }
 
@@ -277,13 +280,11 @@ void VoronoiDiagram::SetEdges(int grid_size)
 
 void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_, float div_a)
 {
-	sf::Image output;
-	output.create(grid_size, grid_size);
+
 	for (int i = 0; i < grid_size; i++)
 	{
 		for (int j = 0; j < grid_size; j++)
 		{
-		
 			for (int a = 1; a <= num_sites; a++)
 			{
 				if (grid_v_1[(i * grid_size) + j] == a)
@@ -305,8 +306,9 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 					float h_c = int(255 - r);
 					//so end color, closer to the site you are - brighter, further away - darker
 					c /= div_a;						//makes the colour smaller
+					h_c /= div_a;
 					heightmap_[i * grid_size + j] = h_c;
-					output.setPixel(j, i, sf::Color{ c , c , c });
+					
 					vertextarray[i * grid_size + j].position = sf::Vector2f(j, i);
 					vertextarray[i * grid_size + j].color = sf::Color{ c , c , c };
 				}
@@ -314,7 +316,7 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 		}
 	}
 
-	output.saveToFile("output.png");
+
 
 }
 
@@ -322,30 +324,28 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 void VoronoiDiagram::WriteToFile(int grid_size)
 {
 	const int dimensions_ = grid_size;
-	ofstream outfile("render.pgm", ios_base::out);
-	outfile << "P2\n" << dimensions_ << " " << dimensions_ << "\n255\n";
 
-	if (outfile.is_open())
+	sf::Image voronoi_output;
+	voronoi_output.create(grid_size, grid_size);
+	sf::Image noise_output;
+	noise_output.create(grid_size, grid_size);
+
+
+	for (int i = 0; i < dimensions_; i++)
 	{
-		for (int i = 0; i < dimensions_; i++)
-		{
-			for (int j = 0; j < dimensions_; j++)
-			{
-				outfile << heightmap_[i * dimensions_ + j] << " ";
+		for (int j = 0; j < dimensions_; j++)
+		{	
+			sf::Uint8 c = int(heightmap_[i * grid_size + j]);			
+			sf::Uint8 co = noise_heightmap_[i * grid_size + j];
 
-				
-			}
-			outfile << "\n";
-			
+			voronoi_output.setPixel(j, i, sf::Color{ c , c , c });
+			noise_output.setPixel(j, i, sf::Color{ co , co , co });
 		}
+
+			
 	}
-	outfile.close();
-
-
-
-
-	
-
+	noise_output.saveToFile("noise_layer.png");
+	voronoi_output.saveToFile("voronoi_layer.png");
 }
 
 void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size)
@@ -427,7 +427,7 @@ void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size)
 			
 
 			sf::Uint8 c = co;
-
+			noise_heightmap_[(i * grid_size) + j] = co;
 			vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 			vertexarray[i * grid_size + j].color = sf::Color{ c , c , c };
 
