@@ -9,10 +9,10 @@
 #include <thread>
 
 using std::thread;
-
 using std::chrono::duration_cast;
 using std::chrono::milliseconds; 
 using the_clock = std::chrono::steady_clock;
+
 
 void SettingText()
 {
@@ -20,9 +20,28 @@ void SettingText()
 	title_name_.setString("2D Track Generator\n Options");
 	title_name_.setCharacterSize(18);
 	title_name_.setPosition(sf::Vector2f(805, 10));
-
-
 }
+
+//void WriteToFile(VoronoiDiagram* v_p, sf::VertexArray& vertexarray)
+//{
+//	const int dimensions_ = v_p->GetGridSize();
+//	ofstream outfile("render.pgm", ios_base::out);
+//	outfile << "P2\n" << dimensions_ << " " << dimensions_ << "\n255\n";
+//
+//
+//	for (int i = 0; i < dimensions_; i++)
+//	{
+//		for (int j = 0; j < dimensions_; j++)
+//		{
+//			float d = v_p->GetHeightVal()[i * dimensions_ + j];
+//			outfile << v_p->GetHeightVal()[i * dimensions_ + j];
+//		}
+//		outfile << "\n";
+//
+//	}
+//}
+
+
 void threadfunc(std::vector<thread*> thread_vector, VoronoiDiagram* v_d_p)
 {
 	int start_ = 0;
@@ -320,6 +339,21 @@ int main()
 			
 			height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 			v_d_p->DrawNoise(height_map, v_d_p->GetGridSize());
+		}
+		if (ImGui::Button("Write to file"))
+		{
+			v_d_p->WriteToFile(v_d_p->GetGridSize());
+
+			
+
+			//sf::Texture outputTexture;
+			//outputTexture.create(v_d_p->GetGridSize(), v_d_p->GetGridSize());
+			//outputTexture.update(window);
+
+			//
+			//output.create(v_d_p->GetGridSize(), v_d_p->GetGridSize());
+			//output = outputTexture.copyToImage();
+			//output.saveToFile("output.png");
 		}
 		ImGui::End();
 		//used to display the whole voronoi diagram

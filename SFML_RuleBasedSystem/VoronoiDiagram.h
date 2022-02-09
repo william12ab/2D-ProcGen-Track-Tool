@@ -31,7 +31,7 @@ public:
 
 	int* GetGrid() { return grid_v_1; }
 	int* GetSites() { return sites_v_1; }
-
+	float* GetHeightVal() { return heightmap_; }
 
 	int GetNumberOfSites() { return num_of_sites; }						//returns the number of sites
 	int GetGridSize() { return grid_size_x; };							//returns the size of the grid
@@ -55,6 +55,10 @@ public:
 	void DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_, float div_a);
 	void DrawNoise(sf::VertexArray& vertexarray, int grid_size);
 	void DrawFBM(sf::VertexArray& vertexarray, int grid_size);
+
+
+
+	void WriteToFile(int grid_size);
 private:
 	SimplexNoise perlin_;
 
@@ -69,6 +73,7 @@ private:
 	int* grid_v_1;								//stores the grid in dynamic array
 
 	int* grid_distance;
+	float* heightmap_;
 
 	int a_g[5];
 

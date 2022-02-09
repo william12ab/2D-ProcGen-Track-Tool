@@ -1,7 +1,13 @@
 #include "VoronoiDiagram.h"
 #include <iostream>
 #include <amp.h>
+#include <fstream>
+using std::ios_base;
+using std::ofstream;
 using namespace concurrency;
+#include <SFML/Graphics.hpp>
+
+
 
 VoronoiDiagram::VoronoiDiagram()
 {
@@ -12,6 +18,7 @@ VoronoiDiagram::VoronoiDiagram()
 	grid_v_1 = nullptr;
 	sites_v_1 = nullptr;
 	grid_distance = nullptr;
+	heightmap_ = nullptr;
 	failed_ = false;
 }
 
@@ -20,6 +27,7 @@ VoronoiDiagram::~VoronoiDiagram()
 	delete[] grid_v_1;
 	delete[] sites_v_1;
 	delete[] grid_distance;
+	delete[] heightmap_;
 }
 
 void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
@@ -27,6 +35,7 @@ void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
 	grid_size_x = grid_size;
 	grid_v_1 = new int[grid_size_x * grid_size_x];
 	grid_distance = new int[ grid_size_x * grid_size_x ];
+	heightmap_ = new float[grid_size_x * grid_size_x];
 	sites_v_1 = new int[num_sites*2];
 }
 
@@ -268,6 +277,8 @@ void VoronoiDiagram::SetEdges(int grid_size)
 
 void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_, float div_a)
 {
+	sf::Image output;
+	output.create(grid_size, grid_size);
 	for (int i = 0; i < grid_size; i++)
 	{
 		for (int j = 0; j < grid_size; j++)
@@ -291,14 +302,50 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 						r = 255;				//keeps the values within range
 					}
 					sf::Uint8 c = 255- r;			// used to be 255-r	
+					float h_c = int(255 - r);
 					//so end color, closer to the site you are - brighter, further away - darker
 					c /= div_a;						//makes the colour smaller
+					heightmap_[i * grid_size + j] = h_c;
+					output.setPixel(j, i, sf::Color{ c , c , c });
 					vertextarray[i * grid_size + j].position = sf::Vector2f(j, i);
 					vertextarray[i * grid_size + j].color = sf::Color{ c , c , c };
 				}
 			}	
 		}
 	}
+
+	output.saveToFile("output.png");
+
+}
+
+
+void VoronoiDiagram::WriteToFile(int grid_size)
+{
+	const int dimensions_ = grid_size;
+	ofstream outfile("render.pgm", ios_base::out);
+	outfile << "P2\n" << dimensions_ << " " << dimensions_ << "\n255\n";
+
+	if (outfile.is_open())
+	{
+		for (int i = 0; i < dimensions_; i++)
+		{
+			for (int j = 0; j < dimensions_; j++)
+			{
+				outfile << heightmap_[i * dimensions_ + j] << " ";
+
+				
+			}
+			outfile << "\n";
+			
+		}
+	}
+	outfile.close();
+
+
+
+
+	
+
 }
 
 void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size)
