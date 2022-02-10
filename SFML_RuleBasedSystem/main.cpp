@@ -79,16 +79,16 @@ int main()
 	float elapsed = 0.0f;
 
 	//set the defaults for the application
-	resolution_ = 400;
-	sites_ = 25;
+	resolution_ = 800;
+	sites_ = 500;
 	points_ =2;
 	regen_ = false;
 	track_type_ = 1;  //1=p2p,0=loop
 	num_threads_ = 8;
 	render_height_map_ = false;
 
-	number_ = 75;
-	div_ = 1.0f;
+	number_ = 35;
+	div_ = 2.0f;
 	catch_ = 0.6f;
 
 	height_ = 1.0f;
