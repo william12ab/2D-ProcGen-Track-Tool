@@ -305,7 +305,7 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 					{
 						r = 255;				//keeps the values within range
 					}
-					sf::Uint8 c = 255- r;			// used to be 255-r	
+					sf::Uint8 c = 255- r;			
 					float h_c = int(255 - r);
 					//so end color, closer to the site you are - brighter, further away - darker
 					c /= div_a;						//makes the colour smaller
@@ -417,6 +417,7 @@ void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int gr
 				vertexarray[i * grid_size + j].color = sf::Color::Blue;
 			}
 
+			
 		}
 	}
 
@@ -435,7 +436,7 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::White;
 			}
-			//pathway
+			//pathway	(track)
 
 
 			//start

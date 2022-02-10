@@ -79,7 +79,7 @@ int main()
 	float elapsed = 0.0f;
 
 	//set the defaults for the application
-	resolution_ = 513;
+	resolution_ = 400;
 	sites_ = 25;
 	points_ =2;
 	regen_ = false;
@@ -93,9 +93,6 @@ int main()
 
 	height_ = 1.0f;
 	frequency_ = 1.0f;
-
-
-
 	alpha_ = 255;
 
 	VoronoiDiagram* v_d_p = new VoronoiDiagram();
@@ -135,10 +132,6 @@ int main()
 		v_d_p->DistributeSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 		//the_clock::time_point startTime = the_clock::now();
 		threadfunc(thread_vector, v_d_p);
-		//v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_, div_);
-
-		//v_d_p->DrawWave(height_map, v_d_p->GetGridSize(), mult_);
-
 		//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 		//the_clock::time_point endTime = the_clock::now();
 		//auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();

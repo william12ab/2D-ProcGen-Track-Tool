@@ -46,7 +46,6 @@ public:
 	void SetFaile(bool f) { failed_ = f; }
 	void SetF(float f) { pFrequency = f; }
 	void SetH(float h) { pHeightRange = h; }
-	void SetO(int o) { octaves_ = o; }
 
 
 	void DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
