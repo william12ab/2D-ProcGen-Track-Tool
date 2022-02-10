@@ -54,9 +54,9 @@ public:
 
 	void DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_, float div_a);
 	void DrawNoise(sf::VertexArray& vertexarray, int grid_size);
-	void DrawFBM(sf::VertexArray& vertexarray, int grid_size);
 
 
+	void ChangeAlpha(sf::VertexArray& vertexarray, int grid_size, int alpha_);
 
 	void WriteToFile(int grid_size);
 private:
@@ -75,6 +75,7 @@ private:
 	int* grid_distance;
 	float* heightmap_;
 	int* noise_heightmap_;
+	int* alpha_channel_;
 
 	int a_g[5];
 

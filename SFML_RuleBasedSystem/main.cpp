@@ -22,25 +22,6 @@ void SettingText()
 	title_name_.setPosition(sf::Vector2f(805, 10));
 }
 
-//void WriteToFile(VoronoiDiagram* v_p, sf::VertexArray& vertexarray)
-//{
-//	const int dimensions_ = v_p->GetGridSize();
-//	ofstream outfile("render.pgm", ios_base::out);
-//	outfile << "P2\n" << dimensions_ << " " << dimensions_ << "\n255\n";
-//
-//
-//	for (int i = 0; i < dimensions_; i++)
-//	{
-//		for (int j = 0; j < dimensions_; j++)
-//		{
-//			float d = v_p->GetHeightVal()[i * dimensions_ + j];
-//			outfile << v_p->GetHeightVal()[i * dimensions_ + j];
-//		}
-//		outfile << "\n";
-//
-//	}
-//}
-
 
 void threadfunc(std::vector<thread*> thread_vector, VoronoiDiagram* v_d_p)
 {
@@ -79,7 +60,7 @@ int main()
 {
 	sf::Clock clock;
 	// Seed the random number generator
-	srand((unsigned)std::time(NULL));
+	srand(static_cast <unsigned> (time(0)));
 
 	font.loadFromFile("DefaultAriel.ttf");
 	//text setting
@@ -112,7 +93,10 @@ int main()
 
 	height_ = 1.0f;
 	frequency_ = 1.0f;
-	octaves_ = 8;
+
+
+
+	alpha_ = 255;
 
 	VoronoiDiagram* v_d_p = new VoronoiDiagram();
 	ShortestPath* s_p_p = new ShortestPath();
@@ -217,10 +201,9 @@ int main()
 		ImGui::SliderFloat("div", &div_, 0.0f, 2.0f);
 		ImGui::SliderFloat("Perlin Frequency", &frequency_, 0.0010, 0.035);
 		ImGui::SliderFloat("Perlin Height", &height_, 0.0f, 1.0f);
-		ImGui::SliderInt("Octaves", &octaves_, 1, 8);
 		v_d_p->SetF(frequency_);
 		v_d_p->SetH(height_);
-		v_d_p->SetO(octaves_);
+
 
 		ImGui::Text("0 = triangular\n1 = point to point\n2 = obtuse triangle");
 
@@ -339,6 +322,12 @@ int main()
 			
 			height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 			v_d_p->DrawNoise(height_map, v_d_p->GetGridSize());
+		}
+		ImGui::SliderInt("Alpha", &alpha_, 0, 255);
+
+		if (ImGui::Button("Change alpha"))
+		{
+			v_d_p->ChangeAlpha(height_map, v_d_p->GetGridSize(),alpha_);
 		}
 		if (ImGui::Button("Write to file"))
 		{

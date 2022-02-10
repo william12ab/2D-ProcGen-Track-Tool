@@ -20,6 +20,7 @@ VoronoiDiagram::VoronoiDiagram()
 	grid_distance = nullptr;
 	heightmap_ = nullptr;
 	noise_heightmap_ = nullptr;
+	alpha_channel_ = nullptr;
 	failed_ = false;
 }
 
@@ -30,6 +31,7 @@ VoronoiDiagram::~VoronoiDiagram()
 	delete[] grid_distance;
 	delete[] heightmap_;
 	delete[] noise_heightmap_;
+	delete[]alpha_channel_;
 }
 
 void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
@@ -39,6 +41,7 @@ void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
 	grid_distance = new int[ grid_size_x * grid_size_x ];
 	heightmap_ = new float[grid_size_x * grid_size_x];
 	noise_heightmap_ = new int[grid_size_x * grid_size_x];
+	alpha_channel_ = new int[grid_size_x * grid_size_x];
 	sites_v_1 = new int[num_sites*2];
 }
 
@@ -326,26 +329,59 @@ void VoronoiDiagram::WriteToFile(int grid_size)
 	const int dimensions_ = grid_size;
 
 	sf::Image voronoi_output;
-	voronoi_output.create(grid_size, grid_size);
 	sf::Image noise_output;
+	sf::Image final_i;
+	
+	voronoi_output.create(grid_size, grid_size);
 	noise_output.create(grid_size, grid_size);
+	final_i.create(grid_size, grid_size);
+	
 
 
 	for (int i = 0; i < dimensions_; i++)
 	{
 		for (int j = 0; j < dimensions_; j++)
 		{	
-			sf::Uint8 c = int(heightmap_[i * grid_size + j]);			
+			sf::Uint8 c = int(heightmap_[i * grid_size + j]);		
 			sf::Uint8 co = noise_heightmap_[i * grid_size + j];
+			sf::Uint8 a = alpha_channel_[i * grid_size + j];
+
+
+			int i_alpha_two = alpha_channel_[i * grid_size + j];
+			float i_alpha_percent = (float)i_alpha_two / 255.0f;
+			int i_alpha_final = i_alpha_two + (255 * (1 - i_alpha_two));
+			int i_c_one = int(heightmap_[i * grid_size + j]);
+			int i_c_two = noise_heightmap_[i * grid_size + j];
+			
+			sf::Uint8 alpha_final = i_alpha_final;
+			sf::Uint8 colour_final = ((i_c_two * i_alpha_two) + ((i_c_one * 255) * (1 - i_alpha_two))) / i_alpha_final;
+			int i_c_f = ((i_c_two * i_alpha_two) + ((i_c_one * 255) * (1 - i_alpha_two))) / i_alpha_final;
+
+			int i_c_f_t = i_c_two + i_c_one*(1.0f - i_alpha_percent);
+			if (i_c_f_t>255)
+			{
+				i_c_f_t = 255;
+			}
+			float i_a_c_t = i_alpha_percent + 1.0f * (1.0f - i_alpha_percent);
+			
+			int aaa = 255 * i_a_c_t;
+
+			sf::Uint8 ia = i_c_f_t;
+			sf::Uint8 iaa = aaa;
 
 			voronoi_output.setPixel(j, i, sf::Color{ c , c , c });
-			noise_output.setPixel(j, i, sf::Color{ co , co , co });
+			noise_output.setPixel(j, i, sf::Color{ co , co , co,a });
+			final_i.setPixel(j, i, sf::Color{ ia,ia,ia ,iaa });
+			
+			
 		}
-
+	
 			
 	}
 	noise_output.saveToFile("noise_layer.png");
 	voronoi_output.saveToFile("voronoi_layer.png");
+	final_i.saveToFile("final.png");
+	
 }
 
 void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size)
@@ -414,12 +450,16 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size)
 {
 	const float scale = 100.0f / (float)grid_size;
+	float low_ = 0.01f;
+	float high_ = 0.014f;
+	float r3 = low_ + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high_ - low_)));
+
 
 	for (int i = 0; i < grid_size; i++)
 	{
 		for (int j = 0; j < grid_size; j++)
 		{
-			float height = (float)perlin_.noise(j, i, (pFrequency*scale)) *pHeightRange;
+			float height = (float)perlin_.noise(j, i, (r3 *scale)) *pHeightRange;
 
 		
 			height = 0.5f * (height + 1.0f);
@@ -428,6 +468,7 @@ void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size)
 
 			sf::Uint8 c = co;
 			noise_heightmap_[(i * grid_size) + j] = co;
+			alpha_channel_[i * grid_size + j] = 255;
 			vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 			vertexarray[i * grid_size + j].color = sf::Color{ c , c , c };
 
@@ -435,42 +476,21 @@ void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size)
 
 	}
 }
-void VoronoiDiagram::DrawFBM(sf::VertexArray& vertexarray, int grid_size)
+
+void VoronoiDiagram::ChangeAlpha(sf::VertexArray& vertexarray, int grid_size, int alpha_)
 {
-	const float scale = 100.0f / (float)grid_size;
-
-	for (int j = 0; j < grid_size; j++)
+	for (int i = 0; i < grid_size; i++)
 	{
-		for (int i = 0; i < grid_size; i++)
+		for (int j = 0; j < grid_size; j++)
 		{
-			float a = 1.0f;						//controls the height.
-			float mul =scale* 1.0f;
-			float height = 0.0f;
-			for (int o = 0; o < octaves_; o++)
-			{
-
-				height += (perlin_.noise(i*mul, j * mul, pFrequency)) * a;
-				a *= 0.5f;
-				mul *= 2.0f;
-			}
-			height *= pHeightRange;
-			
-			
-
-			//height = 0.5f * (height + 1.0f);
-			float co = int(height * 255.0f);
-
-			sf::Uint8 c = co;
-
-			vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-			vertexarray[i * grid_size + j].color = sf::Color{ c , c , c };
-
-
-			//heightMap[(j * grid_size) + i] = height - (pHeightRange);
-
+			alpha_channel_[(i * grid_size) + j] = alpha_;
+			sf::Uint8 c = alpha_;
+			vertexarray[i * grid_size + j].color = sf::Color{ vertexarray[i * grid_size + j].color.r , vertexarray[i * grid_size + j].color.g ,vertexarray[i * grid_size + j].color.b, c};
 		}
 	}
+
 }
+
 
 //clear the vector if empty
 //find out what type and then how many points

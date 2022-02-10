@@ -27,4 +27,5 @@ float div_;			//make this high too
 
 float frequency_;
 float height_;
-int octaves_;
+
+int alpha_;
