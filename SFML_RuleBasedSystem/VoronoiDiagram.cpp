@@ -349,25 +349,42 @@ void VoronoiDiagram::WriteToFile(int grid_size)
 
 			int i_alpha_two = alpha_channel_[i * grid_size + j];
 			float i_alpha_percent = (float)i_alpha_two / 255.0f;
-			int i_alpha_final = i_alpha_two + (255 * (1 - i_alpha_two));
 			int i_c_one = int(heightmap_[i * grid_size + j]);
 			int i_c_two = noise_heightmap_[i * grid_size + j];
 			
-			sf::Uint8 alpha_final = i_alpha_final;
-			sf::Uint8 colour_final = ((i_c_two * i_alpha_two) + ((i_c_one * 255) * (1 - i_alpha_two))) / i_alpha_final;
-			int i_c_f = ((i_c_two * i_alpha_two) + ((i_c_one * 255) * (1 - i_alpha_two))) / i_alpha_final;
-
-			int i_c_f_t = i_c_two + i_c_one*(1.0f - i_alpha_percent);
-			if (i_c_f_t>255)
-			{
-				i_c_f_t = 255;
-			}
-			float i_a_c_t = i_alpha_percent + 1.0f * (1.0f - i_alpha_percent);
 			
-			int aaa = 255 * i_a_c_t;
+			float i_c_t_a = (float)i_c_two / 255.0f;
+			float is = (float)i_c_one / 255.0f;
 
-			sf::Uint8 ia = i_c_f_t;
-			sf::Uint8 iaa = aaa;
+			float alpha_percent_ = i_alpha_percent + 1.0f * (1.0f - i_alpha_percent);
+
+			float final_color_p = (i_c_t_a*i_alpha_percent+ is*1.0f*(1.0f-i_alpha_percent))/alpha_percent_;
+
+
+			if (final_color_p>1.0f||final_color_p<0.0f)
+			{
+				int a = 1;
+				//just to check if its out of bounds
+				//happens for some reason when j=0 to 512 and i = 512
+			}
+
+			//this is the premultiplied
+			float i_c_f_t = i_c_t_a + is *(1.0f - i_alpha_percent);
+			if (i_c_f_t>1.0f)
+			{
+				i_c_f_t = 1.0f;
+			}
+
+			int pp = i_c_f_t * 255;
+			int aaa = 255 * alpha_percent_;
+
+	
+
+			int f_c = 255 * final_color_p;
+			int f_a = 255 * alpha_percent_;
+
+			sf::Uint8 ia = f_c;
+			sf::Uint8 iaa = f_a;
 
 			voronoi_output.setPixel(j, i, sf::Color{ c , c , c });
 			noise_output.setPixel(j, i, sf::Color{ co , co , co,a });

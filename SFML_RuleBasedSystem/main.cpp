@@ -332,17 +332,6 @@ int main()
 		if (ImGui::Button("Write to file"))
 		{
 			v_d_p->WriteToFile(v_d_p->GetGridSize());
-
-			
-
-			//sf::Texture outputTexture;
-			//outputTexture.create(v_d_p->GetGridSize(), v_d_p->GetGridSize());
-			//outputTexture.update(window);
-
-			//
-			//output.create(v_d_p->GetGridSize(), v_d_p->GetGridSize());
-			//output = outputTexture.copyToImage();
-			//output.saveToFile("output.png");
 		}
 		ImGui::End();
 		//used to display the whole voronoi diagram
