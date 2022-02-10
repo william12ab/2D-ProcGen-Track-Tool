@@ -342,23 +342,22 @@ void VoronoiDiagram::WriteToFile(int grid_size)
 	{
 		for (int j = 0; j < dimensions_; j++)
 		{	
-			sf::Uint8 c = int(heightmap_[i * grid_size + j]);		
-			sf::Uint8 co = noise_heightmap_[i * grid_size + j];
-			sf::Uint8 a = alpha_channel_[i * grid_size + j];
+			sf::Uint8 c = int(heightmap_[i * grid_size + j]);					//the voronoidiagram colour
+			sf::Uint8 co = noise_heightmap_[i * grid_size + j];					//noise colour
+			sf::Uint8 a = alpha_channel_[i * grid_size + j];					//alpha colour value of noise
 
 
-			int i_alpha_two = alpha_channel_[i * grid_size + j];
-			float i_alpha_percent = (float)i_alpha_two / 255.0f;
-			int i_c_one = int(heightmap_[i * grid_size + j]);
-			int i_c_two = noise_heightmap_[i * grid_size + j];
+			int i_alpha_two = alpha_channel_[i * grid_size + j];				//int version of alpha
+			float i_alpha_percent = (float)i_alpha_two / 255.0f;				//alpha as value between 0.0 to 1.0
+			int i_c_one = int(heightmap_[i * grid_size + j]);					//int value of c
+			int i_c_two = noise_heightmap_[i * grid_size + j];					//int value of co
 			
 			
-			float i_c_t_a = (float)i_c_two / 255.0f;
-			float is = (float)i_c_one / 255.0f;
+			float i_c_t_a = (float)i_c_two / 255.0f;							//decimal value of co
+			float is = (float)i_c_one / 255.0f;									//decimal value of c
 
-			float alpha_percent_ = i_alpha_percent + 1.0f * (1.0f - i_alpha_percent);
-
-			float final_color_p = (i_c_t_a*i_alpha_percent+ is*1.0f*(1.0f-i_alpha_percent))/alpha_percent_;
+			float alpha_percent_ = i_alpha_percent + 1.0f * (1.0f - i_alpha_percent);							//alpha_f = alpha_a + alpha_b(1-alpha_a)	(as a decimal value)
+			float final_color_p = (i_c_t_a*i_alpha_percent+ is*1.0f*(1.0f-i_alpha_percent))/alpha_percent_;		//final_c = (colour_a*alpha_a + colour_b*alpha_b(1-alpha_a))/alpha_final		as a percent
 
 
 			if (final_color_p>1.0f||final_color_p<0.0f)
@@ -366,6 +365,8 @@ void VoronoiDiagram::WriteToFile(int grid_size)
 				int a = 1;
 				//just to check if its out of bounds
 				//happens for some reason when j=0 to 512 and i = 512
+				//becuase of error in voronoi
+				//fix it
 			}
 
 			//this is the premultiplied
@@ -375,20 +376,18 @@ void VoronoiDiagram::WriteToFile(int grid_size)
 				i_c_f_t = 1.0f;
 			}
 
-			int pp = i_c_f_t * 255;
-			int aaa = 255 * alpha_percent_;
+			int premultiplied_version_colour = i_c_f_t * 255;
+			int premultiplied_version_alpha = 255 * alpha_percent_;
 
-	
-
-			int f_c = 255 * final_color_p;
+			int f_c = 255 * final_color_p;											//need to multiply it by 255 to get as rgb value out of 255 instead of decimal
 			int f_a = 255 * alpha_percent_;
 
-			sf::Uint8 ia = f_c;
-			sf::Uint8 iaa = f_a;
+			sf::Uint8 final_c = f_c;
+			sf::Uint8 final_a = f_a;
 
 			voronoi_output.setPixel(j, i, sf::Color{ c , c , c });
 			noise_output.setPixel(j, i, sf::Color{ co , co , co,a });
-			final_i.setPixel(j, i, sf::Color{ ia,ia,ia ,iaa });
+			final_i.setPixel(j, i, sf::Color{ final_c,final_c,final_c ,final_a });
 			
 			
 		}
@@ -479,13 +478,13 @@ void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size)
 			float height = (float)perlin_.noise(j, i, (r3 *scale)) *pHeightRange;
 
 		
-			height = 0.5f * (height + 1.0f);
-			float co =int(height* 255);
-			
+			height = 0.5f * (height + 1.0f);				//keeps the value between 0-1 instead of the -1 to 1 range it is in initially
+			float co =int(height* 255);						//geets as rgb value
 
-			sf::Uint8 c = co;
-			noise_heightmap_[(i * grid_size) + j] = co;
-			alpha_channel_[i * grid_size + j] = 255;
+			sf::Uint8 c = co;									
+			noise_heightmap_[(i * grid_size) + j] = co;				//stores colour value for use in saving images
+			alpha_channel_[i * grid_size + j] = 255;				//stores alpha value
+
 			vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 			vertexarray[i * grid_size + j].color = sf::Color{ c , c , c };
 
@@ -500,6 +499,7 @@ void VoronoiDiagram::ChangeAlpha(sf::VertexArray& vertexarray, int grid_size, in
 	{
 		for (int j = 0; j < grid_size; j++)
 		{
+			//stores alpha if changed and applies to exisiting image
 			alpha_channel_[(i * grid_size) + j] = alpha_;
 			sf::Uint8 c = alpha_;
 			vertexarray[i * grid_size + j].color = sf::Color{ vertexarray[i * grid_size + j].color.r , vertexarray[i * grid_size + j].color.g ,vertexarray[i * grid_size + j].color.b, c};

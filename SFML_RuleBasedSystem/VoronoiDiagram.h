@@ -84,7 +84,6 @@ private:
 	bool failed_;
 
 	float pFrequency = 1.0f;	//simplex noise frequency
-	float pHeightRange = 1.5f;
-	int octaves_ = 8;
+	float pHeightRange = 1.0f;
 };
 
