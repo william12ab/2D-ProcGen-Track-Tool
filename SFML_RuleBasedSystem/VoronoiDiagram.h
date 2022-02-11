@@ -57,7 +57,7 @@ public:
 
 	void ChangeAlpha(sf::VertexArray& vertexarray, int grid_size, int alpha_);
 
-	void WriteToFile(int grid_size);
+	void WriteToFile(int grid_size, sf::VertexArray& vertexarray);
 private:
 	SimplexNoise perlin_;
 

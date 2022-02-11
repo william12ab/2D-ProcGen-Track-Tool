@@ -324,18 +324,19 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 }
 
 
-void VoronoiDiagram::WriteToFile(int grid_size)
+void VoronoiDiagram::WriteToFile(int grid_size, sf::VertexArray& vertexarray)
 {
 	const int dimensions_ = grid_size;
 
 	sf::Image voronoi_output;
 	sf::Image noise_output;
 	sf::Image final_i;
-	
+	sf::Image track_output;
+
 	voronoi_output.create(grid_size, grid_size);
 	noise_output.create(grid_size, grid_size);
 	final_i.create(grid_size, grid_size);
-	
+	track_output.create(grid_size, grid_size);
 
 
 	for (int i = 0; i < dimensions_; i++)
@@ -385,10 +386,12 @@ void VoronoiDiagram::WriteToFile(int grid_size)
 			sf::Uint8 final_c = f_c;
 			sf::Uint8 final_a = f_a;
 
+
+			//setting the pixels of the output images
 			voronoi_output.setPixel(j, i, sf::Color{ c , c , c });
 			noise_output.setPixel(j, i, sf::Color{ co , co , co,a });
 			final_i.setPixel(j, i, sf::Color{ final_c,final_c,final_c ,final_a });
-			
+			track_output.setPixel(j, i, sf::Color{ vertexarray[i * grid_size + j].color.r,vertexarray[i * grid_size + j].color.g,vertexarray[i * grid_size + j].color.b });
 			
 		}
 	
@@ -397,7 +400,7 @@ void VoronoiDiagram::WriteToFile(int grid_size)
 	noise_output.saveToFile("noise_layer.png");
 	voronoi_output.saveToFile("voronoi_layer.png");
 	final_i.saveToFile("final.png");
-	
+	track_output.saveToFile("track_image.png");
 }
 
 void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size)
@@ -431,34 +434,51 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 	{
 		for (int j=0;j<grid_size;j++)
 		{
-			if (grid_v_1[(i * grid_size) + j]== -12303)
+			//if (grid_v_1[(i * grid_size) + j]== -12303)//pathway	(track)
+			//{
+			//	vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+			//	vertexarray[i * grid_size + j].color = sf::Color::White;
+			//}
+			//if (grid_v_1[(i * grid_size) + j] == -1234)		//start
+			//{
+			//	vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+			//	vertexarray[i * grid_size + j].color = sf::Color::Blue;
+			//	
+			//}
+			//if (grid_v_1[(i * grid_size) + j] == 0)		//end/middle
+			//{
+			//	vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+			//	vertexarray[i * grid_size + j].color = sf::Color::Red;
+			//}
+			//if (grid_v_1[(i * grid_size) + j] == -3)			//end
+			//{
+			//	vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+			//	vertexarray[i * grid_size + j].color = sf::Color::Blue;
+			//}
+
+			switch (grid_v_1[(i * grid_size) + j])
 			{
+			case -12303:
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::White;
-			}
-			//pathway	(track)
-
-
-			//start
-			if (grid_v_1[(i * grid_size) + j] == -1234)
-			{
+				break;
+			case -1234:
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::Blue;
-				
-			}
-			//end/middle
-			if (grid_v_1[(i * grid_size) + j] == 0)
-			{
+				break;
+			case 0:
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::Red;
-			}
-			//end
-			if (grid_v_1[(i * grid_size) + j] == -3)
-			{
+				break;
+			case -3:
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::Blue;
+				break;
+			default:
+				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+				vertexarray[i * grid_size + j].color = sf::Color{ 0,0,0,0 };
+				break;
 			}
-
 		}
 	}
 	

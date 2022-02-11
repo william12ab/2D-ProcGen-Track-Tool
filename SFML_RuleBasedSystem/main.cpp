@@ -79,8 +79,8 @@ int main()
 	float elapsed = 0.0f;
 
 	//set the defaults for the application
-	resolution_ = 800;
-	sites_ = 500;
+	resolution_ = 400;
+	sites_ = 1000;
 	points_ =2;
 	regen_ = false;
 	track_type_ = 1;  //1=p2p,0=loop
@@ -132,6 +132,7 @@ int main()
 		v_d_p->DistributeSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 		//the_clock::time_point startTime = the_clock::now();
 		threadfunc(thread_vector, v_d_p);
+		
 		//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 		//the_clock::time_point endTime = the_clock::now();
 		//auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
@@ -324,7 +325,7 @@ int main()
 		}
 		if (ImGui::Button("Write to file"))
 		{
-			v_d_p->WriteToFile(v_d_p->GetGridSize());
+			v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d);
 		}
 		ImGui::End();
 		//used to display the whole voronoi diagram
