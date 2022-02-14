@@ -54,68 +54,70 @@ void testing(sf::VertexArray& vertexarray, VoronoiDiagram* v_)
 }
 
 
+void Init(sf::RenderWindow &window)
+{
+	font.loadFromFile("DefaultAriel.ttf");
+	//text setting
+	SettingText();
+	ImGui::SFML::Init(window);
+
+
+	resolution_ = 400;
+	sites_ = 1000;
+	points_ = 2;
+	regen_ = false;
+	track_type_ = 1;  //1=p2p,0=loop
+	num_threads_ = 8;
+	render_height_map_ = false;
+	number_ = 35;
+	div_ = 2.0f;
+	catch_ = 0.6f;
+	height_ = 1.0f;
+	frequency_ = 1.0f;
+	alpha_ = 255;
+
+
+
+}
+
 
 
 int main()
 {
 	sf::Clock clock;
+	sf::Clock deltaClock;
 	// Seed the random number generator
 	srand(static_cast <unsigned> (time(0)));
-
-	font.loadFromFile("DefaultAriel.ttf");
-	//text setting
-	SettingText();
-
-
 	std::vector<thread*> thread_vector;
 	std::vector<thread*> thread_vector_path;
-
 	// Create the window and UI bar on the right
 	sf::RenderWindow window(sf::VideoMode(1000,800), "2D Track Generator", sf::Style::Close);
 
-	ImGui::SFML::Init(window);
+	
 
-	sf::Clock deltaClock;
-	float elapsed = 0.0f;
+	Init(window);
 
-	//set the defaults for the application
-	resolution_ = 400;
-	sites_ = 1000;
-	points_ =2;
-	regen_ = false;
-	track_type_ = 1;  //1=p2p,0=loop
-	num_threads_ = 8;
-	render_height_map_ = false;
 
-	number_ = 35;
-	div_ = 2.0f;
-	catch_ = 0.6f;
 
-	height_ = 1.0f;
-	frequency_ = 1.0f;
-	alpha_ = 255;
 
 	VoronoiDiagram* v_d_p = new VoronoiDiagram();
 	ShortestPath* s_p_p = new ShortestPath();
 
+	//track initialisation
 	//set the size, number of sites and points. this will take input 
+	v_d_p->SetType(track_type_);
 	v_d_p->SetGridSize(resolution_);
 	v_d_p->SetNumberOfSites(sites_);
 	v_d_p->SetNumberOfPoints(points_);
 	v_d_p->~VoronoiDiagram();
 	//resize the arrays
 	
-	//places the sites
-	//sets up the vertex array
-	sf::VertexArray voronoi_d(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 	
+	//sets up the vertex array and the data structures for voronoi diagram
+	sf::VertexArray voronoi_d(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 	sf::VertexArray height_map(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-
-	//creates the vd in grid_v_1
-
 	v_d_p->InitVector(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), v_d_p->GetNumberOfSites());
 
-//	v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 		
 	do 
 	{
@@ -249,6 +251,8 @@ int main()
 					v_d_p->SetFaile(false);
 					s_p_p->SetFailed(false);
 					thread_vector.clear();
+
+
 				}
 				v_d_p->RandomPlaceSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 
