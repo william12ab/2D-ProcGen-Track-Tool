@@ -183,24 +183,45 @@ int main()
 			
 		}
 		ImGui::SFML::Update(window, deltaClock.restart());
-
+		
 		ImGui::Begin("Options");
-		ImGui::SliderInt("Num Threads", &num_threads_, 1, 16);
-		ImGui::SliderInt("Resolution", &resolution_, 100, 800);
-		ImGui::SliderInt("Sites", &sites_, 5, 100);
-		ImGui::SliderInt("Points", &points_, 2, 5);
-		ImGui::SliderInt("Track Type",&track_type_, 0, 2);
-		ImGui::SliderInt("number", &number_, 0, 100);
-		ImGui::SliderFloat("catch", &catch_, 0.01f, 1.0f);
-		ImGui::SliderFloat("div", &div_, 0.0f, 2.0f);
-		ImGui::SliderFloat("Perlin Frequency", &frequency_, 0.0010, 0.035);
-		ImGui::SliderFloat("Perlin Height", &height_, 0.0f, 1.0f);
-		v_d_p->SetF(frequency_);
-		v_d_p->SetH(height_);
+		ImGui::Text("\n");
+		if (ImGui::CollapsingHeader("Track Variables"))
+		{
+			ImGui::SliderInt("Num Threads", &num_threads_, 1, 16);
+			ImGui::SliderInt("Resolution", &resolution_, 100, 800);
+			ImGui::SliderInt("Sites", &sites_, 5, 100);
+			ImGui::SliderInt("Points", &points_, 2, 5);
+			ImGui::SliderInt("Track Type", &track_type_, 0, 2);
+			ImGui::Text("0 = triangular\n1 = point to point\n2 = obtuse triangle");
+		}
+		ImGui::Text("\n");
+		if (ImGui::CollapsingHeader("Heightmap Variables"))
+		{
+			ImGui::SliderInt("Size of cell outlines", &number_, 0, 100);
+			ImGui::TextWrapped("Controls the outline of voronoi cells");
+			ImGui::SliderFloat("Brightness", &div_, 0.0f, 2.0f);
+			ImGui::TextWrapped("Controls controls the brightness of image(higher darker)");
+			ImGui::SliderFloat("Perlin Frequency", &frequency_, 0.0010, 0.035);
+			ImGui::SliderFloat("Perlin Height", &height_, 0.0f, 1.0f);
+			v_d_p->SetF(frequency_);
+			v_d_p->SetH(height_);
+			ImGui::SliderInt("Alpha", &alpha_, 0, 255);
+			if (ImGui::Button("Change alpha"))
+			{
+				v_d_p->ChangeAlpha(height_map, v_d_p->GetGridSize(), alpha_);
+			}
+			if (ImGui::Button("Create Noise Image"))
+			{
+				height_map.clear();
+				v_d_p->SetGridSize(resolution_);
 
+				height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+				v_d_p->DrawNoise(height_map, v_d_p->GetGridSize());
+			}
 
-		ImGui::Text("0 = triangular\n1 = point to point\n2 = obtuse triangle");
-
+		}
+		ImGui::Text("\n");
 		if (ImGui::Button("Regenerate"))
 		{
 			v_d_p->SetType(track_type_);
@@ -309,24 +330,14 @@ int main()
 
 			//v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize());
 		}
-		if (ImGui::Button("Noise"))
-		{
-			height_map.clear();
-			v_d_p->SetGridSize(resolution_);
-			
-			height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-			v_d_p->DrawNoise(height_map, v_d_p->GetGridSize());
-		}
-		ImGui::SliderInt("Alpha", &alpha_, 0, 255);
+	
 
-		if (ImGui::Button("Change alpha"))
-		{
-			v_d_p->ChangeAlpha(height_map, v_d_p->GetGridSize(),alpha_);
-		}
+	
 		if (ImGui::Button("Write to file"))
 		{
 			v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d);
 		}
+		ImGui::Text("\n");
 		ImGui::End();
 		//used to display the whole voronoi diagram
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
