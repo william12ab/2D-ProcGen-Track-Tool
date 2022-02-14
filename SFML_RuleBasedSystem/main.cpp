@@ -100,7 +100,8 @@ void SetVars(VoronoiDiagram*v_d_p)
 }
 void CreateVoronoi(VoronoiDiagram* v_d_p, sf::VertexArray &height_map)
 {
-	v_d_p->DistributeSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+	//v_d_p->DistributeSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+	v_d_p->RandomPlaceSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 
 	//clears vector if in the regenerate button otherwise dont
 	if (!thread_vector.empty())
