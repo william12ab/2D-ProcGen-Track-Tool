@@ -3,6 +3,8 @@
 #include "ShortestPath.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
+#include <thread>
+using std::thread;
 VoronoiDiagram Voronoi_Diagram;
 ShortestPath shortest_path_;
 
@@ -10,7 +12,7 @@ sf::Font font;
 
 sf::Text title_name_;
 
-
+std::vector<thread*> thread_vector;
 //the defaults for the application.
 int resolution_;
 int sites_;

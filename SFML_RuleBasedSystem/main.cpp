@@ -6,9 +6,7 @@
 #include "MainHeader.h"
 #include <chrono>
 
-#include <thread>
 
-using std::thread;
 using std::chrono::duration_cast;
 using std::chrono::milliseconds; 
 using the_clock = std::chrono::steady_clock;
@@ -80,7 +78,28 @@ void Init(sf::RenderWindow &window)
 
 }
 
+void ResetVars(VoronoiDiagram*v_d_p, ShortestPath*s_p_p, sf::VertexArray voronoi_d, sf::VertexArray height_map)
+{
+	voronoi_d.clear();
+	height_map.clear();
+	v_d_p->SetFaile(false);
+	s_p_p->SetFailed(false);
+	thread_vector.clear();
+	height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+	voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+}
+void SetVars(VoronoiDiagram*v_d_p)
+{
+	v_d_p->SetType(track_type_);
+	v_d_p->SetGridSize(resolution_);
+	v_d_p->SetNumberOfSites(sites_);
+	v_d_p->SetNumberOfPoints(points_);
+	v_d_p->~VoronoiDiagram();
+	v_d_p->InitVector(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), v_d_p->GetNumberOfSites());
 
+}
+void CreateVoronoi() {}
+void CreateTrack(){}
 
 int main()
 {
@@ -88,8 +107,8 @@ int main()
 	sf::Clock deltaClock;
 	// Seed the random number generator
 	srand(static_cast <unsigned> (time(0)));
-	std::vector<thread*> thread_vector;
-	std::vector<thread*> thread_vector_path;
+
+
 	// Create the window and UI bar on the right
 	sf::RenderWindow window(sf::VideoMode(1000,800), "2D Track Generator", sf::Style::Close);
 
@@ -97,39 +116,21 @@ int main()
 
 	Init(window);
 
-
-
-
 	VoronoiDiagram* v_d_p = new VoronoiDiagram();
 	ShortestPath* s_p_p = new ShortestPath();
 
 	//track initialisation
-	//set the size, number of sites and points. this will take input 
-	v_d_p->SetType(track_type_);
-	v_d_p->SetGridSize(resolution_);
-	v_d_p->SetNumberOfSites(sites_);
-	v_d_p->SetNumberOfPoints(points_);
-	v_d_p->~VoronoiDiagram();
-	//resize the arrays
-	
-	
+	SetVars(v_d_p);
 	//sets up the vertex array and the data structures for voronoi diagram
 	sf::VertexArray voronoi_d(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 	sf::VertexArray height_map(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-	v_d_p->InitVector(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), v_d_p->GetNumberOfSites());
 
 		
 	do 
 	{
 		if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
 		{
-			voronoi_d.clear();
-			height_map.clear();
-			v_d_p->SetFaile(false);
-			s_p_p->SetFailed(false);
-			thread_vector.clear();
-			height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-			voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+			ResetVars(v_d_p,s_p_p, voronoi_d, height_map);
 		}
 		v_d_p->DistributeSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 		//the_clock::time_point startTime = the_clock::now();
@@ -226,33 +227,20 @@ int main()
 		ImGui::Text("\n");
 		if (ImGui::Button("Regenerate"))
 		{
-			v_d_p->SetType(track_type_);
+			SetVars(v_d_p);
 			voronoi_d.clear();
 			height_map.clear();
-			v_d_p->~VoronoiDiagram();
-			v_d_p->SetGridSize(resolution_);
-			v_d_p->SetNumberOfSites(sites_);
-			v_d_p->SetNumberOfPoints(points_);
 			voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-			//resize the arrays
-			
 			height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-			v_d_p->InitVector(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), v_d_p->GetNumberOfSites());
+			
 
 			//places the sites
 			do
 			{
 				if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
 				{
-					voronoi_d.clear();
-					height_map.clear();
-					height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-					voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-					v_d_p->SetFaile(false);
-					s_p_p->SetFailed(false);
+					ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
 					thread_vector.clear();
-
-
 				}
 				v_d_p->RandomPlaceSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 
