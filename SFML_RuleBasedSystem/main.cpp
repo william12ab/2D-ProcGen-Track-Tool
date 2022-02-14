@@ -78,7 +78,7 @@ void Init(sf::RenderWindow &window)
 
 }
 
-void ResetVars(VoronoiDiagram*v_d_p, ShortestPath*s_p_p, sf::VertexArray voronoi_d, sf::VertexArray height_map)
+void ResetVars(VoronoiDiagram*v_d_p, ShortestPath*s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map)
 {
 	voronoi_d.clear();
 	height_map.clear();
@@ -98,8 +98,67 @@ void SetVars(VoronoiDiagram*v_d_p)
 	v_d_p->InitVector(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), v_d_p->GetNumberOfSites());
 
 }
-void CreateVoronoi() {}
-void CreateTrack(){}
+void CreateVoronoi(VoronoiDiagram* v_d_p, sf::VertexArray &height_map)
+{
+	v_d_p->DistributeSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+
+	//clears vector if in the regenerate button otherwise dont
+	if (!thread_vector.empty())
+	{
+		thread_vector.clear();
+	}
+	threadfunc(thread_vector, v_d_p);
+	v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_, div_);
+
+	//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+	v_d_p->SetEdges(v_d_p->GetGridSize());
+	v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
+}
+void CreateTrack(VoronoiDiagram* v_d_p, ShortestPath* s_p_p)
+{
+	//init grid should be fine, no need to change.
+	s_p_p->Initgrid(v_d_p->GetGridSize(), v_d_p->GetGrid(), v_d_p->GetNumberOfPoints());
+	//pass in the start and end to both these functions
+	int start = -4;
+	s_p_p->PrintOutStartEnd(v_d_p->GetGridSize(), v_d_p->GetGrid());
+	//if type 2, then need to loop over number of points differently and check when the index is = 1 so that the starting point can be changed to the end
+	if (v_d_p->GetType() == 2)
+	{
+
+		for (int i = 0; i < (v_d_p->GetNumberOfPoints()); i++)
+		{
+			s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, s_p_p->GetFailed(), 0, v_d_p->GetGridSize());
+			s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
+			//changes start point first then the end point to start point, and second end point to 1st end point
+			//so p0=p-1, p1=0,p2=1
+			if (i == 1)
+			{
+				s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -1234, -5);
+			}
+			s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), 0, -1234);
+			s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
+			s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
+			s_p_p->CleanGrid(v_d_p->GetGridSize(), v_d_p->GetGrid());
+			//std::cout << "successful path\n";
+		}
+
+	}
+	else
+	{
+		//the_clock::time_point startTime = the_clock::now();
+		for (int i = 0; i < (v_d_p->GetNumberOfPoints() - 1) && !s_p_p->GetFailed(); i++)
+		{
+			s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, s_p_p->GetFailed(), 0, v_d_p->GetGridSize());
+			s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
+			//changes start point first then the end point to start point, and second end point to 1st end point
+			//so p0=p-1, p1=0,p2=1
+			s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), 0, -1234);
+			s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
+			s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
+			s_p_p->CleanGrid(v_d_p->GetGridSize(), v_d_p->GetGrid());
+		}
+	}
+}
 
 int main()
 {
@@ -132,40 +191,10 @@ int main()
 		{
 			ResetVars(v_d_p,s_p_p, voronoi_d, height_map);
 		}
-		v_d_p->DistributeSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
-		//the_clock::time_point startTime = the_clock::now();
-		threadfunc(thread_vector, v_d_p);
-		
-		//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
-		//the_clock::time_point endTime = the_clock::now();
-		//auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-		//std::cout << "time(v d): " << time_taken; std::cout << std::endl;
-		v_d_p->SetEdges(v_d_p->GetGridSize());
-		v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
-		//sets the points to connect the distance
+		CreateVoronoi(v_d_p, height_map);
 
+		CreateTrack(v_d_p, s_p_p);
 
-
-	//init grid should be fine, no need to change.
-		s_p_p->Initgrid(v_d_p->GetGridSize(), v_d_p->GetGrid(), v_d_p->GetNumberOfPoints());
-		//pass in the start and end to both these functions
-		int start = -4;
-		s_p_p->PrintOutStartEnd(v_d_p->GetGridSize(), v_d_p->GetGrid());
-		the_clock::time_point startTime_path = the_clock::now();
-
-		for (int i = 0; i < (v_d_p->GetNumberOfPoints() - 1); i++)
-		{
-			s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, s_p_p->GetFailed(), 0, v_d_p->GetGridSize());
-			s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
-			//changes start point first then the end point to start point, and second end point to 1st end point
-			//so p0=p-1, p1=0,p2=1
-			s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), 0, -1234);
-			s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
-			s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
-		}
-		//the_clock::time_point endTime_path = the_clock::now();
-		//auto time_taken_path = duration_cast<milliseconds>(endTime_path - startTime_path).count();
-		//std::cout << "time(path): " << time_taken_path; std::cout << std::endl;
 	} while (v_d_p->GetFailed() || s_p_p->GetFailed());
 	
 	v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize());
@@ -242,82 +271,8 @@ int main()
 					ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
 					thread_vector.clear();
 				}
-				v_d_p->RandomPlaceSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
-
-				//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(),0,400);
-				//the_clock::time_point startTime = the_clock::now();
-				thread_vector.clear();
-				threadfunc(thread_vector, v_d_p);
-				v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_, div_);
-
-				//the_clock::time_point endTime = the_clock::now();
-
-				//auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-
-				//std::cout << "time taken (v_d ui): " << time_taken; std::cout << std::endl;
-				v_d_p->SetEdges(v_d_p->GetGridSize());
-
-				//the_clock::time_point startTimea = the_clock::now();
-				v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
-				//the_clock::time_point endTimea = the_clock::now();
-
-				//auto time_takena = duration_cast<milliseconds>(endTimea - startTimea).count();
-
-				//std::cout << "time taken (set point ui): " << time_takena; std::cout << std::endl;
-
-			//init grid should be fine, no need to change.
-				s_p_p->Initgrid(v_d_p->GetGridSize(), v_d_p->GetGrid(), v_d_p->GetNumberOfPoints());
-
-			//pass in the start and end to both these functions
-				int start = -4;
-				s_p_p->PrintOutStartEnd(v_d_p->GetGridSize(), v_d_p->GetGrid());
-			
-			//if type 2, then need to loop over number of points differently and check when the index is = 1 so that the starting point can be changed to the end
-				if (v_d_p->GetType() == 2)
-				{
-				
-					for (int i = 0; i < (v_d_p->GetNumberOfPoints() ); i++)
-					{
-					
-						//ThreadFuncPath(thread_vector, v_d_p, s_p_p);
-						s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, s_p_p->GetFailed(), 0, v_d_p->GetGridSize());
-						s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
-					//changes start point first then the end point to start point, and second end point to 1st end point
-					//so p0=p-1, p1=0,p2=1
-						if (i==1)
-						{
-							s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -1234, -5);
-						}
-						s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), 0, -1234);
-						s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
-						s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
-						s_p_p->CleanGrid(v_d_p->GetGridSize(), v_d_p->GetGrid());
-						//std::cout << "successful path\n";
-					}
-
-				}
-			else
-			{
-				//the_clock::time_point startTime = the_clock::now();
-				for (int i = 0; i < (v_d_p->GetNumberOfPoints() - 1) && !s_p_p->GetFailed(); i++)
-					{
-					
-					//ThreadFuncPath(thread_vector, v_d_p, s_p_p);
-						s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, s_p_p->GetFailed(), 0, v_d_p->GetGridSize());
-						s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
-					//changes start point first then the end point to start point, and second end point to 1st end point
-					//so p0=p-1, p1=0,p2=1
-						s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), 0, -1234);
-						s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
-						s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
-						s_p_p->CleanGrid(v_d_p->GetGridSize(), v_d_p->GetGrid());	
-					}
-				//the_clock::time_point endTime = the_clock::now();
-
-				//auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-
-				//std::cout << "time taken 1 or 0(path): " << time_taken; std::cout << std::endl;
-			}
+				CreateVoronoi(v_d_p, height_map);
+				CreateTrack(v_d_p, s_p_p);
 			} while (v_d_p->GetFailed() || s_p_p->GetFailed());
 
 			//v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize());
