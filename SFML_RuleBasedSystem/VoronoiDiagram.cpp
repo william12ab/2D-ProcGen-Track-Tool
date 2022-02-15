@@ -22,6 +22,8 @@ VoronoiDiagram::VoronoiDiagram()
 	noise_heightmap_ = nullptr;
 	alpha_channel_ = nullptr;
 	failed_ = false;
+	srand(static_cast <unsigned> (time(0)));
+
 }
 
 VoronoiDiagram::~VoronoiDiagram()
@@ -293,10 +295,7 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 				if (grid_v_1[(i * grid_size) + j] == a)
 				{
 					float s = float((float)1 / (float)num_sites);							//gets the thing as a percentage
-					if (s>c_)
-					{
-						s = c_;
-					}
+				
 					int d = grid_distance[(i * grid_size) + j]/ (float)num_;			//the distance divided by a number, so makes the distance smaller or bigger
 					int n = s * 255;										//percentage * 255
 					int r = n + d;

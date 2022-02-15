@@ -61,7 +61,7 @@ void Init(sf::RenderWindow &window)
 
 
 	resolution_ = 400;
-	sites_ = 1000;
+	sites_ = 100;
 	points_ = 2;
 	regen_ = false;
 	track_type_ = 1;  //1=p2p,0=loop
@@ -109,6 +109,7 @@ void CreateVoronoi(VoronoiDiagram* v_d_p, sf::VertexArray &height_map)
 		thread_vector.clear();
 	}
 	threadfunc(thread_vector, v_d_p);
+
 	v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_, div_);
 
 	//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
