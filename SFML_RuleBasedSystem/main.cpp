@@ -269,8 +269,13 @@ int main()
 				{
 					ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
 				}
+				the_clock::time_point startTime = the_clock::now();
 				CreateVoronoi(v_d_p, height_map);
+				the_clock::time_point endTime = the_clock::now();
+				auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+				std::cout << "time(v d): " << time_taken; std::cout << std::endl;
 				CreateTrack(v_d_p, s_p_p);
+				
 			} while (v_d_p->GetFailed() || s_p_p->GetFailed());
 
 			//v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize());
@@ -280,11 +285,9 @@ int main()
 	
 		if (ImGui::Button("Write to file"))
 		{
-			the_clock::time_point startTime = the_clock::now();
+	
 			v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d);
-			the_clock::time_point endTime = the_clock::now();
-			auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-			std::cout << "time(v d): " << time_taken; std::cout << std::endl;
+
 		}
 		ImGui::Text("\n");
 		ImGui::End();
