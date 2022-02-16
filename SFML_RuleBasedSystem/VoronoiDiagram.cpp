@@ -47,14 +47,6 @@ void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
 	alpha_channel_ = new int[grid_size_x * grid_size_x];
 	sites_v_1 = new int[num_sites*2];
 
-
-	for (size_t i = 0; i < grid_size_x; i++)
-	{
-		for (size_t j = 0; j < grid_size_x; j++)
-		{
-			noise_heightmap_[(i * grid_size) + j] = 0;
-		}
-	}
 }
 
 
@@ -501,9 +493,16 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 
 void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size)
 {
+	for (size_t i = 0; i < grid_size_x; i++)
+	{
+		for (size_t j = 0; j < grid_size_x; j++)
+		{
+			noise_heightmap_[(i * grid_size) + j] = 0;
+		}
+	}
 	const float scale = 100.0f / (float)grid_size;
 	float low_ = 0.001f;
-	float high_ = 0.030f;
+	float high_ = 0.060f;
 	float r3 = low_ + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high_ - low_)));
 	float e2 = r3;
 	
@@ -522,10 +521,10 @@ void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size)
 				height = 0.5f * (height + 1.0f);				//keeps the value between 0-1 instead of the -1 to 1 range it is in initially
 				int co = int(height * 255);						//geets as rgb value
 
-				sf::Uint8 c = co;
+		
 				noise_heightmap_[(i * grid_size) + j] += co;				//stores colour value for use in saving images
 				alpha_channel_[i * grid_size + j] = 255;				//stores alpha value
-
+				sf::Uint8 c = (noise_heightmap_[(i * grid_size) + j]/3);
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color{ c , c , c };
 
