@@ -21,23 +21,23 @@ void SettingText()
 }
 
 
-void threadfunc(std::vector<thread*> thread_vector, VoronoiDiagram* v_d_p)
-{
-	int start_ = 0;
-	for (int i = 0; i < num_threads_; i++)
-	{
-		thread_vector.push_back(new thread(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), start_, start_ + (resolution_ / num_threads_)));
-		start_ += resolution_ / num_threads_;
-	}
-	int a = 0;
-	for (thread* th : thread_vector)
-	{
-		// If thread Object is Joinable then Join that thread.
-		if (th->joinable())
-			th->join();
-			delete th;
-	}
-}
+//void threadfunc(std::vector<thread*> thread_vector, VoronoiDiagram* v_d_p)
+//{
+//	int start_ = 0;
+//	for (int i = 0; i < num_threads_; i++)
+//	{
+//		thread_vector.push_back(new thread(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), start_, start_ + (resolution_ / num_threads_)));
+//		start_ += resolution_ / num_threads_;
+//	}
+//	int a = 0;
+//	for (thread* th : thread_vector)
+//	{
+//		// If thread Object is Joinable then Join that thread.
+//		if (th->joinable())
+//			th->join();
+//			delete th;
+//	}
+//}
 
 //pass in the thing and v_d_p
 void testing(sf::VertexArray& vertexarray, VoronoiDiagram* v_)
@@ -65,7 +65,6 @@ void Init(sf::RenderWindow &window)
 	points_ = 2;
 	regen_ = false;
 	track_type_ = 1;  //1=p2p,0=loop
-	num_threads_ = 8;
 	render_height_map_ = false;
 	number_ = 35;
 	div_ = 2.0f;
@@ -84,7 +83,6 @@ void ResetVars(VoronoiDiagram*v_d_p, ShortestPath*s_p_p, sf::VertexArray& vorono
 	height_map.clear();
 	v_d_p->SetFaile(false);
 	s_p_p->SetFailed(false);
-	thread_vector.clear();
 	height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 	voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 }
@@ -101,20 +99,18 @@ void SetVars(VoronoiDiagram*v_d_p)
 void CreateVoronoi(VoronoiDiagram* v_d_p, sf::VertexArray &height_map)
 {
 	//v_d_p->DistributeSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+
 	v_d_p->RandomPlaceSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 
-	//clears vector if in the regenerate button otherwise dont
-	if (!thread_vector.empty())
-	{
-		thread_vector.clear();
-	}
-	threadfunc(thread_vector, v_d_p);
+
+	v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+	
 
 	v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_, div_);
 
-	//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 	v_d_p->SetEdges(v_d_p->GetGridSize());
 	v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
+
 }
 void CreateTrack(VoronoiDiagram* v_d_p, ShortestPath* s_p_p)
 {
@@ -161,6 +157,8 @@ void CreateTrack(VoronoiDiagram* v_d_p, ShortestPath* s_p_p)
 		}
 	}
 }
+
+
 
 int main()
 {
@@ -222,7 +220,6 @@ int main()
 		ImGui::Text("\n");
 		if (ImGui::CollapsingHeader("Track Variables"))
 		{
-			ImGui::SliderInt("Num Threads", &num_threads_, 1, 16);
 			ImGui::SliderInt("Resolution", &resolution_, 100, 800);
 			ImGui::SliderInt("Sites", &sites_, 5, 100);
 			ImGui::SliderInt("Points", &points_, 2, 5);
@@ -271,7 +268,6 @@ int main()
 				if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
 				{
 					ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
-					thread_vector.clear();
 				}
 				CreateVoronoi(v_d_p, height_map);
 				CreateTrack(v_d_p, s_p_p);
@@ -284,7 +280,11 @@ int main()
 	
 		if (ImGui::Button("Write to file"))
 		{
+			the_clock::time_point startTime = the_clock::now();
 			v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d);
+			the_clock::time_point endTime = the_clock::now();
+			auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+			std::cout << "time(v d): " << time_taken; std::cout << std::endl;
 		}
 		ImGui::Text("\n");
 		ImGui::End();
