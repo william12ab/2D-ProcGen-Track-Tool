@@ -497,7 +497,7 @@ void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size)
 		{
 			float height = (float)perlin_.noise(j, i, (r3 *scale)) *pHeightRange;
 
-		
+
 			height = 0.5f * (height + 1.0f);				//keeps the value between 0-1 instead of the -1 to 1 range it is in initially
 			float co =int(height* 255);						//geets as rgb value
 

@@ -1,7 +1,7 @@
 #include "SimplexNoise.h"
 #include <cstdint>
 
-
+//https://github.com/stegu/perlin-noise/blob/master/src/simplexnoise1234.c
 //https://mylearningspace.abertay.ac.uk/d2l/le/content/16924/viewContent/222818/View
 //this was followed for the implimentation of simplex noise;
 
