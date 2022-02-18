@@ -26,6 +26,8 @@ VoronoiDiagram::VoronoiDiagram()
 	failed_ = false;
 	srand(static_cast <unsigned> (time(0)));
 
+	max_distance_ = 0;
+
 }
 
 VoronoiDiagram::~VoronoiDiagram()
@@ -182,7 +184,7 @@ int VoronoiDiagram::DistanceSqrt(int x, int y, int x2, int y2)
 
 void VoronoiDiagram::DiagramAMP(int num_sites, int grid_size)
 {
-
+	max_distance_ = 0;
 	int* incr;
 	incr = new int[num_sites];
 	//mutex distance_mutex;
@@ -204,6 +206,7 @@ void VoronoiDiagram::DiagramAMP(int num_sites, int grid_size)
 				{
 					//unique_lock<mutex> lock(distance_mutex);
 					d = DistanceSqrt(sites_v_1[s], sites_v_1[s + 1], j, i);
+					
 					s += 2;
 					if (d < dist)
 					{
@@ -218,12 +221,18 @@ void VoronoiDiagram::DiagramAMP(int num_sites, int grid_size)
 					int s = grid_v_1[(j * grid_size) + i];
 					int p = incr[ind];
 					grid_v_1[(j * grid_size) + i] = incr[ind];
+					if (dist > max_distance_)
+					{
+						max_distance_ = dist;
+					}
 					grid_distance[(j * grid_size) + i] = dist;
 					int w = grid_v_1[(j * grid_size) + i];
 				}
 			}
 	});
 	delete[] incr;
+
+	std::cout << "max distance :" << max_distance_<<"\n";
 }
 
 
@@ -316,20 +325,34 @@ void VoronoiDiagram::SetEdges(int grid_size)
 
 void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_, float div_a)
 {
-
+	int max_d_ = 0;
 	parallel_for(0, grid_size, [&](int i)
 		{
 			for (int j = 0; j < grid_size; j++)
 			{
 				for (int a = 1; a <= num_sites; a++)
 				{
+					
 					if (grid_v_1[(i * grid_size) + j] == a)
 					{
-						float s = float((float)1 / (float)num_sites);							//gets the thing as a percentage
+						float s = float((float)1 / (float)c_);							//gets the thing as a percentage
+						//for example 1/100 = 0.01
 
 						int d = grid_distance[(i * grid_size) + j] / (float)num_;			//the distance divided by a number, so makes the distance smaller or bigger
+						//for example could be 1000/25 = 40
+						//so distance is higher with less sites, distance lower with more sites, so with higher sites you need lower num_
+
 						int n = s * 255;										//percentage * 255
-						int r = n + d;
+						//this is the percentage of the colour
+						if (grid_distance[(i * grid_size) + j] >max_d_)
+						{
+							max_d_ = grid_distance[(i * grid_size) + j];
+						}
+						
+
+						int r = d;
+						
+						
 						//so the further away the distance is higher r
 						if (r > 255)
 						{
@@ -350,7 +373,7 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 		});
 
 
-
+	std::wcout <<"max distance: " <<max_d_<<"\n";
 }
 
 

@@ -78,8 +78,7 @@ private:
 	int* alpha_channel_;
 
 
-
-	int a_g[5];
+	int max_distance_;
 
 	int site_iterator = 0;
 
