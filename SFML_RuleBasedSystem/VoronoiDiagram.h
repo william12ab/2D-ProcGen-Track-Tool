@@ -52,12 +52,12 @@ public:
 	void DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
 
 	void DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_, float div_a);
-	void DrawNoise(sf::VertexArray& vertexarray, int grid_size);
-
+	void DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_);
+	void DrawFBM(sf::VertexArray& vertexarray, int grid_size, int octaves_);
 
 	void ChangeAlpha(sf::VertexArray& vertexarray, int grid_size, int alpha_);
 
-	void WriteToFile(int grid_size, sf::VertexArray& vertexarray);
+	void WriteToFile(int grid_size, sf::VertexArray& vertexarray, int layers_);
 private:
 	SimplexNoise perlin_;
 
@@ -73,8 +73,11 @@ private:
 
 	int* grid_distance;
 	float* heightmap_;
+	float* heightmap_fbm_;
 	int* noise_heightmap_;
 	int* alpha_channel_;
+
+
 
 	int a_g[5];
 

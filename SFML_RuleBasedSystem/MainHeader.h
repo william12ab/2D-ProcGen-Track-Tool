@@ -31,6 +31,8 @@ float frequency_;
 float height_;
 
 int alpha_;
+int layers_;
+int octaves_;
 
 //time code
 

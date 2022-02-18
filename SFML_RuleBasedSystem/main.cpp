@@ -21,37 +21,6 @@ void SettingText()
 }
 
 
-//void threadfunc(std::vector<thread*> thread_vector, VoronoiDiagram* v_d_p)
-//{
-//	int start_ = 0;
-//	for (int i = 0; i < num_threads_; i++)
-//	{
-//		thread_vector.push_back(new thread(&VoronoiDiagram::CreateDiagram, v_d_p, v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), start_, start_ + (resolution_ / num_threads_)));
-//		start_ += resolution_ / num_threads_;
-//	}
-//	int a = 0;
-//	for (thread* th : thread_vector)
-//	{
-//		// If thread Object is Joinable then Join that thread.
-//		if (th->joinable())
-//			th->join();
-//			delete th;
-//	}
-//}
-
-//pass in the thing and v_d_p
-void testing(sf::VertexArray& vertexarray, VoronoiDiagram* v_)
-{
-	for (int i = 0; i < v_->GetGridSize(); i++)
-	{
-		for (int j = 0; j < v_->GetGridSize(); j++)
-		{
-
-		}
-	}
-}
-
-
 void Init(sf::RenderWindow &window)
 {
 	font.loadFromFile("DefaultAriel.ttf");
@@ -72,8 +41,8 @@ void Init(sf::RenderWindow &window)
 	height_ = 1.0f;
 	frequency_ = 1.0f;
 	alpha_ = 255;
-
-
+	layers_ = 1;
+	octaves_ = 1;
 
 }
 
@@ -233,9 +202,8 @@ int main()
 			ImGui::TextWrapped("Controls the outline of voronoi cells");
 			ImGui::SliderFloat("Brightness", &div_, 0.0f, 2.0f);
 			ImGui::TextWrapped("Controls controls the brightness of image(higher darker)");
-			ImGui::SliderFloat("Perlin Frequency", &frequency_, 0.0010, 0.035);
 			ImGui::SliderFloat("Perlin Height", &height_, 0.0f, 1.0f);
-			v_d_p->SetF(frequency_);
+			ImGui::SliderInt("Number of Layers of Noise", &layers_,0, 10);
 			v_d_p->SetH(height_);
 			ImGui::SliderInt("Alpha", &alpha_, 0, 255);
 			if (ImGui::Button("Change alpha"))
@@ -248,7 +216,16 @@ int main()
 				v_d_p->SetGridSize(resolution_);
 
 				height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-				v_d_p->DrawNoise(height_map, v_d_p->GetGridSize());
+				v_d_p->DrawNoise(height_map, v_d_p->GetGridSize(), layers_);
+			}
+			ImGui::SliderInt("Octaves: ", &octaves_, 1, 8);
+			if (ImGui::Button("Create FBM Image"))
+			{
+				height_map.clear();
+				v_d_p->SetGridSize(resolution_);
+
+				height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+				v_d_p->DrawFBM(height_map, v_d_p->GetGridSize(), octaves_);
 			}
 
 		}
@@ -286,7 +263,7 @@ int main()
 		if (ImGui::Button("Write to file"))
 		{
 	
-			v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d);
+			v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
 
 		}
 		ImGui::Text("\n");
