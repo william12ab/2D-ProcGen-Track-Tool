@@ -29,8 +29,8 @@ void Init(sf::RenderWindow &window)
 	ImGui::SFML::Init(window);
 
 
-	resolution_ = 400;
-	sites_ = 100;
+	resolution_ = 513;
+	sites_ = 25;
 	points_ = 2;
 	regen_ = false;
 	track_type_ = 1;  //1=p2p,0=loop
@@ -67,11 +67,10 @@ void SetVars(VoronoiDiagram*v_d_p)
 }
 void CreateVoronoi(VoronoiDiagram* v_d_p, sf::VertexArray &height_map)
 {
-	//v_d_p->DistributeSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 
-	v_d_p->RandomPlaceSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+	v_d_p->EqualDSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 
-
+	//v_d_p->RandomPlaceSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 	v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 	
 	//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 0, v_d_p->GetGridSize());
@@ -201,7 +200,6 @@ int main()
 			ImGui::SliderInt("Size of cell outlines", &number_, 0, 100);
 			ImGui::TextWrapped("Controls the outline of voronoi cells");
 			ImGui::SliderFloat("Brightness", &div_, 0.0f, 2.0f);
-			ImGui::SliderFloat("1/this number which gives %",&catch_, 1, 500);
 			ImGui::TextWrapped("Controls controls the brightness of image(higher darker)");
 			ImGui::SliderFloat("Perlin Height", &height_, 0.0f, 1.0f);
 			ImGui::SliderInt("Number of Layers of Noise", &layers_,0, 10);

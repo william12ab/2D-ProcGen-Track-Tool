@@ -52,6 +52,8 @@ void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
 	alpha_channel_ = new int[grid_size_x * grid_size_x];
 	sites_v_1 = new int[num_sites*2];
 
+
+
 }
 
 
@@ -62,24 +64,11 @@ void VoronoiDiagram::RandomPlaceSites(int num_sites, int grid_size)
 	for (int i = 0; i < (num_sites*2); i++)
 	{
 		sites_v_1[i] = rand() % grid_size;
+		std::cout << i << " site x: " << sites_v_1[i] << "\n";
 	}
 }
 
-void VoronoiDiagram::DisplacePoints(int num_sites, int grid_size)
-{
-	for (int i = 0; i < site_iterator; i++)
-	{
-		if (sites_v_1[i]<(grid_size-10) && sites_v_1[i]>10)
-		{
-			int s = rand() % 18 + (-9);
-			sites_v_1[i] += rand() % 18 + (-9);
-			i++;
-			sites_v_1[i] += rand() % 18 + (-9);
-			grid_v_1[(sites_v_1[i-1] * grid_size) + sites_v_1[i]] = 64;
 
-		}
-	}
-}
 
 void VoronoiDiagram::DistributeSites(int num_sites, int grid_size)
 {
@@ -119,6 +108,10 @@ void VoronoiDiagram::DistributeSites(int num_sites, int grid_size)
 
 void VoronoiDiagram::EqualDSites(int num_sites, int grid_size)
 {
+	for (int i = 0; i < num_sites * 2; i++)
+	{
+		sites_v_1[i] = 0;
+	}
 	bool loop_cond = false;
 
 	sites_v_1[site_iterator] = 0;
@@ -170,6 +163,40 @@ void VoronoiDiagram::EqualDSites(int num_sites, int grid_size)
 
 		}
 
+	}
+
+
+	for (int i = 0; i < (num_sites * 2); i++)
+	{
+		sites_v_1[i] += rand()%200+(-100);
+		std::cout << "rand num " << rand() % 200 + (-100) <<"\n";
+		std::cout << i << " site x before change: " << sites_v_1[i] << "  ";
+		if (sites_v_1[i]>=grid_size)
+		{
+			int difference = sites_v_1[i] - grid_size;
+			difference+= rand() % 100 + 1;
+			sites_v_1[i] -= difference;
+		}
+		if (sites_v_1[i] <= 0)
+		{
+			sites_v_1[i] += (-sites_v_1[i] - sites_v_1[i]);
+		}
+		std::cout <<i<< " site x after change: " << sites_v_1[i] << "\n";
+		i++;
+		sites_v_1[i] += rand() % 200 + (-100);
+		std::cout << "site y before change: " << sites_v_1[i] << "  ";
+
+		if (sites_v_1[i] >= grid_size)
+		{
+			int difference = sites_v_1[i] - grid_size;
+			difference += rand() % 100 + 1;
+			sites_v_1[i] -= difference;
+		}
+		if (sites_v_1[i] <= 0)
+		{
+			sites_v_1[i] += (-sites_v_1[i] - sites_v_1[i]);
+		}
+		std::cout << "site y after change: " << sites_v_1[i] << "\n";
 	}
 }
 
@@ -335,7 +362,7 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 					
 					if (grid_v_1[(i * grid_size) + j] == a)
 					{
-						float s = float((float)1 / (float)c_);							//gets the thing as a percentage
+						float s = float((float)1 / (float)num_sites);							//gets the thing as a percentage
 						//for example 1/100 = 0.01
 
 						int d = grid_distance[(i * grid_size) + j] / (float)num_;			//the distance divided by a number, so makes the distance smaller or bigger
@@ -528,7 +555,7 @@ void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int 
 	}
 	const float scale = 100.0f / (float)grid_size;
 	float low_ = 0.01f;
-	float high_ = 0.020f;
+	float high_ = 0.010f;
 	float r3 = low_ + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high_ - low_)));				//the frequency of the noise between low and high
 	float e2 = r3;
 	

@@ -10,8 +10,7 @@ public:
 	
 	void RandomPlaceSites(int num_sites, int grid_size);				//distrubutes the sites
 	void EqualDSites(int num_sites, int grid_size);
-	void DisplacePoints(int num_sites, int grid_size);
-	void DistributeSites(int num_sites, int grid_size);
+	void DistributeSites(int num_sites, int grid_size);					//random but one in the centre
 
 
 	int DistanceSqrt(int x, int y, int x2, int y2);						//the distance formula
@@ -22,12 +21,12 @@ public:
 	void InitVector(int grid_size, int num_points, int num_sites);		//inits the vector to correct size;
 
 
-	void DiagramAMP(int num_sites, int grid_size);
+	void DiagramAMP(int num_sites, int grid_size);						//creates the vd using parallel for
 
 
 	//getters		
 
-	bool GetFailed() { return failed_; }
+	bool GetFailed() { return failed_; }						
 
 	int* GetGrid() { return grid_v_1; }
 	int* GetSites() { return sites_v_1; }
