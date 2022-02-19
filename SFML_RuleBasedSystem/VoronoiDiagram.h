@@ -79,7 +79,7 @@ private:
 
 	int max_distance_;
 
-	int site_iterator = 0;
+	int site_iterator;
 
 	bool failed_;
 

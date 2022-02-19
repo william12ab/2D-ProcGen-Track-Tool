@@ -27,13 +27,13 @@ VoronoiDiagram::VoronoiDiagram()
 	srand(static_cast <unsigned> (time(0)));
 
 	max_distance_ = 0;
-
+	site_iterator = 0;
 }
 
 VoronoiDiagram::~VoronoiDiagram()
 {
 	delete[] grid_v_1;
-	delete[] sites_v_1;
+	delete[] sites_v_1;				//crashes on this line 
 	delete[] grid_distance;
 	delete[] heightmap_;
 	delete[] noise_heightmap_;
@@ -108,12 +108,12 @@ void VoronoiDiagram::DistributeSites(int num_sites, int grid_size)
 
 void VoronoiDiagram::EqualDSites(int num_sites, int grid_size)
 {
-	for (int i = 0; i < num_sites * 2; i++)
-	{
-		sites_v_1[i] = 0;
-	}
-	bool loop_cond = false;
-
+	//for (int i = 0; i < num_sites * 2; i++)
+	//{
+	//	sites_v_1[i] = 0;
+	//}
+	
+	site_iterator = 0;
 	sites_v_1[site_iterator] = 0;
 	site_iterator++;
 	sites_v_1[site_iterator] = 0;
