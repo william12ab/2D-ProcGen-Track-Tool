@@ -43,6 +43,7 @@ void Init(sf::RenderWindow &window)
 	alpha_ = 255;
 	layers_ = 1;
 	octaves_ = 1;
+	full_random_ = true;
 
 }
 
@@ -67,10 +68,15 @@ void SetVars(VoronoiDiagram*v_d_p)
 }
 void CreateVoronoi(VoronoiDiagram* v_d_p, sf::VertexArray &height_map)
 {
-
-	v_d_p->EqualDSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
-
-	//v_d_p->RandomPlaceSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+	if (full_random_)
+	{
+		v_d_p->RandomPlaceSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+	}
+	else
+	{
+		v_d_p->EqualDSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+	}
+	
 	v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 	
 	//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), 0, v_d_p->GetGridSize());
@@ -190,6 +196,7 @@ int main()
 		{
 			ImGui::SliderInt("Resolution", &resolution_, 100, 800);
 			ImGui::SliderInt("Sites", &sites_, 5, 100);
+			ImGui::Checkbox("Random or Equal+Random?", &full_random_);
 			ImGui::SliderInt("Points", &points_, 2, 5);
 			ImGui::SliderInt("Track Type", &track_type_, 0, 2);
 			ImGui::Text("0 = triangular\n1 = point to point\n2 = obtuse triangle");

@@ -34,6 +34,8 @@ int alpha_;
 int layers_;
 int octaves_;
 
+bool full_random_;
+
 //time code
 
 //the_clock::time_point startTime = the_clock::now();
