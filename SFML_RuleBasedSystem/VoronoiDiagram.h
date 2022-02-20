@@ -9,7 +9,7 @@ public:
 	~VoronoiDiagram();
 	
 	void RandomPlaceSites(int num_sites, int grid_size);				//distrubutes the sites
-	void EqualDSites(int num_sites, int grid_size);
+	void EqualDSites(int num_sites, int grid_size, int times_);						//distributes the sites in equal distance first then displaces them 
 	void DistributeSites(int num_sites, int grid_size);					//random but one in the centre
 
 
