@@ -127,7 +127,8 @@ void VoronoiDiagram::EqualDSites(int num_sites, int grid_size, int times_)
 	site_iterator++;
 
 	//only works for 25 sites for some reason
-	for (int sideLength = grid_size - 1; sideLength >= 256; sideLength /= 2)
+	//so 25 = 256, 81 = 128, 289=64
+	for (int sideLength = grid_size - 1; sideLength >= 192; sideLength /= 2)
 	{
 		int halfSide = sideLength / 2;
 
