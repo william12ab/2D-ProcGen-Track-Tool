@@ -59,11 +59,11 @@ void ResetVars(VoronoiDiagram*v_d_p, ShortestPath*s_p_p, sf::VertexArray& vorono
 }
 void SetVars(VoronoiDiagram*v_d_p)
 {
+	v_d_p->~VoronoiDiagram();
 	v_d_p->SetType(track_type_);
 	v_d_p->SetGridSize(resolution_);
 	v_d_p->SetNumberOfSites(sites_);
 	v_d_p->SetNumberOfPoints(points_);
-	v_d_p->~VoronoiDiagram();
 	v_d_p->InitVector(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), v_d_p->GetNumberOfSites());
 
 }

@@ -51,9 +51,6 @@ void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
 	noise_heightmap_ = new int[grid_size_x * grid_size_x];
 	alpha_channel_ = new int[grid_size_x * grid_size_x];
 	sites_v_1 = new int[num_sites*2];
-
-
-
 }
 
 
@@ -129,6 +126,7 @@ void VoronoiDiagram::EqualDSites(int num_sites, int grid_size, int times_)
 	sites_v_1[site_iterator] = (grid_size - 1);
 	site_iterator++;
 
+	//only works for 25 sites for some reason
 	for (int sideLength = grid_size - 1; sideLength >= 256; sideLength /= 2)
 	{
 		int halfSide = sideLength / 2;
@@ -166,6 +164,7 @@ void VoronoiDiagram::EqualDSites(int num_sites, int grid_size, int times_)
 
 	for (int t = 0; t < times_; t++)
 	{
+		
 		for (int i = 0; i < (num_sites * 2); i++)
 		{
 			sites_v_1[i] += rand() % rand_range_ + (-rand_range_back_);
