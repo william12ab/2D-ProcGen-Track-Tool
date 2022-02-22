@@ -564,7 +564,7 @@ void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int 
 	}
 	const float scale = 100.0f / (float)grid_size;
 	float low_ = 0.01f;
-	float high_ = 0.010f;
+	float high_ = 0.020f;
 	float r3 = low_ + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high_ - low_)));				//the frequency of the noise between low and high
 	float e2 = r3;
 	
