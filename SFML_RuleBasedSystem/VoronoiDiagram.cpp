@@ -524,8 +524,9 @@ void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int gr
 
 }
 
-void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size)
+void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size, int num_sites)
 {
+
 
 	for (int i = 0; i < grid_size; i++)
 	{
@@ -556,7 +557,12 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 			}
 		}
 	}
-	
+	for (int i = 0; i < (num_sites * 2); i++)
+	{
+		vertexarray[(sites_v_1[i + 1]) * grid_size + sites_v_1[i]].position = sf::Vector2f(sites_v_1[i], sites_v_1[i + 1]);
+		vertexarray[(sites_v_1[i + 1]) * grid_size + sites_v_1[i]].color = sf::Color::Yellow;
+		i++;
+	}
 }
 
 void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_)
@@ -906,8 +912,8 @@ void VoronoiDiagram::HighPointFunc(int grid_size)
 		//square 1 in diagram(top left) - going south east
 		//[((y-1)*grid_size) + (x+1)]
 		//y=-1, x=+1;
-		x_pos = 1;
-		y_pos =- 1;
+		x_pos =1;
+		y_pos =1;
 		signal = 1;
 		
 	}
@@ -917,7 +923,7 @@ void VoronoiDiagram::HighPointFunc(int grid_size)
 		//[((y-1)*grid_size) + (x-1)]
 		//y=-1, x=-1 for each iteration
 		x_pos = -1;
-		y_pos =- 1;
+		y_pos = 1;
 		signal = 2;
 		
 	}
@@ -928,7 +934,7 @@ void VoronoiDiagram::HighPointFunc(int grid_size)
 		//y=+1,x=+1
 		signal = 3;
 		x_pos = 1;
-		y_pos = 1;
+		y_pos =- 1;
 	}
 	else if (high_point_x >= (grid_size / 2) && high_point_x <= (grid_size) && high_point_y>=(grid_size / 2) && high_point_y <= grid_size)
 	{
@@ -937,7 +943,7 @@ void VoronoiDiagram::HighPointFunc(int grid_size)
 		//y=+1, x=-1
 		signal = 4;
 		x_pos =- 1;
-		y_pos = 1;	
+		y_pos =- 1;	
 	}
 	LoopPart(grid_size, x_pos, y_pos, signal);
 }
@@ -949,28 +955,29 @@ void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int sig
 	int iterator = 0;
 	do
 	{
-		if (noise_heightmap_[((y+y_value_)*grid_size) + (x+x_value_)] <=(high_point-40))
+		if (noise_heightmap_[((y+y_value_)*grid_size) + (x+x_value_)] <=(170))
 		{
+			std::cout << noise_heightmap_[((y + y_value_) * grid_size) + (x + x_value_)] << "\n";
+
 			found_raidus = true;
 			radius_length = iterator;
 		}
 		else
 		{
-			std::cout << noise_heightmap_[((y + y_value_) * grid_size) + (x + x_value_)]<<"\n";
 			iterator++;
 			switch (signal_)
 			{
 			case 1:
-				y -=1, x +=1;
+				y +=1, x +=1;
 				break;
 			case 2:
-				y -=1, x -=1;
+				y +=1, x -=1;
 				break;
 			case 3:
-				y+=1, x+=1;
+				y-=1, x+=1;
 				break;
 			case 4:
-				y += 1, x -= 1;
+				y -= 1, x -= 1;
 				break;
 			}
 		}
@@ -1004,9 +1011,15 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size, int centre_x, in
 			else
 			{
 				found = true;		//point is not in the circle so exit loop and create new site
+				
 			}
 		}
 	}
-	sites_v_1[0] = centre_x;				//setting the first site the the centre point of the circle
-	sites_v_1[1] = centre_y;
+//	sites_v_1[0] = centre_x;				//setting the first site the the centre point of the circle
+//	sites_v_1[1] = centre_y;
+
+	for (int i = 0; i < (num_sites*2); i++)
+	{
+		std::cout << sites_v_1[i] << "  " << sites_v_1[i+1] << "\n";
+	}
 }

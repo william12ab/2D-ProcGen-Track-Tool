@@ -51,7 +51,7 @@ public:
 	void SetH(float h) { pHeightRange = h; }
 
 
-	void DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
+	void DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size, int num_sites);
 	void DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
 
 	void DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_, float div_a);

@@ -174,7 +174,7 @@ int main()
 
 	} while (v_d_p->GetFailed() || s_p_p->GetFailed());
 	
-	v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize());
+	v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
 
 
 
@@ -333,7 +333,7 @@ int main()
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
 		{
-			v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize());
+			v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
 		}
 		window.clear();
 		if (render_height_map_)
