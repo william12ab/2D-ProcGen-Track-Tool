@@ -28,6 +28,12 @@ VoronoiDiagram::VoronoiDiagram()
 
 	max_distance_ = 0;
 	site_iterator = 0;
+
+	high_point = 0;
+	high_point_x = 0;
+	high_point_y = 0;
+	found_raidus = false;
+	radius_length = 0;
 }
 
 VoronoiDiagram::~VoronoiDiagram()
@@ -595,6 +601,16 @@ void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int 
 				noise_heightmap_[(i * grid_size) + j] += co;				//stores colour value for use in saving images
 				alpha_channel_[i * grid_size + j] = 255;				//stores alpha value
 				sf::Uint8 c = (noise_heightmap_[(i * grid_size) + j]/ layers_);														//this needs changed - might be right actually
+
+				//recording the highest point in the terrain(heightmap)
+				int temp_height = noise_heightmap_[(i * grid_size) + j] / layers_;
+				if (temp_height > high_point)
+				{
+					high_point = temp_height;
+					high_point_x = j;
+					high_point_y = i;
+				}
+
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color{ c , c , c };
 				if (new_value_ < min_)
@@ -878,3 +894,85 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 
 }
 
+
+void VoronoiDiagram::HighPointFunc(int grid_size)
+{
+	//identify where x and y are in relation to the complete image
+	//so are they top left, top right, bottom left, bottom right
+	//then mark that as the direction to go in 
+	int signal, x_pos,y_pos;
+	if (high_point_x<(grid_size/2) && high_point_y<(grid_size/2))
+	{ 
+		//square 1 in diagram(top left) - going south east
+		//[((y-1)*grid_size) + (x+1)]
+		//y=-1, x=+1;
+		x_pos = 1;
+		y_pos =- 1;
+		signal = 1;
+		
+	}
+	else if (high_point_x> (grid_size / 2) && high_point_x < (grid_size) && high_point_y<(grid_size/2))
+	{
+		//square 2 in diagram(top right) - going south west 
+		//[((y-1)*grid_size) + (x-1)]
+		//y=-1, x=-1 for each iteration
+		x_pos = -1;
+		y_pos =- 1;
+		signal = 2;
+		
+	}
+	else if (high_point_x<(grid_size/2) && high_point_y>(grid_size/2) && high_point_y<grid_size)
+	{
+		//square 3 in diagram(bottom left) - going north east
+		//[((y+1)*grid_size) + (x+1)]
+		//y=+1,x=+1
+		signal = 3;
+		x_pos = 1;
+		y_pos = 1;
+	}
+	else if (high_point_x > (grid_size / 2) && high_point_x < (grid_size) && high_point_y>(grid_size / 2) && high_point_y < grid_size)
+	{
+		//square 4 in diagram(bottom right) - going north west
+		//[((y+1)*grid_size) + (x-1)]
+		//y=+1, x=-1
+		signal = 4;
+		x_pos =- 1;
+		y_pos = 1;	
+	}
+	LoopPart(grid_size, x_pos, y_pos, signal);
+}
+
+void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int signal_)
+{
+	int y =high_point_y;
+	int x=high_point_x;
+	int iterator = 0;
+	do
+	{
+		if (noise_heightmap_[((y+y_value_)*grid_size) + (x+x_value_)] <=(high_point-40))
+		{
+			found_raidus = true;
+			radius_length = iterator;
+		}
+		else
+		{
+			iterator++;
+			switch (signal_)
+			{
+			case 1:
+				y -=1, x +=1;
+				break;
+			case 2:
+				y -=1, x -=1;
+				break;
+			case 3:
+				y+=1, x+=1;
+				break;
+			case 4:
+				y += 1, x -= 1;
+				break;
+			}
+		}
+
+	} while (found_raidus!=true);
+}

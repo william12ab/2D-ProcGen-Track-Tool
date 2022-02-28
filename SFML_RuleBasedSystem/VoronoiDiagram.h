@@ -57,6 +57,9 @@ public:
 	void ChangeAlpha(sf::VertexArray& vertexarray, int grid_size, int alpha_);
 
 	void WriteToFile(int grid_size, sf::VertexArray& vertexarray, int layers_);
+
+	void HighPointFunc(int grid_size);
+	void LoopPart(int grid_size, int x_value_, int y_value_, int signal_);
 private:
 	SimplexNoise perlin_;
 
@@ -85,5 +88,12 @@ private:
 
 	float pFrequency = 1.0f;	//simplex noise frequency
 	float pHeightRange = 1.0f;
+
+
+	int high_point;
+	int high_point_x;
+	int high_point_y;
+	bool found_raidus;
+	int radius_length;
 };
 

@@ -5,7 +5,7 @@
 #include <list>
 #include "MainHeader.h"
 #include <chrono>
-
+#include <random>
 
 using std::chrono::duration_cast;
 using std::chrono::milliseconds; 
@@ -83,7 +83,7 @@ void CreateVoronoi(VoronoiDiagram* v_d_p, sf::VertexArray &height_map)
 	v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 
 	
-
+		
 	v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_, div_);
 
 	v_d_p->SetEdges(v_d_p->GetGridSize());
@@ -149,7 +149,6 @@ int main()
 	// Create the window and UI bar on the right
 	sf::RenderWindow window(sf::VideoMode(1000,800), "2D Track Generator", sf::Style::Close);
 
-	
 
 	Init(window);
 
