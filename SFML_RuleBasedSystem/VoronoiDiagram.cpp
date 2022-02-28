@@ -956,6 +956,7 @@ void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int sig
 		}
 		else
 		{
+			std::cout << noise_heightmap_[((y + y_value_) * grid_size) + (x + x_value_)]<<"\n";
 			iterator++;
 			switch (signal_)
 			{
@@ -992,7 +993,11 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size, int centre_x, in
 			sites_v_1[i] = rand() % (grid_size);
 			i++;
 			sites_v_1[i] = rand() % (grid_size);
-			if (((sites_v_1[i - 1] - centre_x) ^ 2 + (sites_v_1[i] - centre_y) ^ 2) < (radius_^2))				//the circle formula - checking whether the point exist in the circle and if it does then set the iterator back to what it was and go again
+			int s = ((sites_v_1[i - 1] - centre_x) ^ 2 + (sites_v_1[i] - centre_y) ^ 2);
+			int r = pow(radius_, 2);
+			int a= pow((sites_v_1[i - 1] - centre_x), 2);
+			int b=pow((sites_v_1[i] - centre_y), 2);
+			if (a + b < r)				//the circle formula - checking whether the point exist in the circle and if it does then set the iterator back to what it was and go again
 			{
 				i--;
 			}
