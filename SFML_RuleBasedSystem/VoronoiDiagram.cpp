@@ -249,7 +249,7 @@ void VoronoiDiagram::DiagramAMP(int num_sites, int grid_size)
 				for (int p = 0; p < num_sites; p++)
 				{
 					//unique_lock<mutex> lock(distance_mutex);
-					d = DistanceSqrt(sites_v_1[s], sites_v_1[s + 1], j, i);
+					d = DistanceSqrt(sites_v_1[s], sites_v_1[s + 1], i, j);
 					
 					s += 2;
 					if (d < dist)
@@ -1021,5 +1021,6 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size, int centre_x, in
 	for (int i = 0; i < (num_sites*2); i++)
 	{
 		std::cout << sites_v_1[i] << "  " << sites_v_1[i+1] << "\n";
+		i++;
 	}
 }
