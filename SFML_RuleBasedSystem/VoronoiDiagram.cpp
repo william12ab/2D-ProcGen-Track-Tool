@@ -901,7 +901,7 @@ void VoronoiDiagram::HighPointFunc(int grid_size)
 	//so are they top left, top right, bottom left, bottom right
 	//then mark that as the direction to go in 
 	int signal, x_pos,y_pos;
-	if (high_point_x<(grid_size/2) && high_point_y<(grid_size/2))
+	if (high_point_x<=(grid_size/2) && high_point_y<=(grid_size/2))
 	{ 
 		//square 1 in diagram(top left) - going south east
 		//[((y-1)*grid_size) + (x+1)]
@@ -911,7 +911,7 @@ void VoronoiDiagram::HighPointFunc(int grid_size)
 		signal = 1;
 		
 	}
-	else if (high_point_x> (grid_size / 2) && high_point_x < (grid_size) && high_point_y<(grid_size/2))
+	else if (high_point_x>= (grid_size / 2) && high_point_x <= (grid_size) && high_point_y<=(grid_size/2))
 	{
 		//square 2 in diagram(top right) - going south west 
 		//[((y-1)*grid_size) + (x-1)]
@@ -921,7 +921,7 @@ void VoronoiDiagram::HighPointFunc(int grid_size)
 		signal = 2;
 		
 	}
-	else if (high_point_x<(grid_size/2) && high_point_y>(grid_size/2) && high_point_y<grid_size)
+	else if (high_point_x<=(grid_size/2) && high_point_y>=(grid_size/2) && high_point_y<=grid_size)
 	{
 		//square 3 in diagram(bottom left) - going north east
 		//[((y+1)*grid_size) + (x+1)]
@@ -930,7 +930,7 @@ void VoronoiDiagram::HighPointFunc(int grid_size)
 		x_pos = 1;
 		y_pos = 1;
 	}
-	else if (high_point_x > (grid_size / 2) && high_point_x < (grid_size) && high_point_y>(grid_size / 2) && high_point_y < grid_size)
+	else if (high_point_x >= (grid_size / 2) && high_point_x <= (grid_size) && high_point_y>=(grid_size / 2) && high_point_y <= grid_size)
 	{
 		//square 4 in diagram(bottom right) - going north west
 		//[((y+1)*grid_size) + (x-1)]
@@ -975,4 +975,33 @@ void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int sig
 		}
 
 	} while (found_raidus!=true);
+
+	
+}
+
+
+void VoronoiDiagram::TerrainSites(int num_sites, int grid_size, int centre_x, int centre_y, int radius_)
+{
+	//loop over number of sites for x and y 
+	//generate random point for site and loop over this generation until it is not within the circle
+	for (int i = 0; i < (num_sites * 2); i++)
+	{
+		bool found = false;
+		while (!found)
+		{
+			sites_v_1[i] = rand() % (grid_size);
+			i++;
+			sites_v_1[i] = rand() % (grid_size);
+			if (((sites_v_1[i - 1] - centre_x) ^ 2 + (sites_v_1[i] - centre_y) ^ 2) < (radius_^2))				//the circle formula - checking whether the point exist in the circle and if it does then set the iterator back to what it was and go again
+			{
+				i--;
+			}
+			else
+			{
+				found = true;		//point is not in the circle so exit loop and create new site
+			}
+		}
+	}
+	sites_v_1[0] = centre_x;				//setting the first site the the centre point of the circle
+	sites_v_1[1] = centre_y;
 }

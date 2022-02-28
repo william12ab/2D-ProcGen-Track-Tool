@@ -240,6 +240,42 @@ int main()
 
 		}
 		ImGui::Text("\n");
+		if (ImGui::Button("Test Function"))
+		{
+			SetVars(v_d_p);
+			voronoi_d.clear();
+			height_map.clear();
+			voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+			height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+			height_map.clear();
+			v_d_p->SetGridSize(resolution_);
+
+			height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+			v_d_p->DrawNoise(height_map, v_d_p->GetGridSize(), layers_);
+			v_d_p->HighPointFunc(v_d_p->GetGridSize());
+
+			do
+			{
+				if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
+				{
+					ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
+				}
+
+				v_d_p->TerrainSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(),v_d_p->GetCentreX(), v_d_p->GetCentreY(), v_d_p->GetRadius());
+				v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+				v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_, div_);
+				v_d_p->SetEdges(v_d_p->GetGridSize());
+				v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
+				the_clock::time_point startTime = the_clock::now();
+				CreateTrack(v_d_p, s_p_p);
+				the_clock::time_point endTime = the_clock::now();
+				auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+				std::cout << "		time(v d): " << time_taken; std::cout << std::endl;
+
+			} while (v_d_p->GetFailed() || s_p_p->GetFailed());
+
+		}
+		ImGui::Text("\n");
 		if (ImGui::Button("Regenerate"))
 		{
 

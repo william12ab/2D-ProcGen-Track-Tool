@@ -11,7 +11,7 @@ public:
 	void RandomPlaceSites(int num_sites, int grid_size);				//distrubutes the sites
 	void EqualDSites(int num_sites, int grid_size, int times_);						//distributes the sites in equal distance first then displaces them 
 	void DistributeSites(int num_sites, int grid_size);					//random but one in the centre
-
+	void TerrainSites(int num_sites, int grid_size, int centre_x, int centre_y, int radius_);
 
 	int DistanceSqrt(int x, int y, int x2, int y2);						//the distance formula
 	void CreateDiagram(int num_sites,int grid_size, int start, int end);					//creates the voronoi diagram
@@ -25,6 +25,10 @@ public:
 
 
 	//getters		
+	int GetRadius() { return radius_length; }
+	int GetCentreX() { return high_point_x; }
+	int GetCentreY() { return high_point_y; }
+
 
 	bool GetFailed() { return failed_; }						
 
