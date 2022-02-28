@@ -64,6 +64,7 @@ public:
 
 	void HighPointFunc(int grid_size);
 	void LoopPart(int grid_size, int x_value_, int y_value_, int signal_);
+	void ResetVars();
 private:
 	SimplexNoise perlin_;
 

@@ -956,9 +956,9 @@ void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int sig
 	int iterator = 0;
 	do
 	{
-		if (noise_heightmap_[((y+y_value_)*grid_size) + (x+x_value_)] <=(170))
+		if (noise_heightmap_[((y+y_value_)*grid_size) + (x+x_value_)] <=(110))
 		{
-			std::cout << "point on radius: " << x << " " << y << "\n";
+			std::cout << "point on radius: " << x+x_value_ << " " << y+y_value_ << "\n";
 			std::cout << "radius: " << iterator << "\n";
 			found_raidus = true;
 			radius_length = iterator;
@@ -1001,11 +1001,10 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size, int centre_x, in
 			sites_v_1[i] = rand() % (grid_size);
 			i++;
 			sites_v_1[i] = rand() % (grid_size);
-			int s = ((sites_v_1[i - 1] - centre_x) ^ 2 + (sites_v_1[i] - centre_y) ^ 2);
-			int r = pow(radius_, 2);
-			int a= pow((sites_v_1[i - 1] - centre_x), 2);
-			int b=pow((sites_v_1[i] - centre_y), 2);
-			if (a + b < r)				//the circle formula - checking whether the point exist in the circle and if it does then set the iterator back to what it was and go again
+			int r = pow(radius_, 2);						//radius squared
+			int a= pow((sites_v_1[i - 1] - centre_x), 2);				//x part squared
+			int b=pow((sites_v_1[i] - centre_y), 2);					//y part squared
+			if (a + b < r|| a+b==r)				//the circle formula - checking whether the point exist in the circle and if it does then set the iterator back to what it was and go again
 			{
 				i--;
 			}
@@ -1016,12 +1015,21 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size, int centre_x, in
 			}
 		}
 	}
-//	sites_v_1[0] = centre_x;				//setting the first site the the centre point of the circle
-//	sites_v_1[1] = centre_y;
+	sites_v_1[0] = centre_x;				//setting the first site the the centre point of the circle
+	sites_v_1[1] = centre_y;
 
 	for (int i = 0; i < (num_sites*2); i++)
 	{
 		std::cout << sites_v_1[i] << "  " << sites_v_1[i+1] << "\n";
 		i++;
 	}
+}
+
+void VoronoiDiagram::ResetVars()
+{
+	high_point=0;
+	high_point_x=0;
+	high_point_y=0;
+	found_raidus=false;
+	radius_length=0;
 }
