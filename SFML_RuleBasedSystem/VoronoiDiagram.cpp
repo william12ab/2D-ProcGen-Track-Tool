@@ -304,7 +304,7 @@ void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size, int start, int 
 			int s = 0;
 			for (int p = 0; p < num_sites; p++)
 			{
-				d = DistanceSqrt(sites_v_1[s], sites_v_1[s+1], j, i);
+				d = DistanceSqrt(sites_v_1[s], sites_v_1[s+1], i, j);
 				s += 2;
 		
 				if (d<dist)
@@ -907,6 +907,7 @@ void VoronoiDiagram::HighPointFunc(int grid_size)
 	//so are they top left, top right, bottom left, bottom right
 	//then mark that as the direction to go in 
 	int signal, x_pos,y_pos;
+	std::cout << "highest point: " << high_point_x << " " << high_point_y << "\n";
 	if (high_point_x<=(grid_size/2) && high_point_y<=(grid_size/2))
 	{ 
 		//square 1 in diagram(top left) - going south east
@@ -957,8 +958,8 @@ void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int sig
 	{
 		if (noise_heightmap_[((y+y_value_)*grid_size) + (x+x_value_)] <=(170))
 		{
-			std::cout << noise_heightmap_[((y + y_value_) * grid_size) + (x + x_value_)] << "\n";
-
+			std::cout << "point on radius: " << x << " " << y << "\n";
+			std::cout << "radius: " << iterator << "\n";
 			found_raidus = true;
 			radius_length = iterator;
 		}
