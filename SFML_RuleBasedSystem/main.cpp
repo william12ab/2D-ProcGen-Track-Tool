@@ -248,7 +248,7 @@ int main()
 			v_d_p->SetGridSize(resolution_);
 			v_d_p->ResetVars();
 		}
-		if (ImGui::Button("Test Function"))
+		if (ImGui::Button("Set Site to High Pos"))
 		{
 			v_d_p->HighPointFunc(v_d_p->GetGridSize());
 
