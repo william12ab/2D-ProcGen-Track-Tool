@@ -242,6 +242,7 @@ int main()
 		ImGui::Text("\n");
 		if (ImGui::Button("Test Function"))
 		{
+			v_d_p->ResetVars();
 			SetVars(v_d_p);
 			voronoi_d.clear();
 			height_map.clear();

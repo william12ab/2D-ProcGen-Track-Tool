@@ -563,7 +563,54 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 		vertexarray[(sites_v_1[i + 1]) * grid_size + sites_v_1[i]].color = sf::Color::Yellow;
 		i++;
 	}
+
+	int x = radius_length;
+	int y = 0;
+	int err = 0;
+	int y0 = high_point_y;
+	int x0 = high_point_x;
+
+	while (x >= y)
+	{
+		vertexarray[(y0 + y) * grid_size + (x0 + x)].position = sf::Vector2f(x0 + x, y0 + y);
+		vertexarray[(y0 + y) * grid_size + (x0 + x)].color = sf::Color::Cyan;
+		
+		vertexarray[(y0 + x) * grid_size + (x0 + y)].position = sf::Vector2f(x0 + y, y0 + x);
+		vertexarray[(y0 + x) * grid_size + (x0 + y)].color = sf::Color::Cyan;
+
+		vertexarray[(y0 + x) * grid_size + (x0 - y)].position = sf::Vector2f(x0 - y, y0 + x);
+		vertexarray[(y0 + x) * grid_size + (x0 - y)].color = sf::Color::Cyan;
+
+		vertexarray[(y0 + y) * grid_size + (x0 - x)].position = sf::Vector2f(x0 - x, y0 + y);
+		vertexarray[(y0 + y) * grid_size + (x0 - x)].color = sf::Color::Cyan;
+
+		vertexarray[(y0 - y) * grid_size + (x0 - x)].position = sf::Vector2f(x0 - x, y0 - y);
+		vertexarray[(y0 - y) * grid_size + (x0 - x)].color = sf::Color::Cyan;
+
+		vertexarray[(y0 - x) * grid_size + (x0 - y)].position = sf::Vector2f(x0 - y, y0 - x);
+		vertexarray[(y0 - x) * grid_size + (x0 - y)].color = sf::Color::Cyan;
+		
+		vertexarray[(y0 - x) * grid_size + (x0 + y)].position = sf::Vector2f(x0 + y, y0 - x);
+		vertexarray[(y0 - x) * grid_size + (x0 + y)].color = sf::Color::Cyan;
+	
+		vertexarray[(y0 - y) * grid_size + (x0 + x)].position = sf::Vector2f(x0 + x, y0 - y);
+		vertexarray[(y0 - y) * grid_size + (x0 + x)].color = sf::Color::Cyan;
+		
+
+		if (err <= 0)
+		{
+			y += 1;
+			err += 2 * y + 1;
+		}
+
+		if (err > 0)
+		{
+			x -= 1;
+			err -= 2 * x + 1;
+		}
+	}
 }
+
 
 void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_)
 {
