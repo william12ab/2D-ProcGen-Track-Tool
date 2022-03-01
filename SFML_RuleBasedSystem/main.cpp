@@ -240,19 +240,16 @@ int main()
 
 		}
 		ImGui::Text("\n");
+		if (ImGui::Button("Reset for Sites"))
+		{
+			voronoi_d.clear();
+			SetVars(v_d_p);
+			voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+			v_d_p->SetGridSize(resolution_);
+			v_d_p->ResetVars();
+		}
 		if (ImGui::Button("Test Function"))
 		{
-			v_d_p->ResetVars();
-			SetVars(v_d_p);
-			voronoi_d.clear();
-			height_map.clear();
-			voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-			height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-			height_map.clear();
-			v_d_p->SetGridSize(resolution_);
-
-			height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-			v_d_p->DrawNoise(height_map, v_d_p->GetGridSize(), layers_);
 			v_d_p->HighPointFunc(v_d_p->GetGridSize());
 
 			do
@@ -274,7 +271,7 @@ int main()
 				std::cout << "		time(v d): " << time_taken; std::cout << std::endl;
 
 			} while (v_d_p->GetFailed() || s_p_p->GetFailed());
-
+			
 		}
 		ImGui::Text("\n");
 		if (ImGui::Button("Regenerate"))

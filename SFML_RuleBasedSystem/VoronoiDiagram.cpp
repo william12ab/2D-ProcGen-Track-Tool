@@ -614,9 +614,9 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 
 void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_)
 {
-	for (size_t i = 0; i < grid_size_x; i++)
+	for (size_t i = 0; i < grid_size; i++)
 	{
-		for (size_t j = 0; j < grid_size_x; j++)
+		for (size_t j = 0; j < grid_size; j++)
 		{
 			noise_heightmap_[(i * grid_size) + j] = 0;
 		}
@@ -1065,11 +1065,7 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size, int centre_x, in
 	sites_v_1[0] = centre_x;				//setting the first site the the centre point of the circle
 	sites_v_1[1] = centre_y;
 
-	for (int i = 0; i < (num_sites*2); i++)
-	{
-		std::cout << sites_v_1[i] << "  " << sites_v_1[i+1] << "\n";
-		i++;
-	}
+
 }
 
 void VoronoiDiagram::ResetVars()
