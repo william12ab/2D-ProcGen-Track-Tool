@@ -948,7 +948,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 }
 
 
-void VoronoiDiagram::HighPointFunc(int grid_size)
+void VoronoiDiagram::HighPointFunc(int grid_size, int radius_cutoff_)
 {
 	//identify where x and y are in relation to the complete image
 	//so are they top left, top right, bottom left, bottom right
@@ -993,17 +993,17 @@ void VoronoiDiagram::HighPointFunc(int grid_size)
 		x_pos =- 1;
 		y_pos =- 1;	
 	}
-	LoopPart(grid_size, x_pos, y_pos, signal);
+	LoopPart(grid_size, x_pos, y_pos, signal, radius_cutoff_);
 }
 
-void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int signal_)
+void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_)
 {
 	int y =high_point_y;
 	int x=high_point_x;
 	int iterator = 0;
 	do
 	{
-		if (noise_heightmap_[((y+y_value_)*grid_size) + (x+x_value_)] <=(110))
+		if (noise_heightmap_[((y+y_value_)*grid_size) + (x+x_value_)] <=(radius_cutoff_))
 		{
 			std::cout << "point on radius: " << x+x_value_ << " " << y+y_value_ << "\n";
 			std::cout << "radius: " << iterator << "\n";

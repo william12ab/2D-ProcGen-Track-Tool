@@ -46,6 +46,8 @@ void Init(sf::RenderWindow &window)
 	full_random_ = true;
 	times_ = 1;
 
+	radius_cutoff = 100;
+
 }
 
 void ResetVars(VoronoiDiagram*v_d_p, ShortestPath*s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map)
@@ -216,6 +218,7 @@ int main()
 			ImGui::SliderInt("Number of Layers of Noise", &layers_,0, 10);
 			v_d_p->SetH(height_);
 			ImGui::SliderInt("Alpha", &alpha_, 0, 255);
+			ImGui::SliderInt("Radius Cutoff:", &radius_cutoff, 50, 255);
 			if (ImGui::Button("Change alpha"))
 			{
 				v_d_p->ChangeAlpha(height_map, v_d_p->GetGridSize(), alpha_);
@@ -250,7 +253,7 @@ int main()
 		}
 		if (ImGui::Button("Set Site to High Pos"))
 		{
-			v_d_p->HighPointFunc(v_d_p->GetGridSize());
+			v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff);
 
 			do
 			{

@@ -36,6 +36,9 @@ int octaves_;				//how many octaves(basically how many times you doing the FBM)
 bool full_random_;			//deciding what metyhjdo to use
 int times_;					//how many times to repeat the dispacement
 
+
+int radius_cutoff;
+
 //time code
 
 //the_clock::time_point startTime = the_clock::now();
