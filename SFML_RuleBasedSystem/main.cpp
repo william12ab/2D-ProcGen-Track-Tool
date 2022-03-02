@@ -218,7 +218,7 @@ int main()
 			ImGui::SliderInt("Number of Layers of Noise", &layers_,0, 10);
 			v_d_p->SetH(height_);
 			ImGui::SliderInt("Alpha", &alpha_, 0, 255);
-			ImGui::SliderInt("Radius Cutoff:", &radius_cutoff, 50, 255);
+			ImGui::SliderInt("Radius Cut-off:", &radius_cutoff, 50, 255);
 			if (ImGui::Button("Change alpha"))
 			{
 				v_d_p->ChangeAlpha(height_map, v_d_p->GetGridSize(), alpha_);
