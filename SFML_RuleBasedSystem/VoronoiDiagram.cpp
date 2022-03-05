@@ -740,9 +740,9 @@ void VoronoiDiagram::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int oc
 	float new_range_ = (1 - 0);				
 
 
-	for (size_t i = 0; i < grid_size; i++)
+	for (int i = 0; i < grid_size; i++)
 	{
-		for (size_t j = 0; j< grid_size; j++)
+		for (int j = 0; j< grid_size; j++)
 		{
 			float a = 3.0f;						//controls the height.
 			float mul = scale * 1.0f;
@@ -753,7 +753,7 @@ void VoronoiDiagram::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int oc
 				a *= 0.5f;
 				mul *= 2.0f;
 			}
-			heightmap_fbm_[(i * grid_size) + j] = height - 1;
+			heightmap_fbm_[(i * grid_size) + j] = height ;
 
 
 			if (height<min_)					//gets the max and min values that the algo produces, so that they can then be changed to the range between 0 and 1 which can then be used to get a colour value
@@ -778,8 +778,12 @@ void VoronoiDiagram::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int oc
 	{
 		for (size_t j = 0; j < grid_size; j++)
 		{
-			float new_value_ = (((heightmap_fbm_[(i * grid_size) + j] - min_) * new_range_) / old_range_) + 0;	//gets the oldd value and turns it into a value between the new range
+			float new_value_ = ( ( (heightmap_fbm_[(i * grid_size) + j] - min_) * new_range_) / old_range_) + 0;	//gets the oldd value and turns it into a value between the new range
 				
+			if (new_value_<0)
+			{
+				int g = 1;
+			}
 
 		
 			int co = int(new_value_ * 255);						//geets as rgb value
@@ -810,8 +814,8 @@ void VoronoiDiagram::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int oc
 
 		}
 	}
-	std::wcout << "new min : " << min_ << "\n";
-	std::wcout << "new max : " << max_ << "\n";
+	std::wcout << "new min : " << new_min_ << "\n";
+	std::wcout << "new max : " << new_max_ << "\n";
 
 }
 
