@@ -46,7 +46,7 @@ void Init(sf::RenderWindow &window)
 	full_random_ = true;
 	times_ = 1;
 
-	radius_cutoff = 100;
+	radius_cutoff = 120;
 
 }
 
@@ -253,7 +253,8 @@ int main()
 		}
 		if (ImGui::Button("Set Site to High Pos"))
 		{
-			v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff);
+			v_d_p->FindMax(v_d_p->GetGridSize(), layers_);
+			v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_);
 
 			do
 			{

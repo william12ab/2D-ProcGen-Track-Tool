@@ -570,48 +570,67 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 	int y0 = high_point_y;
 	int x0 = high_point_x;
 
-	while (x >= y)
+	if (x && y != 0)
 	{
-		vertexarray[(y0 + y) * grid_size + (x0 + x)].position = sf::Vector2f(x0 + x, y0 + y);
-		vertexarray[(y0 + y) * grid_size + (x0 + x)].color = sf::Color::Cyan;
-		
-		vertexarray[(y0 + x) * grid_size + (x0 + y)].position = sf::Vector2f(x0 + y, y0 + x);
-		vertexarray[(y0 + x) * grid_size + (x0 + y)].color = sf::Color::Cyan;
-
-		vertexarray[(y0 + x) * grid_size + (x0 - y)].position = sf::Vector2f(x0 - y, y0 + x);
-		vertexarray[(y0 + x) * grid_size + (x0 - y)].color = sf::Color::Cyan;
-
-		vertexarray[(y0 + y) * grid_size + (x0 - x)].position = sf::Vector2f(x0 - x, y0 + y);
-		vertexarray[(y0 + y) * grid_size + (x0 - x)].color = sf::Color::Cyan;
-
-		vertexarray[(y0 - y) * grid_size + (x0 - x)].position = sf::Vector2f(x0 - x, y0 - y);
-		vertexarray[(y0 - y) * grid_size + (x0 - x)].color = sf::Color::Cyan;
-
-		vertexarray[(y0 - x) * grid_size + (x0 - y)].position = sf::Vector2f(x0 - y, y0 - x);
-		vertexarray[(y0 - x) * grid_size + (x0 - y)].color = sf::Color::Cyan;
-		
-		vertexarray[(y0 - x) * grid_size + (x0 + y)].position = sf::Vector2f(x0 + y, y0 - x);
-		vertexarray[(y0 - x) * grid_size + (x0 + y)].color = sf::Color::Cyan;
-	
-		vertexarray[(y0 - y) * grid_size + (x0 + x)].position = sf::Vector2f(x0 + x, y0 - y);
-		vertexarray[(y0 - y) * grid_size + (x0 + x)].color = sf::Color::Cyan;
-		
-
-		if (err <= 0)
+		while (x >= y)
 		{
-			y += 1;
-			err += 2 * y + 1;
-		}
+			vertexarray[(y0 + y) * grid_size + (x0 + x)].position = sf::Vector2f(x0 + x, y0 + y);
+			vertexarray[(y0 + y) * grid_size + (x0 + x)].color = sf::Color::Cyan;
 
-		if (err > 0)
-		{
-			x -= 1;
-			err -= 2 * x + 1;
+			vertexarray[(y0 + x) * grid_size + (x0 + y)].position = sf::Vector2f(x0 + y, y0 + x);
+			vertexarray[(y0 + x) * grid_size + (x0 + y)].color = sf::Color::Cyan;
+
+			vertexarray[(y0 + x) * grid_size + (x0 - y)].position = sf::Vector2f(x0 - y, y0 + x);
+			vertexarray[(y0 + x) * grid_size + (x0 - y)].color = sf::Color::Cyan;
+
+			vertexarray[(y0 + y) * grid_size + (x0 - x)].position = sf::Vector2f(x0 - x, y0 + y);
+			vertexarray[(y0 + y) * grid_size + (x0 - x)].color = sf::Color::Cyan;
+
+			vertexarray[(y0 - y) * grid_size + (x0 - x)].position = sf::Vector2f(x0 - x, y0 - y);
+			vertexarray[(y0 - y) * grid_size + (x0 - x)].color = sf::Color::Cyan;
+
+			vertexarray[(y0 - x) * grid_size + (x0 - y)].position = sf::Vector2f(x0 - y, y0 - x);
+			vertexarray[(y0 - x) * grid_size + (x0 - y)].color = sf::Color::Cyan;
+
+			vertexarray[(y0 - x) * grid_size + (x0 + y)].position = sf::Vector2f(x0 + y, y0 - x);
+			vertexarray[(y0 - x) * grid_size + (x0 + y)].color = sf::Color::Cyan;
+
+			vertexarray[(y0 - y) * grid_size + (x0 + x)].position = sf::Vector2f(x0 + x, y0 - y);
+			vertexarray[(y0 - y) * grid_size + (x0 + x)].color = sf::Color::Cyan;
+
+
+			if (err <= 0)
+			{
+				y += 1;
+				err += 2 * y + 1;
+			}
+
+			if (err > 0)
+			{
+				x -= 1;
+				err -= 2 * x + 1;
+			}
 		}
 	}
 }
 
+void VoronoiDiagram::FindMax(int grid_size, int layers_)
+{
+	for (int i = 0; i < grid_size; i++)
+	{
+		for (int j = 0; j < grid_size; j++)
+		{
+			int temp_height = noise_heightmap_[(i * grid_size) + j]/ layers_;
+			if (temp_height > high_point)
+			{
+				high_point = temp_height;
+				high_point_x = j;
+				high_point_y = i;
+			}
+		}
+	}
 
+}
 void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_)
 {
 	for (size_t i = 0; i < grid_size; i++)
@@ -656,13 +675,13 @@ void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int 
 				sf::Uint8 c = (noise_heightmap_[(i * grid_size) + j]/ layers_);														//this needs changed - might be right actually
 
 				//recording the highest point in the terrain(heightmap)
-				int temp_height = noise_heightmap_[(i * grid_size) + j] / layers_;
+				/*int temp_height = noise_heightmap_[(i * grid_size) + j] / layers_;
 				if (temp_height > high_point)
 				{
 					high_point = temp_height;
 					high_point_x = j;
 					high_point_y = i;
-				}
+				}*/
 
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color{ c , c , c };
@@ -948,7 +967,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 }
 
 
-void VoronoiDiagram::HighPointFunc(int grid_size, int radius_cutoff_)
+void VoronoiDiagram::HighPointFunc(int grid_size, int radius_cutoff_, int layers_)
 {
 	//identify where x and y are in relation to the complete image
 	//so are they top left, top right, bottom left, bottom right
@@ -993,17 +1012,17 @@ void VoronoiDiagram::HighPointFunc(int grid_size, int radius_cutoff_)
 		x_pos =- 1;
 		y_pos =- 1;	
 	}
-	LoopPart(grid_size, x_pos, y_pos, signal, radius_cutoff_);
+	LoopPart(grid_size, x_pos, y_pos, signal, radius_cutoff_, layers_);
 }
 
-void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_)
+void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_)
 {
 	int y =high_point_y;
 	int x=high_point_x;
 	int iterator = 0;
 	do
 	{
-		if (noise_heightmap_[((y+y_value_)*grid_size) + (x+x_value_)] <=(radius_cutoff_))
+		if ((noise_heightmap_[((y+y_value_)*grid_size) + (x+x_value_)]/ layers_) <=(radius_cutoff_))
 		{
 			std::cout << "point on radius: " << x+x_value_ << " " << y+y_value_ << "\n";
 			std::cout << "radius: " << iterator << "\n";
