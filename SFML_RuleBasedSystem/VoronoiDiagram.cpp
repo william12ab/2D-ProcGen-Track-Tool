@@ -570,7 +570,7 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 	int y0 = high_point_y;
 	int x0 = high_point_x;
 
-	if (x && y != 0)
+	if (x0 && y0 != 0)
 	{
 		while (x >= y)
 		{
