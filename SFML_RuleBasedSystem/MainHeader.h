@@ -38,6 +38,7 @@ int times_;					//how many times to repeat the dispacement
 
 
 int radius_cutoff;
+int peaks_to_count_;
 
 //time code
 

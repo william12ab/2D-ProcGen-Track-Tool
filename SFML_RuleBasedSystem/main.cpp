@@ -47,6 +47,7 @@ void Init(sf::RenderWindow &window)
 	times_ = 1;
 
 	radius_cutoff = 120;
+	peaks_to_count_ = 1;
 
 }
 
@@ -219,6 +220,7 @@ int main()
 			v_d_p->SetH(height_);
 			ImGui::SliderInt("Alpha", &alpha_, 0, 255);
 			ImGui::SliderInt("Radius Cut-off:", &radius_cutoff, 50, 255);
+			ImGui::SliderInt("Number of Peaks:", &peaks_to_count_, 1, 5);
 			if (ImGui::Button("Change alpha"))
 			{
 				v_d_p->ChangeAlpha(height_map, v_d_p->GetGridSize(), alpha_);
@@ -253,7 +255,7 @@ int main()
 		}
 		if (ImGui::Button("Set Site to High Pos"))
 		{
-			for (int i = 0; i < 2; i++)
+			for (int i = 0; i < peaks_to_count_; i++)
 			{
 				v_d_p->FindMax(v_d_p->GetGridSize(), layers_);
 				v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_);

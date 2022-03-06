@@ -627,12 +627,17 @@ void VoronoiDiagram::FindMax(int grid_size, int layers_)
 	high_point_x = 0;
 	high_point_y = 0;
 	found_raidus = false;
+
+	//if circles vector is empty then just find the max - meaning that no peaks exist currently so no  worries about checking for other peaks
+	//if there are peaks, check if the current point is within a peak and if so dont find the max
 	for (int i = 0; i < grid_size; i++)
 	{
 		for (int j = 0; j < grid_size; j++)
 		{
 			if (!circles_.empty())
 			{
+				bool found_in_first_circle = false;
+				bool not_found_in_circle = true;
 				for (int c = 0; c < circles_.size(); c++)
 				{
 					int r = pow(circles_[c].r_length, 2);						//radius squared
@@ -640,6 +645,18 @@ void VoronoiDiagram::FindMax(int grid_size, int layers_)
 					int b = pow((i - circles_[c].centre_y), 2);
 
 					if (a+b>r)		//outside the circle, so find the max
+					{
+						not_found_in_circle = false;
+						
+					}
+					else
+					{
+						found_in_first_circle = true;
+					}
+				}
+				if (!not_found_in_circle&&!found_in_first_circle)				//so if not in ANY circle 
+				{
+					if (!found_in_first_circle)
 					{
 						int temp_height = noise_heightmap_[(i * grid_size) + j] / layers_;
 						if (temp_height > high_point)
@@ -650,8 +667,7 @@ void VoronoiDiagram::FindMax(int grid_size, int layers_)
 						}
 					}
 				}
-				
-				//a+b>r
+
 			}
 			else
 			{
@@ -1067,7 +1083,8 @@ void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int sig
 			found_raidus = true;
 			radius_length = iterator;
 
-			peak_.centre_x = high_point_x;
+			//pushes back a new peak in the peak vector 
+			peak_.centre_x = high_point_x;				
 			peak_.centre_y = high_point_y;
 			peak_.r_length = radius_length;
 			circles_.push_back(peak_);
@@ -1102,6 +1119,11 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
 {
 	//loop over number of sites for x and y 
 	//generate random point for site and loop over this generation until it is not within the circle
+
+	//for every site*2 so that gives x and y pos
+	//create a random coordinate
+	//check if that coordinate is within ANY circle or ON ANY circle
+	//if true then discard point and create new point UNTIL point is NOT in circle
 	for (int i = 0; i < (num_sites * 2); i++)
 	{
 		bool found = false;
@@ -1120,7 +1142,7 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
 				{
 					i--;
 					found = false;
-					false_in_first_cirlce = true;
+					false_in_first_cirlce = true;			//so if this is true then when it comes to circle(n+1) the found wont trigger
 				}
 				else
 				{
@@ -1137,7 +1159,7 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
 	int iterator_ = 0;
 	for (int i = 0; i < circles_.size(); i++)
 	{
-		sites_v_1[iterator_] = circles_[i].centre_x;				//setting the first site the the centre point of the circle
+		sites_v_1[iterator_] = circles_[i].centre_x;				//setting the first sites the the centre point of the circles
 		iterator_++;
 		sites_v_1[iterator_ ] = circles_[i].centre_y;
 		iterator_++;
