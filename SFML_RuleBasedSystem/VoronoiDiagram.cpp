@@ -34,6 +34,10 @@ VoronoiDiagram::VoronoiDiagram()
 	high_point_y = 0;
 	found_raidus = false;
 	radius_length = 0;
+
+	peak_.centre_x = 0;
+	peak_.centre_y = 0;
+	peak_.r_length = 0;
 }
 
 VoronoiDiagram::~VoronoiDiagram()
@@ -239,6 +243,7 @@ void VoronoiDiagram::DiagramAMP(int num_sites, int grid_size)
 		incr[i] = i + 1;
 	}
 
+
 	parallel_for(0, grid_size, [&](int j)
 	{
 			for (int i = 0; i < grid_size; i++)
@@ -248,7 +253,6 @@ void VoronoiDiagram::DiagramAMP(int num_sites, int grid_size)
 				int d = 0;
 				for (int p = 0; p < num_sites; p++)
 				{
-					//unique_lock<mutex> lock(distance_mutex);
 					d = DistanceSqrt(sites_v_1[s], sites_v_1[s + 1], i, j);
 					
 					s += 2;
@@ -563,70 +567,103 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 		vertexarray[(sites_v_1[i + 1]) * grid_size + sites_v_1[i]].color = sf::Color::Yellow;
 		i++;
 	}
-
-	int x = radius_length;
-	int y = 0;
-	int err = 0;
-	int y0 = high_point_y;
-	int x0 = high_point_x;
-
-	if (x0 && y0 != 0)
+	
+	/*for (int e = 0; e < circles_.size(); e++)
 	{
-		while (x >= y)
+		int x = circles_[e].r_length;
+		int y = 0;
+		int err = 0;
+		int y0 = circles_[e].centre_y;
+		int x0 = circles_[e].centre_x;
+
+		if (x0 && y0 != 0)
 		{
-			vertexarray[(y0 + y) * grid_size + (x0 + x)].position = sf::Vector2f(x0 + x, y0 + y);
-			vertexarray[(y0 + y) * grid_size + (x0 + x)].color = sf::Color::Cyan;
-
-			vertexarray[(y0 + x) * grid_size + (x0 + y)].position = sf::Vector2f(x0 + y, y0 + x);
-			vertexarray[(y0 + x) * grid_size + (x0 + y)].color = sf::Color::Cyan;
-
-			vertexarray[(y0 + x) * grid_size + (x0 - y)].position = sf::Vector2f(x0 - y, y0 + x);
-			vertexarray[(y0 + x) * grid_size + (x0 - y)].color = sf::Color::Cyan;
-
-			vertexarray[(y0 + y) * grid_size + (x0 - x)].position = sf::Vector2f(x0 - x, y0 + y);
-			vertexarray[(y0 + y) * grid_size + (x0 - x)].color = sf::Color::Cyan;
-
-			vertexarray[(y0 - y) * grid_size + (x0 - x)].position = sf::Vector2f(x0 - x, y0 - y);
-			vertexarray[(y0 - y) * grid_size + (x0 - x)].color = sf::Color::Cyan;
-
-			vertexarray[(y0 - x) * grid_size + (x0 - y)].position = sf::Vector2f(x0 - y, y0 - x);
-			vertexarray[(y0 - x) * grid_size + (x0 - y)].color = sf::Color::Cyan;
-
-			vertexarray[(y0 - x) * grid_size + (x0 + y)].position = sf::Vector2f(x0 + y, y0 - x);
-			vertexarray[(y0 - x) * grid_size + (x0 + y)].color = sf::Color::Cyan;
-
-			vertexarray[(y0 - y) * grid_size + (x0 + x)].position = sf::Vector2f(x0 + x, y0 - y);
-			vertexarray[(y0 - y) * grid_size + (x0 + x)].color = sf::Color::Cyan;
-
-
-			if (err <= 0)
+			while (x >= y)
 			{
-				y += 1;
-				err += 2 * y + 1;
-			}
+				vertexarray[(y0 + y) * grid_size + (x0 + x)].position = sf::Vector2f(x0 + x, y0 + y);
+				vertexarray[(y0 + y) * grid_size + (x0 + x)].color = sf::Color::Cyan;
 
-			if (err > 0)
-			{
-				x -= 1;
-				err -= 2 * x + 1;
+				vertexarray[(y0 + x) * grid_size + (x0 + y)].position = sf::Vector2f(x0 + y, y0 + x);
+				vertexarray[(y0 + x) * grid_size + (x0 + y)].color = sf::Color::Cyan;
+
+				vertexarray[(y0 + x) * grid_size + (x0 - y)].position = sf::Vector2f(x0 - y, y0 + x);
+				vertexarray[(y0 + x) * grid_size + (x0 - y)].color = sf::Color::Cyan;
+
+				vertexarray[(y0 + y) * grid_size + (x0 - x)].position = sf::Vector2f(x0 - x, y0 + y);
+				vertexarray[(y0 + y) * grid_size + (x0 - x)].color = sf::Color::Cyan;
+
+				vertexarray[(y0 - y) * grid_size + (x0 - x)].position = sf::Vector2f(x0 - x, y0 - y);
+				vertexarray[(y0 - y) * grid_size + (x0 - x)].color = sf::Color::Cyan;
+
+				vertexarray[(y0 - x) * grid_size + (x0 - y)].position = sf::Vector2f(x0 - y, y0 - x);
+				vertexarray[(y0 - x) * grid_size + (x0 - y)].color = sf::Color::Cyan;
+
+				vertexarray[(y0 - x) * grid_size + (x0 + y)].position = sf::Vector2f(x0 + y, y0 - x);
+				vertexarray[(y0 - x) * grid_size + (x0 + y)].color = sf::Color::Cyan;
+
+				vertexarray[(y0 - y) * grid_size + (x0 + x)].position = sf::Vector2f(x0 + x, y0 - y);
+				vertexarray[(y0 - y) * grid_size + (x0 + x)].color = sf::Color::Cyan;
+
+
+				if (err <= 0)
+				{
+					y += 1;
+					err += 2 * y + 1;
+				}
+
+				if (err > 0)
+				{
+					x -= 1;
+					err -= 2 * x + 1;
+				}
 			}
 		}
-	}
+	}*/
 }
 
 void VoronoiDiagram::FindMax(int grid_size, int layers_)
 {
+	high_point = 0;
+	high_point_x = 0;
+	high_point_y = 0;
+	found_raidus = false;
 	for (int i = 0; i < grid_size; i++)
 	{
 		for (int j = 0; j < grid_size; j++)
 		{
-			int temp_height = noise_heightmap_[(i * grid_size) + j]/ layers_;
-			if (temp_height > high_point)
+			if (!circles_.empty())
 			{
-				high_point = temp_height;
-				high_point_x = j;
-				high_point_y = i;
+				for (int c = 0; c < circles_.size(); c++)
+				{
+					int r = pow(circles_[c].r_length, 2);						//radius squared
+					int a = pow((j - circles_[c].centre_x), 2);				//x part squared
+					int b = pow((i - circles_[c].centre_y), 2);
+
+					if (a+b>r)		//outside the circle, so find the max
+					{
+						int temp_height = noise_heightmap_[(i * grid_size) + j] / layers_;
+						if (temp_height > high_point)
+						{
+							high_point = temp_height;
+							high_point_x = j;
+							high_point_y = i;
+						}
+					}
+				}
+				
+				//a+b>r
 			}
+			else
+			{
+				int temp_height = noise_heightmap_[(i * grid_size) + j] / layers_;
+				if (temp_height > high_point)
+				{
+					high_point = temp_height;
+					high_point_x = j;
+					high_point_y = i;
+				}
+			}
+		
 		}
 	}
 
@@ -780,10 +817,7 @@ void VoronoiDiagram::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int oc
 		{
 			float new_value_ = ( ( (heightmap_fbm_[(i * grid_size) + j] - min_) * new_range_) / old_range_) + 0;	//gets the oldd value and turns it into a value between the new range
 				
-			if (new_value_<0)
-			{
-				int g = 1;
-			}
+		
 
 		
 			int co = int(new_value_ * 255);						//geets as rgb value
@@ -1032,6 +1066,11 @@ void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int sig
 			std::cout << "radius: " << iterator << "\n";
 			found_raidus = true;
 			radius_length = iterator;
+
+			peak_.centre_x = high_point_x;
+			peak_.centre_y = high_point_y;
+			peak_.r_length = radius_length;
+			circles_.push_back(peak_);
 		}
 		else
 		{
@@ -1059,7 +1098,7 @@ void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int sig
 }
 
 
-void VoronoiDiagram::TerrainSites(int num_sites, int grid_size, int centre_x, int centre_y, int radius_)
+void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
 {
 	//loop over number of sites for x and y 
 	//generate random point for site and loop over this generation until it is not within the circle
@@ -1068,25 +1107,42 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size, int centre_x, in
 		bool found = false;
 		while (!found)
 		{
+			bool false_in_first_cirlce = false;
 			sites_v_1[i] = rand() % (grid_size);
 			i++;
 			sites_v_1[i] = rand() % (grid_size);
-			int r = pow(radius_, 2);						//radius squared
-			int a= pow((sites_v_1[i - 1] - centre_x), 2);				//x part squared
-			int b=pow((sites_v_1[i] - centre_y), 2);					//y part squared
-			if (a + b < r|| a+b==r)				//the circle formula - checking whether the point exist in the circle and if it does then set the iterator back to what it was and go again
+			for (int c = 0; c < circles_.size(); c++)
 			{
-				i--;
-			}
-			else
-			{
-				found = true;		//point is not in the circle so exit loop and create new site
-				
+				int r = pow(circles_[c].r_length, 2);						//radius squared
+				int a = pow((sites_v_1[i - 1] - circles_[c].centre_x), 2);				//x part squared
+				int b = pow((sites_v_1[i] - circles_[c].centre_y), 2);					//y part squared
+				if (a + b < r || a + b == r)				//the circle formula - checking whether the point exist in the circle and if it does then set the iterator back to what it was and go again
+				{
+					i--;
+					found = false;
+					false_in_first_cirlce = true;
+				}
+				else
+				{
+					if (!false_in_first_cirlce)
+					{
+						found = true;		//point is not in the circle so exit loop and create new site
+					}
+
+				}
 			}
 		}
 	}
-	sites_v_1[0] = centre_x;				//setting the first site the the centre point of the circle
-	sites_v_1[1] = centre_y;
+
+	int iterator_ = 0;
+	for (int i = 0; i < circles_.size(); i++)
+	{
+		sites_v_1[iterator_] = circles_[i].centre_x;				//setting the first site the the centre point of the circle
+		iterator_++;
+		sites_v_1[iterator_ ] = circles_[i].centre_y;
+		iterator_++;
+	}
+	
 
 
 }
@@ -1098,4 +1154,5 @@ void VoronoiDiagram::ResetVars()
 	high_point_y=0;
 	found_raidus=false;
 	radius_length=0;
+	circles_.clear();
 }

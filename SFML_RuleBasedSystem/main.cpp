@@ -253,8 +253,12 @@ int main()
 		}
 		if (ImGui::Button("Set Site to High Pos"))
 		{
-			v_d_p->FindMax(v_d_p->GetGridSize(), layers_);
-			v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_);
+			for (int i = 0; i < 2; i++)
+			{
+				v_d_p->FindMax(v_d_p->GetGridSize(), layers_);
+				v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_);
+			}
+			
 
 			do
 			{
@@ -263,7 +267,7 @@ int main()
 					ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
 				}
 
-				v_d_p->TerrainSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(),v_d_p->GetCentreX(), v_d_p->GetCentreY(), v_d_p->GetRadius());
+				v_d_p->TerrainSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 				v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 				v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_, div_);
 				v_d_p->SetEdges(v_d_p->GetGridSize());

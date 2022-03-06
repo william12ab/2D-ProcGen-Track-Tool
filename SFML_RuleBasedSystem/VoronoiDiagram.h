@@ -11,7 +11,7 @@ public:
 	void RandomPlaceSites(int num_sites, int grid_size);				//distrubutes the sites
 	void EqualDSites(int num_sites, int grid_size, int times_);						//distributes the sites in equal distance first then displaces them 
 	void DistributeSites(int num_sites, int grid_size);					//random but one in the centre
-	void TerrainSites(int num_sites, int grid_size, int centre_x, int centre_y, int radius_);
+	void TerrainSites(int num_sites, int grid_size);
 
 	int DistanceSqrt(int x, int y, int x2, int y2);						//the distance formula
 	void CreateDiagram(int num_sites,int grid_size, int start, int end);					//creates the voronoi diagram
@@ -97,10 +97,19 @@ private:
 	float pHeightRange = 1.0f;
 
 
+	struct peaks_
+	{
+		int centre_x;
+		int centre_y;
+		int r_length;
+	}peak_;
 	int high_point;
 	int high_point_x;
 	int high_point_y;
 	bool found_raidus;
 	int radius_length;
+
+	std::vector<peaks_>circles_;
+	
 };
 
