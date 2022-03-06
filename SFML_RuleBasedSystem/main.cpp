@@ -255,12 +255,17 @@ int main()
 		}
 		if (ImGui::Button("Set Site to High Pos"))
 		{
+			the_clock::time_point startTime = the_clock::now();
+			
+			
 			for (int i = 0; i < peaks_to_count_; i++)
 			{
 				v_d_p->FindMax(v_d_p->GetGridSize(), layers_);
 				v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_);
 			}
-			
+			the_clock::time_point endTime = the_clock::now();
+			auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+			std::cout << "time(HIGH_POINTS): " << time_taken; std::cout << std::endl;
 
 			do
 			{
