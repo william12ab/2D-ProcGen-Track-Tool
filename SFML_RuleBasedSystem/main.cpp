@@ -37,7 +37,6 @@ void Init(sf::RenderWindow &window)
 	render_height_map_ = false;
 	number_ = 35;
 	div_ = 2.0f;
-	catch_ = 100;
 	height_ = 1.0f;
 	frequency_ = 1.0f;
 	alpha_ = 255;
@@ -45,6 +44,7 @@ void Init(sf::RenderWindow &window)
 	octaves_ = 1;
 	full_random_ = true;
 	times_ = 1;
+	displacement_ = 100;
 
 	radius_cutoff = 120;
 	peaks_to_count_ = 1;
@@ -80,14 +80,14 @@ void CreateVoronoi(VoronoiDiagram* v_d_p, sf::VertexArray &height_map)
 	}
 	else
 	{
-		v_d_p->EqualDSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), times_);
+		v_d_p->EqualDSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), times_, displacement_);
 	}
 
 	v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 
 	
 		
-	v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_, div_);
+	v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, div_);
 
 	v_d_p->SetEdges(v_d_p->GetGridSize());
 	v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
@@ -203,6 +203,7 @@ int main()
 			ImGui::SliderInt("Resolution", &resolution_, 100, 800);
 			ImGui::SliderInt("Sites", &sites_, 5, 100);
 			ImGui::SliderInt("Iterations of Displacement", &times_, 1, 32);
+			ImGui::SliderInt("Displacement at Each Displacement", &displacement_, 1, 200);
 			ImGui::Checkbox("Random or Equal+Random?", &full_random_);
 			ImGui::SliderInt("Points", &points_, 2, 5);
 			ImGui::SliderInt("Track Type", &track_type_, 0, 2);
@@ -279,7 +280,7 @@ int main()
 				v_d_p->TerrainSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());							//this takes no time
 	
 				v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
-				v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_, div_);
+				v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, div_);
 				v_d_p->SetEdges(v_d_p->GetGridSize());
 				v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
 				the_clock::time_point startTime = the_clock::now();

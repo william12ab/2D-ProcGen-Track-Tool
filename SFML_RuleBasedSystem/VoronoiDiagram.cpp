@@ -71,7 +71,6 @@ void VoronoiDiagram::RandomPlaceSites(int num_sites, int grid_size)
 	for (int i = 0; i < (num_sites*2); i++)
 	{
 		sites_v_1[i] = rand() % grid_size;
-		//std::cout << i << " site x: " << sites_v_1[i] << "\n";
 	}
 }
 
@@ -113,7 +112,7 @@ void VoronoiDiagram::DistributeSites(int num_sites, int grid_size)
 	}
 }
 
-void VoronoiDiagram::EqualDSites(int num_sites, int grid_size, int times_)
+void VoronoiDiagram::EqualDSites(int num_sites, int grid_size, int times_, int displacement)
 {	
 	site_iterator = 0;
 	sites_v_1[site_iterator] = 0;
@@ -167,7 +166,6 @@ void VoronoiDiagram::EqualDSites(int num_sites, int grid_size, int times_)
 		{
 			for (int i = (j + halfSide) % sideLength; i < (grid_size ); i += sideLength)
 			{
-
 				sites_v_1[site_iterator] = i;
 				site_iterator++;
 				sites_v_1[site_iterator] = j;
@@ -179,7 +177,7 @@ void VoronoiDiagram::EqualDSites(int num_sites, int grid_size, int times_)
 	}
 
 
-	int rand_range_ = (grid_size/2.5);				//gives 200	for 513 res	same here
+
 	int rand_range_back_ = (grid_size / 5);			//give 100 for 513 res	--well just about - rounded down
 
 	for (int t = 0; t < times_; t++)
@@ -187,9 +185,9 @@ void VoronoiDiagram::EqualDSites(int num_sites, int grid_size, int times_)
 		
 		for (int i = 0; i < (num_sites * 2); i++)
 		{
-			sites_v_1[i] += rand() % rand_range_ + (-rand_range_back_);
-			/*std::cout << "rand num " << rand() % rand_range_ + (-rand_range_back_) << "\n";
-			std::cout << i << " site x before change: " << sites_v_1[i] << "  ";*/
+			sites_v_1[i] += rand() % (displacement *2) + (-displacement);
+			//so this is the amount added on
+			//so between -80 and 80
 
 
 			if (sites_v_1[i] >= grid_size)									//if bigger than the max res then max res - the amount bigger than = new pos
@@ -201,22 +199,18 @@ void VoronoiDiagram::EqualDSites(int num_sites, int grid_size, int times_)
 			{
 				sites_v_1[i] += (-sites_v_1[i] - sites_v_1[i]);
 			}
-			/*std::cout << i << " site x after change: " << sites_v_1[i] << "\n";*/
 			i++;
-			sites_v_1[i] += rand() % rand_range_ + (-rand_range_back_);
-			/*std::cout << "site y before change: " << sites_v_1[i] << "  ";*/
+			sites_v_1[i] += rand() % (displacement * 2) + (-displacement);
 
 			if (sites_v_1[i] >= grid_size)
 			{
 				int difference = sites_v_1[i] - grid_size;
-				difference += rand() % rand_range_back_ + 1;
-				sites_v_1[i] -= difference;
+				sites_v_1[i] = grid_size - difference;
 			}
 			if (sites_v_1[i] <= 0)
 			{
 				sites_v_1[i] += (-sites_v_1[i] - sites_v_1[i]);
 			}
-			/*std::cout << "site y after change: " << sites_v_1[i] << "\n";*/
 		}
 	}
 }
@@ -371,7 +365,7 @@ void VoronoiDiagram::SetEdges(int grid_size)
 
 
 
-void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_, float div_a)
+void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float div_a)
 {
 	int max_d_ = 0;
 	parallel_for(0, grid_size, [&](int i)
@@ -1124,5 +1118,4 @@ void VoronoiDiagram::ResetVars()
 	found_raidus=false;
 	radius_length=0;
 	circles_.clear();
-	
 }

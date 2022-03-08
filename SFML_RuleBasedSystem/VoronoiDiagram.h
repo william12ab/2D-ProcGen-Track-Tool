@@ -9,7 +9,7 @@ public:
 	~VoronoiDiagram();
 	
 	void RandomPlaceSites(int num_sites, int grid_size);				//distrubutes the sites
-	void EqualDSites(int num_sites, int grid_size, int times_);						//distributes the sites in equal distance first then displaces them 
+	void EqualDSites(int num_sites, int grid_size, int times_, int displacement);						//distributes the sites in equal distance first then displaces them 
 	void DistributeSites(int num_sites, int grid_size);					//random but one in the centre
 	void TerrainSites(int num_sites, int grid_size);
 
@@ -54,7 +54,7 @@ public:
 	void DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size, int num_sites);
 	void DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
 
-	void DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float c_, float div_a);
+	void DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float div_a);
 	void DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_);
 	void DrawFBM(sf::VertexArray& vertexarray, int grid_size, int octaves_);
 
