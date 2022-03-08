@@ -632,6 +632,7 @@ void VoronoiDiagram::FindMax(int grid_size, int layers_)
 	high_point_x = 0;
 	high_point_y = 0;
 	found_raidus = false;
+	radius_length = 0;
 
 	//if circles vector is empty then just find the max - meaning that no peaks exist currently so no  worries about checking for other peaks
 	//if there are peaks, check if the current point is within a peak and if so dont find the max
@@ -1145,7 +1146,7 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
 				int b = pow((sites_v_1[i] - circles_[c].centre_y), 2);					//y part squared
 				if (a + b < r || a + b == r)				//the circle formula - checking whether the point exist in the circle and if it does then set the iterator back to what it was and go again
 				{
-					i--;
+									
 					found = false;
 					false_in_first_cirlce = true;			//so if this is true then when it comes to circle(n+1) the found wont trigger
 				}
@@ -1158,7 +1159,12 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
 
 				}
 			}
+			if (false_in_first_cirlce)
+			{
+				i--;//this is probably where it goes wrong
+			}
 		}
+		
 	}
 
 	int iterator_ = 0;
@@ -1182,4 +1188,5 @@ void VoronoiDiagram::ResetVars()
 	found_raidus=false;
 	radius_length=0;
 	circles_.clear();
+	
 }
