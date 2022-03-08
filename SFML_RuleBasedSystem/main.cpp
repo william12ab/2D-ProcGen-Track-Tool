@@ -255,17 +255,18 @@ int main()
 		}
 		if (ImGui::Button("Set Site to High Pos"))
 		{
-			the_clock::time_point startTime = the_clock::now();
 			
-			
+			the_clock::time_point startTimea = the_clock::now();
 			for (int i = 0; i < peaks_to_count_; i++)
 			{
 				v_d_p->FindMax(v_d_p->GetGridSize(), layers_);
 				v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_);
 			}
-			the_clock::time_point endTime = the_clock::now();
-			auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-			std::cout << "time(HIGH_POINTS): " << time_taken; std::cout << std::endl;
+			the_clock::time_point endTimea = the_clock::now();
+
+			auto time_takena = duration_cast<milliseconds>(endTimea - startTimea).count();
+			std::cout << "time(HIGH_POINTS): " << time_takena; std::cout << std::endl;
+
 
 			do
 			{
@@ -273,8 +274,10 @@ int main()
 				{
 					ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
 				}
+				
 
-				v_d_p->TerrainSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+				v_d_p->TerrainSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());							//this takes no time
+	
 				v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 				v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, catch_, div_);
 				v_d_p->SetEdges(v_d_p->GetGridSize());
@@ -322,10 +325,7 @@ int main()
 	
 		if (ImGui::Button("Write to file"))
 		{
-	
 			v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
-
-
 		}
 		ImGui::Text("\n");
 		ImGui::End();
@@ -333,8 +333,6 @@ int main()
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		{
 			v_d_p->DrawFullVoronoiDiagram(voronoi_d, v_d_p->GetGridSize());
-			//s_p_p->PrintOutStartEnd(v_d_p->GetGridSize(), v_d_p->GetGrid());
-
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		{
