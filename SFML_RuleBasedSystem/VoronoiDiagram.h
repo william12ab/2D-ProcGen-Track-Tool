@@ -86,6 +86,7 @@ private:
 	int* noise_heightmap_;
 	int* alpha_channel_;
 
+	
 
 	int max_distance_;
 

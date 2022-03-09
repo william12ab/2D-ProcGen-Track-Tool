@@ -329,6 +329,12 @@ int main()
 			v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
 		}
 		ImGui::Text("\n");
+		ImGui::Text("\n");
+		if (ImGui::CollapsingHeader("Measurements"))
+		{
+			ImGui::Text("Total Length= %d", s_p_p->GetTotalDistance());
+			ImGui::Text("Number of Turns = %d", s_p_p->GetNumberOfTurns());
+		}
 		ImGui::End();
 		//used to display the whole voronoi diagram
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))

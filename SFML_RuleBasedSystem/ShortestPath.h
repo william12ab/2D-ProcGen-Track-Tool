@@ -1,4 +1,9 @@
 #pragma once
+#include <string>
+#include <vector>
+
+
+
 class ShortestPath
 {
 public:
@@ -21,6 +26,9 @@ public:
 	int GetXHolder() { return x_holder_; }
 	int GetYHolder() { return y_holder_; }
 
+	int GetTotalDistance() { return total_track_distance; }
+	int GetNumberOfTurns() { return number_of_turns; }
+
 	//failled and restarting
 	void SetFailed(bool f) { failed_ = f; }
 	bool GetFailed() { return failed_; }
@@ -33,6 +41,24 @@ private:
 	int it;
 	bool end_;					//start as false;
 	int x_holder_, y_holder_;
-	bool failed_;
+	bool failed_;				//if the generation fails
+
+
+
+	int total_track_distance;		//the total distance of the track
+	int number_of_turns;			//the total number of turns
+	
+	std::vector<std::string> direction_;
+
+	std::string new_direction;
+	std::string old_direction;
+	int counter_;
+	int counter_g;
+	float gradient_;
+	float angle_;
+	int temp_x,temp_y;
+
+	std::vector<float> angles_;
+	std::vector<float> gradients_;
 };
 

@@ -38,6 +38,8 @@ VoronoiDiagram::VoronoiDiagram()
 	peak_.centre_x = 0;
 	peak_.centre_y = 0;
 	peak_.r_length = 0;
+
+	
 }
 
 VoronoiDiagram::~VoronoiDiagram()
