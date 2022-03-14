@@ -334,6 +334,7 @@ int main()
 		{
 			ImGui::Text("Total Length= %d", s_p_p->GetTotalDistance());
 			ImGui::Text("Number of Turns = %d", s_p_p->GetNumberOfTurns());
+			ImGui::Text("Number of Turns2 = %d", s_p_p->GetNumberOfTurns2());
 		}
 		ImGui::End();
 		//used to display the whole voronoi diagram

@@ -67,6 +67,8 @@ public:
 	void ResetVars();
 
 	void FindMax(int grid_size, int layers_);
+
+
 private:
 	SimplexNoise perlin_;
 
@@ -111,6 +113,8 @@ private:
 	int radius_length;
 
 	std::vector<peaks_>circles_;
+
+	
 	
 };
 

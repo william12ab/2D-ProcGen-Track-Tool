@@ -334,32 +334,32 @@ void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size, int start, int 
 //loop over all points
 //the out if statements are to check if the index is still in bounds of the grid_size in x and y direction
 //j =y/z, i=x
+//at this stage: all positions are equal to a number representing a site
+//so if theres 25 sites, each position will be 1-25 
 void VoronoiDiagram::SetEdges(int grid_size)
 {
+
 	for (int j = 0; j < grid_size; j++)
 	{
 		for (int i=0; i< grid_size; i++)
 		{
-			if (i+1<grid_size)		//if in the bounds
+			if (i+1<grid_size&& j + 1 < grid_size)		//if in the bounds
 			{
-				if (grid_v_1[(j * grid_size) + i] != 0 && grid_v_1[(j * grid_size) + (i + 1)] != 0)		//if current position isnt 0 and position one to left is not 0 
+				if (grid_v_1[(j * grid_size) + i] != grid_v_1[(j * grid_size) + (i + 1)])		//if the current pos and pos 1 to the left are not the same
 				{
-					if (grid_v_1[(j * grid_size) + i] != grid_v_1[(j * grid_size) + (i + 1)])		//if the current pos and pos 1 to the left are not the same
-					{
-						grid_v_1[(j * grid_size) + i] = 0;			//set to path way
-					}
+					
+					grid_v_1[(j * grid_size) + i] = 0;			//set to path way
+					//here you could find what the sites bordering are
+
+				}
+				else if (grid_v_1[(j * grid_size) + i] != grid_v_1[((j + 1) * grid_size) + i])
+				{
+		
+					grid_v_1[(j * grid_size) + i] = 0;
+
 				}
 			}
-			if (j + 1 < grid_size)
-			{
-				if (grid_v_1[(j * grid_size) + i] != 0 && grid_v_1[((j + 1) * grid_size) + i] != 0)
-				{
-					if (grid_v_1[(j * grid_size) + i] != grid_v_1[((j + 1) * grid_size) + i])
-					{
-						grid_v_1[(j * grid_size) + i] = 0;
-					}
-				}
-			}
+
 
 		}
 	}
@@ -377,7 +377,7 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 				for (int a = 1; a <= num_sites; a++)
 				{
 					
-					if (grid_v_1[(i * grid_size) + j] == a)
+					if (grid_v_1[(i * grid_size) + j] == a)			//might be able to take this out
 					{
 						float s = float((float)1 / (float)num_sites);							//gets the thing as a percentage
 						//for example 1/100 = 0.01

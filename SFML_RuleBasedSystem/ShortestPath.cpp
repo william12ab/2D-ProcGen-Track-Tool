@@ -1,6 +1,7 @@
 #include "ShortestPath.h"
 #include <iostream>
 #include <algorithm>
+
 ShortestPath::ShortestPath()
 {
 	found_end = false;				//start as false;
@@ -23,38 +24,64 @@ void ShortestPath::Initgrid(int grid_size, int* grid, int num_points)
 {
 	int start = -3;
 	number_of_turns = 0;
+
 	total_track_distance = 0;
-	new_direction = "";
-	old_direction = "";
-	direction_.clear();
+
 	counter_g = 0;
 	gradient_ = 0.0f;
 	temp_x, temp_y = 0;
 	angle_ = 0.0f;
 	gradients_.clear();
 	angles_.clear();
+	if (!old_num.empty())
+	{
+		old_num.clear();
+	}
+	if (!occurances.empty())
+	{
+		occurances.clear();
+	}
+	if (!old_occurances.empty())
+	{
+		old_occurances.clear();
+	}
+	unique_count_old_occuarances = 0;
+	unique_count_occuarances = 0;
+
+	north_site=0;
+	north_e_site = 0;
+	north_w_site = 0;
+	west_site = 0;
+	east_site = 0;
+	south_site = 0;
+	south_e_site = 0;
+	south_w_site = 0;
 		for (int i = 0; i < grid_size; i++)
 		{
 			for (int j = 0; j < grid_size; j++)
 			{
 				if (grid[(i * grid_size) + j]==0)
 				{
+					old_num.push_back(grid[(i * grid_size) + j]);
 					grid[(i * grid_size) + j] = -1;			//possible path
 				}
 				if (grid[(i * grid_size) + j] == 2000)
 				{
-					grid[(i * grid_size) + j] = 0;
+					old_num.push_back(grid[(i * grid_size) + j]);
+					grid[(i * grid_size) + j] = 0;								//first position
 				}
 				for (int p = 0; p < (num_points-1); p++)
 				{
 				if(grid[(i * grid_size) + j] == 2001 + p)
 				{
-					grid[(i * grid_size) + j] = start - p;
+					old_num.push_back(grid[(i * grid_size) + j]);
+					grid[(i * grid_size) + j] = start - p;				//every other position
 				}
 				}
 				if(grid[(i * grid_size) + j]>0 )
 				{
-					grid[(i * grid_size) + j] = -2;
+					old_num.push_back(grid[(i * grid_size) + j]);
+					grid[(i * grid_size) + j] = -2;										//non positions
 				}
 			}
 		}
@@ -322,6 +349,28 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 		int how_many = 0;
 		if (count_holder != 0)
 		{
+			if (unique_count_occuarances==2 || unique_count_occuarances ==0)		//so if the previous position is not 1 or 3 then find new but if not dont. 
+			{
+				north_site = old_num[((y_holder - 1) * grid_size) + (x_holder)];
+				north_e_site = old_num[((y_holder - 1) * grid_size) + (x_holder + 1)];
+				north_w_site = old_num[((y_holder - 1) * grid_size) + (x_holder - 1)];
+				west_site = old_num[(y_holder * grid_size) + (x_holder - 1)];
+				east_site = old_num[(y_holder * grid_size) + (x_holder + 1)];
+				south_site = old_num[((y_holder + 1) * grid_size) + (x_holder)];
+				south_e_site = old_num[((y_holder + 1) * grid_size) + (x_holder + 1)];
+				south_w_site = old_num[((y_holder + 1) * grid_size) + (x_holder - 1)];
+
+				old_occurances.push_back(north_site);
+				old_occurances.push_back(north_e_site);
+				old_occurances.push_back(north_w_site);
+				old_occurances.push_back(west_site);
+				old_occurances.push_back(east_site);
+				old_occurances.push_back(south_site);
+				old_occurances.push_back(south_e_site);
+				old_occurances.push_back(south_w_site);
+			}
+		
+
 			if (counter_g==0)
 			{
 				temp_x = x_holder;
@@ -338,31 +387,25 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 			int& northW = grid[((y_holder - 1) * grid_size) + (x_holder - 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
 			if (north == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 			{
-				new_direction = "north";
 				y_holder -= 1;
 				count_holder -= 1;
 				grid[(y_holder * grid_size) + x_holder]=-12303;
 				how_many++;
 				total_track_distance++;
-				direction_.push_back("north");
 				counter_g++;
 			}
 			else if (northE == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 			{
-				new_direction = "northE";
 				y_holder -= 1;
 				x_holder += 1;
 				grid[(y_holder * grid_size) + x_holder] = -12303;
 				count_holder -= 1;
 				how_many++;
 				total_track_distance++;
-				direction_.push_back("northE");
 				counter_g++;
 			}
 			else if (east == count_holder)
 			{
-				new_direction = "east";
-				direction_.push_back("east");
 				x_holder += 1;
 				grid[(y_holder * grid_size) + x_holder] = -12303;
 				count_holder -= 1;
@@ -373,8 +416,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 			}
 			else if (south == count_holder)
 			{
-				new_direction = "south";
-				direction_.push_back("south");
 				y_holder += 1;
 				grid[(y_holder * grid_size) + x_holder] = -12303;
 				count_holder -= 1;
@@ -384,8 +425,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 			}
 			else if (southE == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 			{
-				new_direction = "southE";
-				direction_.push_back("southE");
 				x_holder += 1;
 				y_holder += 1;
 				grid[(y_holder * grid_size) + x_holder] = -12303;
@@ -397,8 +436,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 			}
 			else if (southW == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 			{
-				new_direction = "southW";
-				direction_.push_back("southW");
 				y_holder += 1;
 				x_holder -= 1;
 				grid[(y_holder * grid_size) + x_holder] = -12303;
@@ -409,8 +446,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 			}
 			else if (west == count_holder)
 			{
-				new_direction = "west";
-				direction_.push_back("west");
 				x_holder -= 1;
 				grid[(y_holder * grid_size) + x_holder] = -12303;
 				count_holder -= 1;
@@ -420,8 +455,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 			}
 			else if (northW == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 			{
-				new_direction = "northW";
-				direction_.push_back("northW");
 				y_holder -= 1;
 				x_holder -= 1;
 				grid[(y_holder * grid_size) + x_holder] = -12303;
@@ -431,74 +464,161 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				counter_g++;
 			}
 
-			if (counter_g==5)
-			{
-				float y = y_holder - temp_y;
-				float x = x_holder - temp_x;
-				angle_ = atanf((y /x ));
-				angle_ = angle_ * (180.0 / 3.141592653589793238463);
-				angles_.push_back(angle_);
+			north_site = old_num[((y_holder - 1) * grid_size) + (x_holder)];
+			north_e_site = old_num[((y_holder - 1) * grid_size) + (x_holder+1)];
+			north_w_site = old_num[((y_holder - 1) * grid_size) + (x_holder-1)];
+			west_site = old_num[(y_holder * grid_size) + (x_holder-1)];
+			east_site = old_num[(y_holder * grid_size) + (x_holder + 1)];
+			south_site = old_num[((y_holder + 1) * grid_size) + (x_holder)];
+			south_e_site = old_num[((y_holder + 1) * grid_size) + (x_holder+1)];
+			south_w_site = old_num[((y_holder + 1) * grid_size) + (x_holder-1)];
+
+			occurances.push_back(north_site);
+			occurances.push_back(north_e_site);
+			occurances.push_back(north_w_site);
+			occurances.push_back(west_site);
+			occurances.push_back(east_site);
+			occurances.push_back(south_site);
+			occurances.push_back(south_e_site);
+			occurances.push_back(south_w_site);
 
 
 
+			//this removes all numbers that arent site numbers - eg possible tracks or start/end positions
+			old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 0), old_occurances.end());
+			old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 2000), old_occurances.end());
+			old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 2001), old_occurances.end());
+			old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 2002), old_occurances.end());
+			old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 2003), old_occurances.end());
+			old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 2004), old_occurances.end());
 
-				gradient_ = (float)(y_holder - temp_y) / (x_holder - temp_x);
-				gradients_.push_back(gradient_);
-				if (gradients_.size()==2)
-				{
-					float difference = gradients_[0] - gradients_[1];
-					if (difference>=0.5f ||difference<=-0.5f)
-					{
-						//number_of_turns++;
-					}
-					gradients_.erase(gradients_.begin());
+			occurances.erase(std::remove(occurances.begin(), occurances.end(), 0), occurances.end());
+			occurances.erase(std::remove(occurances.begin(), occurances.end(), 2000), occurances.end());
+			occurances.erase(std::remove(occurances.begin(), occurances.end(), 2001), occurances.end());
+			occurances.erase(std::remove(occurances.begin(), occurances.end(), 2002), occurances.end());
+			occurances.erase(std::remove(occurances.begin(), occurances.end(), 2003), occurances.end());
+			occurances.erase(std::remove(occurances.begin(), occurances.end(), 2004), occurances.end());
 
-
-					float a_difference = angles_[0] - angles_[1];
-					if (a_difference>=30 || a_difference<=-30)
-					{
-						number_of_turns++;
-						std::cout << "position 1: " << temp_x << " " << temp_y << "\n";
-						std::cout << "position 2: " << x_holder << " " << y_holder << "\n";
-					}
-					angles_.erase(angles_.begin());
-				}
-				counter_g = 0;
-			}
-
-
-			if (new_direction !=old_direction)
-			{
-				counter_++;
-				if (counter_ == 3)
-				{
-					//number_of_turns++;
-					counter_ = 0;
-				}
-			}
-			else if (new_direction==new_direction)
-			{
-				counter_ = 0;
-			}
-			old_direction = new_direction;
-
-			if (direction_.size()==4)
-			{
-				std::sort(direction_.begin(), direction_.end());
-				int uniqueCount = std::unique(direction_.begin(), direction_.end()) - direction_.begin();
-				if (uniqueCount>=3)
-				{
-					//number_of_turns++;
-				}
-				direction_.erase(direction_.begin());
-			}
+			//sorts in order and finds how many sites
+			std::sort(occurances.begin(), occurances.end());
+			unique_count_occuarances = std::unique(occurances.begin(), occurances.end()) - occurances.begin();
 			
+			std::sort(old_occurances.begin(), old_occurances.end());
+			unique_count_old_occuarances = std::unique(old_occurances.begin(), old_occurances.end()) - old_occurances.begin();
 			
-			if (how_many == 0)
+			//if all of them are == to 2 then check for corner - could this not just be if ==2?
+			if (unique_count_occuarances==2&& unique_count_old_occuarances==2)
 			{
-				break;
-				std::cout << "hit how many phase 2\n";
+				/*if (unique_count_occuarances==1 || unique_count_old_occuarances==1)
+				{
+					std::cout << "size = 1\n";
+				}*/
+
+				auto it = minmax_element(std::begin(occurances), std::end(occurances));
+				auto it_old = minmax_element(std::begin(old_occurances), std::end(old_occurances));
+
+
+				if (*it.first!=*it_old.first || *it.second!= *it_old.second)
+				{
+					previous_.first = x_holder;
+					previous_.second = y_holder;
+					number_of_turns++;
+					std::cout << x_holder<<"x pos\n";								//this prints out the second position 
+					std::cout << y_holder << "y pos\n";
+				}
+				old_occurances.clear();
+				occurances.clear();
 			}
+			else
+			{
+				std::cout << "a\n";
+				occurances.clear();
+				
+			}
+
+
+
+			//float y = y_holder - temp_y;
+			//float x = x_holder - temp_x;
+			//angle_ = atanf((y / x));
+			//angle_ = angle_ * (180.0 / 3.141592653589793238463);
+			//angles_.push_back(angle_);
+			//if (counter_g==10)
+			//{
+			//	
+
+
+
+
+			//	gradient_ = y-x;
+			//	
+
+		
+
+			//	//gradients_.push_back(gradient_);
+			//	//if (gradients_.size()==2)
+			//	//{
+			//	//	float difference = gradients_[0] - gradients_[1];
+			//	//	if (difference>=1.5f ||difference<=-1.5f)
+			//	//	{
+			//	//		//number_of_turns2++;
+
+			//	//	}
+			//	//	gradients_.erase(gradients_.begin());
+
+
+			//	//	/*float a_difference = angles_[0] - angles_[1];
+			//	//	if (a_difference>=25 || a_difference<=-25)
+			//	//	{
+			//	//		number_of_turns++;
+			//	//		std::cout << "angle 1 : " << angles_[0]<<"\n";
+			//	//		std::cout << "angle 2: " << angles_[1] << "\n";
+			//	//		std::cout << "position 1: " << temp_x << " " << temp_y << "\n";
+			//	//		std::cout << "position 2: " << x_holder << " " << y_holder << "\n";
+			//	//	}
+			//	//	angles_.erase(angles_.begin());*/
+			//	//}
+			////	counter_g = 0;
+			//}
+
+
+			//if (new_direction !=old_direction)
+			//{
+			//	counter_++;
+			//	if (counter_ == 3)
+			//	{
+			//	//	number_of_turns2++;
+			//		counter_ = -1;
+			//	}
+			//}
+			//else if (new_direction==new_direction)
+			//{
+			//	counter_ = -1;
+			//}
+			//old_direction = new_direction;
+
+			//if (direction_.size()==5)
+			//{
+			//	std::sort(direction_.begin(), direction_.end());
+			//	int uniqueCount = std::unique(direction_.begin(), direction_.end()) - direction_.begin();
+			//	if (uniqueCount>=3)
+			//	{
+			//		number_of_turns2++;
+			//		direction_.clear();
+			//	}
+			//	if (!direction_.empty())
+			//	{
+			//		direction_.erase(direction_.begin());
+			//	}
+			//	
+			//}
+			//
+			//
+			//if (how_many == 0)
+			//{
+			//	break;
+			//	std::cout << "hit how many phase 2\n";
+			//}
 			//this is just a quick fix
 			//so if no points have been changes then exit the loop to stop it going on forever/
 			//this happens when there is a problem with the pathway
@@ -507,7 +627,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 		
 		if (count_holder<=end_n)
 		{
-			
+
 			found_start = true;
 			end = true;
 		}

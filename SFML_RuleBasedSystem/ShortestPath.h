@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-
+#include <SFML/Graphics.hpp>
 
 class ShortestPath
 {
@@ -28,6 +28,7 @@ public:
 
 	int GetTotalDistance() { return total_track_distance; }
 	int GetNumberOfTurns() { return number_of_turns; }
+	int GetNumberOfTurns2() { return number_of_turns2; }
 
 	//failled and restarting
 	void SetFailed(bool f) { failed_ = f; }
@@ -47,6 +48,7 @@ private:
 
 	int total_track_distance;		//the total distance of the track
 	int number_of_turns;			//the total number of turns
+	int number_of_turns2;
 	
 	std::vector<std::string> direction_;
 
@@ -60,5 +62,24 @@ private:
 
 	std::vector<float> angles_;
 	std::vector<float> gradients_;
+
+
+
+	int north_site;
+	int north_e_site;
+	int north_w_site;
+	int west_site;
+	int east_site;
+	int south_site;
+	int south_e_site;
+	int south_w_site;
+
+	int unique_count_occuarances;			//used
+	int unique_count_old_occuarances;		//used
+	std::vector<int> old_num;				//used
+	std::vector<int> occurances;			//used
+	std::vector<int> old_occurances;		//used
+	std::pair<int, int> previous_;
+	int line_length;						//not currently used
 };
 
