@@ -1,5 +1,4 @@
 #include "ShortestPath.h"
-#include <iostream>
 #include <algorithm>
 
 ShortestPath::ShortestPath()
@@ -12,9 +11,6 @@ ShortestPath::ShortestPath()
 	failed_ = false;
 	total_track_distance = 0;
 	number_of_turns = 0;
-	counter_ = 0;
-	new_direction = "";
-	old_direction = "";
 }
 
 //i =z/y, j=x
@@ -27,12 +23,6 @@ void ShortestPath::Initgrid(int grid_size, int* grid, int num_points)
 
 	total_track_distance = 0;
 
-	counter_g = 0;
-	gradient_ = 0.0f;
-	temp_x, temp_y = 0;
-	angle_ = 0.0f;
-	gradients_.clear();
-	angles_.clear();
 	if (!old_num.empty())
 	{
 		old_num.clear();
@@ -382,13 +372,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 
 
 			}
-		
 
-			if (counter_g==0)
-			{
-				temp_x = x_holder;
-				temp_y = y_holder;
-			}
 
 			int& north = grid[((y_holder - 1) * grid_size) + x_holder];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
 			int& northE = grid[((y_holder - 1) * grid_size) + (x_holder + 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
@@ -405,7 +389,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				grid[(y_holder * grid_size) + x_holder]=-12303;
 				how_many++;
 				total_track_distance++;
-				counter_g++;
 			}
 			else if (northE == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 			{
@@ -415,7 +398,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				count_holder -= 1;
 				how_many++;
 				total_track_distance++;
-				counter_g++;
 			}
 			else if (east == count_holder)
 			{
@@ -425,7 +407,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				//			break;
 				how_many++;
 				total_track_distance++;
-				counter_g++;
 			}
 			else if (south == count_holder)
 			{
@@ -434,7 +415,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				count_holder -= 1;
 				how_many++;
 				total_track_distance++;
-				counter_g++;
 			}
 			else if (southE == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 			{
@@ -444,8 +424,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				count_holder -= 1;
 				how_many++;
 				total_track_distance++;
-				counter_g++;
-				
 			}
 			else if (southW == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 			{
@@ -455,7 +433,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				count_holder -= 1;
 				how_many++;
 				total_track_distance++;
-				counter_g++;
 			}
 			else if (west == count_holder)
 			{
@@ -464,7 +441,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				count_holder -= 1;
 				total_track_distance++;
 				how_many++;
-				counter_g++;
 			}
 			else if (northW == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 			{
@@ -474,7 +450,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				count_holder -= 1;
 				how_many++;
 				total_track_distance++;
-				counter_g++;
 			}
 
 			north_site = old_num[((y_holder - 1) * grid_size) + (x_holder)];
@@ -544,101 +519,32 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 			{
 				occurances.clear();						//only clear the new positions sites not the old if there are not 2 sites in it - you want to preserve the old position because this is where a change begins	
 			}
-
-
-
-			//float y = y_holder - temp_y;
-			//float x = x_holder - temp_x;
-			//angle_ = atanf((y / x));
-			//angle_ = angle_ * (180.0 / 3.141592653589793238463);
-			//angles_.push_back(angle_);
-			//if (counter_g==10)
-			//{
-			//	
-
-
-
-
-			//	gradient_ = y-x;
-			//	
-
-		
-
-			//	//gradients_.push_back(gradient_);
-			//	//if (gradients_.size()==2)
-			//	//{
-			//	//	float difference = gradients_[0] - gradients_[1];
-			//	//	if (difference>=1.5f ||difference<=-1.5f)
-			//	//	{
-			//	//		//number_of_turns2++;
-
-			//	//	}
-			//	//	gradients_.erase(gradients_.begin());
-
-
-			//	//	/*float a_difference = angles_[0] - angles_[1];
-			//	//	if (a_difference>=25 || a_difference<=-25)
-			//	//	{
-			//	//		number_of_turns++;
-			//	//		std::cout << "angle 1 : " << angles_[0]<<"\n";
-			//	//		std::cout << "angle 2: " << angles_[1] << "\n";
-			//	//		std::cout << "position 1: " << temp_x << " " << temp_y << "\n";
-			//	//		std::cout << "position 2: " << x_holder << " " << y_holder << "\n";
-			//	//	}
-			//	//	angles_.erase(angles_.begin());*/
-			//	//}
-			////	counter_g = 0;
-			//}
-
-
-			//if (new_direction !=old_direction)
-			//{
-			//	counter_++;
-			//	if (counter_ == 3)
-			//	{
-			//	//	number_of_turns2++;
-			//		counter_ = -1;
-			//	}
-			//}
-			//else if (new_direction==new_direction)
-			//{
-			//	counter_ = -1;
-			//}
-			//old_direction = new_direction;
-
-			//if (direction_.size()==5)
-			//{
-			//	std::sort(direction_.begin(), direction_.end());
-			//	int uniqueCount = std::unique(direction_.begin(), direction_.end()) - direction_.begin();
-			//	if (uniqueCount>=3)
-			//	{
-			//		number_of_turns2++;
-			//		direction_.clear();
-			//	}
-			//	if (!direction_.empty())
-			//	{
-			//		direction_.erase(direction_.begin());
-			//	}
-			//	
-			//}
-			//
-			//
-			//if (how_many == 0)
-			//{
-			//	break;
-			//	std::cout << "hit how many phase 2\n";
-			//}
-			//this is just a quick fix
-			//so if no points have been changes then exit the loop to stop it going on forever/
-			//this happens when there is a problem with the pathway
-			//the output from this explains it well
 		}
 		
 		if (count_holder<=end_n)
 		{
+			segment_lengths_.push_back(DistanceSqrt(x_holder,y_holder , first_position.first, first_position.second));			//finds the length of the final segment 
+			number_of_segments = segment_lengths_.size();
 			found_start = true;
 			end = true;
 		}
 	}
 }
 
+
+void ShortestPath::WriteToFile()
+{
+	std::ofstream results_;
+	results_.open("results.txt");
+
+
+	//write like this
+	results_<< "total length: "<< total_track_distance<< "\n";
+	results_ << "number of turns: " << number_of_turns << "\n";
+
+	for (int i = 0; i < segment_lengths_.size(); i++)
+	{
+		results_ << "length " << i << ": " << segment_lengths_[i] << "\n";
+	}
+	results_.close();
+}

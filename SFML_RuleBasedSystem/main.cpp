@@ -327,6 +327,7 @@ int main()
 		if (ImGui::Button("Write to file"))
 		{
 			v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
+			s_p_p->WriteToFile();
 		}
 		ImGui::Text("\n");
 		ImGui::Text("\n");
@@ -334,7 +335,7 @@ int main()
 		{
 			ImGui::Text("Total Length= %d", s_p_p->GetTotalDistance());
 			ImGui::Text("Number of Turns = %d", s_p_p->GetNumberOfTurns());
-			ImGui::Text("Number of Turns2 = %d", s_p_p->GetNumberOfTurns2());
+			ImGui::Text("Number of Segments = %d", s_p_p->GetNumberOfSegments());
 		}
 		ImGui::End();
 		//used to display the whole voronoi diagram

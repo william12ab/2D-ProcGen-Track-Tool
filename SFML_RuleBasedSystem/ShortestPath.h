@@ -1,7 +1,8 @@
 #pragma once
 #include <string>
 #include <vector>
-
+#include <iostream>
+#include <fstream>
 #include <SFML/Graphics.hpp>
 
 class ShortestPath
@@ -28,12 +29,14 @@ public:
 
 	int GetTotalDistance() { return total_track_distance; }
 	int GetNumberOfTurns() { return number_of_turns; }
-	int GetNumberOfTurns2() { return number_of_turns2; }
+	int GetNumberOfSegments() { return number_of_segments; }
 
 	//failled and restarting
 	void SetFailed(bool f) { failed_ = f; }
 	bool GetFailed() { return failed_; }
 	int DistanceSqrt(int x, int y, int x2, int y2);
+
+	void WriteToFile();
 	
 private:
 
@@ -50,21 +53,7 @@ private:
 
 	int total_track_distance;		//the total distance of the track
 	int number_of_turns;			//the total number of turns
-	int number_of_turns2;
-	
-	std::vector<std::string> direction_;
-
-	std::string new_direction;
-	std::string old_direction;
-	int counter_;
-	int counter_g;
-	float gradient_;
-	float angle_;
-	int temp_x,temp_y;
-
-	std::vector<float> angles_;
-	std::vector<float> gradients_;
-
+	int number_of_segments;
 
 
 	int north_site;
