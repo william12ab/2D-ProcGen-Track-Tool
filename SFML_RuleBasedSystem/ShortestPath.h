@@ -33,6 +33,8 @@ public:
 	//failled and restarting
 	void SetFailed(bool f) { failed_ = f; }
 	bool GetFailed() { return failed_; }
+	int DistanceSqrt(int x, int y, int x2, int y2);
+	
 private:
 
 
@@ -79,7 +81,7 @@ private:
 	std::vector<int> old_num;				//used
 	std::vector<int> occurances;			//used
 	std::vector<int> old_occurances;		//used
-	std::pair<int, int> previous_;
-	int line_length;						//not currently used
+	std::pair<int, int> first_position;		//used
+	std::vector<int> segment_lengths_;		//used
 };
 

@@ -56,6 +56,9 @@ void ShortestPath::Initgrid(int grid_size, int* grid, int num_points)
 	south_site = 0;
 	south_e_site = 0;
 	south_w_site = 0;
+	segment_lengths_.clear();
+	first_position.first = 0;
+	first_position.second = 0;
 		for (int i = 0; i < grid_size; i++)
 		{
 			for (int j = 0; j < grid_size; j++)
@@ -336,6 +339,13 @@ void ShortestPath::CleanGrid(int grid_size, int* grid)
 	}
 }
 
+int ShortestPath::DistanceSqrt(int x, int y, int x2, int y2)
+{
+	int xd = x2 - x;
+	int yd = y2 - y;
+	return sqrt((xd * xd) + (yd * yd));
+}
+
 //same here remove the north and all that
 //from phase one you use the x and y holder vars and count holder and end
 void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, int y_holder, int count_holder, int end_n)
@@ -343,7 +353,8 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 	bool found_start = false;
 
 
-
+	first_position.first = x_holder;
+	first_position.second = y_holder;
 	while (!found_start && !end)
 	{
 		int how_many = 0;
@@ -368,6 +379,8 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				old_occurances.push_back(south_site);
 				old_occurances.push_back(south_e_site);
 				old_occurances.push_back(south_w_site);
+
+
 			}
 		
 
@@ -509,31 +522,27 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 			//if all of them are == to 2 then check for corner - could this not just be if ==2?
 			if (unique_count_occuarances==2&& unique_count_old_occuarances==2)
 			{
-				/*if (unique_count_occuarances==1 || unique_count_old_occuarances==1)
-				{
-					std::cout << "size = 1\n";
-				}*/
-
+				//find the min and max values to see if there is a difference in either one which signals a change in the sites bordering the location
 				auto it = minmax_element(std::begin(occurances), std::end(occurances));
 				auto it_old = minmax_element(std::begin(old_occurances), std::end(old_occurances));
 
 
 				if (*it.first!=*it_old.first || *it.second!= *it_old.second)
 				{
-					previous_.first = x_holder;
-					previous_.second = y_holder;
 					number_of_turns++;
 					std::cout << x_holder<<"x pos\n";								//this prints out the second position 
-					std::cout << y_holder << "y pos\n";
+					std::cout << y_holder << "y pos\n\n";
+
+					segment_lengths_.push_back(DistanceSqrt(first_position.first, first_position.second, x_holder, y_holder));
+					first_position.first = x_holder;
+					first_position.second = y_holder;
 				}
-				old_occurances.clear();
+				old_occurances.clear();										//clear the vectors so that when it comes to checking a new poosition theres nothjing there
 				occurances.clear();
 			}
 			else
 			{
-				std::cout << "a\n";
-				occurances.clear();
-				
+				occurances.clear();						//only clear the new positions sites not the old if there are not 2 sites in it - you want to preserve the old position because this is where a change begins	
 			}
 
 
@@ -627,7 +636,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 		
 		if (count_holder<=end_n)
 		{
-
 			found_start = true;
 			end = true;
 		}
