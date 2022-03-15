@@ -505,12 +505,13 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				if (*it.first!=*it_old.first || *it.second!= *it_old.second)
 				{
 					number_of_turns++;
-					std::cout << x_holder<<"x pos\n";								//this prints out the second position 
-					std::cout << y_holder << "y pos\n\n";
 
 					segment_lengths_.push_back(DistanceSqrt(first_position.first, first_position.second, x_holder, y_holder));
+					line_positions.emplace_back(first_position.first, first_position.second);
+					line_positions.emplace_back(x_holder, y_holder);
 					first_position.first = x_holder;
 					first_position.second = y_holder;
+
 				}
 				old_occurances.clear();										//clear the vectors so that when it comes to checking a new poosition theres nothjing there
 				occurances.clear();
@@ -524,6 +525,8 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 		if (count_holder<=end_n)
 		{
 			segment_lengths_.push_back(DistanceSqrt(x_holder,y_holder , first_position.first, first_position.second));			//finds the length of the final segment 
+			line_positions.emplace_back(x_holder, y_holder);
+			line_positions.emplace_back(first_position.first, first_position.second);
 			number_of_segments = segment_lengths_.size();
 			found_start = true;
 			end = true;
@@ -531,9 +534,59 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 	}
 }
 
+void ShortestPath::SegmentAngles()
+{
+	//theta  = inverse tan((m2-m1)/(1+m2*m1)) where m1=(y2-y1)/(x2-x1), m2=(y4-y3)/(x4-x3) where x2,y2==x3,y3
+	//for each turn?
+	for (int i = 0; i < line_positions.size(); i++)
+	{
+		//need a check for if any ==0
+		//need to test if works
+		float m1 = 0;
+		float m2 = 0;
+		if ((line_positions[i + 1].second - line_positions[i].second)==0 || (line_positions[i + 1].first - line_positions[i].first)==0)
+		{
+			m1 = 0;
+			if ((line_positions[i + 3].second - line_positions[i + 1].second) == 0 || (line_positions[i + 3].first - line_positions[i + 1].first) == 0)
+			{
+				m2 = 0;
+			}
+			else
+			{
+				m2 = (line_positions[i + 3].second - line_positions[i + 1].second) / (line_positions[i + 3].first - line_positions[i + 1].first);
+			}
+		}
+		else if ((line_positions[i + 3].second - line_positions[i + 1].second) == 0 || (line_positions[i + 3].first - line_positions[i + 1].first) == 0)
+		{
+			m2 = 0;
+			if ((line_positions[i + 1].second - line_positions[i].second) == 0 || (line_positions[i + 1].first - line_positions[i].first) == 0)
+			{
+				m1 = 0;
+			}
+			else
+			{
+				m1 = (line_positions[i + 1].second - line_positions[i].second) / (line_positions[i + 1].first - line_positions[i].first);
+			}
+		}
+		else
+		{
+			m1 = (line_positions[i + 1].second - line_positions[i].second) / (line_positions[i + 1].first - line_positions[i].first);
+			m2 = (line_positions[i + 3].second - line_positions[i + 1].second) / (line_positions[i + 3].first - line_positions[i + 1].first);
+
+			
+		}
+		float angle = tan((m2 - m1) / (1 + (m2 * m1)));
+		angles_.push_back(angle);
+		i++;
+	}
+
+}
+
+
 
 void ShortestPath::WriteToFile()
 {
+	SegmentAngles();
 	std::ofstream results_;
 	results_.open("results.txt");
 
@@ -545,6 +598,11 @@ void ShortestPath::WriteToFile()
 	for (int i = 0; i < segment_lengths_.size(); i++)
 	{
 		results_ << "length " << i << ": " << segment_lengths_[i] << "\n";
+	}
+
+	for (int i = 0; i < line_positions.size(); i++)
+	{
+		results_ << "angle " << i << ": " << angles_[i]<<"\n";
 	}
 	results_.close();
 }

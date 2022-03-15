@@ -1,11 +1,14 @@
-total length: 538
-number of turns: 8
-length 0: 52
-length 1: 70
-length 2: 44
-length 3: 1
-length 4: 92
-length 5: 57
-length 6: 102
-length 7: 59
-length 8: 113
+total length: 483
+number of turns: 11
+length 0: 48
+length 1: 114
+length 2: 63
+length 3: 75
+length 4: 36
+length 5: 1
+length 6: 37
+length 7: 2
+length 8: 1
+length 9: 59
+length 10: 97
+length 11: 7
