@@ -73,8 +73,8 @@ private:
 	std::vector<int> old_occurances;		//used
 	std::pair<int, int> first_position;		//used
 	std::vector<int> segment_lengths_;		//used
-	std::vector<int> angles_;
+	std::vector<int> angles_;				//used
 
-	std::vector<std::pair<int, int>> line_positions;
+	std::vector<std::pair<int, int>> line_positions; //used
 };
 

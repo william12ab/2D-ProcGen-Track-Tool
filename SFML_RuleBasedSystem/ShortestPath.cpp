@@ -558,19 +558,19 @@ void ShortestPath::SegmentAngles()
 		x3 = x2;
 		x4 = line_positions[line_iterator + 3].first;
 
-		if ((y2 - y1)==0 || (x2 - x1)==0)
+		if ((y2 - y1)==0 || (x2 - x1)==0)								//if the result of y2-1 or x2-x1 is going to be 0 - set the gradient(m1) to 0 because you cant divide by 0
 		{
 			m1 = 0;
-			if ((y4 - y3) == 0 || (x4 - x3) == 0)
+			if ((y4 - y3) == 0 || (x4 - x3) == 0)					//check if m2 is going to be 0 and set to 0
 			{
 				m2 = 0;
 			}
 			else
 			{
-				m2 = (y4 - y3) / (x4- x3);
+				m2 = (y4 - y3) / (x4- x3);							//or just calculate the m normally
 			}
 		}
-		else if ((y4 - y3) == 0 || (x4 - x3) == 0)
+		else if ((y4 - y3) == 0 || (x4 - x3) == 0)					//same here
 		{
 			m2 = 0;
 			if ((y2 - y1) == 0 || (x2 - x1) == 0)
@@ -583,18 +583,18 @@ void ShortestPath::SegmentAngles()
 			}
 		}
 		else
-		{
-			m1 = (y2 - y1) / (x2 - x1);
+		{			
+			m1 = (y2 - y1) / (x2 - x1);								//or calculat normally		
 			m2 = (y4 - y3) / (x4 - x3);
 
 			
 		}
-		float angle = atanf((m2 - m1) / (1 + (m2 * m1)));
+		float angle = atanf((m2 - m1) / (1 + (m2 * m1)));			//angle in rads
 		
-		angle = angle * (180.0 / 3.141592653589793238463);
-		angles_.push_back(180.0-angle);
-		//i++;
-		line_iterator += 2;
+		angle = angle * (180.0 / 3.141592653589793238463);			//angle as degrees because its easier to understand
+		angles_.push_back(180.0-angle);								//have to find the angle at this point instead
+		
+		line_iterator += 2;			//go to next set of lines
 	}
 
 }
