@@ -49,6 +49,7 @@ void ShortestPath::Initgrid(int grid_size, int* grid, int num_points)
 	segment_lengths_.clear();
 	first_position.first = 0;
 	first_position.second = 0;
+	line_positions.clear();
 		for (int i = 0; i < grid_size; i++)
 		{
 			for (int j = 0; j < grid_size; j++)
@@ -525,8 +526,9 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 		if (count_holder<=end_n)
 		{
 			segment_lengths_.push_back(DistanceSqrt(x_holder,y_holder , first_position.first, first_position.second));			//finds the length of the final segment 
-			line_positions.emplace_back(x_holder, y_holder);
 			line_positions.emplace_back(first_position.first, first_position.second);
+			line_positions.emplace_back(x_holder, y_holder);
+			
 			number_of_segments = segment_lengths_.size();
 			found_start = true;
 			end = true;
@@ -538,46 +540,61 @@ void ShortestPath::SegmentAngles()
 {
 	//theta  = inverse tan((m2-m1)/(1+m2*m1)) where m1=(y2-y1)/(x2-x1), m2=(y4-y3)/(x4-x3) where x2,y2==x3,y3
 	//for each turn?
-	for (int i = 0; i < line_positions.size(); i++)
+	int line_iterator = 0;
+	for (int i = 0; i < number_of_turns; i++)
 	{
 		//need a check for if any ==0
 		//need to test if works
 		float m1 = 0;
 		float m2 = 0;
-		if ((line_positions[i + 1].second - line_positions[i].second)==0 || (line_positions[i + 1].first - line_positions[i].first)==0)
+		float y1, y2, y3, y4;
+		float x1, x2, x3, x4;
+		y1 = line_positions[line_iterator].second;
+		y2 = line_positions[line_iterator + 1].second;
+		y3 = y2;
+		y4 = line_positions[line_iterator + 3].second;
+		x1 = line_positions[line_iterator].first;
+		x2 = line_positions[line_iterator + 1].first;
+		x3 = x2;
+		x4 = line_positions[line_iterator + 3].first;
+
+		if ((y2 - y1)==0 || (x2 - x1)==0)
 		{
 			m1 = 0;
-			if ((line_positions[i + 3].second - line_positions[i + 1].second) == 0 || (line_positions[i + 3].first - line_positions[i + 1].first) == 0)
+			if ((y4 - y3) == 0 || (x4 - x3) == 0)
 			{
 				m2 = 0;
 			}
 			else
 			{
-				m2 = (line_positions[i + 3].second - line_positions[i + 1].second) / (line_positions[i + 3].first - line_positions[i + 1].first);
+				m2 = (y4 - y3) / (x4- x3);
 			}
 		}
-		else if ((line_positions[i + 3].second - line_positions[i + 1].second) == 0 || (line_positions[i + 3].first - line_positions[i + 1].first) == 0)
+		else if ((y4 - y3) == 0 || (x4 - x3) == 0)
 		{
 			m2 = 0;
-			if ((line_positions[i + 1].second - line_positions[i].second) == 0 || (line_positions[i + 1].first - line_positions[i].first) == 0)
+			if ((y2 - y1) == 0 || (x2 - x1) == 0)
 			{
 				m1 = 0;
 			}
 			else
 			{
-				m1 = (line_positions[i + 1].second - line_positions[i].second) / (line_positions[i + 1].first - line_positions[i].first);
+				m1 = (y2 - y1) / (x2 - x1);
 			}
 		}
 		else
 		{
-			m1 = (line_positions[i + 1].second - line_positions[i].second) / (line_positions[i + 1].first - line_positions[i].first);
-			m2 = (line_positions[i + 3].second - line_positions[i + 1].second) / (line_positions[i + 3].first - line_positions[i + 1].first);
+			m1 = (y2 - y1) / (x2 - x1);
+			m2 = (y4 - y3) / (x4 - x3);
 
 			
 		}
-		float angle = tan((m2 - m1) / (1 + (m2 * m1)));
-		angles_.push_back(angle);
-		i++;
+		float angle = atanf((m2 - m1) / (1 + (m2 * m1)));
+		
+		angle = angle * (180.0 / 3.141592653589793238463);
+		angles_.push_back(180.0-angle);
+		//i++;
+		line_iterator += 2;
 	}
 
 }
@@ -597,12 +614,12 @@ void ShortestPath::WriteToFile()
 
 	for (int i = 0; i < segment_lengths_.size(); i++)
 	{
-		results_ << "length " << i << ": " << segment_lengths_[i] << "\n";
+		results_ << "length " << i+1 << ": " << segment_lengths_[i] << "\n";
 	}
-
-	for (int i = 0; i < line_positions.size(); i++)
+	results_ << "\n";
+	for (int i = 0; i < angles_.size(); i++)
 	{
-		results_ << "angle " << i << ": " << angles_[i]<<"\n";
+		results_ << "angle " << i+1 << ": " << angles_[i]<<"\n";
 	}
 	results_.close();
 }
