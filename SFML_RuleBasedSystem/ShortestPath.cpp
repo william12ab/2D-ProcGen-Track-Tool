@@ -543,8 +543,6 @@ void ShortestPath::SegmentAngles()
 	int line_iterator = 0;
 	for (int i = 0; i < number_of_turns; i++)
 	{
-		//need a check for if any ==0
-		//need to test if works
 		float m1 = 0;
 		float m2 = 0;
 		float y1, y2, y3, y4;
@@ -589,10 +587,10 @@ void ShortestPath::SegmentAngles()
 
 			
 		}
-		float angle = atanf((m2 - m1) / (1 + (m2 * m1)));			//angle in rads
+		float angle = atanf((m1 - m2) / (1 + (m2 * m1)));			//angle in rads
 		
 		angle = angle * (180.0 / 3.141592653589793238463);			//angle as degrees because its easier to understand
-		angles_.push_back(180.0-angle);								//have to find the angle at this point instead
+		angles_.push_back(180.0f-angle);								//have to find the angle at this point instead
 		
 		line_iterator += 2;			//go to next set of lines
 	}
@@ -608,16 +606,21 @@ void ShortestPath::WriteToFile()
 	results_.open("results.txt");
 
 
+	
+
+
 	//write like this
 	results_<< "total length: "<< total_track_distance<< "\n";
 	results_ << "number of turns: " << number_of_turns << "\n";
-
+	results_ << "number of segments: " << segment_lengths_.size() << "\n";
+	results_ << "shortest distance(euclidean distance): " << DistanceSqrt(line_positions[0].first, line_positions[0].second, line_positions.back().first, line_positions.back().second) << "\n";
+	results_ << "\n";
 	for (int i = 0; i < segment_lengths_.size(); i++)
 	{
 		results_ << "length " << i+1 << ": " << segment_lengths_[i] << "\n";
 	}
 	results_ << "\n";
-	for (int i = 0; i < angles_.size(); i++)
+	for (int i = 0; i < number_of_turns; i++)
 	{
 		results_ << "angle " << i+1 << ": " << angles_[i]<<"\n";
 	}
