@@ -39,7 +39,8 @@ VoronoiDiagram::VoronoiDiagram()
 	peak_.centre_y = 0;
 	peak_.r_length = 0;
 
-	
+	track_max=0;
+	track_min=0;
 }
 
 VoronoiDiagram::~VoronoiDiagram()
@@ -1120,4 +1121,39 @@ void VoronoiDiagram::ResetVars()
 	found_raidus=false;
 	radius_length=0;
 	circles_.clear();
+}
+
+
+void VoronoiDiagram::FindMinMax(int grid_size, int layers_)
+{
+	int min_ = 100000;
+	int max_ = 0;
+
+	//finds the min and max of the track ---when theres terrrain
+	//this is better than finding the min and max of the whole image as there will be areas where the track does not pass by
+	for (int i = 0; i < grid_size; i++)
+	{
+		for (int j = 0; j < grid_size; j++)
+		{
+			if (grid_v_1[(i * grid_size) + j] == 0)							//diagram
+			{
+				if ((noise_heightmap_[i * grid_size + j] / layers_)>max_)
+				{
+					max_ = noise_heightmap_[i * grid_size + j] / layers_;
+				}
+
+				if ((noise_heightmap_[i * grid_size + j] / layers_) > min_)
+				{
+					min_ = noise_heightmap_[i * grid_size + j] / layers_;
+				}
+				//find max
+				//find min of noise heighmap
+				//noise_heightmap_[i * grid_size + j] / layers_
+
+			}
+		}
+	}
+
+	track_max=max_;
+	track_min=min_;
 }

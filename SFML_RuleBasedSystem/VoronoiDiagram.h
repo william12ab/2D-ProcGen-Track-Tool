@@ -68,7 +68,10 @@ public:
 
 	void FindMax(int grid_size, int layers_);
 
+	void FindMinMax(int grid_size, int layers_);
 
+	int GetTrackMax() { return track_max; }
+	int GetTrackMin() { return track_min; }
 private:
 	SimplexNoise perlin_;
 
@@ -114,7 +117,8 @@ private:
 
 	std::vector<peaks_>circles_;
 
-	
+	int track_max;
+	int track_min;
 	
 };
 

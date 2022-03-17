@@ -327,7 +327,7 @@ int main()
 		if (ImGui::Button("Write to file"))
 		{
 			v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
-			s_p_p->WriteToFile();
+			s_p_p->WriteToFile(v_d_p->GetTrackMax(),v_d_p->GetTrackMin());
 		}
 		ImGui::Text("\n");
 		ImGui::Text("\n");

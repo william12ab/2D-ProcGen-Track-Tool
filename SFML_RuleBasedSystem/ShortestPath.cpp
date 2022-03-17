@@ -599,7 +599,7 @@ void ShortestPath::SegmentAngles()
 
 
 
-void ShortestPath::WriteToFile()
+void ShortestPath::WriteToFile(int track_max, int track_min)
 {
 	SegmentAngles();
 	std::ofstream results_;
