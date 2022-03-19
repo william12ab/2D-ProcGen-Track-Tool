@@ -37,7 +37,7 @@ public:
 	int DistanceSqrt(int x, int y, int x2, int y2);
 
 	void SegmentAngles();
-	void WriteToFile();
+	void WriteToFile(int track_max, int track_min);
 	
 private:
 

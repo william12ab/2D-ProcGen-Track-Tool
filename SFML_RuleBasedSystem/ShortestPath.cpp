@@ -50,6 +50,8 @@ void ShortestPath::Initgrid(int grid_size, int* grid, int num_points)
 	first_position.first = 0;
 	first_position.second = 0;
 	line_positions.clear();
+	angles_.clear();
+	
 		for (int i = 0; i < grid_size; i++)
 		{
 			for (int j = 0; j < grid_size; j++)
@@ -521,8 +523,15 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 			{
 				occurances.clear();						//only clear the new positions sites not the old if there are not 2 sites in it - you want to preserve the old position because this is where a change begins	
 			}
+			if (how_many == 0)
+			{
+				break;
+				std::cout << "hit how many phase 2\n";
+			}
 		}
 		
+		
+
 		if (count_holder<=end_n)
 		{
 			segment_lengths_.push_back(DistanceSqrt(x_holder,y_holder , first_position.first, first_position.second));			//finds the length of the final segment 

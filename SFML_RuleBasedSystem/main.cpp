@@ -74,9 +74,7 @@ void CreateVoronoi(VoronoiDiagram* v_d_p, sf::VertexArray &height_map)
 {
 	if (full_random_)
 	{
-	
 		v_d_p->RandomPlaceSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
-	
 	}
 	else
 	{
@@ -103,7 +101,6 @@ void CreateTrack(VoronoiDiagram* v_d_p, ShortestPath* s_p_p)
 	//if type 2, then need to loop over number of points differently and check when the index is = 1 so that the starting point can be changed to the end
 	if (v_d_p->GetType() == 2)
 	{
-
 		for (int i = 0; i < (v_d_p->GetNumberOfPoints()); i++)
 		{
 			s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, s_p_p->GetFailed(), 0, v_d_p->GetGridSize());
