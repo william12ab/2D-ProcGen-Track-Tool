@@ -302,15 +302,21 @@ void ShortestPath::PrintOutStartEnd(int grid_size, int* grid)
 			{
 				int s = 2;
 				std::cout << "first x "<< j <<" y " << i; std::cout << std::endl;
+				start_p.first = j;
+				start_p.second = i;
 			}
 			if (grid[(i * grid_size) + j] == -3)
 			{
 				int s = 2;
 				std::cout << "second x " << j << " y " << i; std::cout << std::endl;
+				//end_p.first = j;
+				//end_p.second = i;
 			}
 			if (grid[(i * grid_size) + j] == -4)
 			{
 				int s = 0;
+				end_p.first = j;
+				end_p.second = i;
 				std::cout << "third x " << j << " y " <<i; std::cout << std::endl;
 			}
 		}
@@ -612,8 +618,14 @@ void ShortestPath::WriteToFile(int track_max, int track_min)
 {
 	SegmentAngles();
 	std::ofstream results_;
-	results_.open("results.txt");
 
+	std::string s = std::to_string(number);
+	
+	char const* c = ".txt";
+	s += c;
+	char const* pchar = s.c_str();
+	results_.open(pchar );
+	number++;
 
 	
 
@@ -622,7 +634,7 @@ void ShortestPath::WriteToFile(int track_max, int track_min)
 	results_<< "total length: "<< total_track_distance<< "\n";
 	results_ << "number of turns: " << number_of_turns << "\n";
 	results_ << "number of segments: " << segment_lengths_.size() << "\n";
-	results_ << "shortest distance(euclidean distance): " << DistanceSqrt(line_positions[0].first, line_positions[0].second, line_positions.back().first, line_positions.back().second) << "\n";
+	results_ << "shortest distance(euclidean distance): " << DistanceSqrt(start_p.first, start_p.second, end_p.first, end_p.second) << "\n";
 	results_ << "\n";
 	for (int i = 0; i < segment_lengths_.size(); i++)
 	{

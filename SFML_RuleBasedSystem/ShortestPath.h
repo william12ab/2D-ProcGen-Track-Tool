@@ -76,5 +76,10 @@ private:
 	std::vector<int> angles_;				//used
 
 	std::vector<std::pair<int, int>> line_positions; //used
+
+	int number = 1;
+	std::pair<int, int> start_p;
+	std::pair<int, int> middle_p;
+	std::pair<int, int> end_p;
 };
 
