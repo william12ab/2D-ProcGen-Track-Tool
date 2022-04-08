@@ -461,7 +461,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				total_track_distance++;
 			}
 
-			north_site = old_num[((y_holder - 1) * grid_size) + (x_holder)];
 			north_e_site = old_num[((y_holder - 1) * grid_size) + (x_holder+1)];
 			north_w_site = old_num[((y_holder - 1) * grid_size) + (x_holder-1)];
 			west_site = old_num[(y_holder * grid_size) + (x_holder-1)];

@@ -1,13 +1,10 @@
 #include "VoronoiDiagram.h"
 #include <iostream>
-//#include <amp.h>
 #include <ppl.h>
 using namespace concurrency;
-using std::mutex;
-using std::unique_lock;
 
 #include <SFML/Graphics.hpp>
-
+#include <random>
 
 
 VoronoiDiagram::VoronoiDiagram()
@@ -70,7 +67,6 @@ void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
 void VoronoiDiagram::RandomPlaceSites(int num_sites, int grid_size)
 {
 	//loop over the number of sites and push back sites
-	//create temp vector, loop over twice as this is a 2D space, x and y position.
 	for (int i = 0; i < (num_sites*2); i++)
 	{
 		sites_v_1[i] = rand() % grid_size;
@@ -117,6 +113,7 @@ void VoronoiDiagram::DistributeSites(int num_sites, int grid_size)
 
 void VoronoiDiagram::EqualDSites(int num_sites, int grid_size, int times_, int displacement)
 {	
+	srand(time(NULL));
 	site_iterator = 0;
 	sites_v_1[site_iterator] = 0;
 	site_iterator++;
@@ -179,20 +176,20 @@ void VoronoiDiagram::EqualDSites(int num_sites, int grid_size, int times_, int d
 
 	}
 
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::default_random_engine generator(seed);
+	std::uniform_int_distribution<int> distribution(-displacement, displacement);
 
-
-	int rand_range_back_ = (grid_size / 5);			//give 100 for 513 res	--well just about - rounded down
-
+	
 	for (int t = 0; t < times_; t++)
 	{
 		
 		for (int i = 0; i < (num_sites * 2); i++)
 		{
-			sites_v_1[i] += rand() % (displacement *2) + (-displacement);
+			sites_v_1[i] += distribution(generator);
+			//sites_v_1[i] += rand() % (displacement *2) + (-displacement);
 			//so this is the amount added on
 			//so between -80 and 80
-
-
 			if (sites_v_1[i] >= grid_size)									//if bigger than the max res then max res - the amount bigger than = new pos
 			{
 				int difference = sites_v_1[i] - grid_size;
@@ -203,8 +200,8 @@ void VoronoiDiagram::EqualDSites(int num_sites, int grid_size, int times_, int d
 				sites_v_1[i] += (-sites_v_1[i] - sites_v_1[i]);
 			}
 			i++;
-			sites_v_1[i] += rand() % (displacement * 2) + (-displacement);
-
+			//sites_v_1[i] += rand() % (displacement * 2) + (-displacement);
+			sites_v_1[i] += distribution(generator);
 			if (sites_v_1[i] >= grid_size)
 			{
 				int difference = sites_v_1[i] - grid_size;
@@ -232,7 +229,7 @@ void VoronoiDiagram::DiagramAMP(int num_sites, int grid_size)
 	max_distance_ = 0;
 	int* incr;
 	incr = new int[num_sites];
-	//mutex distance_mutex;
+
 	
 
 	for (int i = 0; i < num_sites; i++)
@@ -375,11 +372,11 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 		{
 			for (int j = 0; j < grid_size; j++)
 			{
-				for (int a = 1; a <= num_sites; a++)
-				{
+				//for (int a = 1; a <= num_sites; a++)
+				//{
 					
-					if (grid_v_1[(i * grid_size) + j] == a)			//might be able to take this out
-					{
+					//if (grid_v_1[(i * grid_size) + j] == a)			//might be able to take this out
+					//{
 						float s = float((float)1 / (float)num_sites);							//gets the thing as a percentage
 						//for example 1/100 = 0.01
 
@@ -413,8 +410,8 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 						vertextarray[i * grid_size + j].position = sf::Vector2f(j, i);
 						vertextarray[i * grid_size + j].color = sf::Color{ c , c , c };
 					}
-				}
-			}
+				//}
+			//}
 		});
 
 
@@ -438,6 +435,7 @@ void VoronoiDiagram::WriteToFile(int grid_size, sf::VertexArray& vertexarray, in
 
 	
 	parallel_for(0, dimensions_, [&](int i)
+	
 		{
 			for (int j = 0; j < dimensions_; j++)
 			{
@@ -457,15 +455,20 @@ void VoronoiDiagram::WriteToFile(int grid_size, sf::VertexArray& vertexarray, in
 
 				float alpha_percent_ = i_alpha_percent + 1.0f * (1.0f - i_alpha_percent);							//alpha_f = alpha_a + alpha_b(1-alpha_a)	(as a decimal value)
 				float final_color_p = (i_c_t_a * i_alpha_percent + is * 1.0f * (1.0f - i_alpha_percent)) / alpha_percent_;		//final_c = (colour_a*alpha_a + colour_b*alpha_b(1-alpha_a))/alpha_final		as a percent
+				//
 
-
-				if (final_color_p > 1.0f || final_color_p < 0.0f)
+				if ( final_color_p < 0.0f)
 				{
-					int a = 1;
+					final_color_p = 0.0;
 					//just to check if its out of bounds
 					//happens for some reason when j=0 to 512 and i = 512
 					//becuase of error in voronoi
 					//fix it
+				}
+				if (final_color_p>1.0f)
+				{
+					int a = 1;
+					final_color_p = 1.0;
 				}
 
 				//this is the premultiplied
@@ -494,7 +497,7 @@ void VoronoiDiagram::WriteToFile(int grid_size, sf::VertexArray& vertexarray, in
 			}
 
 
-		});
+	});
 	noise_output.saveToFile("noise_layer.png");
 	voronoi_output.saveToFile("voronoi_layer.png");
 	final_i.saveToFile("final.png");
@@ -558,12 +561,12 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 			}
 		}
 	}
-	for (int i = 0; i < (num_sites * 2); i++)
-	{
-		vertexarray[(sites_v_1[i + 1]) * grid_size + sites_v_1[i]].position = sf::Vector2f(sites_v_1[i], sites_v_1[i + 1]);
-		vertexarray[(sites_v_1[i + 1]) * grid_size + sites_v_1[i]].color = sf::Color::Yellow;
-		i++;
-	}
+	//for (int i = 0; i < (num_sites * 2); i++)
+	//{
+	//	vertexarray[(sites_v_1[i + 1]) * grid_size + sites_v_1[i]].position = sf::Vector2f(sites_v_1[i], sites_v_1[i + 1]);
+	//	vertexarray[(sites_v_1[i + 1]) * grid_size + sites_v_1[i]].color = sf::Color::Yellow;
+	//	i++;
+	//}
 
 }
 
@@ -819,7 +822,7 @@ void VoronoiDiagram::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int oc
 //
 void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_failed)
 {
-	//zero is loop, 1 is p2p
+	//zero is iother, 1 is p2p,2 loop
 
 	switch (type)
 	{

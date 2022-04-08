@@ -68,7 +68,6 @@ void SetVars(VoronoiDiagram*v_d_p)
 	v_d_p->SetNumberOfSites(sites_);
 	v_d_p->SetNumberOfPoints(points_);
 	v_d_p->InitVector(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), v_d_p->GetNumberOfSites());
-
 }
 void CreateVoronoi(VoronoiDiagram* v_d_p, sf::VertexArray &height_map)
 {
@@ -319,7 +318,50 @@ int main()
 
 		}
 	
+		if (ImGui::Button("25 times"))
+		{
+			points_ = 5;
+			sites_=81;
+			times_ = 1;
+			displacement_ = 200;
+			for (int i = 0; i < 4; i++)
+			{
+				for (int a = 0; a < 25; a++)
+				{
+					SetVars(v_d_p);
+					voronoi_d.clear();
+					height_map.clear();
+					voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+					height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 
+
+						//places the sites
+					do
+					{
+						if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
+						{
+							ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
+						}
+
+						CreateVoronoi(v_d_p, height_map);
+						the_clock::time_point startTime = the_clock::now();
+						CreateTrack(v_d_p, s_p_p);
+						the_clock::time_point endTime = the_clock::now();
+						auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+						std::cout << "		time(v d): " << time_taken; std::cout << std::endl;
+
+					} while (v_d_p->GetFailed() || s_p_p->GetFailed());
+
+					v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
+					s_p_p->WriteToFile(v_d_p->GetTrackMax(), v_d_p->GetTrackMin());
+
+				}
+				times_ *= 10;
+				}
+
+			
+			
+		}
 	
 		if (ImGui::Button("Write to file"))
 		{
