@@ -916,8 +916,8 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 	{
 		int x_pos_one = (grid_size * 0.05);					//setting initial points so start point ranges
 		int x_pos_two = (grid_size * 0.15);					//so its between 15% and 20% of x 
-		int y_pos_one = (grid_size * 0.10);					//45% and 55% of y
-		int y_pos_two = (grid_size * 0.45);
+		int y_pos_one = (grid_size * 0.20);					//45% and 55% of y
+		int y_pos_two = (grid_size * 0.40);
 		for (int i = 0; i < num_points; i++)				//run for number of points needed(3)
 		{
 			bool found = false;
@@ -943,17 +943,17 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 
 			if (i == 0)					//now change the point selection based on the iterator, so change to the middle and then the end for the selection
 			{
-				x_pos_one = (grid_size * 0.10);
-				x_pos_two = (grid_size * 0.45);			//x is between 45% and 55%
-				y_pos_one = (grid_size * 0.10);			//y is between 20% and 30%
-				y_pos_two = (grid_size * 0.20);
+				x_pos_one = (grid_size * 0.20);
+				x_pos_two = (grid_size * 0.40);			//x is between 45% and 55%
+				y_pos_one = (grid_size * 0.15);			//y is between 20% and 30%
+				y_pos_two = (grid_size * 0.15);
 			}
 			if (i == 1)
 			{
 				x_pos_one = (grid_size * 0.05);
 				x_pos_two = (grid_size * 0.80);			//x is between 80% and 85%
-				y_pos_one = (grid_size * 0.10);
-				y_pos_two = (grid_size * 0.45);			//y is between 45% and 55%
+				y_pos_one = (grid_size * 0.20);
+				y_pos_two = (grid_size * 0.40);			//y is between 45% and 55%
 			}
 		}
 	}

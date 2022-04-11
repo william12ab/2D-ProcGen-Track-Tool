@@ -280,16 +280,20 @@ void ShortestPath::PhaseOne(int grid_size, int* grid, int count_holder, bool fou
 //passes in the current point, finds it and then changes it to the new number
 void ShortestPath::ChangePoint(int grid_size, int* grid, int point, int new_point)
 {
-	for (int i = 0; i < grid_size; i++)
+	if (!failed_)
 	{
-		for (int j = 0; j < grid_size; j++)
+		for (int i = 0; i < grid_size; i++)
 		{
-			if (grid[(i * grid_size) + j] == point)
+			for (int j = 0; j < grid_size; j++)
 			{
-				grid[(i * grid_size) + j] = new_point;
+				if (grid[(i * grid_size) + j] == point)
+				{
+					grid[(i * grid_size) + j] = new_point;
+				}
 			}
 		}
 	}
+	
 }
 
 void ShortestPath::PrintOutStartEnd(int grid_size, int* grid)
@@ -461,6 +465,12 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				total_track_distance++;
 			}
 
+
+			if (y_holder==0 ||x_holder==0)
+			{
+				failed_ = true;
+				break;
+			}
 			north_e_site = old_num[((y_holder - 1) * grid_size) + (x_holder+1)];
 			north_w_site = old_num[((y_holder - 1) * grid_size) + (x_holder-1)];
 			west_site = old_num[(y_holder * grid_size) + (x_holder-1)];
