@@ -63,7 +63,9 @@ public:
 	void WriteToFile(int grid_size, sf::VertexArray& vertexarray, int layers_);
 
 	void HighPointFunc(int grid_size, int radius_cutoff_,int layers_);
-	void LoopPart(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_);
+	void LoopPart(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_);
+	void radiiDecider();
+
 	void ResetVars();
 
 	void FindMax(int grid_size, int layers_);
@@ -91,7 +93,8 @@ private:
 	int* noise_heightmap_;
 	int* alpha_channel_;
 
-	
+
+	std::vector<int> temp_rad;
 
 	int max_distance_;
 
@@ -120,5 +123,6 @@ private:
 	int track_max;
 	int track_min;
 	
+
 };
 

@@ -61,11 +61,13 @@ void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
 	noise_heightmap_ = new int[grid_size_x * grid_size_x];
 	alpha_channel_ = new int[grid_size_x * grid_size_x];
 	sites_v_1 = new int[num_sites*2];
+
 }
 
 
 void VoronoiDiagram::RandomPlaceSites(int num_sites, int grid_size)
 {
+	
 	//loop over the number of sites and push back sites
 	for (int i = 0; i < (num_sites*2); i++)
 	{
@@ -691,8 +693,7 @@ void VoronoiDiagram::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int 
 			}
 
 		}
-		std::wcout << "min : " << min_ << "\n";
-		std::wcout << "max : " << max_ << "\n";
+
 	}
 	
 }
@@ -761,14 +762,13 @@ void VoronoiDiagram::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int oc
 			}
 		}
 	}
-	std::wcout << "min : " << min_ << "\n";
-	std::wcout << "max : " << max_ << "\n";
+
 	//prints out those values 
 
 	float new_min_ = INT_MAX;
 	float new_max_ = 0;
 	float old_range_ = (max_ - min_);										//gets the range of the old values
-	std::wcout << "old range: " << old_range_ << "\n";						//prints this out for debugging
+
 	for (size_t i = 0; i < grid_size; i++)
 	{
 		for (size_t j = 0; j < grid_size; j++)
@@ -806,9 +806,6 @@ void VoronoiDiagram::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int oc
 
 		}
 	}
-	std::wcout << "new min : " << new_min_ << "\n";
-	std::wcout << "new max : " << new_max_ << "\n";
-
 }
 
 //clear the vector if empty
@@ -1008,51 +1005,77 @@ void VoronoiDiagram::HighPointFunc(int grid_size, int radius_cutoff_, int layers
 		x_pos =- 1;
 		y_pos =- 1;	
 	}
-	LoopPart(grid_size, x_pos, y_pos, signal, radius_cutoff_, layers_);
+	LoopPart(grid_size, x_pos, y_pos, signal, radius_cutoff_, layers_,1);
+	LoopPart(grid_size, -x_pos, -y_pos, signal, radius_cutoff_, layers_,-1);
+	radiiDecider();
 }
 
-void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_)
+void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_)
 {
 	int y =high_point_y;
 	int x=high_point_x;
-	int iterator = 0;
+	int iterator_ = 0;
+	found_raidus = false;
 	do
 	{
+		//travelled the length of the radius then set found etc
 		if ((noise_heightmap_[((y+y_value_)*grid_size) + (x+x_value_)]/ layers_) <=(radius_cutoff_))
 		{
 			std::cout << "point on radius: " << x+x_value_ << " " << y+y_value_ << "\n";
-			std::cout << "radius: " << iterator << "\n";
+			std::cout << "radius: " << iterator_ << "\n";
 			found_raidus = true;
-			radius_length = iterator;
-
-			//pushes back a new peak in the peak vector 
-			peak_.centre_x = high_point_x;				
-			peak_.centre_y = high_point_y;
-			peak_.r_length = radius_length;
-			circles_.push_back(peak_);
+			temp_rad.push_back(iterator_);
 		}
 		else
 		{
-			iterator++;
+			//other wise move one place in the correct direction 
+			iterator_++;
 			switch (signal_)
 			{
 			case 1:
-				y +=1, x +=1;
+				y +=(1*modifier_), x += (1 * modifier_);
 				break;
 			case 2:
-				y +=1, x -=1;
+				y += (1 * modifier_), x -= (1 * modifier_);
 				break;
 			case 3:
 				y-=1, x+=1;
 				break;
 			case 4:
-				y -= 1, x -= 1;
+				y -= (1 * modifier_), x -= (1 * modifier_);
 				break;
 			}
 		}
 
 	} while (found_raidus!=true);
 
+	
+}
+
+void VoronoiDiagram::radiiDecider()
+{
+	if (temp_rad.at(0)>temp_rad.at(1) )					//chooses the bigger of the two
+	{
+
+		radius_length = temp_rad.at(0);
+		//pushes back a new peak in the peak vector 
+		peak_.centre_x = high_point_x;
+		peak_.centre_y = high_point_y;
+		peak_.r_length = radius_length;
+		circles_.push_back(peak_);
+	}
+	else
+	{
+		radius_length = temp_rad.at(1);
+
+		//pushes back a new peak in the peak vector 
+		peak_.centre_x = high_point_x;
+		peak_.centre_y = high_point_y;
+		peak_.r_length = radius_length;
+		circles_.push_back(peak_);
+	}
+	temp_rad.clear();
+	
 	
 }
 
@@ -1124,6 +1147,7 @@ void VoronoiDiagram::ResetVars()
 	found_raidus=false;
 	radius_length=0;
 	circles_.clear();
+	temp_rad.clear();
 }
 
 

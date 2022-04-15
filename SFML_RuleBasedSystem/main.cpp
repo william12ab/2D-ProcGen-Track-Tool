@@ -258,6 +258,7 @@ int main()
 			{
 				v_d_p->FindMax(v_d_p->GetGridSize(), layers_);
 				v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_);
+				
 			}
 			the_clock::time_point endTimea = the_clock::now();
 
@@ -321,10 +322,10 @@ int main()
 		if (ImGui::Button("25"))
 		{
 			points_ = 3;
-			sites_ = 25;
-			times_ = 1000;
+			sites_ = 81;
+			times_ = 1;
 			full_random_ = false;
-			displacement_ = 75;
+			displacement_ = 1;
 			track_type_ = 2;
 			for (int a = 0; a < 25; a++)
 			{
@@ -361,10 +362,10 @@ int main()
 		if (ImGui::Button("25 times * 4"))
 		{
 			points_ = 3;
-			sites_=25;
+			sites_=81;
 			times_ = 1;
 			displacement_ = 200;
-			track_type_ = 2;
+			track_type_ = 0;
 			full_random_ = false;
 			for (int i = 0; i < 4; i++)
 			{
