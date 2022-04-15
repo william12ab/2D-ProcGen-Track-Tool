@@ -264,7 +264,8 @@ int main()
 
 			auto time_takena = duration_cast<milliseconds>(endTimea - startTimea).count();
 			std::cout << "time(HIGH_POINTS): " << time_takena; std::cout << std::endl;
-
+	
+			
 
 			do
 			{
@@ -285,6 +286,8 @@ int main()
 				the_clock::time_point endTime = the_clock::now();
 				auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
 				std::cout << "		time(v d): " << time_taken; std::cout << std::endl;
+				std::cout << std::endl;
+				std::cout << std::endl;
 
 			} while (v_d_p->GetFailed() || s_p_p->GetFailed());
 			
@@ -411,6 +414,18 @@ int main()
 			v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
 			s_p_p->WriteToFile(v_d_p->GetTrackMax(),v_d_p->GetTrackMin());
 		}
+		if (ImGui::Button("Clear Console"))																	//https://stackoverflow.com/questions/5866529/how-do-we-clear-the-console-in-assembly/5866648#5866648
+		{
+			char fill = ' ';
+			COORD tl = { 0,0 };
+			CONSOLE_SCREEN_BUFFER_INFO s;
+			HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+			GetConsoleScreenBufferInfo(console, &s);
+			DWORD written, cells = s.dwSize.X * s.dwSize.Y;
+			FillConsoleOutputCharacter(console, fill, cells, tl, &written);
+			FillConsoleOutputAttribute(console, s.wAttributes, cells, tl, &written);
+			SetConsoleCursorPosition(console, tl);
+		}
 		ImGui::Text("\n");
 		ImGui::Text("\n");
 		if (ImGui::CollapsingHeader("Measurements"))
@@ -419,6 +434,7 @@ int main()
 			ImGui::Text("Number of Turns = %d", s_p_p->GetNumberOfTurns());
 			ImGui::Text("Number of Segments = %d", s_p_p->GetNumberOfSegments());
 		}
+
 		ImGui::End();
 		//used to display the whole voronoi diagram
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))

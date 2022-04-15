@@ -1,6 +1,7 @@
 #include "VoronoiDiagram.h"
 #include <iostream>
 #include <ppl.h>
+
 using namespace concurrency;
 
 #include <SFML/Graphics.hpp>
@@ -38,6 +39,8 @@ VoronoiDiagram::VoronoiDiagram()
 
 	track_max=0;
 	track_min=0;
+
+
 }
 
 VoronoiDiagram::~VoronoiDiagram()
@@ -966,7 +969,7 @@ void VoronoiDiagram::HighPointFunc(int grid_size, int radius_cutoff_, int layers
 	//so are they top left, top right, bottom left, bottom right
 	//then mark that as the direction to go in 
 	int signal, x_pos,y_pos;
-	std::cout << "highest point: " << high_point_x << " " << high_point_y << "\n";
+	std::cout << "HIGHEST point(peak): " << high_point_x << " " << high_point_y << "\n";
 	if (high_point_x<=(grid_size/2) && high_point_y<=(grid_size/2))
 	{ 
 		//square 1 in diagram(top left) - going south east
@@ -1005,12 +1008,14 @@ void VoronoiDiagram::HighPointFunc(int grid_size, int radius_cutoff_, int layers
 		x_pos =- 1;
 		y_pos =- 1;	
 	}
-	LoopPart(grid_size, x_pos, y_pos, signal, radius_cutoff_, layers_,1);
-	LoopPart(grid_size, -x_pos, -y_pos, signal, radius_cutoff_, layers_,-1);
+	temp_rad.resize(2);
+	
+	LoopPart(grid_size, x_pos, y_pos, signal, radius_cutoff_, layers_,1,0);
+	LoopPart(grid_size, -x_pos, -y_pos, signal, radius_cutoff_, layers_,-1,1);
 	radiiDecider();
 }
 
-void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_)
+void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place)
 {
 	int y =high_point_y;
 	int x=high_point_x;
@@ -1019,54 +1024,79 @@ void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int sig
 	do
 	{
 		//travelled the length of the radius then set found etc
-		if ((noise_heightmap_[((y+y_value_)*grid_size) + (x+x_value_)]/ layers_) <=(radius_cutoff_))
+		if (y > 0 &&  x>0 )
 		{
-			std::cout << "point on radius: " << x+x_value_ << " " << y+y_value_ << "\n";
-			std::cout << "radius: " << iterator_ << "\n";
-			found_raidus = true;
-			temp_rad.push_back(iterator_);
+			if ((noise_heightmap_[((y + y_value_) * grid_size) + (x + x_value_)] / layers_) <= (radius_cutoff_))
+			{
+
+				std::cout << "POINT on radius: " << x + x_value_ << " " << y + y_value_ << "\n";
+
+				std::cout << "RADIUS L: " << iterator_ << "\n";
+				found_raidus = true;
+				temp_rad.at(place) = (iterator_);
+
+			}
+			else
+			{
+				//other wise move one place in the correct direction 
+				iterator_++;
+				switch (signal_)
+				{
+				case 1:
+					y += (1 * modifier_), x += (1 * modifier_);
+					break;
+				case 2:
+					y += (1 * modifier_), x -= (1 * modifier_);
+					break;
+				case 3:
+					y -= 1, x += 1;
+					break;
+				case 4:
+					y -= (1 * modifier_), x -= (1 * modifier_);
+					break;
+				}
+			}
 		}
 		else
 		{
-			//other wise move one place in the correct direction 
-			iterator_++;
-			switch (signal_)
-			{
-			case 1:
-				y +=(1*modifier_), x += (1 * modifier_);
-				break;
-			case 2:
-				y += (1 * modifier_), x -= (1 * modifier_);
-				break;
-			case 3:
-				y-=1, x+=1;
-				break;
-			case 4:
-				y -= (1 * modifier_), x -= (1 * modifier_);
-				break;
-			}
+			failed_ = true;
+			std::cout << "POINT on radius (at edge): " << x + x_value_ << " " << y + y_value_ << "\n";
+			std::cout << "RADIUS L: " << iterator_ << "\n";
+			found_raidus = true;
+			temp_rad.at(place) = (iterator_);
 		}
-
-	} while (found_raidus!=true);
+	} while (found_raidus!=true&& !failed_);
 
 	
 }
 
 void VoronoiDiagram::radiiDecider()
 {
-	if (temp_rad.at(0)>temp_rad.at(1) )					//chooses the bigger of the two
+	if (temp_rad.at(0)>temp_rad.at(1) )					//chooses the bigger of the two but if its > 300 then chooses the smaller cos thats large
 	{
-
-		radius_length = temp_rad.at(0);
+		int p = 0;
+		if (temp_rad.at(0) > 300)
+		{
+			p = 1;
+		}
+		std::cout << "Selected radius "<< p <<"\n\n\n";
+		radius_length = temp_rad.at(p);
 		//pushes back a new peak in the peak vector 
 		peak_.centre_x = high_point_x;
 		peak_.centre_y = high_point_y;
 		peak_.r_length = radius_length;
 		circles_.push_back(peak_);
+		
 	}
 	else
 	{
-		radius_length = temp_rad.at(1);
+		int p = 1;
+		if (temp_rad.at(1)>300)
+		{
+			p = 0;
+		}
+		std::cout << "Selected radius " << p << "\n\n\n";
+		radius_length = temp_rad.at(p);
 
 		//pushes back a new peak in the peak vector 
 		peak_.centre_x = high_point_x;
@@ -1074,7 +1104,7 @@ void VoronoiDiagram::radiiDecider()
 		peak_.r_length = radius_length;
 		circles_.push_back(peak_);
 	}
-	temp_rad.clear();
+	//temp_rad.clear();
 	
 	
 }
