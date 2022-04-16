@@ -1063,7 +1063,7 @@ void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int sig
 			std::cout << "POINT on radius (at edge): " << x + x_value_ << " " << y + y_value_ << "\n";
 			std::cout << "RADIUS L: " << iterator_ << "\n";
 			found_raidus = true;
-			temp_rad.at(place) = (iterator_);
+			temp_rad.at(place) = (iterator_-3);
 		}
 	} while (found_raidus!=true&& !failed_);
 
@@ -1075,12 +1075,17 @@ void VoronoiDiagram::radiiDecider()
 	if (temp_rad.at(0)>temp_rad.at(1) )					//chooses the bigger of the two but if its > 300 then chooses the smaller cos thats large
 	{
 		int p = 0;
-		if (temp_rad.at(0) > 300)
+		if (temp_rad.at(0) > 200 )
 		{
 			p = 1;
 		}
 		std::cout << "Selected radius "<< p <<"\n\n\n";
+		
 		radius_length = temp_rad.at(p);
+		if (radius_length>200)
+		{
+			radius_length = 200 - (radius_length - 200);
+		}
 		//pushes back a new peak in the peak vector 
 		peak_.centre_x = high_point_x;
 		peak_.centre_y = high_point_y;
@@ -1091,13 +1096,16 @@ void VoronoiDiagram::radiiDecider()
 	else
 	{
 		int p = 1;
-		if (temp_rad.at(1)>300)
+		if (temp_rad.at(1)>200)
 		{
 			p = 0;
 		}
 		std::cout << "Selected radius " << p << "\n\n\n";
 		radius_length = temp_rad.at(p);
-
+		if (radius_length > 200)
+		{
+			radius_length = 200 - (radius_length - 200);
+		}
 		//pushes back a new peak in the peak vector 
 		peak_.centre_x = high_point_x;
 		peak_.centre_y = high_point_y;

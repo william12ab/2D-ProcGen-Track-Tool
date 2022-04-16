@@ -257,6 +257,10 @@ int main()
 			for (int i = 0; i < peaks_to_count_; i++)
 			{
 				v_d_p->FindMax(v_d_p->GetGridSize(), layers_);
+				if (i==5)
+				{
+					int s = 2;
+				}
 				v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_);
 				
 			}
