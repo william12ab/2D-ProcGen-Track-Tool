@@ -217,7 +217,7 @@ int main()
 			v_d_p->SetH(height_);
 			ImGui::SliderInt("Alpha", &alpha_, 0, 255);
 			ImGui::SliderInt("Radius Cut-off:", &radius_cutoff, 50, 255);
-			ImGui::SliderInt("Number of Peaks:", &peaks_to_count_, 1, 5);
+			ImGui::SliderInt("Number of Peaks:", &peaks_to_count_, 1, 9);
 			if (ImGui::Button("Change alpha"))
 			{
 				v_d_p->ChangeAlpha(height_map, v_d_p->GetGridSize(), alpha_);
@@ -260,6 +260,7 @@ int main()
 				if (i==5)
 				{
 					int s = 2;
+
 				}
 				v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_);
 				

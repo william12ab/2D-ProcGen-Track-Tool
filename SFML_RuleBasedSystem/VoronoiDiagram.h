@@ -113,7 +113,7 @@ private:
 		int centre_x;
 		int centre_y;
 		int r_length;
-	}peak_;
+	};
 	int high_point;
 	int high_point_x;
 	int high_point_y;

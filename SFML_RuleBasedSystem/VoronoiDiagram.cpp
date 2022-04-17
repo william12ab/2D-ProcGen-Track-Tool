@@ -33,10 +33,12 @@ VoronoiDiagram::VoronoiDiagram()
 	found_raidus = false;
 	radius_length = 0;
 
-	peak_.centre_x = 0;
+	/*peak_.centre_x = 0;
 	peak_.centre_y = 0;
-	peak_.r_length = 0;
+	peak_.r_length = 0;*/
 
+
+	
 	track_max=0;
 	track_min=0;
 
@@ -1063,7 +1065,7 @@ void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int sig
 			std::cout << "POINT on radius (at edge): " << x + x_value_ << " " << y + y_value_ << "\n";
 			std::cout << "RADIUS L: " << iterator_ << "\n";
 			found_raidus = true;
-			temp_rad.at(place) = (iterator_-3);
+			temp_rad.at(place) = (iterator_);
 		}
 	} while (found_raidus!=true&& !failed_);
 
@@ -1072,6 +1074,7 @@ void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int sig
 
 void VoronoiDiagram::radiiDecider()
 {
+	/*peaks_ peak_ = { 0 };*/
 	if (temp_rad.at(0)>temp_rad.at(1) )					//chooses the bigger of the two but if its > 300 then chooses the smaller cos thats large
 	{
 		int p = 0;
@@ -1087,11 +1090,14 @@ void VoronoiDiagram::radiiDecider()
 			radius_length = 200 - (radius_length - 200);
 		}
 		//pushes back a new peak in the peak vector 
-		peak_.centre_x = high_point_x;
+		/*peak_.centre_x = high_point_x;
 		peak_.centre_y = high_point_y;
 		peak_.r_length = radius_length;
-		circles_.push_back(peak_);
-		
+		circles_.push_back(*&peak_);*/
+		circles_.emplace_back(peaks_());
+		circles_.back().centre_x = high_point_x;
+		circles_.back().centre_y = high_point_y;
+		circles_.back().r_length= radius_length;
 	}
 	else
 	{
@@ -1107,10 +1113,16 @@ void VoronoiDiagram::radiiDecider()
 			radius_length = 200 - (radius_length - 200);
 		}
 		//pushes back a new peak in the peak vector 
-		peak_.centre_x = high_point_x;
+		/*peak_.centre_x = high_point_x;
 		peak_.centre_y = high_point_y;
 		peak_.r_length = radius_length;
-		circles_.push_back(peak_);
+		
+		circles_.push_back(*&peak_);*/
+		circles_.emplace_back(peaks_());
+		circles_.back().centre_x = high_point_x;
+		circles_.back().centre_y = high_point_y;
+		circles_.back().r_length = radius_length;
+
 	}
 	//temp_rad.clear();
 	
