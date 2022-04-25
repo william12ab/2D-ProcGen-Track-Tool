@@ -830,10 +830,10 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 	{
 	case 0:
 	{
-		int x_pos_one = (grid_size * 0.13);
-		int x_pos_two = (grid_size * 0.02);
-		int y_pos_one = (grid_size * 0.15);
-		int y_pos_two = (grid_size * 0.80);
+		int x_pos_one = (grid_size * 0.19);
+		int x_pos_two = (grid_size * 0.01);
+		int y_pos_one = (grid_size * 0.20);
+		int y_pos_two = (grid_size * 0.75);
 		for (int i = 0; i < num_points; i++)
 		{
 			bool found = false;
@@ -860,15 +860,15 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 			{
 				x_pos_one = (grid_size * 0.20);
 				x_pos_two = (grid_size * 0.45);
-				y_pos_one = (grid_size * 0.13);
-				y_pos_two = (grid_size * 0.02);
+				y_pos_one = (grid_size * 0.19);
+				y_pos_two = (grid_size * 0.01);
 			}
 			if (i == 1)
 			{
-				x_pos_one = (grid_size * 0.15);
-				x_pos_two = (grid_size * 0.80);
-				y_pos_one = (grid_size * 0.15);
-				y_pos_two = (grid_size * 0.80);
+				x_pos_one = (grid_size * 0.20);
+				x_pos_two = (grid_size * 0.75);
+				y_pos_one = (grid_size * 0.20);
+				y_pos_two = (grid_size * 0.75);
 			}
 		}
 	}
@@ -965,7 +965,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 }
 
 
-void VoronoiDiagram::HighPointFunc(int grid_size, int radius_cutoff_, int layers_)
+void VoronoiDiagram::HighPointFunc(int grid_size, int radius_cutoff_, int layers_,int index_v)
 {
 	//identify where x and y are in relation to the complete image
 	//so are they top left, top right, bottom left, bottom right
@@ -1014,7 +1014,7 @@ void VoronoiDiagram::HighPointFunc(int grid_size, int radius_cutoff_, int layers
 	
 	LoopPart(grid_size, x_pos, y_pos, signal, radius_cutoff_, layers_,1,0);
 	LoopPart(grid_size, -x_pos, -y_pos, signal, radius_cutoff_, layers_,-1,1);
-	radiiDecider();
+	radiiDecider(index_v);
 }
 
 void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place)
@@ -1026,7 +1026,7 @@ void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int sig
 	do
 	{
 		//travelled the length of the radius then set found etc
-		if (y > 0 &&  x>0 )
+		if (y > 0 &&  x>0 &&y<400 &&x<400)
 		{
 			if ((noise_heightmap_[((y + y_value_) * grid_size) + (x + x_value_)] / layers_) <= (radius_cutoff_))
 			{
@@ -1072,9 +1072,9 @@ void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int sig
 	
 }
 
-void VoronoiDiagram::radiiDecider()
+void VoronoiDiagram::radiiDecider(int index_v)
 {
-	/*peaks_ peak_ = { 0 };*/
+	peaks_* peak_ = new peaks_();
 	if (temp_rad.at(0)>temp_rad.at(1) )					//chooses the bigger of the two but if its > 300 then chooses the smaller cos thats large
 	{
 		int p = 0;
@@ -1094,10 +1094,10 @@ void VoronoiDiagram::radiiDecider()
 		peak_.centre_y = high_point_y;
 		peak_.r_length = radius_length;
 		circles_.push_back(*&peak_);*/
-		circles_.emplace_back(peaks_());
-		circles_.back().centre_x = high_point_x;
-		circles_.back().centre_y = high_point_y;
-		circles_.back().r_length= radius_length;
+		//circles_.emplace_back(*peak_);
+		circles_[index_v].centre_x = high_point_x;
+		circles_[index_v].centre_y = high_point_y;
+		circles_[index_v].r_length= radius_length;
 	}
 	else
 	{
@@ -1118,15 +1118,23 @@ void VoronoiDiagram::radiiDecider()
 		peak_.r_length = radius_length;
 		
 		circles_.push_back(*&peak_);*/
-		circles_.emplace_back(peaks_());
-		circles_.back().centre_x = high_point_x;
-		circles_.back().centre_y = high_point_y;
-		circles_.back().r_length = radius_length;
+		//circles_.emplace_back(*peak_);
+		circles_[index_v].centre_x = high_point_x;
+		circles_[index_v].centre_y = high_point_y;
+		circles_[index_v].r_length = radius_length;
+
 
 	}
 	//temp_rad.clear();
 	
 	
+}
+void VoronoiDiagram::vector_all(int size)
+{
+	//circles_.reserve(size);
+
+	
+	circles_.resize(size);
 }
 
 

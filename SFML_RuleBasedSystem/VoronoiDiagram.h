@@ -64,9 +64,9 @@ public:
 
 	void WriteToFile(int grid_size, sf::VertexArray& vertexarray, int layers_);
 
-	void HighPointFunc(int grid_size, int radius_cutoff_,int layers_);
+	void HighPointFunc(int grid_size, int radius_cutoff_,int layers_, int index_v);
 	void LoopPart(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place);
-	void radiiDecider();
+	void radiiDecider(int index_v);
 
 	void ResetVars();
 
@@ -76,6 +76,9 @@ public:
 
 	int GetTrackMax() { return track_max; }
 	int GetTrackMin() { return track_min; }
+
+
+	void vector_all(int size);
 private:
 	SimplexNoise perlin_;
 

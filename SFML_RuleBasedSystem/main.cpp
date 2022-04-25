@@ -252,7 +252,7 @@ int main()
 		}
 		if (ImGui::Button("Set Site to High Pos"))
 		{
-			
+			v_d_p->vector_all(peaks_to_count_);
 			the_clock::time_point startTimea = the_clock::now();
 			for (int i = 0; i < peaks_to_count_; i++)
 			{
@@ -262,7 +262,7 @@ int main()
 					int s = 2;
 
 				}
-				v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_);
+				v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_,i);
 				
 			}
 			the_clock::time_point endTimea = the_clock::now();
@@ -369,47 +369,109 @@ int main()
 
 		if (ImGui::Button("25 times * 4"))
 		{
-			points_ = 3;
-			sites_=81;
-			times_ = 1;
-			displacement_ = 200;
-			track_type_ = 0;
-			full_random_ = false;
-			for (int i = 0; i < 4; i++)
+			resolution_ = 400;
+			octaves_ = 1;
+			points_ = 2;
+			sites_=25;
+			track_type_ = 1;
+			radius_cutoff = 125;
+			peaks_to_count_ = 3;
+			full_random_ = true;
+			for (int w = 0; w < 5; w++)
 			{
-				for (int a = 0; a < 25; a++)
+				sites_ = 25;
+				for (int i = 0; i < 5; i++)
 				{
-					SetVars(v_d_p);
-					voronoi_d.clear();
-					height_map.clear();
-					voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-					height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-
-
-						//places the sites
-					do
+					for (int a = 0; a < 25; a++)
 					{
-						if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
+						//1. reset vars
+						voronoi_d.clear();
+						SetVars(v_d_p);
+						voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+						v_d_p->SetGridSize(resolution_);
+						v_d_p->ResetVars();
+
+						//2. create noise
+						height_map.clear();
+						v_d_p->SetGridSize(resolution_);
+
+						height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+						v_d_p->DrawFBM(height_map, v_d_p->GetGridSize(), octaves_);
+
+						//3. generate 
+						the_clock::time_point startTimea = the_clock::now();
+						for (int i = 0; i < peaks_to_count_; i++)
 						{
-							ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
+							v_d_p->FindMax(v_d_p->GetGridSize(), layers_);
+							if (i == 5)
+							{
+								int s = 2;
+
+							}
+							v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_,i);
+
 						}
+						the_clock::time_point endTimea = the_clock::now();
 
-						CreateVoronoi(v_d_p, height_map);
-						the_clock::time_point startTime = the_clock::now();
-						CreateTrack(v_d_p, s_p_p);
-						the_clock::time_point endTime = the_clock::now();
-						auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-						std::cout << "		time(v d): " << time_taken; std::cout << std::endl;
+						auto time_takena = duration_cast<milliseconds>(endTimea - startTimea).count();
+						std::cout << "time(HIGH_POINTS): " << time_takena; std::cout << std::endl;
 
-					} while (v_d_p->GetFailed() || s_p_p->GetFailed());
 
-					v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
-					s_p_p->WriteToFile(v_d_p->GetTrackMax(), v_d_p->GetTrackMin());
 
+						do
+						{
+							if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
+							{
+								ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
+							}
+
+
+							v_d_p->TerrainSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());							//this takes no time
+
+							v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+							v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, div_);
+							v_d_p->SetEdges(v_d_p->GetGridSize());
+							v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
+							the_clock::time_point startTime = the_clock::now();
+							CreateTrack(v_d_p, s_p_p);
+							the_clock::time_point endTime = the_clock::now();
+							auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+							std::cout << "		time(v d): " << time_taken; std::cout << std::endl;
+							std::cout << std::endl;
+							std::cout << std::endl;
+
+						} while (v_d_p->GetFailed() || s_p_p->GetFailed());
+
+
+
+
+
+						v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
+						s_p_p->WriteToFile(v_d_p->GetTrackMax(), v_d_p->GetTrackMin());
+
+					}
+					sites_ += 25;
 				}
-				times_ *= 10;
+				if (w==0)
+				{
+					points_ = 3;
+					//track_type_=0;
 				}
-
+				if (w==1)
+				{
+					points_ = 5;
+				}
+				if (w==2)
+				{
+					points_ = 3;
+					track_type_ = 2;
+				}
+				if (w==3)
+				{
+					points_ = 3;
+					track_type_ = 0;
+				}
+			}
 			
 			
 		}
