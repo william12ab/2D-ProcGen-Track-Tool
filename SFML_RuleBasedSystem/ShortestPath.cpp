@@ -11,6 +11,8 @@ ShortestPath::ShortestPath()
 	failed_ = false;
 	total_track_distance = 0;
 	number_of_turns = 0;
+
+	do_testing_ = false;
 }
 
 //i =z/y, j=x
@@ -58,25 +60,37 @@ void ShortestPath::Initgrid(int grid_size, int* grid, int num_points)
 			{
 				if (grid[(i * grid_size) + j]==0)
 				{
-					old_num.push_back(grid[(i * grid_size) + j]);
+					if (do_testing_)
+					{
+						old_num.push_back(grid[(i * grid_size) + j]);
+					}
 					grid[(i * grid_size) + j] = -1;			//possible path
 				}
 				if (grid[(i * grid_size) + j] == 2000)
 				{
-					old_num.push_back(grid[(i * grid_size) + j]);
+					if (do_testing_)
+					{
+						old_num.push_back(grid[(i * grid_size) + j]);
+					}
 					grid[(i * grid_size) + j] = 0;								//first position
 				}
 				for (int p = 0; p < (num_points-1); p++)
 				{
 				if(grid[(i * grid_size) + j] == 2001 + p)
 				{
-					old_num.push_back(grid[(i * grid_size) + j]);
+					if (do_testing_)
+					{
+						old_num.push_back(grid[(i * grid_size) + j]);
+					}
 					grid[(i * grid_size) + j] = start - p;				//every other position
 				}
 				}
 				if(grid[(i * grid_size) + j]>0 )
 				{
-					old_num.push_back(grid[(i * grid_size) + j]);
+					if (do_testing_)
+					{
+						old_num.push_back(grid[(i * grid_size) + j]);
+					}
 					grid[(i * grid_size) + j] = -2;										//non positions
 				}
 			}
@@ -355,37 +369,41 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 {
 	bool found_start = false;
 
-
-	first_position.first = x_holder;
-	first_position.second = y_holder;
+	if (do_testing_)
+	{
+		first_position.first = x_holder;
+		first_position.second = y_holder;
+	}
 	while (!found_start && !end)
 	{
 		int how_many = 0;
 		if (count_holder != 0)
 		{
-			if (unique_count_occuarances==2 || unique_count_occuarances ==0)		//so if the previous position is not 1 or 3 then find new but if not dont. 
+			if (do_testing_)
 			{
-				north_site = old_num[((y_holder - 1) * grid_size) + (x_holder)];
-				north_e_site = old_num[((y_holder - 1) * grid_size) + (x_holder + 1)];
-				north_w_site = old_num[((y_holder - 1) * grid_size) + (x_holder - 1)];
-				west_site = old_num[(y_holder * grid_size) + (x_holder - 1)];
-				east_site = old_num[(y_holder * grid_size) + (x_holder + 1)];
-				south_site = old_num[((y_holder + 1) * grid_size) + (x_holder)];
-				south_e_site = old_num[((y_holder + 1) * grid_size) + (x_holder + 1)];
-				south_w_site = old_num[((y_holder + 1) * grid_size) + (x_holder - 1)];
+				if (unique_count_occuarances == 2 || unique_count_occuarances == 0)		//so if the previous position is not 1 or 3 then find new but if not dont. 
+				{
+					north_site = old_num[((y_holder - 1) * grid_size) + (x_holder)];
+					north_e_site = old_num[((y_holder - 1) * grid_size) + (x_holder + 1)];
+					north_w_site = old_num[((y_holder - 1) * grid_size) + (x_holder - 1)];
+					west_site = old_num[(y_holder * grid_size) + (x_holder - 1)];
+					east_site = old_num[(y_holder * grid_size) + (x_holder + 1)];
+					south_site = old_num[((y_holder + 1) * grid_size) + (x_holder)];
+					south_e_site = old_num[((y_holder + 1) * grid_size) + (x_holder + 1)];
+					south_w_site = old_num[((y_holder + 1) * grid_size) + (x_holder - 1)];
 
-				old_occurances.push_back(north_site);
-				old_occurances.push_back(north_e_site);
-				old_occurances.push_back(north_w_site);
-				old_occurances.push_back(west_site);
-				old_occurances.push_back(east_site);
-				old_occurances.push_back(south_site);
-				old_occurances.push_back(south_e_site);
-				old_occurances.push_back(south_w_site);
+					old_occurances.push_back(north_site);
+					old_occurances.push_back(north_e_site);
+					old_occurances.push_back(north_w_site);
+					old_occurances.push_back(west_site);
+					old_occurances.push_back(east_site);
+					old_occurances.push_back(south_site);
+					old_occurances.push_back(south_e_site);
+					old_occurances.push_back(south_w_site);
 
 
+				}
 			}
-
 
 			int& north = grid[((y_holder - 1) * grid_size) + x_holder];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
 			int& northE = grid[((y_holder - 1) * grid_size) + (x_holder + 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
@@ -471,72 +489,77 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				failed_ = true;
 				break;
 			}
-			north_e_site = old_num[((y_holder - 1) * grid_size) + (x_holder+1)];
-			north_w_site = old_num[((y_holder - 1) * grid_size) + (x_holder-1)];
-			west_site = old_num[(y_holder * grid_size) + (x_holder-1)];
-			east_site = old_num[(y_holder * grid_size) + (x_holder + 1)];
-			south_site = old_num[((y_holder + 1) * grid_size) + (x_holder)];
-			south_e_site = old_num[((y_holder + 1) * grid_size) + (x_holder+1)];
-			south_w_site = old_num[((y_holder + 1) * grid_size) + (x_holder-1)];
-
-			occurances.push_back(north_site);
-			occurances.push_back(north_e_site);
-			occurances.push_back(north_w_site);
-			occurances.push_back(west_site);
-			occurances.push_back(east_site);
-			occurances.push_back(south_site);
-			occurances.push_back(south_e_site);
-			occurances.push_back(south_w_site);
-
-
-
-			//this removes all numbers that arent site numbers - eg possible tracks or start/end positions
-			old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 0), old_occurances.end());
-			old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 2000), old_occurances.end());
-			old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 2001), old_occurances.end());
-			old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 2002), old_occurances.end());
-			old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 2003), old_occurances.end());
-			old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 2004), old_occurances.end());
-
-			occurances.erase(std::remove(occurances.begin(), occurances.end(), 0), occurances.end());
-			occurances.erase(std::remove(occurances.begin(), occurances.end(), 2000), occurances.end());
-			occurances.erase(std::remove(occurances.begin(), occurances.end(), 2001), occurances.end());
-			occurances.erase(std::remove(occurances.begin(), occurances.end(), 2002), occurances.end());
-			occurances.erase(std::remove(occurances.begin(), occurances.end(), 2003), occurances.end());
-			occurances.erase(std::remove(occurances.begin(), occurances.end(), 2004), occurances.end());
-
-			//sorts in order and finds how many sites
-			std::sort(occurances.begin(), occurances.end());
-			unique_count_occuarances = std::unique(occurances.begin(), occurances.end()) - occurances.begin();
-			
-			std::sort(old_occurances.begin(), old_occurances.end());
-			unique_count_old_occuarances = std::unique(old_occurances.begin(), old_occurances.end()) - old_occurances.begin();
-			
-			//if all of them are == to 2 then check for corner - could this not just be if ==2?
-			if (unique_count_occuarances==2&& unique_count_old_occuarances==2)
+			if (do_testing_)
 			{
-				//find the min and max values to see if there is a difference in either one which signals a change in the sites bordering the location
-				auto it = minmax_element(std::begin(occurances), std::end(occurances));
-				auto it_old = minmax_element(std::begin(old_occurances), std::end(old_occurances));
 
 
-				if (*it.first!=*it_old.first || *it.second!= *it_old.second)
+				north_e_site = old_num[((y_holder - 1) * grid_size) + (x_holder + 1)];
+				north_w_site = old_num[((y_holder - 1) * grid_size) + (x_holder - 1)];
+				west_site = old_num[(y_holder * grid_size) + (x_holder - 1)];
+				east_site = old_num[(y_holder * grid_size) + (x_holder + 1)];
+				south_site = old_num[((y_holder + 1) * grid_size) + (x_holder)];
+				south_e_site = old_num[((y_holder + 1) * grid_size) + (x_holder + 1)];
+				south_w_site = old_num[((y_holder + 1) * grid_size) + (x_holder - 1)];
+
+				occurances.push_back(north_site);
+				occurances.push_back(north_e_site);
+				occurances.push_back(north_w_site);
+				occurances.push_back(west_site);
+				occurances.push_back(east_site);
+				occurances.push_back(south_site);
+				occurances.push_back(south_e_site);
+				occurances.push_back(south_w_site);
+
+
+
+				//this removes all numbers that arent site numbers - eg possible tracks or start/end positions
+				old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 0), old_occurances.end());
+				old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 2000), old_occurances.end());
+				old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 2001), old_occurances.end());
+				old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 2002), old_occurances.end());
+				old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 2003), old_occurances.end());
+				old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 2004), old_occurances.end());
+
+				occurances.erase(std::remove(occurances.begin(), occurances.end(), 0), occurances.end());
+				occurances.erase(std::remove(occurances.begin(), occurances.end(), 2000), occurances.end());
+				occurances.erase(std::remove(occurances.begin(), occurances.end(), 2001), occurances.end());
+				occurances.erase(std::remove(occurances.begin(), occurances.end(), 2002), occurances.end());
+				occurances.erase(std::remove(occurances.begin(), occurances.end(), 2003), occurances.end());
+				occurances.erase(std::remove(occurances.begin(), occurances.end(), 2004), occurances.end());
+
+				//sorts in order and finds how many sites
+				std::sort(occurances.begin(), occurances.end());
+				unique_count_occuarances = std::unique(occurances.begin(), occurances.end()) - occurances.begin();
+
+				std::sort(old_occurances.begin(), old_occurances.end());
+				unique_count_old_occuarances = std::unique(old_occurances.begin(), old_occurances.end()) - old_occurances.begin();
+
+				//if all of them are == to 2 then check for corner - could this not just be if ==2?
+				if (unique_count_occuarances == 2 && unique_count_old_occuarances == 2)
 				{
-					number_of_turns++;
+					//find the min and max values to see if there is a difference in either one which signals a change in the sites bordering the location
+					auto it = minmax_element(std::begin(occurances), std::end(occurances));
+					auto it_old = minmax_element(std::begin(old_occurances), std::end(old_occurances));
 
-					segment_lengths_.push_back(DistanceSqrt(first_position.first, first_position.second, x_holder, y_holder));
-					line_positions.emplace_back(first_position.first, first_position.second);
-					line_positions.emplace_back(x_holder, y_holder);
-					first_position.first = x_holder;
-					first_position.second = y_holder;
 
+					if (*it.first != *it_old.first || *it.second != *it_old.second)
+					{
+						number_of_turns++;
+
+						segment_lengths_.push_back(DistanceSqrt(first_position.first, first_position.second, x_holder, y_holder));
+						line_positions.emplace_back(first_position.first, first_position.second);
+						line_positions.emplace_back(x_holder, y_holder);
+						first_position.first = x_holder;
+						first_position.second = y_holder;
+
+					}
+					old_occurances.clear();										//clear the vectors so that when it comes to checking a new poosition theres nothjing there
+					occurances.clear();
 				}
-				old_occurances.clear();										//clear the vectors so that when it comes to checking a new poosition theres nothjing there
-				occurances.clear();
-			}
-			else
-			{
-				occurances.clear();						//only clear the new positions sites not the old if there are not 2 sites in it - you want to preserve the old position because this is where a change begins	
+				else
+				{
+					occurances.clear();						//only clear the new positions sites not the old if there are not 2 sites in it - you want to preserve the old position because this is where a change begins	
+				}
 			}
 			if (how_many == 0)
 			{
@@ -549,11 +572,14 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 
 		if (count_holder<=end_n)
 		{
-			segment_lengths_.push_back(DistanceSqrt(x_holder,y_holder , first_position.first, first_position.second));			//finds the length of the final segment 
-			line_positions.emplace_back(first_position.first, first_position.second);
-			line_positions.emplace_back(x_holder, y_holder);
-			
-			number_of_segments = segment_lengths_.size();
+			if (do_testing_)
+			{
+				segment_lengths_.push_back(DistanceSqrt(x_holder, y_holder, first_position.first, first_position.second));			//finds the length of the final segment 
+				line_positions.emplace_back(first_position.first, first_position.second);
+				line_positions.emplace_back(x_holder, y_holder);
+
+				number_of_segments = segment_lengths_.size();
+			}
 			found_start = true;
 			end = true;
 		}

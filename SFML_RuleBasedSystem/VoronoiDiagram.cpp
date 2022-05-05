@@ -33,11 +33,9 @@ VoronoiDiagram::VoronoiDiagram()
 	found_raidus = false;
 	radius_length = 0;
 
-	/*peak_.centre_x = 0;
-	peak_.centre_y = 0;
-	peak_.r_length = 0;*/
+	
 
-
+	do_testing_ = false;
 	
 	track_max=0;
 	track_min=0;
@@ -379,11 +377,6 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 		{
 			for (int j = 0; j < grid_size; j++)
 			{
-				//for (int a = 1; a <= num_sites; a++)
-				//{
-					
-					//if (grid_v_1[(i * grid_size) + j] == a)			//might be able to take this out
-					//{
 						float s = float((float)1 / (float)num_sites);							//gets the thing as a percentage
 						//for example 1/100 = 0.01
 
@@ -417,8 +410,6 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 						vertextarray[i * grid_size + j].position = sf::Vector2f(j, i);
 						vertextarray[i * grid_size + j].color = sf::Color{ c , c , c };
 					}
-				//}
-			//}
 		});
 
 
@@ -568,13 +559,6 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 			}
 		}
 	}
-	//for (int i = 0; i < (num_sites * 2); i++)
-	//{
-	//	vertexarray[(sites_v_1[i + 1]) * grid_size + sites_v_1[i]].position = sf::Vector2f(sites_v_1[i], sites_v_1[i + 1]);
-	//	vertexarray[(sites_v_1[i + 1]) * grid_size + sites_v_1[i]].color = sf::Color::Yellow;
-	//	i++;
-	//}
-
 }
 
 void VoronoiDiagram::FindMax(int grid_size, int layers_)
@@ -1074,7 +1058,6 @@ void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int sig
 
 void VoronoiDiagram::radiiDecider(int index_v)
 {
-	peaks_* peak_ = new peaks_();
 	if (temp_rad.at(0)>temp_rad.at(1) )					//chooses the bigger of the two but if its > 300 then chooses the smaller cos thats large
 	{
 		int p = 0;
@@ -1089,12 +1072,7 @@ void VoronoiDiagram::radiiDecider(int index_v)
 		{
 			radius_length = 200 - (radius_length - 200);
 		}
-		//pushes back a new peak in the peak vector 
-		/*peak_.centre_x = high_point_x;
-		peak_.centre_y = high_point_y;
-		peak_.r_length = radius_length;
-		circles_.push_back(*&peak_);*/
-		//circles_.emplace_back(*peak_);
+
 		circles_[index_v].centre_x = high_point_x;
 		circles_[index_v].centre_y = high_point_y;
 		circles_[index_v].r_length= radius_length;
@@ -1106,19 +1084,15 @@ void VoronoiDiagram::radiiDecider(int index_v)
 		{
 			p = 0;
 		}
+
 		std::cout << "Selected radius " << p << "\n\n\n";
 		radius_length = temp_rad.at(p);
+		std::cout << "RADIUS L: " << radius_length << "\n";
 		if (radius_length > 200)
 		{
 			radius_length = 200 - (radius_length - 200);
 		}
-		//pushes back a new peak in the peak vector 
-		/*peak_.centre_x = high_point_x;
-		peak_.centre_y = high_point_y;
-		peak_.r_length = radius_length;
-		
-		circles_.push_back(*&peak_);*/
-		//circles_.emplace_back(*peak_);
+
 		circles_[index_v].centre_x = high_point_x;
 		circles_[index_v].centre_y = high_point_y;
 		circles_[index_v].r_length = radius_length;

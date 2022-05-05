@@ -79,6 +79,9 @@ public:
 
 
 	void vector_all(int size);
+
+	bool SetTesting(bool f) { do_testing_ = f; }
+	bool GetTesting() { return do_testing_; }
 private:
 	SimplexNoise perlin_;
 
@@ -117,6 +120,7 @@ private:
 		int centre_y;
 		int r_length;
 	};
+
 	int high_point;
 	int high_point_x;
 	int high_point_y;
@@ -129,5 +133,6 @@ private:
 	int track_min;
 	
 
+	bool do_testing_;
 };
 

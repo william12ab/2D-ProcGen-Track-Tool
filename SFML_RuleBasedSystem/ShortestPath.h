@@ -38,7 +38,9 @@ public:
 
 	void SegmentAngles();
 	void WriteToFile(int track_max, int track_min);
-	
+
+	bool SetTesting(bool f) { do_testing_ = f; }
+	bool GetTesting() { return do_testing_; }
 private:
 
 
@@ -50,7 +52,7 @@ private:
 	int x_holder_, y_holder_;
 	bool failed_;				//if the generation fails
 
-
+	bool do_testing_;
 
 	int total_track_distance;		//the total distance of the track
 	int number_of_turns;			//the total number of turns

@@ -48,7 +48,7 @@ void Init(sf::RenderWindow &window)
 
 	radius_cutoff = 120;
 	peaks_to_count_ = 1;
-
+	do_testing_ = false;
 }
 
 void ResetVars(VoronoiDiagram*v_d_p, ShortestPath*s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map)
@@ -203,20 +203,21 @@ int main()
 			ImGui::Checkbox("Random or Equal+Random?", &full_random_);
 			ImGui::SliderInt("Points", &points_, 2, 5);
 			ImGui::SliderInt("Track Type", &track_type_, 0, 2);
-			ImGui::Text("0 = triangular\n1 = point to point\n2 = obtuse triangle");
+			ImGui::Text("0 = triangular\n1 = point to point\n2 = loop");
 		}
 		ImGui::Text("\n");
 		if (ImGui::CollapsingHeader("Heightmap Variables"))
 		{
 			ImGui::SliderInt("Size of cell outlines", &number_, 0, 100);
-			ImGui::TextWrapped("Controls the outline of voronoi cells");
-			ImGui::SliderFloat("Brightness", &div_, 0.0f, 2.0f);
-			ImGui::TextWrapped("Controls controls the brightness of image(higher darker)");
+			ImGui::Text("lower = large outlines");
+			ImGui::Text("higher = less effect");
 			ImGui::SliderFloat("Perlin Height", &height_, 0.0f, 1.0f);
 			ImGui::SliderInt("Number of Layers of Noise", &layers_,0, 10);
 			v_d_p->SetH(height_);
 			ImGui::SliderInt("Alpha", &alpha_, 0, 255);
 			ImGui::SliderInt("Radius Cut-off:", &radius_cutoff, 50, 255);
+			ImGui::Text("lower = larger radius");
+			ImGui::Text("higher = smaller radius");
 			ImGui::SliderInt("Number of Peaks:", &peaks_to_count_, 1, 9);
 			if (ImGui::Button("Change alpha"))
 			{
@@ -224,6 +225,12 @@ int main()
 			}
 			if (ImGui::Button("Create Noise Image"))
 			{
+				voronoi_d.clear();
+				SetVars(v_d_p);
+				voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+				v_d_p->SetGridSize(resolution_);
+				v_d_p->ResetVars();
+
 				height_map.clear();
 				v_d_p->SetGridSize(resolution_);
 
@@ -233,6 +240,12 @@ int main()
 			ImGui::SliderInt("Octaves: ", &octaves_, 1, 8);
 			if (ImGui::Button("Create FBM Image"))
 			{
+				voronoi_d.clear();
+				SetVars(v_d_p);
+				voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+				v_d_p->SetGridSize(resolution_);
+				v_d_p->ResetVars();
+
 				height_map.clear();
 				v_d_p->SetGridSize(resolution_);
 
@@ -242,36 +255,19 @@ int main()
 
 		}
 		ImGui::Text("\n");
-		if (ImGui::Button("Reset for Sites"))
-		{
-			voronoi_d.clear();
-			SetVars(v_d_p);
-			voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-			v_d_p->SetGridSize(resolution_);
-			v_d_p->ResetVars();
-		}
-		if (ImGui::Button("Set Site to High Pos"))
+		if (ImGui::Button("Renerate (Noise Method)"))
 		{
 			v_d_p->vector_all(peaks_to_count_);
 			the_clock::time_point startTimea = the_clock::now();
 			for (int i = 0; i < peaks_to_count_; i++)
 			{
 				v_d_p->FindMax(v_d_p->GetGridSize(), layers_);
-				if (i==5)
-				{
-					int s = 2;
-
-				}
 				v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_,i);
-				
 			}
 			the_clock::time_point endTimea = the_clock::now();
 
 			auto time_takena = duration_cast<milliseconds>(endTimea - startTimea).count();
 			std::cout << "time(HIGH_POINTS): " << time_takena; std::cout << std::endl;
-	
-			
-
 			do
 			{
 				if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
@@ -297,7 +293,6 @@ int main()
 			} while (v_d_p->GetFailed() || s_p_p->GetFailed());
 			
 		}
-		ImGui::Text("\n");
 		if (ImGui::Button("Regenerate"))
 		{
 
@@ -327,154 +322,6 @@ int main()
 
 		}
 	
-		if (ImGui::Button("25"))
-		{
-			points_ = 3;
-			sites_ = 81;
-			times_ = 1;
-			full_random_ = false;
-			displacement_ = 1;
-			track_type_ = 2;
-			for (int a = 0; a < 25; a++)
-			{
-				SetVars(v_d_p);
-				voronoi_d.clear();
-				height_map.clear();
-				voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-				height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-
-
-				//places the sites
-				do
-				{
-					if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
-					{
-						ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
-					}
-
-					CreateVoronoi(v_d_p, height_map);
-					the_clock::time_point startTime = the_clock::now();
-					CreateTrack(v_d_p, s_p_p);
-					the_clock::time_point endTime = the_clock::now();
-					auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-					std::cout << "		time(v d): " << time_taken; std::cout << std::endl;
-
-				} while (v_d_p->GetFailed() || s_p_p->GetFailed());
-
-				v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
-				s_p_p->WriteToFile(v_d_p->GetTrackMax(), v_d_p->GetTrackMin());
-
-			}
-		}
-
-		if (ImGui::Button("25 times * 4"))
-		{
-			resolution_ = 400;
-			octaves_ = 1;
-			points_ = 2;
-			sites_=25;
-			track_type_ = 1;
-			radius_cutoff = 125;
-			peaks_to_count_ = 3;
-			full_random_ = true;
-			for (int w = 0; w < 5; w++)
-			{
-				sites_ = 25;
-				for (int i = 0; i < 5; i++)
-				{
-					for (int a = 0; a < 25; a++)
-					{
-						//1. reset vars
-						voronoi_d.clear();
-						SetVars(v_d_p);
-						voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-						v_d_p->SetGridSize(resolution_);
-						v_d_p->ResetVars();
-
-						//2. create noise
-						height_map.clear();
-						v_d_p->SetGridSize(resolution_);
-
-						height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-						v_d_p->DrawFBM(height_map, v_d_p->GetGridSize(), octaves_);
-
-						//3. generate 
-						the_clock::time_point startTimea = the_clock::now();
-						for (int i = 0; i < peaks_to_count_; i++)
-						{
-							v_d_p->FindMax(v_d_p->GetGridSize(), layers_);
-							if (i == 5)
-							{
-								int s = 2;
-
-							}
-							v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_,i);
-
-						}
-						the_clock::time_point endTimea = the_clock::now();
-
-						auto time_takena = duration_cast<milliseconds>(endTimea - startTimea).count();
-						std::cout << "time(HIGH_POINTS): " << time_takena; std::cout << std::endl;
-
-
-
-						do
-						{
-							if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
-							{
-								ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
-							}
-
-
-							v_d_p->TerrainSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());							//this takes no time
-
-							v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
-							v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, div_);
-							v_d_p->SetEdges(v_d_p->GetGridSize());
-							v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
-							the_clock::time_point startTime = the_clock::now();
-							CreateTrack(v_d_p, s_p_p);
-							the_clock::time_point endTime = the_clock::now();
-							auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-							std::cout << "		time(v d): " << time_taken; std::cout << std::endl;
-							std::cout << std::endl;
-							std::cout << std::endl;
-
-						} while (v_d_p->GetFailed() || s_p_p->GetFailed());
-
-
-
-
-
-						v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
-						s_p_p->WriteToFile(v_d_p->GetTrackMax(), v_d_p->GetTrackMin());
-
-					}
-					sites_ += 25;
-				}
-				if (w==0)
-				{
-					points_ = 3;
-					//track_type_=0;
-				}
-				if (w==1)
-				{
-					points_ = 5;
-				}
-				if (w==2)
-				{
-					points_ = 3;
-					track_type_ = 2;
-				}
-				if (w==3)
-				{
-					points_ = 3;
-					track_type_ = 0;
-				}
-			}
-			
-			
-		}
 	
 		if (ImGui::Button("Write to file"))
 		{
@@ -495,6 +342,157 @@ int main()
 		}
 		ImGui::Text("\n");
 		ImGui::Text("\n");
+		if (ImGui::CollapsingHeader("Testing Options (runs multi times)"))
+		{
+			if (ImGui::Button("25"))
+			{
+				points_ = 3;
+				sites_ = 81;
+				times_ = 1;
+				full_random_ = false;
+				displacement_ = 1;
+				track_type_ = 2;
+				for (int a = 0; a < 25; a++)
+				{
+					SetVars(v_d_p);
+					voronoi_d.clear();
+					height_map.clear();
+					voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+					height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+
+
+					//places the sites
+					do
+					{
+						if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
+						{
+							ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
+						}
+
+						CreateVoronoi(v_d_p, height_map);
+						the_clock::time_point startTime = the_clock::now();
+						CreateTrack(v_d_p, s_p_p);
+						the_clock::time_point endTime = the_clock::now();
+						auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+						std::cout << "		time(v d): " << time_taken; std::cout << std::endl;
+
+					} while (v_d_p->GetFailed() || s_p_p->GetFailed());
+
+					v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
+					s_p_p->WriteToFile(v_d_p->GetTrackMax(), v_d_p->GetTrackMin());
+
+				}
+			}
+
+			if (ImGui::Button("25 times * 4"))
+			{
+				resolution_ = 400;
+				octaves_ = 1;
+				points_ = 2;
+				sites_ = 25;
+				track_type_ = 1;
+				radius_cutoff = 125;
+				peaks_to_count_ = 3;
+				full_random_ = true;
+				for (int w = 0; w < 5; w++)
+				{
+					sites_ = 25;
+					for (int i = 0; i < 5; i++)
+					{
+						for (int a = 0; a < 25; a++)
+						{
+							//1. reset vars
+							voronoi_d.clear();
+							SetVars(v_d_p);
+							voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+							v_d_p->SetGridSize(resolution_);
+							v_d_p->ResetVars();
+
+							//2. create noise
+							height_map.clear();
+							v_d_p->SetGridSize(resolution_);
+
+							height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+							v_d_p->DrawFBM(height_map, v_d_p->GetGridSize(), octaves_);
+
+							//3. generate 
+							the_clock::time_point startTimea = the_clock::now();
+							for (int i = 0; i < peaks_to_count_; i++)
+							{
+								v_d_p->FindMax(v_d_p->GetGridSize(), layers_);
+								if (i == 5)
+								{
+									int s = 2;
+
+								}
+								v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_, i);
+
+							}
+							the_clock::time_point endTimea = the_clock::now();
+
+							auto time_takena = duration_cast<milliseconds>(endTimea - startTimea).count();
+							std::cout << "time(HIGH_POINTS): " << time_takena; std::cout << std::endl;
+
+
+
+							do
+							{
+								if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
+								{
+									ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
+								}
+
+
+								v_d_p->TerrainSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());							//this takes no time
+
+								v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+								v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, div_);
+								v_d_p->SetEdges(v_d_p->GetGridSize());
+								v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
+								the_clock::time_point startTime = the_clock::now();
+								CreateTrack(v_d_p, s_p_p);
+								the_clock::time_point endTime = the_clock::now();
+								auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+								std::cout << "		time(v d): " << time_taken; std::cout << std::endl;
+								std::cout << std::endl;
+								std::cout << std::endl;
+
+							} while (v_d_p->GetFailed() || s_p_p->GetFailed());
+
+
+
+
+
+							v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
+							s_p_p->WriteToFile(v_d_p->GetTrackMax(), v_d_p->GetTrackMin());
+
+						}
+						sites_ += 25;
+					}
+					if (w == 0)
+					{
+						points_ = 3;
+						//track_type_=0;
+					}
+					if (w == 1)
+					{
+						points_ = 5;
+					}
+					if (w == 2)
+					{
+						points_ = 3;
+						track_type_ = 2;
+					}
+					if (w == 3)
+					{
+						points_ = 3;
+						track_type_ = 0;
+					}
+				}
+
+
+			}
+		}
 		if (ImGui::CollapsingHeader("Measurements"))
 		{
 			ImGui::Text("Total Length= %d", s_p_p->GetTotalDistance());
@@ -502,6 +500,14 @@ int main()
 			ImGui::Text("Number of Segments = %d", s_p_p->GetNumberOfSegments());
 		}
 
+		ImGui::Checkbox("Perform Testing?", &do_testing_);
+		s_p_p->SetTesting(do_testing_);
+		v_d_p->SetTesting(do_testing_);
+
+		ImGui::TextWrapped("Press A to display diagram");
+		ImGui::TextWrapped("Press S to display heightmap");
+		ImGui::TextWrapped("Press D to hide heightmap");
+		ImGui::TextWrapped("Press F to display track");
 		ImGui::End();
 		//used to display the whole voronoi diagram
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))

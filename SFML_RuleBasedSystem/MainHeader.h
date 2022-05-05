@@ -40,6 +40,7 @@ int displacement_;
 
 int radius_cutoff;
 int peaks_to_count_;
+bool do_testing_;
 
 //time code
 
