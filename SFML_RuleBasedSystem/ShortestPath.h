@@ -39,7 +39,7 @@ public:
 	void SegmentAngles();
 	void WriteToFile(int track_max, int track_min);
 
-	bool SetTesting(bool f) { do_testing_ = f; }
+	void SetTesting(bool f) { do_testing_ = f; }
 	bool GetTesting() { return do_testing_; }
 private:
 

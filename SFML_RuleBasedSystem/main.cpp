@@ -28,13 +28,14 @@ void Init(sf::RenderWindow &window)
 	SettingText();
 	ImGui::SFML::Init(window);
 
-
+	//defaults: 
 	resolution_ = 513;
 	sites_ = 25;
 	points_ = 2;
 	regen_ = false;
 	track_type_ = 1;  //1=p2p,0=loop
 	render_height_map_ = false;
+	n_render_height_map_ = false;
 	number_ = 35;
 	div_ = 2.0f;
 	height_ = 1.0f;
@@ -45,19 +46,20 @@ void Init(sf::RenderWindow &window)
 	full_random_ = true;
 	times_ = 1;
 	displacement_ = 100;
-
 	radius_cutoff = 120;
 	peaks_to_count_ = 1;
 	do_testing_ = false;
 }
 
-void ResetVars(VoronoiDiagram*v_d_p, ShortestPath*s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map)
+void ResetVars(VoronoiDiagram*v_d_p, ShortestPath*s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map)
 {
+	n_height_map.clear();
 	voronoi_d.clear();
 	height_map.clear();
 	v_d_p->SetFaile(false);
 	s_p_p->SetFailed(false);
 	height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+	n_height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 	voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 }
 void SetVars(VoronoiDiagram*v_d_p)
@@ -69,8 +71,23 @@ void SetVars(VoronoiDiagram*v_d_p)
 	v_d_p->SetNumberOfPoints(points_);
 	v_d_p->InitVector(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), v_d_p->GetNumberOfSites());
 }
+
+void Clear(VoronoiDiagram*v_d_p, sf::VertexArray& voronoi_d, sf::VertexArray& n_height_map, sf::VertexArray& distance_map)
+{
+	voronoi_d.clear();
+	n_height_map.clear();
+	distance_map.clear();
+	v_d_p->ResetVars();
+	SetVars(v_d_p);
+	v_d_p->SetGridSize(resolution_);
+	voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+	n_height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+	distance_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+}
+
 void CreateVoronoi(VoronoiDiagram* v_d_p, sf::VertexArray &height_map)
 {
+	//bool choosing what distribution to use
 	if (full_random_)
 	{
 		v_d_p->RandomPlaceSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
@@ -80,12 +97,9 @@ void CreateVoronoi(VoronoiDiagram* v_d_p, sf::VertexArray &height_map)
 		v_d_p->EqualDSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), times_, displacement_);
 	}
 
-	v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
-
-	
-		
+	//creates vd diagram, creates distance map, sets only edges in vertexarray, sets points of track. in that order.
+	v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());	
 	v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, div_);
-
 	v_d_p->SetEdges(v_d_p->GetGridSize());
 	v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
 
@@ -135,6 +149,22 @@ void CreateTrack(VoronoiDiagram* v_d_p, ShortestPath* s_p_p)
 	}
 }
 
+void Generate(VoronoiDiagram* v_d_p, ShortestPath* s_p_p, sf::VertexArray &voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map)
+{
+	do
+	{
+		if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
+		{
+			ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
+		}
+		CreateVoronoi(v_d_p, height_map);
+
+		CreateTrack(v_d_p, s_p_p);
+
+	} while (v_d_p->GetFailed() || s_p_p->GetFailed());
+	v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
+
+}
 
 
 int main()
@@ -159,20 +189,10 @@ int main()
 	//sets up the vertex array and the data structures for voronoi diagram
 	sf::VertexArray voronoi_d(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 	sf::VertexArray height_map(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-
+	sf::VertexArray n_height_map(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 		
-	do 
-	{
-		if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
-		{
-			ResetVars(v_d_p,s_p_p, voronoi_d, height_map);
-		}
-		CreateVoronoi(v_d_p, height_map);
-
-		CreateTrack(v_d_p, s_p_p);
-
-	} while (v_d_p->GetFailed() || s_p_p->GetFailed());
-	
+	//creates a track initially 
+	Generate(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
 	v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
 
 
@@ -219,38 +239,21 @@ int main()
 			ImGui::Text("lower = larger radius");
 			ImGui::Text("higher = smaller radius");
 			ImGui::SliderInt("Number of Peaks:", &peaks_to_count_, 1, 9);
+			ImGui::SliderInt("Octaves: ", &octaves_, 1, 8);
 			if (ImGui::Button("Change alpha"))
 			{
-				v_d_p->ChangeAlpha(height_map, v_d_p->GetGridSize(), alpha_);
+				v_d_p->ChangeAlpha(n_height_map, v_d_p->GetGridSize(), alpha_);
 			}
 			if (ImGui::Button("Create Noise Image"))
 			{
-				voronoi_d.clear();
-				SetVars(v_d_p);
-				voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-				v_d_p->SetGridSize(resolution_);
-				v_d_p->ResetVars();
-
-				height_map.clear();
-				v_d_p->SetGridSize(resolution_);
-
-				height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-				v_d_p->DrawNoise(height_map, v_d_p->GetGridSize(), layers_);
+				Clear(v_d_p, voronoi_d, n_height_map, height_map);
+				v_d_p->DrawNoise(n_height_map, v_d_p->GetGridSize(), layers_);
 			}
-			ImGui::SliderInt("Octaves: ", &octaves_, 1, 8);
+
 			if (ImGui::Button("Create FBM Image"))
 			{
-				voronoi_d.clear();
-				SetVars(v_d_p);
-				voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-				v_d_p->SetGridSize(resolution_);
-				v_d_p->ResetVars();
-
-				height_map.clear();
-				v_d_p->SetGridSize(resolution_);
-
-				height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-				v_d_p->DrawFBM(height_map, v_d_p->GetGridSize(), octaves_);
+				Clear(v_d_p, voronoi_d, n_height_map, height_map);
+				v_d_p->DrawFBM(n_height_map, v_d_p->GetGridSize(), octaves_);
 			}
 
 		}
@@ -272,7 +275,7 @@ int main()
 			{
 				if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
 				{
-					ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
+					ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
 				}
 				
 
@@ -282,44 +285,16 @@ int main()
 				v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, div_);
 				v_d_p->SetEdges(v_d_p->GetGridSize());
 				v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
-				the_clock::time_point startTime = the_clock::now();
 				CreateTrack(v_d_p, s_p_p);
-				the_clock::time_point endTime = the_clock::now();
-				auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-				std::cout << "		time(v d): " << time_taken; std::cout << std::endl;
-				std::cout << std::endl;
-				std::cout << std::endl;
-
 			} while (v_d_p->GetFailed() || s_p_p->GetFailed());
 			
 		}
 		if (ImGui::Button("Regenerate"))
 		{
-
-			SetVars(v_d_p);
-			voronoi_d.clear();
-			height_map.clear();
-			voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-			height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-
+			Clear(v_d_p, voronoi_d, n_height_map, height_map);
 
 			//places the sites
-			do
-			{
-				if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
-				{
-					ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
-				}
-
-				CreateVoronoi(v_d_p, height_map);
-				the_clock::time_point startTime = the_clock::now();
-				CreateTrack(v_d_p, s_p_p);
-				the_clock::time_point endTime = the_clock::now();
-				auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-				std::cout << "		time(v d): " << time_taken; std::cout << std::endl;
-				
-			} while (v_d_p->GetFailed() || s_p_p->GetFailed());
-
+			Generate(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
 		}
 	
 	
@@ -366,7 +341,7 @@ int main()
 					{
 						if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
 						{
-							ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
+							ResetVars(v_d_p, s_p_p, voronoi_d, height_map,n_height_map);
 						}
 
 						CreateVoronoi(v_d_p, height_map);
@@ -439,7 +414,7 @@ int main()
 							{
 								if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
 								{
-									ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
+									ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
 								}
 
 
@@ -505,8 +480,10 @@ int main()
 		v_d_p->SetTesting(do_testing_);
 
 		ImGui::TextWrapped("Press A to display diagram");
-		ImGui::TextWrapped("Press S to display heightmap");
-		ImGui::TextWrapped("Press D to hide heightmap");
+		ImGui::TextWrapped("Press S to display distance map");
+		ImGui::TextWrapped("Press D to hide distance map");
+		ImGui::TextWrapped("Press E to display hieghtmap");
+		ImGui::TextWrapped("Press R to hide heightmap");
 		ImGui::TextWrapped("Press F to display track");
 		ImGui::End();
 		//used to display the whole voronoi diagram
@@ -522,6 +499,14 @@ int main()
 		{
 			render_height_map_ = false;
 		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+		{
+			n_render_height_map_ = true;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+		{
+			n_render_height_map_ = false;
+		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
 		{
 			v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
@@ -530,6 +515,10 @@ int main()
 		if (render_height_map_)
 		{
 			window.draw(height_map);
+		}
+		if (n_render_height_map_)
+		{
+			window.draw(n_height_map);
 		}
 		window.draw(voronoi_d);
 		window.draw(title_name_);
