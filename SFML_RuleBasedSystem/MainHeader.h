@@ -21,6 +21,7 @@ bool regen_;		//bool that tells the program whether it need to be regenerated or
 int track_type_;	//track type
 bool render_height_map_;
 bool n_render_height_map_;
+bool f_render_height_map_;
 
 int number_;		//make this high
 

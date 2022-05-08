@@ -190,7 +190,8 @@ int main()
 	sf::VertexArray voronoi_d(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 	sf::VertexArray height_map(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 	sf::VertexArray n_height_map(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-		
+	sf::VertexArray final_map(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+
 	//creates a track initially 
 	Generate(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
 	v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
@@ -300,6 +301,8 @@ int main()
 	
 		if (ImGui::Button("Write to file"))
 		{
+			final_map.resize(v_d_p->GetGridSize() * v_d_p->GetGridSize());
+			v_d_p->CreateFinalHM(v_d_p->GetGridSize(), final_map, layers_);
 			v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
 			s_p_p->WriteToFile(v_d_p->GetTrackMax(),v_d_p->GetTrackMin());
 		}
@@ -484,7 +487,15 @@ int main()
 		ImGui::TextWrapped("Press D to hide distance map");
 		ImGui::TextWrapped("Press E to display hieghtmap");
 		ImGui::TextWrapped("Press R to hide heightmap");
+		ImGui::TextWrapped("Press Z to final hieghtmap");
+		ImGui::TextWrapped("Press X to final heightmap");
 		ImGui::TextWrapped("Press F to display track");
+
+		if (ImGui::CollapsingHeader("How-to/Guide"))
+		{
+
+		}
+
 		ImGui::End();
 		//used to display the whole voronoi diagram
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
@@ -511,6 +522,14 @@ int main()
 		{
 			v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
 		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+		{
+			f_render_height_map_ = true;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
+		{
+			f_render_height_map_ = false;
+		}
 		window.clear();
 		if (render_height_map_)
 		{
@@ -519,6 +538,10 @@ int main()
 		if (n_render_height_map_)
 		{
 			window.draw(n_height_map);
+		}
+		if (f_render_height_map_)
+		{
+			window.draw(final_map);
 		}
 		window.draw(voronoi_d);
 		window.draw(title_name_);

@@ -62,7 +62,10 @@ public:
 
 	void ChangeAlpha(sf::VertexArray& vertexarray, int grid_size, int alpha_);
 
+	void CreateFinalHM(int grid_size, sf::VertexArray& vertexarray, int layers_);
 	void WriteToFile(int grid_size, sf::VertexArray& vertexarray, int layers_);
+
+
 
 	void HighPointFunc(int grid_size, int radius_cutoff_,int layers_, int index_v);
 	void LoopPart(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place);
