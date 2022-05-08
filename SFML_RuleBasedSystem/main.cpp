@@ -320,6 +320,25 @@ int main()
 		}
 		ImGui::Text("\n");
 		ImGui::Text("\n");
+
+		if (ImGui::CollapsingHeader("Keyboard Controls"))
+		{
+			ImGui::TextWrapped("Press A to display diagram");
+			ImGui::TextWrapped("Press S to display distance map");
+			ImGui::TextWrapped("Press D to hide distance map");
+			ImGui::TextWrapped("Press E to display hieghtmap");
+			ImGui::TextWrapped("Press R to hide heightmap");
+			ImGui::TextWrapped("Press Z to final hieghtmap");
+			ImGui::TextWrapped("Press X to final heightmap");
+			ImGui::TextWrapped("Press F to display track");
+		}
+		if (ImGui::CollapsingHeader("How-to/Guide"))
+		{
+			ImGui::TextWrapped("Set the factors before generation and then select 'regenerate'");
+			ImGui::TextWrapped("If want to use displacement, select resolution as 513 and sites as either 25 or 81 otherwise will crash.");
+			ImGui::TextWrapped("To use noise method select factors like before and generate noise image first, selecting and changing alpha too. Then select 'generate (noise method)'");
+			ImGui::TextWrapped("Please Ignore 'Testing Options'");
+		}
 		if (ImGui::CollapsingHeader("Testing Options (runs multi times)"))
 		{
 			if (ImGui::Button("25"))
@@ -344,7 +363,7 @@ int main()
 					{
 						if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
 						{
-							ResetVars(v_d_p, s_p_p, voronoi_d, height_map,n_height_map);
+							ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
 						}
 
 						CreateVoronoi(v_d_p, height_map);
@@ -481,20 +500,6 @@ int main()
 		ImGui::Checkbox("Perform Testing?", &do_testing_);
 		s_p_p->SetTesting(do_testing_);
 		v_d_p->SetTesting(do_testing_);
-
-		ImGui::TextWrapped("Press A to display diagram");
-		ImGui::TextWrapped("Press S to display distance map");
-		ImGui::TextWrapped("Press D to hide distance map");
-		ImGui::TextWrapped("Press E to display hieghtmap");
-		ImGui::TextWrapped("Press R to hide heightmap");
-		ImGui::TextWrapped("Press Z to final hieghtmap");
-		ImGui::TextWrapped("Press X to final heightmap");
-		ImGui::TextWrapped("Press F to display track");
-
-		if (ImGui::CollapsingHeader("How-to/Guide"))
-		{
-
-		}
 
 		ImGui::End();
 		//used to display the whole voronoi diagram
