@@ -297,7 +297,10 @@ int main()
 			//places the sites
 			Generate(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
 		}
-	
+		if (ImGui::Button("Create Final Heightmap"))
+		{
+			v_d_p->CreateFinalHM(v_d_p->GetGridSize(), final_map, layers_);
+		}
 	
 		if (ImGui::Button("Write to file"))
 		{
