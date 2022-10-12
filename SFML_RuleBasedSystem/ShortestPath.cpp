@@ -52,6 +52,7 @@ void ShortestPath::Initgrid(int grid_size, int* grid, int num_points)
 	first_position.first = 0;
 	first_position.second = 0;
 	line_positions.clear();
+	control_points.clear();
 	angles_.clear();
 	
 		for (int i = 0; i < grid_size; i++)
@@ -373,6 +374,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 	{
 		first_position.first = x_holder;
 		first_position.second = y_holder;
+		control_points.emplace_back(first_position.first, first_position.second);
 	}
 	while (!found_start && !end)
 	{
@@ -391,6 +393,9 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 					south_site = old_num[((y_holder + 1) * grid_size) + (x_holder)];
 					south_e_site = old_num[((y_holder + 1) * grid_size) + (x_holder + 1)];
 					south_w_site = old_num[((y_holder + 1) * grid_size) + (x_holder - 1)];
+
+					int n =grid[((y_holder - 1) * grid_size) + (x_holder)];
+
 
 					old_occurances.push_back(north_site);
 					old_occurances.push_back(north_e_site);
@@ -492,7 +497,8 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 			if (do_testing_)
 			{
 
-
+				//this finds the sites in a 9x9 position from the current point
+				north_site = old_num[((y_holder - 1)* grid_size) + (x_holder)];
 				north_e_site = old_num[((y_holder - 1) * grid_size) + (x_holder + 1)];
 				north_w_site = old_num[((y_holder - 1) * grid_size) + (x_holder - 1)];
 				west_site = old_num[(y_holder * grid_size) + (x_holder - 1)];
@@ -501,6 +507,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				south_e_site = old_num[((y_holder + 1) * grid_size) + (x_holder + 1)];
 				south_w_site = old_num[((y_holder + 1) * grid_size) + (x_holder - 1)];
 
+				//stores them in an array
 				occurances.push_back(north_site);
 				occurances.push_back(north_e_site);
 				occurances.push_back(north_w_site);
@@ -510,7 +517,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				occurances.push_back(south_e_site);
 				occurances.push_back(south_w_site);
 
-
+				
 
 				//this removes all numbers that arent site numbers - eg possible tracks or start/end positions
 				old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 0), old_occurances.end());
@@ -534,7 +541,10 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				std::sort(old_occurances.begin(), old_occurances.end());
 				unique_count_old_occuarances = std::unique(old_occurances.begin(), old_occurances.end()) - old_occurances.begin();
 
-				//if all of them are == to 2 then check for corner - could this not just be if ==2?
+		
+
+
+				//if all of them are == to 2 then check for corner 
 				if (unique_count_occuarances == 2 && unique_count_old_occuarances == 2)
 				{
 					//find the min and max values to see if there is a difference in either one which signals a change in the sites bordering the location
@@ -549,6 +559,8 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 						segment_lengths_.push_back(DistanceSqrt(first_position.first, first_position.second, x_holder, y_holder));
 						line_positions.emplace_back(first_position.first, first_position.second);
 						line_positions.emplace_back(x_holder, y_holder);
+						control_points.emplace_back(x_holder, y_holder);
+						//std::cout << " x "<< line_positions.at(line_positions.size() - 1).first<< " y "<< line_positions.at(line_positions.size()-1).second<<"\n";
 						first_position.first = x_holder;
 						first_position.second = y_holder;
 
@@ -577,11 +589,19 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				segment_lengths_.push_back(DistanceSqrt(x_holder, y_holder, first_position.first, first_position.second));			//finds the length of the final segment 
 				line_positions.emplace_back(first_position.first, first_position.second);
 				line_positions.emplace_back(x_holder, y_holder);
+				control_points.emplace_back(x_holder, y_holder);
 
 				number_of_segments = segment_lengths_.size();
 			}
 			found_start = true;
 			end = true;
+		}
+	}
+	if (do_testing_)
+	{
+		for (int i=0;i< control_points.size();i++)
+		{
+			std::cout << " x " << control_points.at(i).first << " y " << control_points.at(i).second << "\n";
 		}
 	}
 }
