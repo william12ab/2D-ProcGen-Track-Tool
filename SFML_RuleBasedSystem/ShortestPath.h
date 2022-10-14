@@ -30,17 +30,22 @@ public:
 	int GetTotalDistance() { return total_track_distance; }
 	int GetNumberOfTurns() { return number_of_turns; }
 	int GetNumberOfSegments() { return number_of_segments; }
-
-	//failled and restarting
-	void SetFailed(bool f) { failed_ = f; }
 	bool GetFailed() { return failed_; }
+	bool GetTesting() { return do_testing_; }
+
+	std::vector<std::pair<int, int>> GetControlPoints() { return control_points; }
+	
+	//Setters
+	void SetFailed(bool f) { failed_ = f; }
+	void SetTesting(bool f) { do_testing_ = f; }
+
+
 	int DistanceSqrt(int x, int y, int x2, int y2);
 
 	void SegmentAngles();
 	void WriteToFile(int track_max, int track_min);
-
-	void SetTesting(bool f) { do_testing_ = f; }
-	bool GetTesting() { return do_testing_; }
+	
+	
 private:
 
 

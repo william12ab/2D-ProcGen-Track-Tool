@@ -3,10 +3,11 @@
 #include "ShortestPath.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
-
+#include "DeCastelJau.h"
 
 VoronoiDiagram Voronoi_Diagram;
 ShortestPath shortest_path_;
+DeCastelJau decastel_jau_obj;
 
 sf::Font font;
 

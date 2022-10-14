@@ -342,6 +342,14 @@ int main()
 			ImGui::TextWrapped("To use noise method select factors like before and generate noise image first, selecting and changing alpha too. Then select 'generate (noise method)'");
 			ImGui::TextWrapped("Please Ignore 'Testing Options'");
 		}
+		if (ImGui::CollapsingHeader("Curves"))
+		{
+			if (ImGui::Button("DeCastelJau"))
+			{
+				decastel_jau_obj.CreateCurve(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), v_d_p->GetGrid());
+			}
+			
+		}
 		if (ImGui::CollapsingHeader("Testing Options (runs multi times)"))
 		{
 			if (ImGui::Button("25"))
