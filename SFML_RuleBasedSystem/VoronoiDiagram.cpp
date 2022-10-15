@@ -569,6 +569,27 @@ void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int gr
 
 
 }
+void VoronoiDiagram::DrawCurve(sf::VertexArray& vertexarray, int grid_size, int num_sites)
+{
+	for (int i = 0; i < grid_size; i++)
+	{
+		for (int j = 0; j < grid_size; j++)
+		{
+			switch (grid_v_1[(i * grid_size) + j])
+			{
+			case -5:
+				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+				vertexarray[i * grid_size + j].color = sf::Color::White;
+				break;
+			default:
+				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+				vertexarray[i * grid_size + j].color = sf::Color{ 0,0,0,0 };
+				break;
+			}
+		}
+	}
+}
+
 
 void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size, int num_sites)
 {

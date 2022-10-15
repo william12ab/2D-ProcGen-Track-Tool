@@ -49,6 +49,8 @@ void Init(sf::RenderWindow &window)
 	radius_cutoff = 120;
 	peaks_to_count_ = 1;
 	do_testing_ = false;
+	step_curve=0.01;
+
 }
 
 void ResetVars(VoronoiDiagram*v_d_p, ShortestPath*s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map)
@@ -183,6 +185,7 @@ int main()
 
 	VoronoiDiagram* v_d_p = new VoronoiDiagram();
 	ShortestPath* s_p_p = new ShortestPath();
+	DeCastelJau* d_c_j = new DeCastelJau();
 
 	//track initialisation
 	SetVars(v_d_p);
@@ -346,9 +349,11 @@ int main()
 		{
 			if (ImGui::Button("DeCastelJau"))
 			{
-				decastel_jau_obj.CreateCurve(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), v_d_p->GetGrid());
+				d_c_j->CreateCurve(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), v_d_p->GetGrid());
+				v_d_p->DrawCurve(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
 			}
-			
+			ImGui::SliderFloat("Definition of Curve:", &step_curve, 0, 1);
+			d_c_j->SetStepSize(step_curve);
 		}
 		if (ImGui::CollapsingHeader("Testing Options (runs multi times)"))
 		{

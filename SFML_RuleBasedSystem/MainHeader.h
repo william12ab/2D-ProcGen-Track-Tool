@@ -44,6 +44,8 @@ int radius_cutoff;
 int peaks_to_count_;
 bool do_testing_;
 
+
+float step_curve;
 //time code
 
 //the_clock::time_point startTime = the_clock::now();

@@ -52,7 +52,7 @@ public:
 	void SetF(float f) { pFrequency = f; }
 	void SetH(float h) { pHeightRange = h; }
 
-
+	void DrawCurve(sf::VertexArray& vertexarray, int grid_size, int num_sites);
 	void DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size, int num_sites);
 	void DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
 
