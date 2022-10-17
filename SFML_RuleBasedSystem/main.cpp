@@ -349,6 +349,8 @@ int main()
 		{
 			if (ImGui::Button("DeCastelJau"))
 			{
+				s_p_p->OrderControlPoints();
+
 				d_c_j->CreateCurve(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), v_d_p->GetGrid());
 				v_d_p->DrawCurve(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
 			}

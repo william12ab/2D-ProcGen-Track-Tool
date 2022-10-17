@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <SFML/Graphics.hpp>
+#include <utility>
 
 class ShortestPath
 {
@@ -45,6 +46,8 @@ public:
 	void SegmentAngles();
 	void WriteToFile(int track_max, int track_min);
 	
+
+	void OrderControlPoints();
 	
 private:
 
@@ -84,6 +87,7 @@ private:
 
 	std::vector<std::pair<int, int>> line_positions; //used
 	std::vector<std::pair<int, int>> control_points;		//control points used
+
 
 	int number = 1;
 	std::pair<int, int> start_p;

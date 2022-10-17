@@ -1,5 +1,6 @@
 #include "ShortestPath.h"
 #include <algorithm>
+#include <unordered_set>
 
 ShortestPath::ShortestPath()
 {
@@ -368,13 +369,21 @@ int ShortestPath::DistanceSqrt(int x, int y, int x2, int y2)
 //from phase one you use the x and y holder vars and count holder and end
 void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, int y_holder, int count_holder, int end_n)
 {
+	std::vector<std::pair<int,int>> temp_vec_c_p;
+	
+
+
 	bool found_start = false;
 
 	if (do_testing_)
 	{
 		first_position.first = x_holder;
 		first_position.second = y_holder;
-		control_points.emplace_back(first_position.first, first_position.second);
+
+		//control points for curves
+		//control_points.emplace_back(first_position.first, first_position.second);
+		temp_vec_c_p.emplace_back(first_position.first, first_position.second);
+		//
 	}
 	while (!found_start && !end)
 	{
@@ -559,8 +568,10 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 						segment_lengths_.push_back(DistanceSqrt(first_position.first, first_position.second, x_holder, y_holder));
 						line_positions.emplace_back(first_position.first, first_position.second);
 						line_positions.emplace_back(x_holder, y_holder);
-						control_points.emplace_back(x_holder, y_holder);
-						//std::cout << " x "<< line_positions.at(line_positions.size() - 1).first<< " y "<< line_positions.at(line_positions.size()-1).second<<"\n";
+						//control points for curves
+						//control_points.emplace_back(x_holder, y_holder);
+						temp_vec_c_p.emplace_back(x_holder, y_holder);
+						//
 						first_position.first = x_holder;
 						first_position.second = y_holder;
 
@@ -589,21 +600,59 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				segment_lengths_.push_back(DistanceSqrt(x_holder, y_holder, first_position.first, first_position.second));			//finds the length of the final segment 
 				line_positions.emplace_back(first_position.first, first_position.second);
 				line_positions.emplace_back(x_holder, y_holder);
-				control_points.emplace_back(x_holder, y_holder);
-
+				//control_points.emplace_back(x_holder, y_holder);
+				temp_vec_c_p.emplace_back(x_holder, y_holder);
 				number_of_segments = segment_lengths_.size();
 			}
 			found_start = true;
 			end = true;
 		}
 	}
-	if (do_testing_)
+
+	std::reverse(temp_vec_c_p.begin(),temp_vec_c_p.end());
+	for (int i = 0; i < temp_vec_c_p.size(); i++)
 	{
-		for (int i=0;i< control_points.size();i++)
-		{
-			std::cout << " x " << control_points.at(i).first << " y " << control_points.at(i).second << "\n";
-		}
+		control_points.emplace_back(temp_vec_c_p[i]);
 	}
+
+	int gggg = 1;
+}
+
+
+//https://www.techiedelight.com/use-pair-key-std-unordered_set-cpp/
+struct pair_hash
+{
+	template <class T1, class T2>
+	std::size_t operator () (std::pair<T1, T2> const& pair) const
+	{
+		std::size_t h1 = std::hash<T1>()(pair.first);
+		std::size_t h2 = std::hash<T2>()(pair.second);
+
+		return h1 ^ h2;
+	}
+};
+
+void ShortestPath::OrderControlPoints()
+{
+	//unsure if this is needed tbh
+
+
+	//removes the last item in(which is a duplicate)
+	//control_points.pop_back();
+
+	////converts to a unordered set, removes duplicates and sorts. this is the fastest way according to some rando: https://stackoverflow.com/questions/1041620/whats-the-most-efficient-way-to-erase-duplicates-and-sort-a-vector
+	//std::unordered_set<std::pair<int, int>, pair_hash> set__;
+	//for (std::pair<int,int> i : control_points)
+	//	set__.insert(i);
+	//control_points.assign(set__.begin(), set__.end());
+	////sort(control_points.begin(), control_points.end());
+
+
+	for (int i = 0; i < control_points.size(); i++)
+	{
+		std::cout << " x " << control_points.at(i).first << " y " << control_points.at(i).second << "\n";
+	}
+	
 }
 
 void ShortestPath::SegmentAngles()

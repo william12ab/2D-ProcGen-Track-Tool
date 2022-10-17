@@ -591,6 +591,7 @@ void VoronoiDiagram::DrawCurve(sf::VertexArray& vertexarray, int grid_size, int 
 }
 
 
+
 void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size, int num_sites)
 {
 

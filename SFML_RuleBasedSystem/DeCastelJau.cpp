@@ -20,8 +20,8 @@ void DeCastelJau::CreateCurve(std::vector<std::pair<int, int>> control_points, i
 	std::vector<std::vector<float>> b_x;											//control point(s) x
 	std::vector<std::vector<float>> b_y;											//control point(s) y
 
-	b_x.resize(1);
-	b_y.resize(1);
+	b_x.resize(control_point_size);
+	b_y.resize(control_point_size);
 
 
 	for (int i = 0; i < control_point_size; i++)
