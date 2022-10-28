@@ -2,6 +2,7 @@
 #include <iostream>
 #include <ppl.h>
 
+
 using namespace concurrency;
 
 #include <SFML/Graphics.hpp>
@@ -484,7 +485,7 @@ void VoronoiDiagram::WriteToFile(int grid_size, sf::VertexArray& vertexarray, in
 				sf::Uint8 c = int(heightmap_[i * grid_size + j]);					//the voronoidiagram colour
 				sf::Uint8 co = (noise_heightmap_[i * grid_size + j]/ layers_);					//noise colour
 				sf::Uint8 a = alpha_channel_[i * grid_size + j];					//alpha colour value of noise
-
+			
 
 				int i_alpha_two = alpha_channel_[i * grid_size + j];				//int version of alpha
 				float i_alpha_percent = (float)i_alpha_two / 255.0f;				//alpha as value between 0.0 to 1.0
@@ -528,7 +529,7 @@ void VoronoiDiagram::WriteToFile(int grid_size, sf::VertexArray& vertexarray, in
 
 				sf::Uint8 final_c = f_c;
 				sf::Uint8 final_a = f_a;
-
+				
 
 				//setting the pixels of the output images
 				voronoi_output.setPixel(j, i, sf::Color{ c , c , c });
@@ -544,6 +545,7 @@ void VoronoiDiagram::WriteToFile(int grid_size, sf::VertexArray& vertexarray, in
 	voronoi_output.saveToFile("voronoi_layer.png");
 	final_i.saveToFile("final.png");
 	track_output.saveToFile("track_image.png");
+	
 }
 
 void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size)
@@ -590,7 +592,107 @@ void VoronoiDiagram::DrawCurve(sf::VertexArray& vertexarray, int grid_size, int 
 	}
 }
 
+void VoronoiDiagram::ResizeImage(int grid_size,float scale)
+{
+	int new_size = grid_size * scale;
+	
+	sf::Image image;
+	image.loadFromFile("track_image.png");
+	sf::Image scaled_image;
+	scaled_image.create(new_size, new_size);
+	
 
+	//for (int i = 0; i < (grid_size); i++)
+	//{
+	//	for (int j = 0; j < (grid_size); j++)
+	//	{
+	//		sf::Color c= image.getPixel(j, i);
+	//		
+	//		int x_dash = j * new_size / grid_size;
+	//		int y_dash = i * new_size / grid_size;
+	//		scaled_image.setPixel(x_dash, y_dash, sf::Color{ c});
+	//	}
+	//}
+
+	sf::Color p, q;
+	sf::Color new_color;
+	int x, y, x2, y2;
+	int TgtWidth = new_size;
+	int TgtHeight = new_size;
+	for (y = 0; y < TgtHeight; y++) {
+		y2 = 2 * y;
+		for (x = 0; x < TgtWidth; x++) {
+			x2 = 2 * x;
+			p = AverageColour(image.getPixel(x2, y2), image.getPixel(x2 + 1, y2));
+			q = AverageColour(image.getPixel(x2, y2+1), image.getPixel(x2 + 1, y2 + 1));
+			new_color= AverageColour(p, q);
+			scaled_image.setPixel(x, y, new_color);
+		} /* for */
+	}
+	scaled_image.saveToFile("test.png");
+
+}
+
+void VoronoiDiagram::UpScaleImage(int grid_size, float scale)
+{
+	int new_size = grid_size * 2;
+	sf::Image image;
+	image.loadFromFile("track_image.png");
+	sf::Image scaled_image;
+	sf::Image up_image;
+	scaled_image.create(new_size, new_size);
+
+	for (int i = 0; i < (grid_size); i++)											//y
+	{
+		for (int j = 0; j < (grid_size); j++)										//x
+		{
+			sf::Color c= image.getPixel(j, i);		//x,y
+			int x_dash = j * new_size / grid_size;
+			int y_dash = i * new_size / grid_size;
+			scaled_image.setPixel(x_dash, y_dash, sf::Color{ c});
+		}
+	}
+	//coluns
+	for (int i = 0; i < (new_size); i++)											//y
+	{
+		for (int j = 0; j < (new_size-1); j+=2)
+		{
+			sf::Color c = scaled_image.getPixel(j, i);		//x,y
+			for (int g = 0; g < 2; g++)
+			{
+				scaled_image.setPixel(j+g, i, c);
+			}
+		}
+	}
+	//rows
+	int j = 0;
+	for (int i = 0; i < (new_size-1); i+=2)											//y
+	{
+		for (j = 0; j < (new_size); j++)
+		{
+			sf::Color c = scaled_image.getPixel(j, i);		//x,y
+
+			for (int g = 0; g < 2; g++)
+			{
+				scaled_image.setPixel(j, i+g, c);
+			}
+		}
+	}
+
+	scaled_image.saveToFile("test.png");
+
+}
+
+
+
+sf::Color VoronoiDiagram::AverageColour(sf::Color a, sf::Color b)
+{
+	sf::Color avr;
+	avr.r = ((a.r + b.r) / (sf::Uint8)2);
+	avr.g =avr.r;
+	avr.b = avr.r;
+	return avr ;
+}
 
 void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size, int num_sites)
 {

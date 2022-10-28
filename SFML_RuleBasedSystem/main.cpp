@@ -197,7 +197,7 @@ int main()
 
 	//creates a track initially 
 	Generate(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
-	v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
+	//v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
 
 
 
@@ -347,6 +347,15 @@ int main()
 		}
 		if (ImGui::CollapsingHeader("Curves"))
 		{
+			ImGui::SliderFloat("Scale", &image_scale, 0, 1);
+			if (ImGui::Button("Resize test"))
+			{
+				v_d_p->ResizeImage(v_d_p->GetGridSize(),image_scale);
+			}
+			if (ImGui::Button("Resize test2 "))
+			{
+				v_d_p->UpScaleImage(v_d_p->GetGridSize(), image_scale);
+			}
 			if (ImGui::Button("DeCastelJau"))
 			{
 				s_p_p->OrderControlPoints();

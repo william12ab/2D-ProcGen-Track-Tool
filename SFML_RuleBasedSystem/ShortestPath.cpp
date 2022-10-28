@@ -609,13 +609,14 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 		}
 	}
 
+
+	//re orderers the vector to follow thje correct order - also fixes issue with multiple points.
 	std::reverse(temp_vec_c_p.begin(),temp_vec_c_p.end());
 	for (int i = 0; i < temp_vec_c_p.size(); i++)
 	{
 		control_points.emplace_back(temp_vec_c_p[i]);
 	}
 
-	int gggg = 1;
 }
 
 

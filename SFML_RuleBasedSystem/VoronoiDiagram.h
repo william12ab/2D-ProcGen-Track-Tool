@@ -55,6 +55,13 @@ public:
 	void DrawCurve(sf::VertexArray& vertexarray, int grid_size, int num_sites);
 	void DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size, int num_sites);
 	void DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
+	
+	//sampling functions
+	void ResizeImage(int grid_size, float scale);
+	void UpScaleImage(int grid_sizez, float scale);
+	sf::Color AverageColour(sf::Color a,sf::Color b);
+	//
+
 
 	void DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float div_a);
 	void DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_);

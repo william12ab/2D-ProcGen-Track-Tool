@@ -44,7 +44,7 @@ int radius_cutoff;
 int peaks_to_count_;
 bool do_testing_;
 
-
+float image_scale;
 float step_curve;
 //time code
 
