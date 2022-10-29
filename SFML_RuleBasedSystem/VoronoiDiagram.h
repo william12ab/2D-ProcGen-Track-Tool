@@ -59,6 +59,9 @@ public:
 	//sampling functions
 	void ResizeImage(int grid_size, float scale);
 	void UpScaleImage(int grid_sizez, float scale);
+
+	void UpScaleImagetwo(int grid_sizez, sf::VertexArray& vertexarray,float scale);
+
 	sf::Color AverageColour(sf::Color a,sf::Color b);
 	//
 
@@ -144,5 +147,9 @@ private:
 	
 
 	bool do_testing_;
+
+
+
+
 };
 

@@ -8,7 +8,9 @@ using namespace concurrency;
 #include <SFML/Graphics.hpp>
 #include <random>
 
-
+using std::chrono::duration_cast;
+using std::chrono::milliseconds;
+using the_clock = std::chrono::steady_clock;
 VoronoiDiagram::VoronoiDiagram()
 {
 	type = 1;
@@ -410,7 +412,7 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 
 						vertextarray[i * grid_size + j].position = sf::Vector2f(j, i);
 						vertextarray[i * grid_size + j].color = sf::Color{ c , c , c };
-					}
+			}
 		});
 
 
@@ -600,19 +602,6 @@ void VoronoiDiagram::ResizeImage(int grid_size,float scale)
 	image.loadFromFile("track_image.png");
 	sf::Image scaled_image;
 	scaled_image.create(new_size, new_size);
-	
-
-	//for (int i = 0; i < (grid_size); i++)
-	//{
-	//	for (int j = 0; j < (grid_size); j++)
-	//	{
-	//		sf::Color c= image.getPixel(j, i);
-	//		
-	//		int x_dash = j * new_size / grid_size;
-	//		int y_dash = i * new_size / grid_size;
-	//		scaled_image.setPixel(x_dash, y_dash, sf::Color{ c});
-	//	}
-	//}
 
 	sf::Color p, q;
 	sf::Color new_color;
@@ -632,54 +621,114 @@ void VoronoiDiagram::ResizeImage(int grid_size,float scale)
 	scaled_image.saveToFile("test.png");
 
 }
+//this one is better
+void VoronoiDiagram::UpScaleImagetwo(int grid_sizez, sf::VertexArray& vertexarray,float scale)
+{
+
+	int new_size = grid_sizez * scale;
+
+	//Creates the new image
+	sf::Image scaled_image;
+	scaled_image.create(new_size, new_size);
+	
+	parallel_for(0, grid_sizez, [&](int i)
+		{
+			for (int j = 0; j < (grid_sizez); j++)										//x
+			{
+				int x_dash = j * new_size / grid_sizez;
+				int y_dash = i * new_size / grid_sizez;
+				scaled_image.setPixel(x_dash, y_dash, vertexarray[i * grid_sizez + j].color);
+			}
+		});
+	//coloms - fill in the coloms with the existing coloms
+	parallel_for(0, new_size, [&](int i)
+	{
+		for (int j = 0; j < (new_size - 1); j += scale)
+		{
+			sf::Uint8 c = scaled_image.getPixel(j, i).r;		//x,y
+			for (int g = 0; g < scale; g++)
+			{
+				scaled_image.setPixel(j + g, i, { c,c,c,255 });
+			}
+		}
+	});
+
+	//rows - same for rows
+	int j = 0;
+	for (int i = 0; i < (new_size - 1); i += scale)											//y
+	{
+		parallel_for(0, new_size, [&](int j)
+			{
+				sf::Uint8 c = scaled_image.getPixel(j, i).r;		//x,y
+				for (int g = 0; g < scale; g++)
+				{
+					scaled_image.setPixel(j, i + g, { c,c,c,255 });
+				}
+			});
+	}
+	
+	
+	the_clock::time_point startTime = the_clock::now();
+	scaled_image.saveToFile("test.jpg");																//this takes the longest time complexituy wise.
+
+	the_clock::time_point endTime = the_clock::now();
+	auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+	std::cout << "time(v d): " << time_taken; std::cout << std::endl;
+	
+	
+}
 
 void VoronoiDiagram::UpScaleImage(int grid_size, float scale)
 {
-	int new_size = grid_size * 2;
+	
+	int new_size = grid_size * scale;
 	sf::Image image;
 	image.loadFromFile("track_image.png");
 	sf::Image scaled_image;
-	sf::Image up_image;
 	scaled_image.create(new_size, new_size);
 
 	for (int i = 0; i < (grid_size); i++)											//y
 	{
 		for (int j = 0; j < (grid_size); j++)										//x
 		{
-			sf::Color c= image.getPixel(j, i);		//x,y
+			sf::Uint8 c= image.getPixel(j, i).r;		//x,y
 			int x_dash = j * new_size / grid_size;
 			int y_dash = i * new_size / grid_size;
-			scaled_image.setPixel(x_dash, y_dash, sf::Color{ c});
+			scaled_image.setPixel(x_dash, y_dash, sf::Color{ c,c,c,255});
 		}
 	}
+
+
+	image.~Image();
+
 	//coluns
 	for (int i = 0; i < (new_size); i++)											//y
 	{
-		for (int j = 0; j < (new_size-1); j+=2)
+		for (int j = 0; j < (new_size-1); j+=scale)
 		{
-			sf::Color c = scaled_image.getPixel(j, i);		//x,y
-			for (int g = 0; g < 2; g++)
+			sf::Uint8 c = scaled_image.getPixel(j, i).r;		//x,y
+			for (int g = 0; g < scale; g++)
 			{
-				scaled_image.setPixel(j+g, i, c);
+				scaled_image.setPixel(j + g, i, sf::Color{ c,c,c,255 });
 			}
 		}
 	}
 	//rows
 	int j = 0;
-	for (int i = 0; i < (new_size-1); i+=2)											//y
+	for (int i = 0; i < (new_size-1); i+=scale)											//y
 	{
 		for (j = 0; j < (new_size); j++)
 		{
-			sf::Color c = scaled_image.getPixel(j, i);		//x,y
-
-			for (int g = 0; g < 2; g++)
+			sf::Uint8 c = scaled_image.getPixel(j, i).r;		//x,y
+			for (int g = 0; g < scale; g++)
 			{
-				scaled_image.setPixel(j, i+g, c);
+				scaled_image.setPixel(j, i+g, sf::Color{ c,c,c,255 });
 			}
 		}
 	}
-
 	scaled_image.saveToFile("test.png");
+
+
 
 }
 

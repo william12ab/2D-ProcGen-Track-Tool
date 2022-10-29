@@ -1,6 +1,6 @@
-total length: 204
+total length: 304
 number of turns: 0
 number of segments: 0
-shortest distance(euclidean distance): 233
+shortest distance(euclidean distance): 61
 
 

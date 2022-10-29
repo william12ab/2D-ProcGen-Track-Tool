@@ -296,7 +296,6 @@ int main()
 		if (ImGui::Button("Regenerate"))
 		{
 			Clear(v_d_p, voronoi_d, n_height_map, height_map);
-
 			//places the sites
 			Generate(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
 		}
@@ -348,13 +347,13 @@ int main()
 		if (ImGui::CollapsingHeader("Curves"))
 		{
 			ImGui::SliderFloat("Scale", &image_scale, 0, 1);
-			if (ImGui::Button("Resize test"))
+			if (ImGui::Button("Downscale"))
 			{
 				v_d_p->ResizeImage(v_d_p->GetGridSize(),image_scale);
 			}
-			if (ImGui::Button("Resize test2 "))
+			if (ImGui::Button("Upscale Image"))
 			{
-				v_d_p->UpScaleImage(v_d_p->GetGridSize(), image_scale);
+				v_d_p->UpScaleImagetwo(v_d_p->GetGridSize(), voronoi_d,image_scale);
 			}
 			if (ImGui::Button("DeCastelJau"))
 			{
@@ -576,6 +575,7 @@ int main()
 			window.draw(final_map);
 		}
 		window.draw(voronoi_d);
+		
 		window.draw(title_name_);
 		ImGui::SFML::Render(window);
 		window.display();
