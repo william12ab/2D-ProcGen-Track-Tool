@@ -759,15 +759,15 @@ void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_s
 				break;
 			case -1234:
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-				vertexarray[i * grid_size + j].color = sf::Color::Blue;
+				vertexarray[i * grid_size + j].color = sf::Color::White;
 				break;
 			case 0:
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-				vertexarray[i * grid_size + j].color = sf::Color::Red;
+				vertexarray[i * grid_size + j].color = sf::Color::White;
 				break;
 			case -3:
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-				vertexarray[i * grid_size + j].color = sf::Color::Blue;
+				vertexarray[i * grid_size + j].color = sf::Color::White;
 				break;
 			default:
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
