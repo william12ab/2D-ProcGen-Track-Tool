@@ -48,6 +48,7 @@ public:
 	
 
 	void OrderControlPoints();
+	void ScaleControlPoints(float scale);
 	
 private:
 

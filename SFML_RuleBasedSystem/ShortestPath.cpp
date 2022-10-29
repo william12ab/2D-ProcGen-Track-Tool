@@ -619,19 +619,15 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 
 }
 
-
-//https://www.techiedelight.com/use-pair-key-std-unordered_set-cpp/
-struct pair_hash
+void ShortestPath::ScaleControlPoints(float scale)
 {
-	template <class T1, class T2>
-	std::size_t operator () (std::pair<T1, T2> const& pair) const
+	for (int i = 0; i < control_points.size(); i++)
 	{
-		std::size_t h1 = std::hash<T1>()(pair.first);
-		std::size_t h2 = std::hash<T2>()(pair.second);
-
-		return h1 ^ h2;
+		control_points.at(i).first *= scale;
+		control_points.at(i).second*= scale;
 	}
-};
+}
+
 
 void ShortestPath::OrderControlPoints()
 {

@@ -355,11 +355,25 @@ int main()
 			{
 				v_d_p->UpScaleImagetwo(v_d_p->GetGridSize(), voronoi_d,image_scale);
 			}
+			if (ImGui::Button("Upscale Array"))
+			{
+				v_d_p->UpScaleVertexArray(v_d_p->GetGridSize(), voronoi_d, image_scale);
+				resolution_ = resolution_ * image_scale;
+				v_d_p->SetGridSize(resolution_);
+
+			}
+			if (ImGui::Button("DeCastelJau with scaled"))
+			{
+				s_p_p->OrderControlPoints();
+				s_p_p->ScaleControlPoints(image_scale);
+				d_c_j->CreateCurve(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), v_d_p->GetGrid(), voronoi_d);
+				//v_d_p->DrawCurve(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
+			}
 			if (ImGui::Button("DeCastelJau"))
 			{
 				s_p_p->OrderControlPoints();
 
-				d_c_j->CreateCurve(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), v_d_p->GetGrid());
+				d_c_j->CreateCurve(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), v_d_p->GetGrid(), voronoi_d);
 				v_d_p->DrawCurve(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
 			}
 			ImGui::SliderFloat("Definition of Curve:", &step_curve, 0, 1);

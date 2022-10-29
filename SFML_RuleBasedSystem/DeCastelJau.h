@@ -1,12 +1,14 @@
 #pragma once
 #include <vector>
+#include <SFML/Graphics/VertexArray.hpp>
+
 class DeCastelJau
 {
 public:
 	DeCastelJau();
 	~DeCastelJau();
 
-	void CreateCurve(std::vector<std::pair<int,int>> control_points, int grid_size, int* grid);
+	void CreateCurve(std::vector<std::pair<int,int>> control_points, int grid_size, int* grid, sf::VertexArray &vertexarray);
 
 	//setters
 	void SetStepSize(float a_) {step_size = a_;}
