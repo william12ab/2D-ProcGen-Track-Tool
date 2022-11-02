@@ -367,14 +367,14 @@ int main()
 				s_p_p->OrderControlPoints();
 				s_p_p->ScaleControlPoints(image_scale);
 				d_c_j->CreateCurve(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), v_d_p->GetGrid(), voronoi_d);
-				//v_d_p->DrawCurve(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
+			//	v_d_p->DrawCurve(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
 			}
 			if (ImGui::Button("DeCastelJau"))
 			{
 				s_p_p->OrderControlPoints();
 
 				d_c_j->CreateCurve(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), v_d_p->GetGrid(), voronoi_d);
-				v_d_p->DrawCurve(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
+			//	v_d_p->DrawCurve(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
 			}
 			ImGui::SliderFloat("Definition of Curve:", &step_curve, 0, 1);
 			d_c_j->SetStepSize(step_curve);

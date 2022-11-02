@@ -73,6 +73,13 @@ void DeCastelJau::CreateCurve(std::vector<std::pair<int, int>> control_points, i
 		new_x.push_back(b_x[j_max][0]);
 		new_y.push_back(b_y[j_max][0]);
 	}
+	for (int i = 0; i < grid_size; i++)
+	{
+		for (int j = 0; j < grid_size; j++)
+		{
+			vertexarray[i * grid_size + j].color = sf::Color::Black;
+		}
+	}
 
 	for (int i = 0; i < new_x.size(); i++)
 	{
