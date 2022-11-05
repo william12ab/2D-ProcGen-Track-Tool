@@ -550,6 +550,20 @@ void VoronoiDiagram::WriteToFile(int grid_size, sf::VertexArray& vertexarray, in
 	
 }
 
+void VoronoiDiagram::UpScaleGrid(int grid_size, float scale)
+{
+
+	size_t new_size= grid_size*scale ;
+	int* new_arr= new int[new_size * new_size];
+
+	//memcpy(new_arr, grid_v_1, grid_size * sizeof(int));
+	std::copy(grid_v_1, grid_v_1+(grid_size_x*grid_size_x), new_arr+0);
+
+	grid_size= new_size;
+	delete[] grid_v_1;
+	grid_v_1 = new_arr;
+}
+
 void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size)
 {
 	for (int i = 0; i < grid_size; i++)
@@ -642,8 +656,8 @@ void VoronoiDiagram::UpScaleVertexArray(int grid_size, sf::VertexArray& vertexar
 		});
 
 
-	//parallel_for(0, new_size, [&](int i)
-	for(int i=0;i<new_size;i++)
+	parallel_for(0, new_size, [&](int i)
+	//for(int i=0;i<new_size;i++)
 		{
 			for (int j = 0; j < (new_size - 1); j += scale)
 			{
@@ -658,7 +672,7 @@ void VoronoiDiagram::UpScaleVertexArray(int grid_size, sf::VertexArray& vertexar
 					scale_array[(i * new_size) + (j+g)].color =  c;
 				}
 			}
-		}//);
+		});
 
 	//////rows - same for rows
 	
