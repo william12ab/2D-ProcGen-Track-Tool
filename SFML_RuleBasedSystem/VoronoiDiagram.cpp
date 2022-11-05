@@ -550,19 +550,7 @@ void VoronoiDiagram::WriteToFile(int grid_size, sf::VertexArray& vertexarray, in
 	
 }
 
-void VoronoiDiagram::UpScaleGrid(int grid_size, float scale)
-{
 
-	size_t new_size= grid_size*scale ;
-	int* new_arr= new int[new_size * new_size];
-
-	//memcpy(new_arr, grid_v_1, grid_size * sizeof(int));
-	std::copy(grid_v_1, grid_v_1+(grid_size_x*grid_size_x), new_arr+0);
-
-	grid_size= new_size;
-	delete[] grid_v_1;
-	grid_v_1 = new_arr;
-}
 
 void VoronoiDiagram::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size)
 {
@@ -608,6 +596,23 @@ void VoronoiDiagram::DrawCurve(sf::VertexArray& vertexarray, int grid_size, int 
 	}
 }
 
+void VoronoiDiagram::UpScaleGrid(int grid_size, float scale, sf::VertexArray& vertexarray)
+{
+	//size and dynamic array
+	size_t new_size = grid_size * scale;
+	int* new_arr = new int[new_size * new_size];
+
+	//resizing grid
+	std::copy(grid_v_1, grid_v_1 + (grid_size_x * grid_size_x), new_arr + 0);
+	grid_size = new_size;
+	delete[] grid_v_1;
+	grid_v_1 = new_arr;
+
+	//do grid
+	
+	
+}
+
 void VoronoiDiagram::ResizeImage(int grid_size,float scale)
 {
 	int new_size = grid_size * scale;
@@ -637,69 +642,129 @@ void VoronoiDiagram::ResizeImage(int grid_size,float scale)
 
 void VoronoiDiagram::UpScaleVertexArray(int grid_size, sf::VertexArray& vertexarray, float scale)
 {
+	//sf::VertexArray scale_array;
+	//scale_array.resize(new_size * new_size);
+	//resize part
+
 	int new_size = grid_size * scale;
-	sf::VertexArray scale_array;
-	scale_array.resize(new_size * new_size);
+	int* new_arr = new int[new_size * new_size];
 
-
-
+	//initial positions
 	parallel_for(0, grid_size, [&](int i)
 		{
 			for (int j = 0; j < (grid_size); j++)										//x
 			{
-				
+
 				int x_dash = j * new_size / grid_size;
 				int y_dash = i * new_size / grid_size;
-				scale_array[i * new_size + j].position =  sf::Vector2f(x_dash,y_dash);
-				scale_array[i * new_size + j].color= vertexarray[i * grid_size + j].color;
+				new_arr[x_dash * new_size + y_dash] = grid_v_1[i * grid_size + j];
+				
 			}
 		});
 
-
+	//coloums
 	parallel_for(0, new_size, [&](int i)
-	//for(int i=0;i<new_size;i++)
 		{
 			for (int j = 0; j < (new_size - 1); j += scale)
 			{
-				if (j>400)
+				if (j > 400)
 				{
 					int d = 2;
 				}
-				sf::Color c = vertexarray[i/(int)scale * grid_size + j/(int)scale].color;
+				int c = grid_v_1[i / (int)scale * grid_size + j / (int)scale];
 				for (int g = 0; g < scale; g++)
 				{
-					scale_array[(i * new_size) + (j+g)].position = sf::Vector2f(j + g, i);
-					scale_array[(i * new_size) + (j+g)].color =  c;
+					new_arr[(i * new_size) + (j + g)] = c;
 				}
 			}
 		});
 
 	//////rows - same for rows
-	
+
 	for (int i = 0; i < (new_size - 1); i += scale)											//y
 	{
 		parallel_for(0, new_size, [&](int j)
 			{
-				sf::Color c = vertexarray[i / scale * grid_size + j / scale].color;
+				int c = grid_v_1[i / (int)scale * grid_size + j / (int)scale];
 				for (int g = 0; g < scale; g++)
 				{
-					scale_array[(i+g) * new_size + j].position = sf::Vector2f(j, i + g);
-					scale_array[(i+g) * new_size + j ].color = c ;
+					
+					new_arr[(i + g) * new_size + j]= c;
 				}
 			});
 	}
-	vertexarray.clear();
-	vertexarray.resize(new_size * new_size);
-
 	
+	UpScaleGrid(grid_size, scale, vertexarray);
+
 	parallel_for(0, new_size, [&](int i)
 		{
 			for (int j = 0; j < (new_size); j++)										//x
 			{
-				vertexarray[i * new_size + j].position = scale_array[i * new_size + j].position;
-				vertexarray[i * new_size + j].color= scale_array[i * new_size + j].color;
+				grid_v_1[i * new_size + j] = new_arr[i * new_size + j];
+				
 			}
 		});
+
+
+
+
+	////initial positions
+	//parallel_for(0, grid_size, [&](int i)
+	//	{
+	//		for (int j = 0; j < (grid_size); j++)										//x
+	//		{
+	//			
+	//			int x_dash = j * new_size / grid_size;
+	//			int y_dash = i * new_size / grid_size;
+	//			scale_array[i * new_size + j].position =  sf::Vector2f(x_dash,y_dash);
+	//			scale_array[i * new_size + j].color= vertexarray[i * grid_size + j].color;
+	//		}
+	//	});
+
+	////coloums
+	//parallel_for(0, new_size, [&](int i)
+	//	{
+	//		for (int j = 0; j < (new_size - 1); j += scale)
+	//		{
+	//			if (j>400)
+	//			{
+	//				int d = 2;
+	//			}
+	//			sf::Color c = vertexarray[i/(int)scale * grid_size + j/(int)scale].color;
+	//			for (int g = 0; g < scale; g++)
+	//			{
+	//				scale_array[(i * new_size) + (j+g)].position = sf::Vector2f(j + g, i);
+	//				scale_array[(i * new_size) + (j+g)].color =  c;
+	//			}
+	//		}
+	//	});
+
+	////////rows - same for rows
+	//
+	//for (int i = 0; i < (new_size - 1); i += scale)											//y
+	//{
+	//	parallel_for(0, new_size, [&](int j)
+	//		{
+	//			sf::Color c = vertexarray[i / scale * grid_size + j / scale].color;
+	//			for (int g = 0; g < scale; g++)
+	//			{
+	//				scale_array[(i+g) * new_size + j].position = sf::Vector2f(j, i + g);
+	//				scale_array[(i+g) * new_size + j ].color = c ;
+	//			}
+	//		});
+	//}
+	//vertexarray.clear();
+	//vertexarray.resize(new_size * new_size);
+
+	//
+	//parallel_for(0, new_size, [&](int i)
+	//	{
+	//		for (int j = 0; j < (new_size); j++)										//x
+	//		{
+	//			vertexarray[i * new_size + j].position = scale_array[i * new_size + j].position;
+	//			vertexarray[i * new_size + j].color= scale_array[i * new_size + j].color;
+	//		}
+	//	});
 }
 
 
@@ -830,36 +895,37 @@ sf::Color VoronoiDiagram::AverageColour(sf::Color a, sf::Color b)
 void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size, int num_sites)
 {
 
-
-	for (int i = 0; i < grid_size; i++)
-	{
-		for (int j=0;j<grid_size;j++)
+	parallel_for(0, grid_size, [&](int i)
+		//{
+	//for (int i = 0; i < grid_size; i++)
 		{
-			switch (grid_v_1[(i * grid_size) + j])
+			for (int j = 0; j < grid_size; j++)
 			{
-			case -12303:
-				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-				vertexarray[i * grid_size + j].color = sf::Color::White;
-				break;
-			case -1234:
-				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-				vertexarray[i * grid_size + j].color = sf::Color::White;
-				break;
-			case 0:
-				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-				vertexarray[i * grid_size + j].color = sf::Color::White;
-				break;
-			case -3:
-				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-				vertexarray[i * grid_size + j].color = sf::Color::White;
-				break;
-			default:
-				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-				vertexarray[i * grid_size + j].color = sf::Color{ 0,0,0,0 };
-				break;
+				switch (grid_v_1[(i * grid_size) + j])
+				{
+				case -12303:
+					vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+					vertexarray[i * grid_size + j].color = sf::Color::White;
+					break;
+				case -1234:
+					vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+					vertexarray[i * grid_size + j].color = sf::Color::White;
+					break;
+				case 0:
+					vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+					vertexarray[i * grid_size + j].color = sf::Color::White;
+					break;
+				case -3:
+					vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+					vertexarray[i * grid_size + j].color = sf::Color::White;
+					break;
+				default:
+					vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+					vertexarray[i * grid_size + j].color = sf::Color{ 0,0,0,0 };
+					break;
+				}
 			}
-		}
-	}
+		});
 }
 
 void VoronoiDiagram::FindMax(int grid_size, int layers_)

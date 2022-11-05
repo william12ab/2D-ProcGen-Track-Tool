@@ -363,7 +363,8 @@ int main()
 			}
 			if (ImGui::Button("Test"))																//scales the "grid"/2darray structure - doing this means that the rest of the functions can be used. 
 			{
-				v_d_p->UpScaleGrid(v_d_p->GetGridSize(), image_scale);
+				v_d_p->UpScaleVertexArray(v_d_p->GetGridSize(), voronoi_d, image_scale);
+				//v_d_p->UpScaleGrid(v_d_p->GetGridSize(), image_scale,voronoi_d);
 				resolution_ = resolution_ * image_scale;
 				v_d_p->SetGridSize(resolution_);
 				voronoi_d.resize(resolution_* resolution_);
@@ -548,7 +549,11 @@ int main()
 		//used to display the whole voronoi diagram
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		{
+			the_clock::time_point startTime = the_clock::now();
 			v_d_p->DrawFullVoronoiDiagram(voronoi_d, v_d_p->GetGridSize());
+			the_clock::time_point endTime = the_clock::now();
+			auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+			std::cout << "time(A): " << time_taken; std::cout << std::endl;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		{
@@ -568,7 +573,11 @@ int main()
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
 		{
+			the_clock::time_point startTime = the_clock::now();
 			v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
+			the_clock::time_point endTime = the_clock::now();
+			auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+			std::cout << "time(A): " << time_taken; std::cout << std::endl;
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
 		{
