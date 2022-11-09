@@ -1,5 +1,11 @@
 #include "DeCastelJau.h"
 #include <iomanip>
+
+#include <ppl.h>
+
+
+using namespace concurrency;
+
 DeCastelJau::DeCastelJau()
 {
 	step_size = 0.01;
@@ -29,6 +35,7 @@ void DeCastelJau::CreateCurve(std::vector<std::pair<int, int>> control_points, i
 		b_x[0].push_back(control_points[i].first);
 		b_y[0].push_back(control_points[i].second);
 	}
+
 	for (int i = 1; i < control_point_size; i++)
 	{
 		for (int o = 0; o < control_point_size; o++)
@@ -58,16 +65,17 @@ void DeCastelJau::CreateCurve(std::vector<std::pair<int, int>> control_points, i
 	for (t_zero = 0; t_zero < 1; t_zero+= step_size)
 	{
 		count +=1;																		//un used?
-
-		for (int j = 1; j <= (j_max); j++)
-		{
-			for (int i = 0; i < (j_max + 1)-j; i++)
-			{
-				b_x[j][i] = (1 - t_zero) * b_x[j-1][i] + t_zero * b_x[j-1][i+1];
-				int a = b_x[j - 1][i];
-				b_y[j][i] = (1 - t_zero) * b_y[j-1][i] + t_zero * b_y[j-1][i + 1];
-			}
-		}
+		parallel_for(1, (j_max+1), [&](int j)
+			
+				//for (int j = 1; j <= (j_max); j++)
+				{
+					for (int i = 0; i < (j_max + 1) - j; i++)
+					{
+						b_x[j][i] = (1 - t_zero) * b_x[j - 1][i] + t_zero * b_x[j - 1][i + 1];
+						int a = b_x[j - 1][i];
+						b_y[j][i] = (1 - t_zero) * b_y[j - 1][i] + t_zero * b_y[j - 1][i + 1];
+					}
+				});
 		//set new points here
 		//
 		new_x.push_back(b_x[j_max][0]);

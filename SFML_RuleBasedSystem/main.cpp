@@ -351,29 +351,28 @@ int main()
 			{
 				v_d_p->ResizeImage(v_d_p->GetGridSize(),image_scale);								//need to first regenerate image, save image, then this button and it saves to output. "test.png"
 			}
-			if (ImGui::Button("Upscale Image"))
+			if (ImGui::Button("Upscale Image"))			//saves image
 			{
 				v_d_p->UpScaleImagetwo(v_d_p->GetGridSize(), voronoi_d,image_scale);				//need to regenerate image first, then this button and it saves to output. "test.jpg"
 			}
-			if (ImGui::Button("Upscale Array"))
+			if (ImGui::Button("Upscale Array"))			//displays image
 			{
-				v_d_p->UpScaleVertexArray(v_d_p->GetGridSize(), voronoi_d, image_scale);			//need to regenerate first, then this button and it will display the results, just scales the vertexarray not the grid.
+				v_d_p->UpScaleVertexArray(v_d_p->GetGridSize(), image_scale);//scales the "grid"/2darray structure - doing this means that the rest of the functions can be used. 
 				resolution_ = resolution_ * image_scale;
 				v_d_p->SetGridSize(resolution_);
+				voronoi_d.resize(resolution_* resolution_);
 			}
 			if (ImGui::Button("Test"))																//scales the "grid"/2darray structure - doing this means that the rest of the functions can be used. 
 			{
-				v_d_p->UpScaleVertexArray(v_d_p->GetGridSize(), voronoi_d, image_scale);
-				//v_d_p->UpScaleGrid(v_d_p->GetGridSize(), image_scale,voronoi_d);
+				v_d_p->UpScaleVertexArray(v_d_p->GetGridSize(), image_scale);
 				resolution_ = resolution_ * image_scale;
 				v_d_p->SetGridSize(resolution_);
 				voronoi_d.resize(resolution_* resolution_);
 			}		
-			if (ImGui::Button("DeCastelJau with scaled"))											//need to regenerate first, then upscale array, then this button and will display curve, need to select scale factor, and preform testing
+			if (ImGui::Button("Scale Control-Points"))											//need to regenerate first, then upscale array, then this button and will display curve, need to select scale factor, and preform testing
 			{
 				s_p_p->OrderControlPoints();
 				s_p_p->ScaleControlPoints(image_scale);
-				d_c_j->CreateCurve(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), v_d_p->GetGrid(), voronoi_d);
 			}
 			if (ImGui::Button("DeCastelJau"))
 			{

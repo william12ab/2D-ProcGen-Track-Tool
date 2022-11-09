@@ -596,7 +596,7 @@ void VoronoiDiagram::DrawCurve(sf::VertexArray& vertexarray, int grid_size, int 
 	}
 }
 
-void VoronoiDiagram::UpScaleGrid(int grid_size, float scale, sf::VertexArray& vertexarray)
+void VoronoiDiagram::UpScaleGrid(int grid_size, float scale)
 {
 	//size and dynamic array
 	size_t new_size = grid_size * scale;
@@ -640,10 +640,8 @@ void VoronoiDiagram::ResizeImage(int grid_size,float scale)
 	scaled_image.saveToFile("test.png");
 }
 
-void VoronoiDiagram::UpScaleVertexArray(int grid_size, sf::VertexArray& vertexarray, float scale)
+void VoronoiDiagram::UpScaleVertexArray(int grid_size, float scale)
 {
-	//sf::VertexArray scale_array;
-	//scale_array.resize(new_size * new_size);
 	//resize part
 
 	int new_size = grid_size * scale;
@@ -694,7 +692,8 @@ void VoronoiDiagram::UpScaleVertexArray(int grid_size, sf::VertexArray& vertexar
 			});
 	}
 	
-	UpScaleGrid(grid_size, scale, vertexarray);
+	//re sizing the grid
+	UpScaleGrid(grid_size, scale);
 
 	parallel_for(0, new_size, [&](int i)
 		{
@@ -704,67 +703,6 @@ void VoronoiDiagram::UpScaleVertexArray(int grid_size, sf::VertexArray& vertexar
 				
 			}
 		});
-
-
-
-
-	////initial positions
-	//parallel_for(0, grid_size, [&](int i)
-	//	{
-	//		for (int j = 0; j < (grid_size); j++)										//x
-	//		{
-	//			
-	//			int x_dash = j * new_size / grid_size;
-	//			int y_dash = i * new_size / grid_size;
-	//			scale_array[i * new_size + j].position =  sf::Vector2f(x_dash,y_dash);
-	//			scale_array[i * new_size + j].color= vertexarray[i * grid_size + j].color;
-	//		}
-	//	});
-
-	////coloums
-	//parallel_for(0, new_size, [&](int i)
-	//	{
-	//		for (int j = 0; j < (new_size - 1); j += scale)
-	//		{
-	//			if (j>400)
-	//			{
-	//				int d = 2;
-	//			}
-	//			sf::Color c = vertexarray[i/(int)scale * grid_size + j/(int)scale].color;
-	//			for (int g = 0; g < scale; g++)
-	//			{
-	//				scale_array[(i * new_size) + (j+g)].position = sf::Vector2f(j + g, i);
-	//				scale_array[(i * new_size) + (j+g)].color =  c;
-	//			}
-	//		}
-	//	});
-
-	////////rows - same for rows
-	//
-	//for (int i = 0; i < (new_size - 1); i += scale)											//y
-	//{
-	//	parallel_for(0, new_size, [&](int j)
-	//		{
-	//			sf::Color c = vertexarray[i / scale * grid_size + j / scale].color;
-	//			for (int g = 0; g < scale; g++)
-	//			{
-	//				scale_array[(i+g) * new_size + j].position = sf::Vector2f(j, i + g);
-	//				scale_array[(i+g) * new_size + j ].color = c ;
-	//			}
-	//		});
-	//}
-	//vertexarray.clear();
-	//vertexarray.resize(new_size * new_size);
-
-	//
-	//parallel_for(0, new_size, [&](int i)
-	//	{
-	//		for (int j = 0; j < (new_size); j++)										//x
-	//		{
-	//			vertexarray[i * new_size + j].position = scale_array[i * new_size + j].position;
-	//			vertexarray[i * new_size + j].color= scale_array[i * new_size + j].color;
-	//		}
-	//	});
 }
 
 
