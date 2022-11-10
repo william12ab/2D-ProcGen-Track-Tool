@@ -5,8 +5,8 @@
 #include "imgui/imgui-SFML.h"
 #include "DeCastelJau.h"
 #include "ImageProcessing.h"
-
-
+#include "TrackTools.h"
+#include "InputManager.h"
 
 sf::Font font;
 
@@ -22,6 +22,10 @@ int track_type_;	//track type
 bool render_height_map_;
 bool n_render_height_map_;
 bool f_render_height_map_;
+
+void SetRenderHeightMap(bool f) { render_height_map_ = f; }
+void SetRenderNoiseMap(bool f) { n_render_height_map_ = f; }
+void SetRenderFullMap(bool f) { f_render_height_map_ = f; }
 
 int number_;		//make this high
 

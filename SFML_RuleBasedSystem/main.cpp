@@ -6,6 +6,7 @@
 #include "MainHeader.h"
 #include <chrono>
 #include <random>
+#include "Input.h"
 
 using std::chrono::duration_cast;
 using std::chrono::milliseconds; 
@@ -53,125 +54,9 @@ void Init(sf::RenderWindow &window)
 
 }
 
-void ResetVars(VoronoiDiagram*v_d_p, ShortestPath*s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map)
-{
-	n_height_map.clear();
-	voronoi_d.clear();
-	height_map.clear();
-	v_d_p->SetFaile(false);
-	s_p_p->SetFailed(false);
-	height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-	n_height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-	voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-}
-void SetVars(VoronoiDiagram*v_d_p,ImageProcessing*i_p_p)
-{
-	v_d_p->~VoronoiDiagram();
-	v_d_p->SetType(track_type_);
-	v_d_p->SetGridSize(resolution_);
-	v_d_p->SetNumberOfSites(sites_);
-	v_d_p->SetNumberOfPoints(points_);
-	v_d_p->InitVector(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), v_d_p->GetNumberOfSites());
-	i_p_p->InitStructures(v_d_p->GetGridSize());
-}
-
-void Clear(VoronoiDiagram*v_d_p, sf::VertexArray& voronoi_d, sf::VertexArray& n_height_map, sf::VertexArray& distance_map,ImageProcessing*i_p_p)
-{
-	voronoi_d.clear();
-	n_height_map.clear();
-	distance_map.clear();
-	v_d_p->ResetVars();
-	SetVars(v_d_p, i_p_p);
-	v_d_p->SetGridSize(resolution_);
-	voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-	n_height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-	distance_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-}
-
-void CreateVoronoi(VoronoiDiagram* v_d_p, sf::VertexArray &height_map)
-{
-	//bool choosing what distribution to use
-	if (full_random_)
-	{
-		v_d_p->RandomPlaceSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
-	}
-	else
-	{
-		v_d_p->EqualDSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), times_, displacement_);
-	}
-
-	//creates vd diagram, creates distance map, sets only edges in vertexarray, sets points of track. in that order.
-	v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());	
-	v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, div_);
-	v_d_p->SetEdges(v_d_p->GetGridSize());
-	v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
-
-}
-void CreateTrack(VoronoiDiagram* v_d_p, ShortestPath* s_p_p)
-{
-	//init grid should be fine, no need to change.
-	s_p_p->Initgrid(v_d_p->GetGridSize(), v_d_p->GetGrid(), v_d_p->GetNumberOfPoints());
-	//pass in the start and end to both these functions
-	int start = -4;
-	s_p_p->PrintOutStartEnd(v_d_p->GetGridSize(), v_d_p->GetGrid());
-	//if type 2, then need to loop over number of points differently and check when the index is = 1 so that the starting point can be changed to the end
-	if (v_d_p->GetType() == 2)
-	{
-		for (int i = 0; i < (v_d_p->GetNumberOfPoints()); i++)
-		{
-			s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, s_p_p->GetFailed(), 0, v_d_p->GetGridSize());
-			s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
-			//changes start point first then the end point to start point, and second end point to 1st end point
-			//so p0=p-1, p1=0,p2=1
-			if (i == 1)
-			{
-				s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -1234, -5);
-			}
-			s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), 0, -1234);
-			s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
-			s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
-			s_p_p->CleanGrid(v_d_p->GetGridSize(), v_d_p->GetGrid());
-			//std::cout << "successful path\n";
-		}
-
-	}
-	else
-	{
-		//the_clock::time_point startTime = the_clock::now();
-		for (int i = 0; i < (v_d_p->GetNumberOfPoints() - 1) && !s_p_p->GetFailed(); i++)
-		{
-			s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, s_p_p->GetFailed(), 0, v_d_p->GetGridSize());
-			s_p_p->PhaseTwo(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), s_p_p->GetCountHolder(), 0);
-			//changes start point first then the end point to start point, and second end point to 1st end point
-			//so p0=p-1, p1=0,p2=1
-			s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), 0, -1234);
-			s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
-			s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
-			s_p_p->CleanGrid(v_d_p->GetGridSize(), v_d_p->GetGrid());
-		}
-	}
-}
-
-void Generate(VoronoiDiagram* v_d_p, ShortestPath* s_p_p, sf::VertexArray &voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map)
-{
-	do
-	{
-		if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
-		{
-			ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
-		}
-		CreateVoronoi(v_d_p, height_map);
-
-		CreateTrack(v_d_p, s_p_p);
-
-	} while (v_d_p->GetFailed() || s_p_p->GetFailed());
-	v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
-
-}
-
-
 int main()
 {
+	Input input;
 	sf::Clock clock;
 	sf::Clock deltaClock;
 	// Seed the random number generator
@@ -180,25 +65,31 @@ int main()
 
 	// Create the window and UI bar on the right
 	sf::RenderWindow window(sf::VideoMode(1000,800), "2D Track Generator", sf::Style::Close);
-
-
 	Init(window);
 
+	//objs for main
 	VoronoiDiagram* v_d_p = new VoronoiDiagram();
 	ShortestPath* s_p_p = new ShortestPath();
 	DeCastelJau* d_c_j = new DeCastelJau();
 	ImageProcessing* i_p_p = new ImageProcessing();
+	TrackTools* t_t_p = new TrackTools();
+	InputManager input_manager(&input);
+	//
 
-	//track initialisation
-	SetVars(v_d_p, i_p_p);
+	//
+	t_t_p->SetVars(v_d_p, i_p_p, track_type_, resolution_, sites_, points_);
+	//
 	//sets up the vertex array and the data structures for voronoi diagram
 	sf::VertexArray voronoi_d(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 	sf::VertexArray height_map(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 	sf::VertexArray n_height_map(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 	sf::VertexArray final_map(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
+	//
 
 	//creates a track initially 
-	Generate(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
+	t_t_p->Generate(v_d_p, s_p_p, voronoi_d, height_map, n_height_map, i_p_p, times_, displacement_, number_, full_random_, track_type_);
+	//
+	
 
 
 
@@ -210,10 +101,46 @@ int main()
 		while (window.pollEvent(sf_event)) {
 			// Close the window when the close button is pressed
 			ImGui::SFML::ProcessEvent(sf_event);
-			if (sf_event.type == sf::Event::Closed) {
+			switch (sf_event.type)
+			{
+			case sf::Event::Closed:
 				window.close();
+				break;
+			case sf::Event::KeyPressed:
+				// update input class
+				input.setKeyDown(sf_event.key.code);
+				break;
+			case sf::Event::KeyReleased:
+				//update input class
+				input.setKeyUp(sf_event.key.code);
+				break;
+			case sf::Event::MouseMoved:
+				//update input class
+				input.setMousePosition(sf_event.mouseMove.x, sf_event.mouseMove.y);
+				break;
+			case sf::Event::MouseButtonPressed:
+				if (sf_event.mouseButton.button == sf::Mouse::Left)
+				{
+					//update input class
+					input.setMouseLDown(true);
+				}
+				else if (sf_event.mouseButton.button == sf::Mouse::Right)
+				{
+					input.setMouseRDown(true);
+				}
+				break;
+			case sf::Event::MouseButtonReleased:
+				if (sf_event.mouseButton.button == sf::Mouse::Left)
+				{
+					//update input class
+					input.setMouseLDown(false);
+				}
+				else if (sf_event.mouseButton.button == sf::Mouse::Right)
+				{
+					input.setMouseRDown(false);
+				}
+				break;
 			}
-			
 		}
 		ImGui::SFML::Update(window, deltaClock.restart());
 		
@@ -251,13 +178,13 @@ int main()
 			}
 			if (ImGui::Button("Create Noise Image"))
 			{
-				Clear(v_d_p, voronoi_d, n_height_map, height_map, i_p_p);
+				t_t_p->ClearStructs(v_d_p, voronoi_d, n_height_map, height_map, i_p_p,track_type_,resolution_,sites_,points_);
 				v_d_p->DrawNoise(n_height_map, v_d_p->GetGridSize(), layers_);
 			}
 
 			if (ImGui::Button("Create FBM Image"))
 			{
-				Clear(v_d_p, voronoi_d, n_height_map, height_map, i_p_p);
+				t_t_p->ClearStructs(v_d_p, voronoi_d, n_height_map, height_map, i_p_p, track_type_, resolution_, sites_, points_);
 				v_d_p->DrawFBM(n_height_map, v_d_p->GetGridSize(), octaves_);
 			}
 
@@ -280,7 +207,7 @@ int main()
 			{
 				if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
 				{
-					ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
+					t_t_p->ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
 				}
 				
 
@@ -290,15 +217,14 @@ int main()
 				v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, div_);
 				v_d_p->SetEdges(v_d_p->GetGridSize());
 				v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
-				CreateTrack(v_d_p, s_p_p);
+				t_t_p->CreateTrack(v_d_p, s_p_p);
 			} while (v_d_p->GetFailed() || s_p_p->GetFailed());
 			
 		}
 		if (ImGui::Button("Regenerate"))
 		{
-			Clear(v_d_p, voronoi_d, n_height_map, height_map, i_p_p);
-			//places the sites
-			Generate(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
+			t_t_p->ClearStructs(v_d_p, voronoi_d, n_height_map, height_map, i_p_p, track_type_, resolution_, sites_, points_);
+			t_t_p->Generate(v_d_p, s_p_p, voronoi_d, height_map, n_height_map,i_p_p,times_,displacement_,number_,full_random_,track_type_);
 		}
 		if (ImGui::Button("Create Final Heightmap"))
 		{
@@ -396,7 +322,7 @@ int main()
 				track_type_ = 2;
 				for (int a = 0; a < 25; a++)
 				{
-					SetVars(v_d_p, i_p_p);
+					t_t_p->SetVars(v_d_p, i_p_p, track_type_, resolution_, sites_, points_);
 					voronoi_d.clear();
 					height_map.clear();
 					voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
@@ -408,12 +334,12 @@ int main()
 					{
 						if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
 						{
-							ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
+							t_t_p->ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
 						}
 
-						CreateVoronoi(v_d_p, height_map);
+						t_t_p->CreateVoronoi(v_d_p, height_map,i_p_p,times_,displacement_,number_,full_random_,track_type_);
 						the_clock::time_point startTime = the_clock::now();
-						CreateTrack(v_d_p, s_p_p);
+						t_t_p->CreateTrack(v_d_p, s_p_p);
 						the_clock::time_point endTime = the_clock::now();
 						auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
 						std::cout << "		time(v d): " << time_taken; std::cout << std::endl;
@@ -445,7 +371,7 @@ int main()
 						{
 							//1. reset vars
 							voronoi_d.clear();
-							SetVars(v_d_p, i_p_p);
+							t_t_p->SetVars(v_d_p, i_p_p, track_type_, resolution_, sites_, points_);
 							voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 							v_d_p->SetGridSize(resolution_);
 							v_d_p->ResetVars();
@@ -481,7 +407,7 @@ int main()
 							{
 								if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
 								{
-									ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
+									t_t_p->ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
 								}
 
 
@@ -492,7 +418,7 @@ int main()
 								v_d_p->SetEdges(v_d_p->GetGridSize());
 								v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
 								the_clock::time_point startTime = the_clock::now();
-								CreateTrack(v_d_p, s_p_p);
+								t_t_p->CreateTrack(v_d_p, s_p_p);
 								the_clock::time_point endTime = the_clock::now();
 								auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
 								std::cout << "		time(v d): " << time_taken; std::cout << std::endl;
@@ -500,10 +426,6 @@ int main()
 								std::cout << std::endl;
 
 							} while (v_d_p->GetFailed() || s_p_p->GetFailed());
-
-
-
-
 
 							v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
 							s_p_p->WriteToFile(v_d_p->GetTrackMax(), v_d_p->GetTrackMin());
@@ -548,46 +470,9 @@ int main()
 
 		ImGui::End();
 		//used to display the whole voronoi diagram
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-		{
-			the_clock::time_point startTime = the_clock::now();
-			v_d_p->DrawFullVoronoiDiagram(voronoi_d, v_d_p->GetGridSize());
-			the_clock::time_point endTime = the_clock::now();
-			auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-			std::cout << "time(A): " << time_taken; std::cout << std::endl;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-		{
-			render_height_map_ = true;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-		{
-			render_height_map_ = false;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
-		{
-			n_render_height_map_ = true;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-		{
-			n_render_height_map_ = false;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
-		{
-			the_clock::time_point startTime = the_clock::now();
-			v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
-			the_clock::time_point endTime = the_clock::now();
-			auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-			std::cout << "time(A): " << time_taken; std::cout << std::endl;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
-		{
-			f_render_height_map_ = true;
-		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
-		{
-			f_render_height_map_ = false;
-		}
+		input_manager.HandleInput(v_d_p, voronoi_d, render_height_map_, n_render_height_map_, f_render_height_map_,i_p_p);
+		
+		//render
 		window.clear();
 		if (render_height_map_)
 		{
@@ -606,10 +491,14 @@ int main()
 		window.draw(title_name_);
 		ImGui::SFML::Render(window);
 		window.display();
+		//
 	}
 
 	delete v_d_p;
 	delete s_p_p;
+	delete d_c_j;
+	delete i_p_p;
+	delete t_t_p;
 	ImGui::SFML::Shutdown();
 	return 0;
 }
