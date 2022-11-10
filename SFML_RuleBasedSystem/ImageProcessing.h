@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics/VertexArray.hpp>
 #include "SimplexNoise.h"
+#include "VoronoiDiagram.h"
 
 class ImageProcessing
 {
@@ -15,6 +16,9 @@ public:
 	void SetF(float f) { pFrequency = f; }
 	void SetH(float h) { pHeightRange = h; }
 
+	//Getters
+	float* GetHeightVal() { return heightmap_; }
+	int* GetNoiseMap() { return noise_heightmap_; }
 
 	//Drawing functions
 	void DrawCurve(sf::VertexArray& vertexarray, int grid_size, int num_sites,int *grid);						//draws the curve to the vertex array
@@ -32,7 +36,7 @@ public:
 
 	//sampling functions
 	void ResizeImage(int grid_size, float scale);																//downscales image
-	void UpScaleGrid(int grid_size, float scale, int* grid);																//upscales the grid
+	void UpScaleGrid(int grid_size, float scale, int* grid, VoronoiDiagram* v_d_p);																//upscales the grid
 	void UpScaleVertexArray(int grid_size, float scale, sf::VertexArray& vertextarray);							//upscales a vertexarray
 	void ResizeGrid(int grid_size, float scale, int* grid);																//resizes the grid
 	//
@@ -42,6 +46,9 @@ public:
 	void WriteToFile(int grid_size, sf::VertexArray& vertexarray, int layers_);									//saves to file
 	void SaveUpScale(int grid_sizez, float scale);																//saves a upscaled image- first version
 	void SaveUpScaledImage(int grid_sizez, sf::VertexArray& vertexarray, float scale);							//saves an upscaled image
+
+
+
 
 private:
 	SimplexNoise perlin_;

@@ -30,19 +30,17 @@ public:
 	int GetRadius() { return radius_length; }
 	int GetCentreX() { return high_point_x; }
 	int GetCentreY() { return high_point_y; }
-
-
 	bool GetFailed() { return failed_; }						
 
 	int* GetGrid() { return grid_v_1; }
 	int* GetSites() { return sites_v_1; }
-	float* GetHeightVal() { return heightmap_; }
 	int* GetGridDistance() { return grid_distance; }
 
 	int GetNumberOfSites() { return num_of_sites; }						//returns the number of sites
 	int GetGridSize() { return grid_size_x; };							//returns the size of the grid
 	int GetType() { return type; };										//returns the type of track, closed or open
 	int GetNumberOfPoints() { return num_of_points; }					//returns the number of points
+	//
 
 	//setters
 	void SetNumberOfSites(int p) { num_of_sites = p; }					//sets the number of sites
@@ -50,50 +48,20 @@ public:
 	void SetNumberOfPoints(int p) { num_of_points = p; }				//sets the number of points in the track
 	void SetType(int p) { type = p; }									//sets the type of track
 	void SetFaile(bool f) { failed_ = f; }
-	void SetF(float f) { pFrequency = f; }
-	void SetH(float h) { pHeightRange = h; }
-
-	void DrawCurve(sf::VertexArray& vertexarray, int grid_size, int num_sites);
-	void DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size, int num_sites);
-	void DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size);
+	//
 	
-	//sampling functions
-	void ResizeImage(int grid_size, float scale);
-	void UpScaleImage(int grid_sizez, float scale);
-
-	//saves a scaled up image
-	void UpScaleImagetwo(int grid_sizez, sf::VertexArray& vertexarray,float scale);
-	//displays a scaled up image
-	void UpScaleGrid(int grid_size, float scale);
-	void UpScaleVertexArray(int grid_size, float scale, sf::VertexArray& vertextarray);
-
-
-	void ResizeGrid(int grid_size, float scale);
-
-	sf::Color AverageColour(sf::Color a,sf::Color b);
+	//these functions should go in another class
+	void HighPointFunc(int grid_size, int radius_cutoff_,int layers_, int index_v,int*noise_h_m);
+	void LoopPart(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place, int* noise_h_m);
+	void radiiDecider(int index_v);
+	void ResetVars();
+	void FindMax(int grid_size, int layers_,int* noise_grid);
+	void FindMinMax(int grid_size, int layers_,int*noise_grid);
 	//
 
+	void ResizeGrid(int grid_size, float scale);																//resizes the grid
+	void UpScaleGrid(int grid_size, float scale);																//upscales the grid
 
-	void DrawVD(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, float div_a);
-	void DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_);
-	void DrawFBM(sf::VertexArray& vertexarray, int grid_size, int octaves_);
-
-	void ChangeAlpha(sf::VertexArray& vertexarray, int grid_size, int alpha_);
-
-	void CreateFinalHM(int grid_size, sf::VertexArray& vertexarray, int layers_);
-	void WriteToFile(int grid_size, sf::VertexArray& vertexarray, int layers_);
-
-	
-
-	void HighPointFunc(int grid_size, int radius_cutoff_,int layers_, int index_v);
-	void LoopPart(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place);
-	void radiiDecider(int index_v);
-
-	void ResetVars();
-
-	void FindMax(int grid_size, int layers_);
-
-	void FindMinMax(int grid_size, int layers_);
 
 	int GetTrackMax() { return track_max; }
 	int GetTrackMin() { return track_min; }
@@ -117,10 +85,7 @@ private:
 	int* grid_v_1;								//stores the grid in dynamic array
 
 	int* grid_distance;
-	float* heightmap_;
-	float* heightmap_fbm_;
-	int* noise_heightmap_;
-	int* alpha_channel_;
+
 
 	
 	std::vector<int> temp_rad;

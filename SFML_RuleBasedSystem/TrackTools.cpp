@@ -58,7 +58,6 @@ void TrackTools::CreateVoronoi(VoronoiDiagram* v_d_p, sf::VertexArray& height_ma
 
 	//creates vd diagram, creates distance map, sets only edges in vertexarray, sets points of track. in that order.
 	v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
-	//v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, div_);
 	i_p_p->DrawVoronoiNoise(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, v_d_p->GetGridDistance());
 	v_d_p->SetEdges(v_d_p->GetGridSize());
 	v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
@@ -121,6 +120,5 @@ void TrackTools::Generate(VoronoiDiagram* v_d_p, ShortestPath* s_p_p, sf::Vertex
 		CreateTrack(v_d_p, s_p_p);
 
 	} while (v_d_p->GetFailed() || s_p_p->GetFailed());
-	v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
-
+	i_p_p->DrawTrack(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), v_d_p->GetGrid());
 }

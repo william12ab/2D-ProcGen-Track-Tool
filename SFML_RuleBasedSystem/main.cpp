@@ -163,9 +163,7 @@ int main()
 			ImGui::SliderInt("Size of cell outlines", &number_, 0, 100);
 			ImGui::Text("lower = large outlines");
 			ImGui::Text("higher = less effect");
-			ImGui::SliderFloat("Perlin Height", &height_, 0.0f, 1.0f);
 			ImGui::SliderInt("Number of Layers of Noise", &layers_,0, 10);
-			v_d_p->SetH(height_);
 			ImGui::SliderInt("Alpha", &alpha_, 0, 255);
 			ImGui::SliderInt("Radius Cut-off:", &radius_cutoff, 50, 255);
 			ImGui::Text("lower = larger radius");
@@ -174,18 +172,18 @@ int main()
 			ImGui::SliderInt("Octaves: ", &octaves_, 1, 8);
 			if (ImGui::Button("Change alpha"))
 			{
-				v_d_p->ChangeAlpha(n_height_map, v_d_p->GetGridSize(), alpha_);
+				i_p_p->ChangeAlpha(n_height_map, v_d_p->GetGridSize(), alpha_);
 			}
 			if (ImGui::Button("Create Noise Image"))
 			{
 				t_t_p->ClearStructs(v_d_p, voronoi_d, n_height_map, height_map, i_p_p,track_type_,resolution_,sites_,points_);
-				v_d_p->DrawNoise(n_height_map, v_d_p->GetGridSize(), layers_);
+				i_p_p->DrawNoise(n_height_map, v_d_p->GetGridSize(), layers_);
 			}
 
 			if (ImGui::Button("Create FBM Image"))
 			{
 				t_t_p->ClearStructs(v_d_p, voronoi_d, n_height_map, height_map, i_p_p, track_type_, resolution_, sites_, points_);
-				v_d_p->DrawFBM(n_height_map, v_d_p->GetGridSize(), octaves_);
+				i_p_p->DrawFBM(n_height_map, v_d_p->GetGridSize(), octaves_);
 			}
 
 		}
@@ -196,8 +194,8 @@ int main()
 			the_clock::time_point startTimea = the_clock::now();
 			for (int i = 0; i < peaks_to_count_; i++)
 			{
-				v_d_p->FindMax(v_d_p->GetGridSize(), layers_);
-				v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_,i);
+				v_d_p->FindMax(v_d_p->GetGridSize(), layers_,i_p_p->GetNoiseMap());
+				v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_,i, i_p_p->GetNoiseMap());
 			}
 			the_clock::time_point endTimea = the_clock::now();
 
@@ -214,7 +212,7 @@ int main()
 				v_d_p->TerrainSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());							//this takes no time
 	
 				v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
-				v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, div_);
+				i_p_p->DrawVoronoiNoise(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_,v_d_p->GetGridDistance());
 				v_d_p->SetEdges(v_d_p->GetGridSize());
 				v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
 				t_t_p->CreateTrack(v_d_p, s_p_p);
@@ -228,14 +226,14 @@ int main()
 		}
 		if (ImGui::Button("Create Final Heightmap"))
 		{
-			v_d_p->CreateFinalHM(v_d_p->GetGridSize(), final_map, layers_);
+			i_p_p->CreateFinalHM(v_d_p->GetGridSize(), final_map, layers_);
 		}
 	
 		if (ImGui::Button("Write to file"))
 		{
 			final_map.resize(v_d_p->GetGridSize() * v_d_p->GetGridSize());
-			v_d_p->CreateFinalHM(v_d_p->GetGridSize(), final_map, layers_);
-			v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
+			i_p_p->CreateFinalHM(v_d_p->GetGridSize(), final_map, layers_);
+			i_p_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
 			s_p_p->WriteToFile(v_d_p->GetTrackMax(),v_d_p->GetTrackMin());
 		}
 		if (ImGui::Button("Clear Console"))																	//https://stackoverflow.com/questions/5866529/how-do-we-clear-the-console-in-assembly/5866648#5866648
@@ -276,23 +274,23 @@ int main()
 			ImGui::SliderFloat("Scale", &image_scale, 0, 1);
 			if (ImGui::Button("Downscale"))
 			{
-				v_d_p->ResizeImage(v_d_p->GetGridSize(),image_scale);								//need to first regenerate image, save image, then this button and it saves to output. "test.png"
+				i_p_p->ResizeImage(v_d_p->GetGridSize(),image_scale);								//need to first regenerate image, save image, then this button and it saves to output. "test.png"
 			}
-			if (ImGui::Button("Upscale Image"))			//saves image
+			if (ImGui::Button("Upscale Image and Save"))			//saves image
 			{
-				v_d_p->UpScaleImagetwo(v_d_p->GetGridSize(), voronoi_d,image_scale);				//need to regenerate image first, then this button and it saves to output. "test.jpg"
+				i_p_p->SaveUpScaledImage(v_d_p->GetGridSize(), voronoi_d,image_scale);				//need to regenerate image first, then this button and it saves to output. "test.jpg"
 			}
 			if (ImGui::Button("Upscale Grid"))			//displays image
 			{
 				v_d_p->UpScaleGrid(v_d_p->GetGridSize(), image_scale);								//scales the "grid"/2darray structure - doing this means that the rest of the functions can be used. 
-				v_d_p->UpScaleVertexArray(v_d_p->GetGridSize(), image_scale, height_map);			//can scale a vertex array
+				i_p_p->UpScaleVertexArray(v_d_p->GetGridSize(), image_scale, height_map);			//can scale a vertex array
 				resolution_ = resolution_ * image_scale;
 				v_d_p->SetGridSize(resolution_);
 				voronoi_d.resize(resolution_* resolution_);
 			}
-			if (ImGui::Button("Test"))																//scales the "grid"/2darray structure - doing this means that the rest of the functions can be used. 
+			if (ImGui::Button("Test dont use"))																//scales the "grid"/2darray structure - doing this means that the rest of the functions can be used. 
 			{
-				v_d_p->UpScaleVertexArray(v_d_p->GetGridSize(), image_scale, final_map);			//can scale a vertex array
+				i_p_p->UpScaleVertexArray(v_d_p->GetGridSize(), image_scale, final_map);			//can scale a vertex array
 				resolution_ = resolution_ * image_scale;
 				v_d_p->SetGridSize(resolution_);
 				voronoi_d.resize(resolution_* resolution_);
@@ -346,7 +344,7 @@ int main()
 
 					} while (v_d_p->GetFailed() || s_p_p->GetFailed());
 
-					v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
+					i_p_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
 					s_p_p->WriteToFile(v_d_p->GetTrackMax(), v_d_p->GetTrackMin());
 
 				}
@@ -381,19 +379,19 @@ int main()
 							v_d_p->SetGridSize(resolution_);
 
 							height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
-							v_d_p->DrawFBM(height_map, v_d_p->GetGridSize(), octaves_);
+							i_p_p->DrawFBM(height_map, v_d_p->GetGridSize(), octaves_);
 
 							//3. generate 
 							the_clock::time_point startTimea = the_clock::now();
 							for (int i = 0; i < peaks_to_count_; i++)
 							{
-								v_d_p->FindMax(v_d_p->GetGridSize(), layers_);
+								v_d_p->FindMax(v_d_p->GetGridSize(), layers_, i_p_p->GetNoiseMap());
 								if (i == 5)
 								{
 									int s = 2;
 
 								}
-								v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_, i);
+								v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_, i, i_p_p->GetNoiseMap());
 
 							}
 							the_clock::time_point endTimea = the_clock::now();
@@ -414,7 +412,7 @@ int main()
 								v_d_p->TerrainSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());							//this takes no time
 
 								v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
-								v_d_p->DrawVD(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, div_);
+								i_p_p->DrawVoronoiNoise(height_map, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_,v_d_p->GetGridDistance());
 								v_d_p->SetEdges(v_d_p->GetGridSize());
 								v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_type_, v_d_p->GetFailed());
 								the_clock::time_point startTime = the_clock::now();
@@ -427,7 +425,7 @@ int main()
 
 							} while (v_d_p->GetFailed() || s_p_p->GetFailed());
 
-							v_d_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
+							i_p_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
 							s_p_p->WriteToFile(v_d_p->GetTrackMax(), v_d_p->GetTrackMin());
 
 						}
