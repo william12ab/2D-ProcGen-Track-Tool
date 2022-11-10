@@ -355,16 +355,17 @@ int main()
 			{
 				v_d_p->UpScaleImagetwo(v_d_p->GetGridSize(), voronoi_d,image_scale);				//need to regenerate image first, then this button and it saves to output. "test.jpg"
 			}
-			if (ImGui::Button("Upscale Array"))			//displays image
+			if (ImGui::Button("Upscale Grid"))			//displays image
 			{
-				v_d_p->UpScaleVertexArray(v_d_p->GetGridSize(), image_scale);//scales the "grid"/2darray structure - doing this means that the rest of the functions can be used. 
+				v_d_p->UpScaleGrid(v_d_p->GetGridSize(), image_scale);								//scales the "grid"/2darray structure - doing this means that the rest of the functions can be used. 
+				v_d_p->UpScaleVertexArray(v_d_p->GetGridSize(), image_scale, height_map);			//can scale a vertex array
 				resolution_ = resolution_ * image_scale;
 				v_d_p->SetGridSize(resolution_);
 				voronoi_d.resize(resolution_* resolution_);
 			}
 			if (ImGui::Button("Test"))																//scales the "grid"/2darray structure - doing this means that the rest of the functions can be used. 
 			{
-				v_d_p->UpScaleVertexArray(v_d_p->GetGridSize(), image_scale);
+				v_d_p->UpScaleGrid(v_d_p->GetGridSize(), image_scale);
 				resolution_ = resolution_ * image_scale;
 				v_d_p->SetGridSize(resolution_);
 				voronoi_d.resize(resolution_* resolution_);

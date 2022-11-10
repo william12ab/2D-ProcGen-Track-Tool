@@ -63,9 +63,11 @@ public:
 	//saves a scaled up image
 	void UpScaleImagetwo(int grid_sizez, sf::VertexArray& vertexarray,float scale);
 	//displays a scaled up image
-	void UpScaleVertexArray(int grid_size, float scale);
-
 	void UpScaleGrid(int grid_size, float scale);
+	void UpScaleVertexArray(int grid_size, float scale, sf::VertexArray& vertextarray);
+
+
+	void ResizeGrid(int grid_size, float scale);
 
 	sf::Color AverageColour(sf::Color a,sf::Color b);
 	//
