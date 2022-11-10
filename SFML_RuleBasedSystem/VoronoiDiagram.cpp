@@ -380,43 +380,40 @@ void VoronoiDiagram::DrawVD(sf::VertexArray& vertextarray, int grid_size, int nu
 		{
 			for (int j = 0; j < grid_size; j++)
 			{
-						float s = float((float)1 / (float)num_sites);							//gets the thing as a percentage
+				float s = float((float)1 / (float)num_sites);							//gets the thing as a percentage
 						//for example 1/100 = 0.01
 
-						int d = grid_distance[(i * grid_size) + j] / (float)num_;			//the distance divided by a number, so makes the distance smaller or bigger
+				int d = grid_distance[(i * grid_size) + j] / (float)num_;			//the distance divided by a number, so makes the distance smaller or bigger
 						//for example could be 1000/25 = 40
 						//so distance is higher with less sites, distance lower with more sites, so with higher sites you need lower num_
 
-						int n = s * 255;										//percentage * 255
+				int n = s * 255;										//percentage * 255
 						//this is the percentage of the colour
-						if (grid_distance[(i * grid_size) + j] >max_d_)
-						{
-							max_d_ = grid_distance[(i * grid_size) + j];
-						}
+				if (grid_distance[(i * grid_size) + j] >max_d_)
+				{
+					max_d_ = grid_distance[(i * grid_size) + j];
+				}
 						
 
-						int r = d;
+				int r = d;
 						
 						
 						//so the further away the distance is higher r
-						if (r > 255)
-						{
-							r = 255;				//keeps the values within range
-						}
-						sf::Uint8 c = 255 - r;
-						float h_c = int(255 - r);
-						//so end color, closer to the site you are - brighter, further away - darker
-						c /= div_a;						//makes the colour smaller
-						h_c /= div_a;
-						heightmap_[i * grid_size + j] = h_c;
+				if (r > 255)
+				{
+					r = 255;				//keeps the values within range
+				}
+				sf::Uint8 c = 255 - r;
+				float h_c = int(255 - r);
+				//so end color, closer to the site you are - brighter, further away - darker
+				c /= 2;						//makes the colour smaller
+				h_c /= 2;
+				heightmap_[i * grid_size + j] = h_c;
 
-						vertextarray[i * grid_size + j].position = sf::Vector2f(j, i);
-						vertextarray[i * grid_size + j].color = sf::Color{ c , c , c };
+				vertextarray[i * grid_size + j].position = sf::Vector2f(j, i);
+				vertextarray[i * grid_size + j].color = sf::Color{ c , c , c };
 			}
 		});
-
-
-	//std::wcout <<"max distance: " <<max_d_<<"\n";
 }
 
 void VoronoiDiagram::CreateFinalHM(int grid_size, sf::VertexArray& vertexarray, int layers_)
@@ -898,10 +895,7 @@ sf::Color VoronoiDiagram::AverageColour(sf::Color a, sf::Color b)
 
 void VoronoiDiagram::DrawVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size, int num_sites)
 {
-
 	parallel_for(0, grid_size, [&](int i)
-		//{
-	//for (int i = 0; i < grid_size; i++)
 		{
 			for (int j = 0; j < grid_size; j++)
 			{

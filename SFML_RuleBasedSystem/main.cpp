@@ -365,7 +365,7 @@ int main()
 			}
 			if (ImGui::Button("Test"))																//scales the "grid"/2darray structure - doing this means that the rest of the functions can be used. 
 			{
-				v_d_p->UpScaleGrid(v_d_p->GetGridSize(), image_scale);
+				v_d_p->UpScaleVertexArray(v_d_p->GetGridSize(), image_scale, final_map);			//can scale a vertex array
 				resolution_ = resolution_ * image_scale;
 				v_d_p->SetGridSize(resolution_);
 				voronoi_d.resize(resolution_* resolution_);
