@@ -393,7 +393,7 @@ void ImageProcessing::UpScaleGrid(int grid_size, float scale,int *grid)
 	}
 
 	//re sizing the grid
-	ResizeGrid(grid_size, scale);
+	ResizeGrid(grid_size, scale,grid);
 
 	parallel_for(0, new_size, [&](int i)
 		{
@@ -484,15 +484,225 @@ void ImageProcessing::ResizeGrid(int grid_size, float scale,int *grid)
 //saving functions
 void ImageProcessing::CreateFinalHM(int grid_size, sf::VertexArray& vertexarray, int layers_)
 {
+	//y=i, x=j
+	for (int i = 0; i < grid_size; i++)
+	{
+		for (int j = 0; j < grid_size; j++)
+		{
+			int i_alpha_two = alpha_channel_[i * grid_size + j];				//int version of alpha
+			float i_alpha_percent = (float)i_alpha_two / 255.0f;				//alpha as value between 0.0 to 1.0
 
+			int i_c_one = int(heightmap_[i * grid_size + j]);					//int value of c
+			int i_c_two = (noise_heightmap_[i * grid_size + j] / layers_);					//int value of co
+
+			float i_c_t_a = (float)i_c_two / 255.0f;							//decimal value of co
+			float is = (float)i_c_one / 255.0f;									//decimal value of c
+
+			float alpha_percent_ = i_alpha_percent + 1.0f * (1.0f - i_alpha_percent);							//alpha_f = alpha_a + alpha_b(1-alpha_a)	(as a decimal value)
+			float final_color_p = (i_c_t_a * i_alpha_percent + is * 1.0f * (1.0f - i_alpha_percent)) / alpha_percent_;		//final_c = (colour_a*alpha_a + colour_b*alpha_b(1-alpha_a))/alpha_final		as a percent
+
+			if (final_color_p < 0.0f)
+			{
+				final_color_p = 0.0;
+				//just to check if its out of bounds
+				//happens for some reason when j=0 to 512 and i = 512
+				//becuase of error in voronoi
+				//fix it
+			}
+			if (final_color_p > 1.0f)
+			{
+				int a = 1;
+				final_color_p = 1.0;
+			}
+
+			int f_c = 255 * final_color_p;											//need to multiply it by 255 to get as rgb value out of 255 instead of decimal
+			int f_a = 255 * alpha_percent_;
+
+			sf::Uint8 final_c = f_c;
+			sf::Uint8 final_a = f_a;
+
+			vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+			vertexarray[i * grid_size + j].color = sf::Color{ final_c , final_c , final_c, final_a };
+		}
+	}
 }
-void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, int layers_)
-{}
-void ImageProcessing::SaveUpScale(int grid_sizez, float scale)
-{
 
+void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, int layers_)
+{
+	const int dimensions_ = grid_size;
+
+	sf::Image voronoi_output;
+	sf::Image noise_output;
+	sf::Image final_i;
+	sf::Image track_output;
+
+	voronoi_output.create(grid_size, grid_size);
+	noise_output.create(grid_size, grid_size);
+	final_i.create(grid_size, grid_size);
+	track_output.create(grid_size, grid_size);
+
+
+	parallel_for(0, dimensions_, [&](int i)
+
+		{
+			for (int j = 0; j < dimensions_; j++)
+			{
+				sf::Uint8 c = int(heightmap_[i * grid_size + j]);					//the voronoidiagram colour
+				sf::Uint8 co = (noise_heightmap_[i * grid_size + j] / layers_);					//noise colour
+				sf::Uint8 a = alpha_channel_[i * grid_size + j];					//alpha colour value of noise
+
+
+				int i_alpha_two = alpha_channel_[i * grid_size + j];				//int version of alpha
+				float i_alpha_percent = (float)i_alpha_two / 255.0f;				//alpha as value between 0.0 to 1.0
+				int i_c_one = int(heightmap_[i * grid_size + j]);					//int value of c
+				int i_c_two = (noise_heightmap_[i * grid_size + j] / layers_);					//int value of co
+
+
+				float i_c_t_a = (float)i_c_two / 255.0f;							//decimal value of co
+				float is = (float)i_c_one / 255.0f;									//decimal value of c
+
+				float alpha_percent_ = i_alpha_percent + 1.0f * (1.0f - i_alpha_percent);							//alpha_f = alpha_a + alpha_b(1-alpha_a)	(as a decimal value)
+				float final_color_p = (i_c_t_a * i_alpha_percent + is * 1.0f * (1.0f - i_alpha_percent)) / alpha_percent_;		//final_c = (colour_a*alpha_a + colour_b*alpha_b(1-alpha_a))/alpha_final		as a percent
+				//
+
+				if (final_color_p < 0.0f)
+				{
+					final_color_p = 0.0;
+					//just to check if its out of bounds
+					//happens for some reason when j=0 to 512 and i = 512
+					//becuase of error in voronoi
+					//fix it
+				}
+				if (final_color_p > 1.0f)
+				{
+					int a = 1;
+					final_color_p = 1.0;
+				}
+
+				//this is the premultiplied
+				float i_c_f_t = i_c_t_a + is * (1.0f - i_alpha_percent);
+				if (i_c_f_t > 1.0f)
+				{
+					i_c_f_t = 1.0f;
+				}
+
+				int premultiplied_version_colour = i_c_f_t * 255;
+				int premultiplied_version_alpha = 255 * alpha_percent_;
+
+				int f_c = 255 * final_color_p;											//need to multiply it by 255 to get as rgb value out of 255 instead of decimal
+				int f_a = 255 * alpha_percent_;
+
+				sf::Uint8 final_c = f_c;
+				sf::Uint8 final_a = f_a;
+
+
+				//setting the pixels of the output images
+				voronoi_output.setPixel(j, i, sf::Color{ c , c , c });
+				noise_output.setPixel(j, i, sf::Color{ co , co , co,a });
+				final_i.setPixel(j, i, sf::Color{ final_c,final_c,final_c ,final_a });
+				track_output.setPixel(j, i, sf::Color{ vertexarray[i * grid_size + j].color.r,vertexarray[i * grid_size + j].color.g,vertexarray[i * grid_size + j].color.b });
+
+			}
+
+
+		});
+	noise_output.saveToFile("noise_layer.png");
+	voronoi_output.saveToFile("voronoi_layer.png");
+	final_i.saveToFile("final.png");
+	track_output.saveToFile("track_image.png");
+}
+void ImageProcessing::SaveUpScale(int grid_size, float scale)
+{
+	int new_size = grid_size * scale;
+	sf::Image image;
+	image.loadFromFile("track_image.png");
+	sf::Image scaled_image;
+	scaled_image.create(new_size, new_size);
+
+	for (int i = 0; i < (grid_size); i++)											//y
+	{
+		for (int j = 0; j < (grid_size); j++)										//x
+		{
+			sf::Uint8 c = image.getPixel(j, i).r;		//x,y
+			int x_dash = j * new_size / grid_size;
+			int y_dash = i * new_size / grid_size;
+			scaled_image.setPixel(x_dash, y_dash, sf::Color{ c,c,c,255 });
+		}
+	}
+
+
+	image.~Image();
+
+	//coluns
+	for (int i = 0; i < (new_size); i++)											//y
+	{
+		for (int j = 0; j < (new_size - 1); j += scale)
+		{
+			sf::Uint8 c = scaled_image.getPixel(j, i).r;		//x,y
+			for (int g = 0; g < scale; g++)
+			{
+				scaled_image.setPixel(j + g, i, sf::Color{ c,c,c,255 });
+			}
+		}
+	}
+	//rows
+	int j = 0;
+	for (int i = 0; i < (new_size - 1); i += scale)											//y
+	{
+		for (j = 0; j < (new_size); j++)
+		{
+			sf::Uint8 c = scaled_image.getPixel(j, i).r;		//x,y
+			for (int g = 0; g < scale; g++)
+			{
+				scaled_image.setPixel(j, i + g, sf::Color{ c,c,c,255 });
+			}
+		}
+	}
+	scaled_image.saveToFile("test.png");
 }
 void ImageProcessing::SaveUpScaledImage(int grid_sizez, sf::VertexArray& vertexarray, float scale)
 {
+	int new_size = grid_sizez * scale;
+
+	//Creates the new image
+	sf::Image scaled_image;
+	scaled_image.create(new_size, new_size);
+
+	parallel_for(0, grid_sizez, [&](int i)
+		{
+			for (int j = 0; j < (grid_sizez); j++)										//x
+			{
+				int x_dash = j * new_size / grid_sizez;
+				int y_dash = i * new_size / grid_sizez;
+				scaled_image.setPixel(x_dash, y_dash, vertexarray[i * grid_sizez + j].color);
+			}
+		});
+	//coloms - fill in the coloms with the existing coloms
+	parallel_for(0, new_size, [&](int i)
+		{
+			for (int j = 0; j < (new_size - 1); j += scale)
+			{
+				sf::Uint8 c = scaled_image.getPixel(j, i).r;		//x,y
+				for (int g = 0; g < scale; g++)
+				{
+					scaled_image.setPixel(j + g, i, { c,c,c,255 });
+				}
+			}
+		});
+
+	//rows - same for rows
+	int j = 0;
+	for (int i = 0; i < (new_size - 1); i += scale)											//y
+	{
+		parallel_for(0, new_size, [&](int j)
+			{
+				sf::Uint8 c = scaled_image.getPixel(j, i).r;		//x,y
+				for (int g = 0; g < scale; g++)
+				{
+					scaled_image.setPixel(j, i + g, { c,c,c,255 });
+				}
+			});
+	}
+	scaled_image.saveToFile("test.jpg");																//this takes the longest time complexituy wise.
 
 }

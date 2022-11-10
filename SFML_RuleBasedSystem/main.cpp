@@ -64,7 +64,7 @@ void ResetVars(VoronoiDiagram*v_d_p, ShortestPath*s_p_p, sf::VertexArray& vorono
 	n_height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 	voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 }
-void SetVars(VoronoiDiagram*v_d_p)
+void SetVars(VoronoiDiagram*v_d_p,ImageProcessing*i_p_p)
 {
 	v_d_p->~VoronoiDiagram();
 	v_d_p->SetType(track_type_);
@@ -72,15 +72,16 @@ void SetVars(VoronoiDiagram*v_d_p)
 	v_d_p->SetNumberOfSites(sites_);
 	v_d_p->SetNumberOfPoints(points_);
 	v_d_p->InitVector(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), v_d_p->GetNumberOfSites());
+	i_p_p->InitStructures(v_d_p->GetGridSize());
 }
 
-void Clear(VoronoiDiagram*v_d_p, sf::VertexArray& voronoi_d, sf::VertexArray& n_height_map, sf::VertexArray& distance_map)
+void Clear(VoronoiDiagram*v_d_p, sf::VertexArray& voronoi_d, sf::VertexArray& n_height_map, sf::VertexArray& distance_map,ImageProcessing*i_p_p)
 {
 	voronoi_d.clear();
 	n_height_map.clear();
 	distance_map.clear();
 	v_d_p->ResetVars();
-	SetVars(v_d_p);
+	SetVars(v_d_p, i_p_p);
 	v_d_p->SetGridSize(resolution_);
 	voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 	n_height_map.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
@@ -186,9 +187,10 @@ int main()
 	VoronoiDiagram* v_d_p = new VoronoiDiagram();
 	ShortestPath* s_p_p = new ShortestPath();
 	DeCastelJau* d_c_j = new DeCastelJau();
+	ImageProcessing* i_p_p = new ImageProcessing();
 
 	//track initialisation
-	SetVars(v_d_p);
+	SetVars(v_d_p, i_p_p);
 	//sets up the vertex array and the data structures for voronoi diagram
 	sf::VertexArray voronoi_d(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 	sf::VertexArray height_map(sf::Points, (v_d_p->GetGridSize() * v_d_p->GetGridSize()));
@@ -250,13 +252,13 @@ int main()
 			}
 			if (ImGui::Button("Create Noise Image"))
 			{
-				Clear(v_d_p, voronoi_d, n_height_map, height_map);
+				Clear(v_d_p, voronoi_d, n_height_map, height_map, i_p_p);
 				v_d_p->DrawNoise(n_height_map, v_d_p->GetGridSize(), layers_);
 			}
 
 			if (ImGui::Button("Create FBM Image"))
 			{
-				Clear(v_d_p, voronoi_d, n_height_map, height_map);
+				Clear(v_d_p, voronoi_d, n_height_map, height_map, i_p_p);
 				v_d_p->DrawFBM(n_height_map, v_d_p->GetGridSize(), octaves_);
 			}
 
@@ -295,7 +297,7 @@ int main()
 		}
 		if (ImGui::Button("Regenerate"))
 		{
-			Clear(v_d_p, voronoi_d, n_height_map, height_map);
+			Clear(v_d_p, voronoi_d, n_height_map, height_map, i_p_p);
 			//places the sites
 			Generate(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
 		}
@@ -395,7 +397,7 @@ int main()
 				track_type_ = 2;
 				for (int a = 0; a < 25; a++)
 				{
-					SetVars(v_d_p);
+					SetVars(v_d_p, i_p_p);
 					voronoi_d.clear();
 					height_map.clear();
 					voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
@@ -444,7 +446,7 @@ int main()
 						{
 							//1. reset vars
 							voronoi_d.clear();
-							SetVars(v_d_p);
+							SetVars(v_d_p, i_p_p);
 							voronoi_d.resize((v_d_p->GetGridSize() * v_d_p->GetGridSize()));
 							v_d_p->SetGridSize(resolution_);
 							v_d_p->ResetVars();
