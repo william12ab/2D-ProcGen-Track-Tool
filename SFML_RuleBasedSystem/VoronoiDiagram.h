@@ -37,6 +37,7 @@ public:
 	int* GetGrid() { return grid_v_1; }
 	int* GetSites() { return sites_v_1; }
 	float* GetHeightVal() { return heightmap_; }
+	int* GetGridDistance() { return grid_distance; }
 
 	int GetNumberOfSites() { return num_of_sites; }						//returns the number of sites
 	int GetGridSize() { return grid_size_x; };							//returns the size of the grid

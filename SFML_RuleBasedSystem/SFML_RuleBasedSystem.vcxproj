@@ -93,6 +93,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ShortestPath.cpp" />
     <ClCompile Include="SimplexNoise.cpp" />
+    <ClCompile Include="TrackTools.cpp" />
     <ClCompile Include="VoronoiDiagram.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +111,7 @@
     <ClInclude Include="MainHeader.h" />
     <ClInclude Include="ShortestPath.h" />
     <ClInclude Include="SimplexNoise.h" />
+    <ClInclude Include="TrackTools.h" />
     <ClInclude Include="VoronoiDiagram.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
