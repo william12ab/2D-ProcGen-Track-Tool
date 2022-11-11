@@ -122,3 +122,13 @@ void TrackTools::Generate(VoronoiDiagram* v_d_p, ShortestPath* s_p_p, sf::Vertex
 	} while (v_d_p->GetFailed() || s_p_p->GetFailed());
 	i_p_p->DrawTrack(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), v_d_p->GetGrid());
 }
+
+void TrackTools::GenerateTerrainMethod(VoronoiDiagram* v_d_p, sf::VertexArray& vertex_array, ImageProcessing* i_p_p, int number_, int track_track_)
+{
+	v_d_p->TerrainSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());							//this takes no time
+
+	v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
+	i_p_p->DrawVoronoiNoise(vertex_array, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, v_d_p->GetGridDistance());
+	v_d_p->SetEdges(v_d_p->GetGridSize());
+	v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_track_, v_d_p->GetFailed());
+}
