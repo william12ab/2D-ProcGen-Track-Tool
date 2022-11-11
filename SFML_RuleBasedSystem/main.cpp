@@ -299,7 +299,12 @@ int main()
 			if (ImGui::Button("CatmullRom"))
 			{
 				s_p_p->OrderControlPoints();
-				c_r_s->CreateCurve(s_p_p->GetControlPoints(),v_d_p->GetGridSize(), voronoi_d,false);
+				bool looped = false;
+				if (track_type_==2)
+				{
+					looped = true;
+				}
+				c_r_s->CreateCurve(s_p_p->GetControlPoints(),v_d_p->GetGridSize(), voronoi_d, looped);
 			}
 			if (ImGui::Button("Draw Control Points"))
 			{
@@ -325,7 +330,7 @@ int main()
 		ImGui::End();
 		//used to display the whole voronoi diagram
 		input_manager.HandleInput(v_d_p, voronoi_d, render_height_map_, n_render_height_map_, f_render_height_map_,i_p_p);
-		input_manager.Zoom(view_);
+		input_manager.Zoom();
 		//render
 		window.clear();
 		if (render_height_map_)

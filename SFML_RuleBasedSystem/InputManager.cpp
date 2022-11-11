@@ -12,14 +12,13 @@ InputManager::~InputManager()
 
 }
 
-void InputManager::Zoom(sf::View &view__)
+void InputManager::Zoom()
 {
 	
 	if (input->isKeyDown(sf::Keyboard::Dash))
 	{
 		int m_x= input->getMouseX();
 		int m_y = input->getMouseY();
-
 		view_->setCenter(sf::Vector2f(m_x, m_y));
 		sf::Vector2f a= view_->getCenter();
 		std::cout << a.x <<" "<< a.y; 
@@ -31,7 +30,6 @@ void InputManager::Zoom(sf::View &view__)
 		view_->zoom(0.5f);
 		int m_x = input->getMouseX();
 		int m_y = input->getMouseY();
-
 		view_->setCenter(sf::Vector2f(m_x, m_y));
 		input->setKeyUp(sf::Keyboard::Equal);
 	}
@@ -39,7 +37,6 @@ void InputManager::Zoom(sf::View &view__)
 	{
 		int m_x = input->getMouseX();
 		int m_y = input->getMouseY();
-
 		view_->setCenter(sf::Vector2f(m_x, m_y));
 	}
 	if (input->isKeyDown(sf::Keyboard::Num9))
