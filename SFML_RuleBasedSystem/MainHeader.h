@@ -7,6 +7,7 @@
 #include "ImageProcessing.h"
 #include "TrackTools.h"
 #include "InputManager.h"
+#include "CatmullRomSpline.h"
 
 sf::Font font;
 

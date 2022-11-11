@@ -73,6 +73,7 @@ int main()
 	DeCastelJau* d_c_j = new DeCastelJau();
 	ImageProcessing* i_p_p = new ImageProcessing();
 	TrackTools* t_t_p = new TrackTools();
+	CatmullRomSpline* c_r_s = new CatmullRomSpline();
 	InputManager input_manager(&input);
 	//
 
@@ -276,7 +277,7 @@ int main()
 				v_d_p->SetGridSize(resolution_);
 				voronoi_d.resize(resolution_* resolution_);
 			}
-			if (ImGui::Button("Test dont use"))																//scales the "grid"/2darray structure - doing this means that the rest of the functions can be used. 
+			if (ImGui::Button("Test (scales final (if made))"))																//scales the "grid"/2darray structure - doing this means that the rest of the functions can be used. 
 			{
 				i_p_p->UpScaleVertexArray(v_d_p->GetGridSize(), image_scale, final_map);			//can scale a vertex array
 				resolution_ = resolution_ * image_scale;
@@ -291,10 +292,16 @@ int main()
 			if (ImGui::Button("DeCastelJau"))
 			{
 				s_p_p->OrderControlPoints();
-				d_c_j->CreateCurve(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), v_d_p->GetGrid(), voronoi_d);				//draws curve
+				d_c_j->CreateCurve(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), voronoi_d);				//draws curve
+			}
+			if (ImGui::Button("CatmullRom"))
+			{
+				s_p_p->OrderControlPoints();
+				c_r_s->CreateCurve(s_p_p->GetControlPoints(),v_d_p->GetGridSize(), voronoi_d,false);
 			}
 			ImGui::SliderFloat("Definition of Curve:", &step_curve, 0, 1);
 			d_c_j->SetStepSize(step_curve);
+			c_r_s->SetStepSize(step_curve);
 		}
 		
 		if (ImGui::CollapsingHeader("Measurements"))
@@ -339,6 +346,7 @@ int main()
 	delete d_c_j;
 	delete i_p_p;
 	delete t_t_p;
+	delete c_r_s;
 	ImGui::SFML::Shutdown();
 	return 0;
 }

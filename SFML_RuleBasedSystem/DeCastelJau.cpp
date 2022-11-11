@@ -16,7 +16,7 @@ DeCastelJau::~DeCastelJau()
 {}
 
 //passing in control points
-void DeCastelJau::CreateCurve(std::vector<std::pair<int, int>> control_points, int grid_size, int* grid, sf::VertexArray& vertexarray)
+void DeCastelJau::CreateCurve(std::vector<std::pair<int, int>> control_points, int grid_size, sf::VertexArray& vertexarray)
 {
 	int control_point_size = control_points.size();
 

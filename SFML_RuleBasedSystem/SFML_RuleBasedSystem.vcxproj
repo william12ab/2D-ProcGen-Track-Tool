@@ -83,6 +83,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CatmullRomSpline.cpp" />
     <ClCompile Include="DeCastelJau.cpp" />
     <ClCompile Include="ImageProcessing.cpp" />
     <ClCompile Include="imgui\imgui-SFML.cpp" />
@@ -99,6 +100,7 @@
     <ClCompile Include="VoronoiDiagram.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CatmullRomSpline.h" />
     <ClInclude Include="DeCastelJau.h" />
     <ClInclude Include="ImageProcessing.h" />
     <ClInclude Include="imgui\imconfig-SFML.h" />
