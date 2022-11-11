@@ -71,9 +71,28 @@ void CatmullRomSpline::CreateCurve(std::vector<std::pair<int, int>> control_poin
 			vertexarray[i * grid_size + j].color = sf::Color::Black;
 		}
 	}
+	auto it = control_points.begin();
+	control_points.insert(it,control_points[0]);
 	for (float t = 0; t < (float)control_points.size(); t += step_size)
 	{
 		std::pair<int, int> point_ = CreatePoint(control_points, is_looped,t);
 		vertexarray[point_.second * grid_size + point_.first].color = sf::Color::White;
+	}
+}
+
+
+
+void CatmullRomSpline::DrawControlPoints(std::vector<std::pair<int, int>> control_points, int grid_size, sf::VertexArray& vertexarray)
+{
+	for (int i = 0; i < grid_size; i++)
+	{
+		for (int j = 0; j < grid_size; j++)
+		{
+			vertexarray[i * grid_size + j].color = sf::Color::Black;
+		}
+	}
+	for (int i = 0; i < control_points.size(); i++)
+	{
+		vertexarray[control_points[i].second * grid_size + control_points[i].first].color = sf::Color::White;
 	}
 }

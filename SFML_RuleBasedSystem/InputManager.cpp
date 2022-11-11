@@ -1,14 +1,52 @@
 #include "InputManager.h"
 #include <SFML/Window/Keyboard.hpp>
 
-InputManager::InputManager(Input*in) 
+InputManager::InputManager(Input*in, sf::View* view)
 {
 	input = in;
+	view_ = view;
 }
 
 InputManager::~InputManager() 
 {
 
+}
+
+void InputManager::Zoom(sf::View &view__)
+{
+	
+	if (input->isKeyDown(sf::Keyboard::Dash))
+	{
+		int m_x= input->getMouseX();
+		int m_y = input->getMouseY();
+
+		view_->setCenter(sf::Vector2f(m_x, m_y));
+		sf::Vector2f a= view_->getCenter();
+		std::cout << a.x <<" "<< a.y; 
+		view_->zoom(1.5f);
+		input->setKeyUp(sf::Keyboard::Dash);
+	}
+	if (input->isKeyDown(sf::Keyboard::Equal))
+	{
+		view_->zoom(0.5f);
+		int m_x = input->getMouseX();
+		int m_y = input->getMouseY();
+
+		view_->setCenter(sf::Vector2f(m_x, m_y));
+		input->setKeyUp(sf::Keyboard::Equal);
+	}
+	if (input->isKeyDown(sf::Keyboard::Num0))
+	{
+		int m_x = input->getMouseX();
+		int m_y = input->getMouseY();
+
+		view_->setCenter(sf::Vector2f(m_x, m_y));
+	}
+	if (input->isKeyDown(sf::Keyboard::Num9))
+	{
+		view_->reset(sf::FloatRect(0.f, 0.f, (float)1000, (float)800));
+
+	}
 }
 
 void InputManager::HandleInput(VoronoiDiagram* v_d_p,sf::VertexArray& vertexarray, bool &r_h_m, bool &r_n_h_m, bool &r_f_h_m, ImageProcessing* i_p_p)

@@ -631,20 +631,6 @@ void ShortestPath::ScaleControlPoints(float scale)
 
 void ShortestPath::OrderControlPoints()
 {
-	//unsure if this is needed tbh
-
-
-	//removes the last item in(which is a duplicate)
-	//control_points.pop_back();
-
-	////converts to a unordered set, removes duplicates and sorts. this is the fastest way according to some rando: https://stackoverflow.com/questions/1041620/whats-the-most-efficient-way-to-erase-duplicates-and-sort-a-vector
-	//std::unordered_set<std::pair<int, int>, pair_hash> set__;
-	//for (std::pair<int,int> i : control_points)
-	//	set__.insert(i);
-	//control_points.assign(set__.begin(), set__.end());
-	////sort(control_points.begin(), control_points.end());
-
-
 	for (int i = 0; i < control_points.size(); i++)
 	{
 		std::cout << " x " << control_points.at(i).first << " y " << control_points.at(i).second << "\n";

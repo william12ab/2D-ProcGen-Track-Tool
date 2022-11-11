@@ -16,6 +16,7 @@ public:
 	//getters
 	float GetStepSize() { return alpha_; }
 
+	void DrawControlPoints(std::vector<std::pair<int, int>> control_points, int grid_size, sf::VertexArray& vertexarray);
 
 
 private:

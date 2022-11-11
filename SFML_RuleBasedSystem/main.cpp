@@ -66,7 +66,8 @@ int main()
 	// Create the window and UI bar on the right
 	sf::RenderWindow window(sf::VideoMode(1000,800), "2D Track Generator", sf::Style::Close);
 	Init(window);
-
+	sf::View view_;
+	view_.reset(sf::FloatRect(0.f, 0.f, (float)window.getSize().x, (float)window.getSize().y));
 	//objs for main
 	VoronoiDiagram* v_d_p = new VoronoiDiagram();
 	ShortestPath* s_p_p = new ShortestPath();
@@ -74,7 +75,7 @@ int main()
 	ImageProcessing* i_p_p = new ImageProcessing();
 	TrackTools* t_t_p = new TrackTools();
 	CatmullRomSpline* c_r_s = new CatmullRomSpline();
-	InputManager input_manager(&input);
+	InputManager input_manager(&input,&view_);
 	//
 
 	//
@@ -143,6 +144,7 @@ int main()
 				break;
 			}
 		}
+		window.setView(view_);
 		ImGui::SFML::Update(window, deltaClock.restart());
 		
 		ImGui::Begin("Options");
@@ -299,6 +301,11 @@ int main()
 				s_p_p->OrderControlPoints();
 				c_r_s->CreateCurve(s_p_p->GetControlPoints(),v_d_p->GetGridSize(), voronoi_d,false);
 			}
+			if (ImGui::Button("Draw Control Points"))
+			{
+				s_p_p->OrderControlPoints();
+				c_r_s->DrawControlPoints(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), voronoi_d);
+			}
 			ImGui::SliderFloat("Definition of Curve:", &step_curve, 0, 1);
 			d_c_j->SetStepSize(step_curve);
 			c_r_s->SetStepSize(step_curve);
@@ -318,7 +325,7 @@ int main()
 		ImGui::End();
 		//used to display the whole voronoi diagram
 		input_manager.HandleInput(v_d_p, voronoi_d, render_height_map_, n_render_height_map_, f_render_height_map_,i_p_p);
-		
+		input_manager.Zoom(view_);
 		//render
 		window.clear();
 		if (render_height_map_)
@@ -337,6 +344,8 @@ int main()
 		
 		window.draw(title_name_);
 		ImGui::SFML::Render(window);
+
+		window.setView(window.getDefaultView());
 		window.display();
 		//
 	}
