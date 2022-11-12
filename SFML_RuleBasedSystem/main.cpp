@@ -314,12 +314,25 @@ int main()
 			if (ImGui::CollapsingHeader("ControlPoints"))
 			{
 				auto temp_ = s_p_p->GetControlPoints();
-				int x = temp_[0].first, y= temp_[0].second;
-				//ImGui::InputInt("x: ",  &x, 1, 2,0);
-				ImGui::SliderInt("x: ", &x, 0, 1);
-				ImGui::SliderInt("y: ", &y, 0, 1);
-				c_r_s->FixControlPoints(temp_, 0, std::pair<int, int>(x, y));
-				s_p_p->SetControlPoints(temp_);
+				auto size_ = s_p_p->GetControlPoints().size();
+				std::vector<int> x_,y_;
+				for (int i = 0; i < size_; i++)
+				{
+					x_.push_back(temp_[i].first);
+					y_.push_back(temp_[i].second);
+				}
+				for (int i = 0; i < size_; i++)
+				{
+					std::string s_x ="x: "+ std::to_string(i);
+					std::string s_y = "y: " + std::to_string(i);
+					const char* l_x = s_x.c_str();
+					const char* l_y = s_y.c_str();
+					ImGui::SliderInt(l_x, &x_[i], 0, v_d_p->GetGridSize());
+					ImGui::SliderInt(l_y, &y_[i], 0, v_d_p->GetGridSize());
+					c_r_s->FixControlPoints(temp_, i, std::pair<int, int>(x_[i], y_[i]));
+					s_p_p->SetControlPoints(temp_);
+				}
+			
 			}
 			ImGui::SliderFloat("Definition of Curve:", &step_curve, 0, 1);
 			d_c_j->SetStepSize(step_curve);
