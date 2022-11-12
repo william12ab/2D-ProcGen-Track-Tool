@@ -61,6 +61,11 @@ std::pair<int, int> CatmullRomSpline::CreatePoint(std::vector<std::pair<int, int
 	return{ tx, ty };
 }
 
+void CatmullRomSpline::FixControlPoints(std::vector<std::pair<int, int>> & const control_points, int it_,std::pair<int,int> co)
+{
+	control_points[it_].first = co.first;
+	control_points[it_].second = co.second;
+}
 
 void CatmullRomSpline::CreateCurve(std::vector<std::pair<int, int>> control_points, int grid_size, sf::VertexArray& vertexarray, bool is_looped)
 {

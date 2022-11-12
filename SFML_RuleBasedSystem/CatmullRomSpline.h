@@ -17,7 +17,7 @@ public:
 	float GetStepSize() { return alpha_; }
 
 	void DrawControlPoints(std::vector<std::pair<int, int>> control_points, int grid_size, sf::VertexArray& vertexarray);
-
+	void FixControlPoints(std::vector<std::pair<int, int>> & const control_points, int it_, std::pair<int, int> co);
 
 private:
 

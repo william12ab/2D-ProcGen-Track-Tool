@@ -311,6 +311,16 @@ int main()
 				s_p_p->OrderControlPoints();
 				c_r_s->DrawControlPoints(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), voronoi_d);
 			}
+			if (ImGui::CollapsingHeader("ControlPoints"))
+			{
+				auto temp_ = s_p_p->GetControlPoints();
+				int x = temp_[0].first, y= temp_[0].second;
+				//ImGui::InputInt("x: ",  &x, 1, 2,0);
+				ImGui::SliderInt("x: ", &x, 0, 1);
+				ImGui::SliderInt("y: ", &y, 0, 1);
+				c_r_s->FixControlPoints(temp_, 0, std::pair<int, int>(x, y));
+				s_p_p->SetControlPoints(temp_);
+			}
 			ImGui::SliderFloat("Definition of Curve:", &step_curve, 0, 1);
 			d_c_j->SetStepSize(step_curve);
 			c_r_s->SetStepSize(step_curve);

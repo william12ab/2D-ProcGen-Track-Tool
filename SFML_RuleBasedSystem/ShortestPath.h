@@ -36,10 +36,12 @@ public:
 
 	std::vector<std::pair<int, int>> GetControlPoints() { return control_points; }
 	
+	void SetControlPoints(std::vector<std::pair<int, int>> temp_) { control_points = temp_; }
 	//Setters
 	void SetFailed(bool f) { failed_ = f; }
 	void SetTesting(bool f) { do_testing_ = f; }
 
+	
 
 	int DistanceSqrt(int x, int y, int x2, int y2);
 
