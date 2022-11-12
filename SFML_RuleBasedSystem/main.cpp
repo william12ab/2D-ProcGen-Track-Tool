@@ -325,9 +325,7 @@ int main()
 				{
 					int x_y[2] = { x_[i],y_[i] };
 					std::string s_x ="x: "+ std::to_string(i)+ " y: "+std::to_string(i);
-					std::string s_y = "y: " + std::to_string(i); 
 					const char* l_x = s_x.c_str();
-					const char* l_y = s_y.c_str();
 					ImGui::SliderInt2(l_x, x_y, 0, int(resolution_));
 					c_r_s->FixControlPoints(temp_, i, std::pair<int, int>(x_y[0], x_y[1]));
 					s_p_p->SetControlPoints(temp_);
