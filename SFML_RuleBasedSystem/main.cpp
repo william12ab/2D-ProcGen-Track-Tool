@@ -311,7 +311,7 @@ int main()
 				s_p_p->OrderControlPoints();
 				c_r_s->DrawControlPoints(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), voronoi_d);
 			}
-			if (ImGui::CollapsingHeader("ControlPoints"))
+			if (ImGui::CollapsingHeader("Change ControlPoints"))
 			{
 				auto temp_ = s_p_p->GetControlPoints();
 				auto size_ = s_p_p->GetControlPoints().size();
@@ -323,16 +323,15 @@ int main()
 				}
 				for (int i = 0; i < size_; i++)
 				{
-					std::string s_x ="x: "+ std::to_string(i);
-					std::string s_y = "y: " + std::to_string(i);
+					int x_y[2] = { x_[i],y_[i] };
+					std::string s_x ="x: "+ std::to_string(i)+ " y: "+std::to_string(i);
+					std::string s_y = "y: " + std::to_string(i); 
 					const char* l_x = s_x.c_str();
 					const char* l_y = s_y.c_str();
-					ImGui::SliderInt(l_x, &x_[i], 0, v_d_p->GetGridSize());
-					ImGui::SliderInt(l_y, &y_[i], 0, v_d_p->GetGridSize());
-					c_r_s->FixControlPoints(temp_, i, std::pair<int, int>(x_[i], y_[i]));
+					ImGui::SliderInt2(l_x, x_y, 0, int(resolution_));
+					c_r_s->FixControlPoints(temp_, i, std::pair<int, int>(x_y[0], x_y[1]));
 					s_p_p->SetControlPoints(temp_);
 				}
-			
 			}
 			ImGui::SliderFloat("Definition of Curve:", &step_curve, 0, 1);
 			d_c_j->SetStepSize(step_curve);
