@@ -308,7 +308,12 @@ int main()
 			}
 			if (ImGui::Button("C"))
 			{
-				c_r_s->CreateCurve(v_d_p->GetGridSize(), voronoi_d,s_p_p->GetControlPoints());
+				bool looped = false;
+				if (track_type_ == 2)
+				{
+					looped = true;
+				}
+				c_r_s->CreateCurve(v_d_p->GetGridSize(), voronoi_d,s_p_p->GetControlPoints(),looped);
 			}
 			if (ImGui::Button("Draw Control Points"))
 			{

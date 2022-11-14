@@ -8,10 +8,10 @@ public:
 	~CatmullRomSpline();
 
 	sf::Vector2i CreatePoint(std::vector<sf::Vector2i> control_points, bool is_looped,float t);
-	sf::Vector2f CentripetalCurve(float t, std::vector<sf::Vector2i> control_points,int j);
+	sf::Vector2f CentripetalCurve(float t, std::vector<sf::Vector2i> control_points,int j, bool is_looped);
 
 	void CreateCurve(std::vector<sf::Vector2i> control_points, int grid_size, sf::VertexArray& vertexarray, bool is_looped);
-	void CreateCurve(int grid_size, sf::VertexArray& vertexarray, std::vector<sf::Vector2i> control_points);
+	void CreateCurve(int grid_size, sf::VertexArray& vertexarray, std::vector<sf::Vector2i> control_points, bool is_looped);
 
 	//setters
 	void SetStepSize(float a_) { alpha_ = a_; }
