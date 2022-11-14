@@ -371,7 +371,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 {
 	std::vector<std::pair<int,int>> temp_vec_c_p;
 	
-
+	int spaces_=0;
 
 	bool found_start = false;
 
@@ -403,9 +403,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 					south_e_site = old_num[((y_holder + 1) * grid_size) + (x_holder + 1)];
 					south_w_site = old_num[((y_holder + 1) * grid_size) + (x_holder - 1)];
 
-					int n =grid[((y_holder - 1) * grid_size) + (x_holder)];
-
-
 					old_occurances.push_back(north_site);
 					old_occurances.push_back(north_e_site);
 					old_occurances.push_back(north_w_site);
@@ -414,7 +411,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 					old_occurances.push_back(south_site);
 					old_occurances.push_back(south_e_site);
 					old_occurances.push_back(south_w_site);
-
 
 				}
 			}
@@ -550,9 +546,10 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				std::sort(old_occurances.begin(), old_occurances.end());
 				unique_count_old_occuarances = std::unique(old_occurances.begin(), old_occurances.end()) - old_occurances.begin();
 
-		
+				spaces_++;
 
 
+				
 				//if all of them are == to 2 then check for corner 
 				if (unique_count_occuarances == 2 && unique_count_old_occuarances == 2)
 				{
@@ -560,21 +557,23 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 					auto it = minmax_element(std::begin(occurances), std::end(occurances));
 					auto it_old = minmax_element(std::begin(old_occurances), std::end(old_occurances));
 
-
-					if (*it.first != *it_old.first || *it.second != *it_old.second)
+					if (spaces_ > 1)
 					{
-						number_of_turns++;
+						if (*it.first != *it_old.first || *it.second != *it_old.second)
+						{
+							number_of_turns++;
 
-						segment_lengths_.push_back(DistanceSqrt(first_position.first, first_position.second, x_holder, y_holder));
-						line_positions.emplace_back(first_position.first, first_position.second);
-						line_positions.emplace_back(x_holder, y_holder);
-						//control points for curves
-						//control_points.emplace_back(x_holder, y_holder);
-						temp_vec_c_p.emplace_back(x_holder, y_holder);
-						//
-						first_position.first = x_holder;
-						first_position.second = y_holder;
-
+							segment_lengths_.push_back(DistanceSqrt(first_position.first, first_position.second, x_holder, y_holder));
+							line_positions.emplace_back(first_position.first, first_position.second);
+							line_positions.emplace_back(x_holder, y_holder);
+							//control points for curves
+							//control_points.emplace_back(x_holder, y_holder);
+							temp_vec_c_p.emplace_back(x_holder, y_holder);
+							//
+							first_position.first = x_holder;
+							first_position.second = y_holder;
+							spaces_ = 0;
+						}
 					}
 					old_occurances.clear();										//clear the vectors so that when it comes to checking a new poosition theres nothjing there
 					occurances.clear();

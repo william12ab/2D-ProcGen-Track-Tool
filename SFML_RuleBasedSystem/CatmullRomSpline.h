@@ -10,6 +10,11 @@ public:
 	std::pair<int, int> CreatePoint(std::vector<std::pair<int, int>> control_points, bool is_looped,float t);
 
 	void CreateCurve(std::vector<std::pair<int, int>> control_points, int grid_size, sf::VertexArray& vertexarray, bool is_looped);
+	
+	sf::Vector2f CentripetalCurve(float t);
+
+	void CreateCurve(int grid_size, sf::VertexArray& vertexarray);
+
 	//setters
 	void SetStepSize(float a_) { alpha_ = a_; }
 
@@ -19,9 +24,19 @@ public:
 	void DrawControlPoints(std::vector<std::pair<int, int>> control_points, int grid_size, sf::VertexArray& vertexarray);
 	void FixControlPoints(std::vector<std::pair<int, int>> & const control_points, int it_, std::pair<int, int> co);
 
+
+	int DistanceSqrt(int x, int y, int x2, int y2);
 private:
 
 	float step_size;
 	float alpha_;
+
+	struct Segment
+	{
+		sf::Vector2f a;
+		sf::Vector2f b;
+		sf::Vector2f c;
+		sf::Vector2f d;
+	};
 };
 

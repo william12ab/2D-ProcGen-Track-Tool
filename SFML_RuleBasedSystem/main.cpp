@@ -306,6 +306,10 @@ int main()
 				}
 				c_r_s->CreateCurve(s_p_p->GetControlPoints(),v_d_p->GetGridSize(), voronoi_d, looped);
 			}
+			if (ImGui::Button("C"))
+			{
+				c_r_s->CreateCurve(v_d_p->GetGridSize(), voronoi_d);
+			}
 			if (ImGui::Button("Draw Control Points"))
 			{
 				s_p_p->OrderControlPoints();
