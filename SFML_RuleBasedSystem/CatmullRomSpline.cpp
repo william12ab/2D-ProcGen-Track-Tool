@@ -9,7 +9,7 @@ CatmullRomSpline::~CatmullRomSpline()
 
 }
 
-std::pair<int, int> CatmullRomSpline::CreatePoint(std::vector<std::pair<int, int>> control_points, bool is_looped, float t)
+sf::Vector2i CatmullRomSpline::CreatePoint(std::vector<sf::Vector2i> control_points, bool is_looped, float t)
 {
 	int p0, p1, p2, p3;
 	if (!is_looped)
@@ -58,19 +58,19 @@ std::pair<int, int> CatmullRomSpline::CreatePoint(std::vector<std::pair<int, int
 
 
 
-	float tx = 0.5f * (control_points[p0].first * q1 + control_points[p1].first * q2 + control_points[p2].first * q3 + control_points[p3].first * q4);
-	float ty = 0.5f * (control_points[p0].second * q1 + control_points[p1].second * q2 + control_points[p2].second * q3 + control_points[p3].second * q4);
+	float tx = 0.5f * (control_points[p0].x * q1 + control_points[p1].x * q2 + control_points[p2].x * q3 + control_points[p3].x * q4);
+	float ty = 0.5f * (control_points[p0].y * q1 + control_points[p1].y * q2 + control_points[p2].y * q3 + control_points[p3].y * q4);
 
-	return{ tx, ty };
+	return{ (int)tx, (int)ty };
 }
 
-void CatmullRomSpline::FixControlPoints(std::vector<std::pair<int, int>> & const control_points, int it_,std::pair<int,int> co)
+void CatmullRomSpline::FixControlPoints(std::vector<sf::Vector2i> & const control_points, int it_, sf::Vector2i co)
 {
-	control_points[it_].first = co.first;
-	control_points[it_].second = co.second;
+	control_points[it_].x = co.x;
+	control_points[it_].y = co.y;
 }
 
-void CatmullRomSpline::CreateCurve(std::vector<std::pair<int, int>> control_points, int grid_size, sf::VertexArray& vertexarray, bool is_looped)
+void CatmullRomSpline::CreateCurve(std::vector<sf::Vector2i> control_points, int grid_size, sf::VertexArray& vertexarray, bool is_looped)
 {
 	for (int i = 0; i < grid_size; i++)
 	{
@@ -87,14 +87,14 @@ void CatmullRomSpline::CreateCurve(std::vector<std::pair<int, int>> control_poin
 
 	for (float t = 0; t < (float)control_points.size(); t += step_size)
 	{
-		std::pair<int, int> point_ = CreatePoint(control_points, is_looped,t);
-		vertexarray[point_.second * grid_size + point_.first].color = sf::Color::White;
+		sf::Vector2i point_ = CreatePoint(control_points, is_looped,t);
+		vertexarray[point_.y * grid_size + point_.x].color = sf::Color::White;
 	}
 }
 
 
 
-void CatmullRomSpline::DrawControlPoints(std::vector<std::pair<int, int>> control_points, int grid_size, sf::VertexArray& vertexarray)
+void CatmullRomSpline::DrawControlPoints(std::vector<sf::Vector2i> control_points, int grid_size, sf::VertexArray& vertexarray)
 {
 	for (int i = 0; i < grid_size; i++)
 	{
@@ -105,12 +105,19 @@ void CatmullRomSpline::DrawControlPoints(std::vector<std::pair<int, int>> contro
 	}
 	for (int i = 0; i < control_points.size(); i++)
 	{
-		vertexarray[control_points[i].second * grid_size + control_points[i].first].color = sf::Color::White;
+		vertexarray[control_points[i].y * grid_size + control_points[i].x].color = sf::Color::White;
 	}
 }
 
 sf::Vector2f CatmullRomSpline::CentripetalCurve(float t)
 {
+	//indices
+	int p1 = (int)t + 1;
+	int p2 = p1 + 1;
+	int p3 = p2 + 1;
+	int p0 = p1 - 1;
+
+
 	
 	std::vector<sf::Vector2i> points;
 	points.push_back(sf::Vector2i(100, 400));

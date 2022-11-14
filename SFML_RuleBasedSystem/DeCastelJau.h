@@ -8,7 +8,7 @@ public:
 	DeCastelJau();
 	~DeCastelJau();
 
-	void CreateCurve(std::vector<std::pair<int,int>> control_points, int grid_size, sf::VertexArray &vertexarray);
+	void CreateCurve(std::vector<sf::Vector2i> control_points, int grid_size, sf::VertexArray &vertexarray);
 
 	//setters
 	void SetStepSize(float a_) {step_size = a_;}

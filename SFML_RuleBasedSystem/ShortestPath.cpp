@@ -369,7 +369,7 @@ int ShortestPath::DistanceSqrt(int x, int y, int x2, int y2)
 //from phase one you use the x and y holder vars and count holder and end
 void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, int y_holder, int count_holder, int end_n)
 {
-	std::vector<std::pair<int,int>> temp_vec_c_p;
+	std::vector<sf::Vector2i> temp_vec_c_p;
 	
 	int spaces_=0;
 
@@ -622,8 +622,8 @@ void ShortestPath::ScaleControlPoints(float scale)
 {
 	for (int i = 0; i < control_points.size(); i++)
 	{
-		control_points.at(i).first *= scale;
-		control_points.at(i).second*= scale;
+		control_points.at(i).x *= scale;
+		control_points.at(i).y*= scale;
 	}
 }
 
@@ -632,7 +632,7 @@ void ShortestPath::OrderControlPoints()
 {
 	for (int i = 0; i < control_points.size(); i++)
 	{
-		std::cout << " x " << control_points.at(i).first << " y " << control_points.at(i).second << "\n";
+		std::cout << " x " << control_points.at(i).x << " y " << control_points.at(i).y << "\n";
 	}
 	
 }

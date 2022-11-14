@@ -16,7 +16,7 @@ DeCastelJau::~DeCastelJau()
 {}
 
 //passing in control points
-void DeCastelJau::CreateCurve(std::vector<std::pair<int, int>> control_points, int grid_size, sf::VertexArray& vertexarray)
+void DeCastelJau::CreateCurve(std::vector<sf::Vector2i> control_points, int grid_size, sf::VertexArray& vertexarray)
 {
 	int control_point_size = control_points.size();
 
@@ -32,8 +32,8 @@ void DeCastelJau::CreateCurve(std::vector<std::pair<int, int>> control_points, i
 
 	for (int i = 0; i < control_point_size; i++)
 	{
-		b_x[0].push_back(control_points[i].first);
-		b_y[0].push_back(control_points[i].second);
+		b_x[0].push_back(control_points[i].x);
+		b_y[0].push_back(control_points[i].y);
 	}
 
 	for (int i = 1; i < control_point_size; i++)
@@ -63,10 +63,9 @@ void DeCastelJau::CreateCurve(std::vector<std::pair<int, int>> control_points, i
 	int count = 0;																//iterator - for the position of the new points in the array(structure)
 	
 
-	parallel_for(1, (j_max + 1), [&](int j)
-		{});
 
-	for (t_zero = 0; t_zero < 1; t_zero+= step_size)
+
+	for (t_zero = 0; t_zero < 1; t_zero+= 0.01f)
 	{
 	count +=1;																		//un used?
 		for (int j = 1; j <= (j_max); j++)

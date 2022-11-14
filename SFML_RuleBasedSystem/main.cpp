@@ -322,8 +322,8 @@ int main()
 				std::vector<int> x_,y_;
 				for (int i = 0; i < size_; i++)
 				{
-					x_.push_back(temp_[i].first);
-					y_.push_back(temp_[i].second);
+					x_.push_back(temp_[i].x);
+					y_.push_back(temp_[i].x);
 				}
 				for (int i = 0; i < size_; i++)
 				{
@@ -331,13 +331,14 @@ int main()
 					std::string s_x ="x: "+ std::to_string(i)+ " y: "+std::to_string(i);
 					const char* l_x = s_x.c_str();
 					ImGui::SliderInt2(l_x, x_y, 0, int(resolution_));
-					c_r_s->FixControlPoints(temp_, i, std::pair<int, int>(x_y[0], x_y[1]));
+					c_r_s->FixControlPoints(temp_, i, sf::Vector2i(x_y[0], x_y[1]));
 					s_p_p->SetControlPoints(temp_);
 				}
 			}
 			ImGui::SliderFloat("Definition of Curve:", &step_curve, 0, 1);
 			d_c_j->SetStepSize(step_curve);
-			c_r_s->SetStepSize(step_curve);
+			ImGui::SliderFloat("Aplha for CatmullRom:", &alpha_cm_, 0, 1);
+			c_r_s->SetStepSize(alpha_cm_);
 		}
 		
 		if (ImGui::CollapsingHeader("Measurements"))

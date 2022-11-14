@@ -50,6 +50,7 @@ bool do_testing_;
 
 float image_scale;
 float step_curve;
+float alpha_cm_;
 //time code
 
 //the_clock::time_point startTime = the_clock::now();
