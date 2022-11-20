@@ -119,7 +119,7 @@ sf::Vector2f CatmullRomSpline::CentripetalCurve(float t, std::vector<sf::Vector2
 			for (int i = 0; i < 3; i++)
 			{
 				auto second_ = control_points[control_points.size() - 1];
-				second_.x += 5, second_.y += 5;
+				second_.x += 2, second_.y += 2;
 				control_points.push_back(second_);
 			}
 		}
@@ -163,10 +163,10 @@ void CatmullRomSpline::CreateCurve(int grid_size, sf::VertexArray& vertexarray, 
 			auto second_ = control_points[control_points.size() - 1];
 
 			auto it = control_points.begin();
-			first_.x -= 5, first_.y -= 5;
+			first_.x -= 1, first_.y -= 1;
 			control_points.insert(it, first_);
 
-			second_.x += 5, second_.y += 5;
+			second_.x += 1, second_.y += 1;
 			control_points.push_back(second_);
 		}
 		else

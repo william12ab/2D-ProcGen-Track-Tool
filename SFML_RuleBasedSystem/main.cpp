@@ -30,7 +30,7 @@ void Init(sf::RenderWindow &window)
 	ImGui::SFML::Init(window);
 
 	//defaults: 
-	resolution_ = 513;
+	resolution_ = 400;
 	sites_ = 25;
 	points_ = 2;
 	regen_ = false;
