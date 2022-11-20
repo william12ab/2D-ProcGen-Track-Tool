@@ -12,6 +12,7 @@ public:
 	
 	void RandomPlaceSites(int num_sites, int grid_size);				//distrubutes the sites
 	void EqualDSites(int num_sites, int grid_size, int times_, int displacement);						//distributes the sites in equal distance first then displaces them 
+	void EqaullyDispursSites(int num_sites, int grid_size, int times_, int displacement);
 	void DistributeSites(int num_sites, int grid_size);					//random but one in the centre
 	void TerrainSites(int num_sites, int grid_size);
 

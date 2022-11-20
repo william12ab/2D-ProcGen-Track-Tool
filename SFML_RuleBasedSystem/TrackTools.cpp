@@ -53,7 +53,7 @@ void TrackTools::CreateVoronoi(VoronoiDiagram* v_d_p, sf::VertexArray& height_ma
 	}
 	else
 	{
-		v_d_p->EqualDSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), times_, displacement_);
+		v_d_p->EqaullyDispursSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(), times_, displacement_);
 	}
 
 	//creates vd diagram, creates distance map, sets only edges in vertexarray, sets points of track. in that order.

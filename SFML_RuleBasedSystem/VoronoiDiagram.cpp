@@ -180,6 +180,72 @@ void VoronoiDiagram::DistributeSites(int num_sites, int grid_size)
 	}
 }
 
+void VoronoiDiagram::EqaullyDispursSites(int num_sites, int grid_size, int times_, int displacement)
+{
+	srand(time(NULL));
+
+	int sqrt_sites = sqrt(num_sites);							//gives the sqrt of the number of sites
+
+	int spacing_ = grid_size / sqrt_sites;						//spacing for all spaces of sites
+
+	int x_spacing = spacing_;									//x axis spacing: |.|.|.|.|
+	int y_spacing = spacing_;									//y axis spacing: that but vertical
+
+	int x_modifier = x_spacing / 2;								//modifiers for axies, so centres the point in middle of division as seen above, other wise would be: | | | | |
+	int y_modifier = y_spacing / 2;
+
+	int site_iter = 0;											//index for sites
+	for (int i = 0; i < sqrt_sites; i++)
+	{
+		for (int j =0; j< sqrt_sites;j++)
+		{
+			sites_v_1[site_iter] = (x_spacing - x_modifier);					//sets x
+			site_iter++;
+			sites_v_1[site_iter] =(y_spacing - y_modifier);						//sets y
+			site_iter++;
+			x_spacing += spacing_;												//add to spacing
+		}
+		y_spacing += spacing_;													//y spacing
+		x_spacing = spacing_;													//reset spacing
+	}
+
+
+	//setting up generator and distributor, see <random> for more info or read the part on it. this engine and distributor were selected as they work best for this.
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::default_random_engine generator(seed);
+	std::uniform_int_distribution<int> distribution(-displacement, displacement);
+
+
+	for (int t = 0; t < times_; t++)
+	{
+		for (int i = 0; i < (num_sites * 2); i++)
+		{
+			sites_v_1[i] += distribution(generator);
+			if (sites_v_1[i] >= grid_size)									//if bigger than the max res then max res - the amount bigger than = new pos
+			{
+				int difference = sites_v_1[i] - grid_size;
+				sites_v_1[i] = grid_size - difference;
+			}
+			if (sites_v_1[i] <= 0)											//if less than, new pos = amount less than but positive
+			{
+				sites_v_1[i] += (-sites_v_1[i] - sites_v_1[i]);
+			}
+			i++;
+			sites_v_1[i] += distribution(generator);
+			if (sites_v_1[i] >= grid_size)
+			{
+				int difference = sites_v_1[i] - grid_size;
+				sites_v_1[i] = grid_size - difference;
+			}
+			if (sites_v_1[i] <= 0)
+			{
+				sites_v_1[i] += (-sites_v_1[i] - sites_v_1[i]);
+			}
+		}
+	}
+}
+
+
 void VoronoiDiagram::EqualDSites(int num_sites, int grid_size, int times_, int displacement)
 {	
 	srand(time(NULL));
@@ -252,7 +318,6 @@ void VoronoiDiagram::EqualDSites(int num_sites, int grid_size, int times_, int d
 	
 	for (int t = 0; t < times_; t++)
 	{
-		
 		for (int i = 0; i < (num_sites * 2); i++)
 		{
 			sites_v_1[i] += distribution(generator);

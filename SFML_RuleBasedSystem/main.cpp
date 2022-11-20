@@ -92,9 +92,6 @@ int main()
 	t_t_p->Generate(v_d_p, s_p_p, voronoi_d, height_map, n_height_map, i_p_p, times_, displacement_, number_, full_random_, track_type_);
 	//
 	
-
-
-
 	// While the window is open, update
 	while (window.isOpen())
 	{
@@ -327,8 +324,6 @@ int main()
 			}
 		}
 		ImGui::Text("\n");
-
-		
 		ImGui::Text("\n");
 		ImGui::Text("\n");
 
@@ -346,12 +341,10 @@ int main()
 		if (ImGui::CollapsingHeader("How-to/Guide"))
 		{
 			ImGui::TextWrapped("Set the factors before generation and then select 'regenerate'");
-			ImGui::TextWrapped("If want to use displacement, select resolution as 513 and sites as either 25 or 81 otherwise will crash.");
+			ImGui::TextWrapped("If want to use displacement, select a square number of sites, eg: 25, 49, 81 etc...");
 			ImGui::TextWrapped("To use noise method select factors like before and generate noise image first, selecting and changing alpha too. Then select 'generate (noise method)'");
 			ImGui::TextWrapped("Please Ignore 'Testing Options'");
 		}
-		
-
 		if (ImGui::CollapsingHeader("Measurements"))
 		{
 			ImGui::Text("Total Length= %d", s_p_p->GetTotalDistance());
