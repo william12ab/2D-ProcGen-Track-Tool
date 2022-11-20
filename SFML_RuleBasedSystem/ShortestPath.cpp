@@ -13,7 +13,7 @@ ShortestPath::ShortestPath()
 	total_track_distance = 0;
 	number_of_turns = 0;
 
-	do_testing_ = false;
+	do_testing_ = true;
 }
 
 //i =z/y, j=x

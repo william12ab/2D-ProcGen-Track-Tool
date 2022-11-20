@@ -65,8 +65,6 @@ sf::Vector2i CatmullRomSpline::CreatePoint(std::vector<sf::Vector2i> control_poi
 	float q3 = -3.0f * step_cubed + 4.0f * step_squared+ t;
 	float q4 = step_cubed - step_squared;
 
-
-
 	float tx = 0.5f * (control_points[p0].x * q1 + control_points[p1].x * q2 + control_points[p2].x * q3 + control_points[p3].x * q4);
 	float ty = 0.5f * (control_points[p0].y * q1 + control_points[p1].y * q2 + control_points[p2].y * q3 + control_points[p3].y * q4);
 

@@ -49,9 +49,9 @@ void Init(sf::RenderWindow &window)
 	displacement_ = 100;
 	radius_cutoff = 120;
 	peaks_to_count_ = 1;
-	do_testing_ = false;
+	do_testing_ = true;
 	step_curve=0.01;
-
+	alpha_cm_ = 0.5;
 }
 
 int main()
@@ -191,54 +191,144 @@ int main()
 
 		}
 		ImGui::Text("\n");
-		if (ImGui::Button("Renerate (Noise Method)"))
+		if (ImGui::CollapsingHeader("Curve Variables"))
 		{
-			v_d_p->vector_all(peaks_to_count_);
-			for (int i = 0; i < peaks_to_count_; i++)
+			ImGui::SliderFloat("Definition of Curve:", &step_curve, 0, 1);
+			d_c_j->SetStepSize(step_curve);
+			ImGui::Text("Keep alpha at 0 or 0.5");
+			ImGui::SliderFloat("Aplha for CatmullRom:", &alpha_cm_, 0, 1);
+			c_r_s->SetStepSize(alpha_cm_);
+			ImGui::Text("\n");
+			if (ImGui::CollapsingHeader("	Change ControlPoints"))
 			{
-				v_d_p->FindMax(v_d_p->GetGridSize(), layers_,i_p_p->GetNoiseMap());
-				v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_,i, i_p_p->GetNoiseMap());
-			}
-			do
-			{
-				if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
+				auto temp_ = s_p_p->GetControlPoints();
+				auto size_ = s_p_p->GetControlPoints().size();
+				std::vector<int> x_, y_;
+				for (int i = 0; i < size_; i++)
 				{
-					t_t_p->ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
+					x_.push_back(temp_[i].x);
+					y_.push_back(temp_[i].x);
 				}
-				t_t_p->GenerateTerrainMethod(v_d_p, height_map, i_p_p, number_, track_type_);
-				t_t_p->CreateTrack(v_d_p, s_p_p);
-			} while (v_d_p->GetFailed() || s_p_p->GetFailed());
+				for (int i = 0; i < size_; i++)
+				{
+					int x_y[2] = { x_[i],y_[i] };
+					std::string s_x = "x: " + std::to_string(i) + " y: " + std::to_string(i);
+					const char* l_x = s_x.c_str();
+					ImGui::SliderInt2(l_x, x_y, 0, int(resolution_));
+					c_r_s->FixControlPoints(temp_, i, sf::Vector2i(x_y[0], x_y[1]));
+					s_p_p->SetControlPoints(temp_);
+				}
+			}
+			ImGui::Text("\n");
+
+			if (ImGui::Button("DeCastelJau"))
+			{
+				s_p_p->OrderControlPoints();
+				d_c_j->CreateCurve(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), voronoi_d);				//draws curve
+			}
+			if (ImGui::Button("CatmullRom"))
+			{
+				s_p_p->OrderControlPoints();
+				bool looped = false;
+				if (track_type_ == 2)
+				{
+					looped = true;
+				}
+				c_r_s->CreateCurve(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), voronoi_d, looped);
+			}
+			if (ImGui::Button("Centripetal CatmullRom"))
+			{
+				bool looped = false;
+				if (track_type_ == 2)
+				{
+					looped = true;
+				}
+				c_r_s->CreateCurve(v_d_p->GetGridSize(), voronoi_d, s_p_p->GetControlPoints(), looped);
+			}
+			if (ImGui::Button("Draw Control Points"))
+			{
+				s_p_p->OrderControlPoints();
+				c_r_s->DrawControlPoints(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), voronoi_d);
+			}
 			
+
 		}
-		if (ImGui::Button("Regenerate"))
+		ImGui::Text("\n");
+		if (ImGui::CollapsingHeader("Scaling Variables"))
 		{
-			t_t_p->ClearStructs(v_d_p, voronoi_d, n_height_map, height_map, i_p_p, track_type_, resolution_, sites_, points_);
-			t_t_p->Generate(v_d_p, s_p_p, voronoi_d, height_map, n_height_map,i_p_p,times_,displacement_,number_,full_random_,track_type_);
+			ImGui::SliderFloat("Scale", &image_scale, 1, 2);
+			if (ImGui::Button("Downscale image"))
+			{
+				i_p_p->ResizeImage(v_d_p->GetGridSize(), image_scale);								//need to first regenerate image, save image, then this button and it saves to output. "test.png"
+			}
+			if (ImGui::Button("Upscale Image and Save"))			//saves image
+			{
+				i_p_p->SaveUpScaledImage(v_d_p->GetGridSize(), voronoi_d, image_scale);				//need to regenerate image first, then this button and it saves to output. "test.jpg"
+			}
+			if (ImGui::Button("Upscale Grid"))			//displays image
+			{
+				v_d_p->UpScaleGrid(v_d_p->GetGridSize(), image_scale);								//scales the "grid"/2darray structure - doing this means that the rest of the functions can be used. 
+				i_p_p->UpScaleVertexArray(v_d_p->GetGridSize(), image_scale, height_map);			//can scale a vertex array
+				resolution_ = resolution_ * image_scale;
+				v_d_p->SetGridSize(resolution_);
+				voronoi_d.resize(resolution_ * resolution_);
+			}
+			if (ImGui::Button("Test (scales final (if made))"))																//scales the "grid"/2darray structure - doing this means that the rest of the functions can be used. 
+			{
+				i_p_p->UpScaleVertexArray(v_d_p->GetGridSize(), image_scale, final_map);			//can scale a vertex array
+				resolution_ = resolution_ * image_scale;
+				v_d_p->SetGridSize(resolution_);
+				voronoi_d.resize(resolution_ * resolution_);
+			}
+			if (ImGui::Button("Scale Control-Points"))											//need to regenerate first, then upscale array, then this button and will display curve, need to select scale factor, and preform testing
+			{
+				s_p_p->OrderControlPoints();
+				s_p_p->ScaleControlPoints(image_scale);
+			}
 		}
-		if (ImGui::Button("Create Final Heightmap"))
+		ImGui::Text("\n");
+		if (ImGui::CollapsingHeader("Generate Options"))
 		{
-			i_p_p->CreateFinalHM(v_d_p->GetGridSize(), final_map, layers_);
+			if (ImGui::Button("Renerate (Noise Method)"))
+			{
+				v_d_p->vector_all(peaks_to_count_);
+				for (int i = 0; i < peaks_to_count_; i++)
+				{
+					v_d_p->FindMax(v_d_p->GetGridSize(), layers_, i_p_p->GetNoiseMap());
+					v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_, i, i_p_p->GetNoiseMap());
+				}
+				do
+				{
+					if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
+					{
+						t_t_p->ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
+					}
+					t_t_p->GenerateTerrainMethod(v_d_p, height_map, i_p_p, number_, track_type_);
+					t_t_p->CreateTrack(v_d_p, s_p_p);
+				} while (v_d_p->GetFailed() || s_p_p->GetFailed());
+
+			}
+			if (ImGui::Button("Regenerate"))
+			{
+				t_t_p->ClearStructs(v_d_p, voronoi_d, n_height_map, height_map, i_p_p, track_type_, resolution_, sites_, points_);
+				t_t_p->Generate(v_d_p, s_p_p, voronoi_d, height_map, n_height_map, i_p_p, times_, displacement_, number_, full_random_, track_type_);
+			}
+			if (ImGui::Button("Create Final Heightmap"))
+			{
+				i_p_p->CreateFinalHM(v_d_p->GetGridSize(), final_map, layers_);
+			}
+
+			if (ImGui::Button("Write to file"))
+			{
+				final_map.resize(v_d_p->GetGridSize() * v_d_p->GetGridSize());
+				i_p_p->CreateFinalHM(v_d_p->GetGridSize(), final_map, layers_);
+				i_p_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
+				s_p_p->WriteToFile(v_d_p->GetTrackMax(), v_d_p->GetTrackMin());
+			}
 		}
-	
-		if (ImGui::Button("Write to file"))
-		{
-			final_map.resize(v_d_p->GetGridSize() * v_d_p->GetGridSize());
-			i_p_p->CreateFinalHM(v_d_p->GetGridSize(), final_map, layers_);
-			i_p_p->WriteToFile(v_d_p->GetGridSize(), voronoi_d, layers_);
-			s_p_p->WriteToFile(v_d_p->GetTrackMax(),v_d_p->GetTrackMin());
-		}
-		if (ImGui::Button("Clear Console"))																	//https://stackoverflow.com/questions/5866529/how-do-we-clear-the-console-in-assembly/5866648#5866648
-		{
-			char fill = ' ';
-			COORD tl = { 0,0 };
-			CONSOLE_SCREEN_BUFFER_INFO s;
-			HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
-			GetConsoleScreenBufferInfo(console, &s);
-			DWORD written, cells = s.dwSize.X * s.dwSize.Y;
-			FillConsoleOutputCharacter(console, fill, cells, tl, &written);
-			FillConsoleOutputAttribute(console, s.wAttributes, cells, tl, &written);
-			SetConsoleCursorPosition(console, tl);
-		}
+		ImGui::Text("\n");
+
+		
 		ImGui::Text("\n");
 		ImGui::Text("\n");
 
@@ -260,103 +350,26 @@ int main()
 			ImGui::TextWrapped("To use noise method select factors like before and generate noise image first, selecting and changing alpha too. Then select 'generate (noise method)'");
 			ImGui::TextWrapped("Please Ignore 'Testing Options'");
 		}
-		if (ImGui::CollapsingHeader("Curves"))
-		{
-			ImGui::SliderFloat("Scale", &image_scale, 0, 1);
-			if (ImGui::Button("Downscale"))
-			{
-				i_p_p->ResizeImage(v_d_p->GetGridSize(),image_scale);								//need to first regenerate image, save image, then this button and it saves to output. "test.png"
-			}
-			if (ImGui::Button("Upscale Image and Save"))			//saves image
-			{
-				i_p_p->SaveUpScaledImage(v_d_p->GetGridSize(), voronoi_d,image_scale);				//need to regenerate image first, then this button and it saves to output. "test.jpg"
-			}
-			if (ImGui::Button("Upscale Grid"))			//displays image
-			{
-				v_d_p->UpScaleGrid(v_d_p->GetGridSize(), image_scale);								//scales the "grid"/2darray structure - doing this means that the rest of the functions can be used. 
-				i_p_p->UpScaleVertexArray(v_d_p->GetGridSize(), image_scale, height_map);			//can scale a vertex array
-				resolution_ = resolution_ * image_scale;
-				v_d_p->SetGridSize(resolution_);
-				voronoi_d.resize(resolution_* resolution_);
-			}
-			if (ImGui::Button("Test (scales final (if made))"))																//scales the "grid"/2darray structure - doing this means that the rest of the functions can be used. 
-			{
-				i_p_p->UpScaleVertexArray(v_d_p->GetGridSize(), image_scale, final_map);			//can scale a vertex array
-				resolution_ = resolution_ * image_scale;
-				v_d_p->SetGridSize(resolution_);
-				voronoi_d.resize(resolution_* resolution_);
-			}		
-			if (ImGui::Button("Scale Control-Points"))											//need to regenerate first, then upscale array, then this button and will display curve, need to select scale factor, and preform testing
-			{
-				s_p_p->OrderControlPoints();
-				s_p_p->ScaleControlPoints(image_scale);
-			}
-			if (ImGui::Button("DeCastelJau"))
-			{
-				s_p_p->OrderControlPoints();
-				d_c_j->CreateCurve(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), voronoi_d);				//draws curve
-			}
-			if (ImGui::Button("CatmullRom"))
-			{
-				s_p_p->OrderControlPoints();
-				bool looped = false;
-				if (track_type_==2)
-				{
-					looped = true;
-				}
-				c_r_s->CreateCurve(s_p_p->GetControlPoints(),v_d_p->GetGridSize(), voronoi_d, looped);
-			}
-			if (ImGui::Button("C"))
-			{
-				bool looped = false;
-				if (track_type_ == 2)
-				{
-					looped = true;
-				}
-				c_r_s->CreateCurve(v_d_p->GetGridSize(), voronoi_d,s_p_p->GetControlPoints(),looped);
-			}
-			if (ImGui::Button("Draw Control Points"))
-			{
-				s_p_p->OrderControlPoints();
-				c_r_s->DrawControlPoints(s_p_p->GetControlPoints(), v_d_p->GetGridSize(), voronoi_d);
-			}
-			if (ImGui::CollapsingHeader("Change ControlPoints"))
-			{
-				auto temp_ = s_p_p->GetControlPoints();
-				auto size_ = s_p_p->GetControlPoints().size();
-				std::vector<int> x_,y_;
-				for (int i = 0; i < size_; i++)
-				{
-					x_.push_back(temp_[i].x);
-					y_.push_back(temp_[i].x);
-				}
-				for (int i = 0; i < size_; i++)
-				{
-					int x_y[2] = { x_[i],y_[i] };
-					std::string s_x ="x: "+ std::to_string(i)+ " y: "+std::to_string(i);
-					const char* l_x = s_x.c_str();
-					ImGui::SliderInt2(l_x, x_y, 0, int(resolution_));
-					c_r_s->FixControlPoints(temp_, i, sf::Vector2i(x_y[0], x_y[1]));
-					s_p_p->SetControlPoints(temp_);
-				}
-			}
-			ImGui::SliderFloat("Definition of Curve:", &step_curve, 0, 1);
-			d_c_j->SetStepSize(step_curve);
-			ImGui::SliderFloat("Aplha for CatmullRom:", &alpha_cm_, 0, 1);
-			c_r_s->SetStepSize(alpha_cm_);
-		}
 		
+
 		if (ImGui::CollapsingHeader("Measurements"))
 		{
 			ImGui::Text("Total Length= %d", s_p_p->GetTotalDistance());
 			ImGui::Text("Number of Turns = %d", s_p_p->GetNumberOfTurns());
 			ImGui::Text("Number of Segments = %d", s_p_p->GetNumberOfSegments());
 		}
-
-		ImGui::Checkbox("Perform Testing?", &do_testing_);
-		s_p_p->SetTesting(do_testing_);
-		v_d_p->SetTesting(do_testing_);
-
+		if (ImGui::Button("Clear Console"))																	//https://stackoverflow.com/questions/5866529/how-do-we-clear-the-console-in-assembly/5866648#5866648
+		{
+			char fill = ' ';
+			COORD tl = { 0,0 };
+			CONSOLE_SCREEN_BUFFER_INFO s;
+			HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+			GetConsoleScreenBufferInfo(console, &s);
+			DWORD written, cells = s.dwSize.X * s.dwSize.Y;
+			FillConsoleOutputCharacter(console, fill, cells, tl, &written);
+			FillConsoleOutputAttribute(console, s.wAttributes, cells, tl, &written);
+			SetConsoleCursorPosition(console, tl);
+		}
 		ImGui::End();
 		//used to display the whole voronoi diagram
 		input_manager.HandleInput(v_d_p, voronoi_d, render_height_map_, n_render_height_map_, f_render_height_map_,i_p_p);
