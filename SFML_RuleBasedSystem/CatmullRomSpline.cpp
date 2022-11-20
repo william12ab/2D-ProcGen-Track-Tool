@@ -42,44 +42,19 @@ int* CatmullRomSpline::GetIndices(bool is_looped, float t, int size_)
 		p3 = (p2 + 1) % size_;
 		p0 = p1 >= 1 ? p1 - 1 : size_ - 1;					//if p1>= 1, true= p1-1, false = size-1
 	}
-	int arr[4]
-	return 
+	int arr[4] = { p0,p1,p2,p3 };
+	return arr;
 }
 
 sf::Vector2i CatmullRomSpline::CreatePoint(std::vector<sf::Vector2i> control_points, bool is_looped, float t)
 {
 	int p0, p1, p2, p3;
-	if (!is_looped)
-	{
-		p1 = (int)t + 1;
-		p2 = p1 + 1;
-		p3 = p2 + 1;
-		p0 = p1 - 1;
-		if (p3>=control_points.size())
-		{
-			p3 = control_points.size() - 1;
-		}
-		if (p2 >= control_points.size())
-		{
-			p2 = control_points.size() - 1;
-		}
-		if (p1 >= control_points.size())
-		{
-			p1 = control_points.size() - 1;
-		}
-		if (p0 >= control_points.size())
-		{
-			p0 = control_points.size() - 1;
-		}
-	}
-	else
-	{
-		p1 = (int)t;
-		p2 = (p1 + 1) % control_points.size();
-		p3 = (p2 + 1) % control_points.size();
-		p0 = p1 >= 1 ? p1 - 1 : control_points.size() - 1;					//if p1>= 1, true= p1-1, false = size-1
-	}
+	auto arr_ = GetIndices(is_looped, t, control_points.size());
 
+	p0 = arr_[0];
+	p1 = arr_[1];
+	p2 = arr_[2];
+	p3 = arr_[3];
 	t = t - (int)t;
 
 	float step_squared = t * t;
@@ -141,21 +116,14 @@ sf::Vector2f CatmullRomSpline::CentripetalCurve(float t, std::vector<sf::Vector2
 		p2 = p1 + 1;
 		p3 = p2 + 1;
 		p0 = p1 - 1;
-		if (p3 >= control_points.size())
+		if (j>=control_points.size()-3)
 		{
-			p3 = control_points.size() - 1;
-		}
-		if (p2 >= control_points.size())
-		{
-			p2 = control_points.size() - 1;
-		}
-		if (p1 >= control_points.size())
-		{
-			p1 = control_points.size() - 1;
-		}
-		if (p0 >= control_points.size())
-		{
-			p0 = control_points.size() - 1;
+			for (int i = 0; i < 3; i++)
+			{
+				auto second_ = control_points[control_points.size() - 1];
+				second_.x += 5, second_.y += 5;
+				control_points.push_back(second_);
+			}
 		}
 	}
 	else
@@ -213,6 +181,7 @@ void CatmullRomSpline::CreateCurve(int grid_size, sf::VertexArray& vertexarray, 
 
 	for (int j = 0; j < control_points.size(); j++)
 	{
+		
 		for (float i = 0; i < 1; i += step_size)
 		{
 			sf::Vector2f point = CentripetalCurve(i, control_points,j, is_looped);
