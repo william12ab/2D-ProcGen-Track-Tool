@@ -176,6 +176,7 @@ void CatmullRomSpline::CreateCurve(int grid_size, sf::VertexArray& vertexarray, 
 		}
 	}
 
+	
 
 	for (int j = 0; j < control_points.size(); j++)
 	{

@@ -121,6 +121,7 @@ void TrackTools::Generate(VoronoiDiagram* v_d_p, ShortestPath* s_p_p, sf::Vertex
 
 	} while (v_d_p->GetFailed() || s_p_p->GetFailed());
 	i_p_p->DrawTrack(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), v_d_p->GetGrid());
+	s_p_p->SortControlPoints();
 }
 
 void TrackTools::GenerateTerrainMethod(VoronoiDiagram* v_d_p, sf::VertexArray& vertex_array, ImageProcessing* i_p_p, int number_, int track_track_)

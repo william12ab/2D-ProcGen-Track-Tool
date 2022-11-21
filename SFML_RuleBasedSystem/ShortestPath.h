@@ -41,7 +41,7 @@ public:
 	void SetFailed(bool f) { failed_ = f; }
 	void SetTesting(bool f) { do_testing_ = f; }
 
-	
+	void SortControlPoints();
 
 	int DistanceSqrt(int x, int y, int x2, int y2);
 

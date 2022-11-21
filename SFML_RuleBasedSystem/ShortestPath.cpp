@@ -557,8 +557,8 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 					auto it = minmax_element(std::begin(occurances), std::end(occurances));
 					auto it_old = minmax_element(std::begin(old_occurances), std::end(old_occurances));
 
-					if (spaces_ > 1)
-					{
+					/*if (spaces_ > 1)
+					{*/
 						if (*it.first != *it_old.first || *it.second != *it_old.second)
 						{
 							number_of_turns++;
@@ -567,14 +567,13 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 							line_positions.emplace_back(first_position.first, first_position.second);
 							line_positions.emplace_back(x_holder, y_holder);
 							//control points for curves
-							//control_points.emplace_back(x_holder, y_holder);
 							temp_vec_c_p.emplace_back(x_holder, y_holder);
 							//
 							first_position.first = x_holder;
 							first_position.second = y_holder;
 							spaces_ = 0;
 						}
-					}
+					//}
 					old_occurances.clear();										//clear the vectors so that when it comes to checking a new poosition theres nothjing there
 					occurances.clear();
 				}
@@ -599,7 +598,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				segment_lengths_.push_back(DistanceSqrt(x_holder, y_holder, first_position.first, first_position.second));			//finds the length of the final segment 
 				line_positions.emplace_back(first_position.first, first_position.second);
 				line_positions.emplace_back(x_holder, y_holder);
-				//control_points.emplace_back(x_holder, y_holder);
 				temp_vec_c_p.emplace_back(x_holder, y_holder);
 				number_of_segments = segment_lengths_.size();
 			}
@@ -616,6 +614,18 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 		control_points.emplace_back(temp_vec_c_p[i]);
 	}
 
+
+
+}
+void ShortestPath::SortControlPoints()
+{
+	for (int i = 0; i < control_points.size() - 1; i++)
+	{
+		if (control_points[i].x == control_points[i + 1].x && control_points[i].y == control_points[i + 1].y)
+		{
+			control_points.erase(control_points.begin() + i);
+		}
+	}
 }
 
 void ShortestPath::ScaleControlPoints(float scale)

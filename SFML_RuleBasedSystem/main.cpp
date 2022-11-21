@@ -204,7 +204,7 @@ int main()
 				for (int i = 0; i < size_; i++)
 				{
 					x_.push_back(temp_[i].x);
-					y_.push_back(temp_[i].x);
+					y_.push_back(temp_[i].y);
 				}
 				for (int i = 0; i < size_; i++)
 				{
