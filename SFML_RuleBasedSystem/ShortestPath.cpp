@@ -320,25 +320,31 @@ void ShortestPath::PrintOutStartEnd(int grid_size, int* grid)
 		{
 			if (grid[(i * grid_size) + j] == 0)
 			{
-				int s = 2;
 				std::cout << "first x "<< j <<" y " << i; std::cout << std::endl;
 				start_p.first = j;
 				start_p.second = i;
 			}
 			if (grid[(i * grid_size) + j] == -3)
 			{
-				int s = 2;
 				std::cout << "second x " << j << " y " << i; std::cout << std::endl;
 				//end_p.first = j;
 				//end_p.second = i;
 			}
 			if (grid[(i * grid_size) + j] == -4)
 			{
-				int s = 0;
 				end_p.first = j;
 				end_p.second = i;
 				std::cout << "third x " << j << " y " <<i; std::cout << std::endl;
 			}
+			if (grid[(i * grid_size) + j] == -5)
+			{
+				std::cout << "fourth x " << j << " y " << i; std::cout << std::endl;
+			}
+			if (grid[(i * grid_size) + j] == -6)
+			{
+				std::cout << "fith x " << j << " y " << i; std::cout << std::endl;
+			}
+
 		}
 	}
 }
@@ -417,12 +423,12 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 
 			int& north = grid[((y_holder - 1) * grid_size) + x_holder];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
 			int& northE = grid[((y_holder - 1) * grid_size) + (x_holder + 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
+			int& northW = grid[((y_holder - 1) * grid_size) + (x_holder - 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
 			int& east = grid[(y_holder * grid_size) + (x_holder + 1)];		//east 
 			int& south = grid[((y_holder + 1) * grid_size) + x_holder];
 			int& southE = grid[((y_holder + 1) * grid_size) + (x_holder + 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
 			int& southW = grid[((y_holder + 1) * grid_size) + (x_holder - 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
 			int& west = grid[(y_holder * grid_size) + (x_holder - 1)];	//west
-			int& northW = grid[((y_holder - 1) * grid_size) + (x_holder - 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
 			if (north == count_holder)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 			{
 				y_holder -= 1;
@@ -445,7 +451,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				x_holder += 1;
 				grid[(y_holder * grid_size) + x_holder] = -12303;
 				count_holder -= 1;
-				//			break;
 				how_many++;
 				total_track_distance++;
 			}
@@ -501,7 +506,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 			}
 			if (do_testing_)
 			{
-
 				//this finds the sites in a 9x9 position from the current point
 				north_site = old_num[((y_holder - 1)* grid_size) + (x_holder)];
 				north_e_site = old_num[((y_holder - 1) * grid_size) + (x_holder + 1)];
@@ -557,12 +561,11 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 					auto it = minmax_element(std::begin(occurances), std::end(occurances));
 					auto it_old = minmax_element(std::begin(old_occurances), std::end(old_occurances));
 
-					/*if (spaces_ > 1)
+				/*	if (spaces_ > 1)
 					{*/
 						if (*it.first != *it_old.first || *it.second != *it_old.second)
 						{
 							number_of_turns++;
-
 							segment_lengths_.push_back(DistanceSqrt(first_position.first, first_position.second, x_holder, y_holder));
 							line_positions.emplace_back(first_position.first, first_position.second);
 							line_positions.emplace_back(x_holder, y_holder);
@@ -613,9 +616,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 	{
 		control_points.emplace_back(temp_vec_c_p[i]);
 	}
-
-
-
 }
 void ShortestPath::SortControlPoints()
 {

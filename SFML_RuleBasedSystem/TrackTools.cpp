@@ -87,13 +87,11 @@ void TrackTools::CreateTrack(VoronoiDiagram* v_d_p, ShortestPath* s_p_p)
 			s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), -3, 0);
 			s_p_p->ChangePoint(v_d_p->GetGridSize(), v_d_p->GetGrid(), start - i, -3);
 			s_p_p->CleanGrid(v_d_p->GetGridSize(), v_d_p->GetGrid());
-			//std::cout << "successful path\n";
 		}
 
 	}
 	else
 	{
-		//the_clock::time_point startTime = the_clock::now();
 		for (int i = 0; i < (v_d_p->GetNumberOfPoints() - 1) && !s_p_p->GetFailed(); i++)
 		{
 			s_p_p->PhaseOne(v_d_p->GetGridSize(), v_d_p->GetGrid(), s_p_p->GetCountHolder(), s_p_p->bGetFoundEnd(), s_p_p->GetIt(), s_p_p->bGetEnd(), s_p_p->GetXHolder(), s_p_p->GetYHolder(), -3, s_p_p->GetFailed(), 0, v_d_p->GetGridSize());
