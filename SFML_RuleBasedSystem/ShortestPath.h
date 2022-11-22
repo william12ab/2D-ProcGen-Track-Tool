@@ -51,6 +51,9 @@ public:
 
 	void OrderControlPoints();
 	void ScaleControlPoints(float scale);
+
+	void SetNESW(int y_holder, int x_holder, int grid_size, std::vector<int> &occ);
+	void EraseVector(std::vector<int> &occ, int &unique);
 	
 private:
 
