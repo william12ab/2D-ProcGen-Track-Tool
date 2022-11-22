@@ -398,8 +398,13 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 		{
 			if (do_testing_)
 			{
-				if (unique_count_occuarances == 2 || unique_count_occuarances == 0)		//so if the previous position is not 1 or 3 then find new but if not dont. 
+				if (unique_count_occuarances != 3 && unique_count_occuarances != 1 && unique_count_occuarances != 4 )		//so if the previous position is not 1 or 3 then find new but if not dont. 
 				{
+					if (unique_count_occuarances>4)					//test code
+					{
+						int ur = 23;
+					}
+					old_occurances.clear();
 					north_site = old_num[((y_holder - 1) * grid_size) + (x_holder)];
 					north_e_site = old_num[((y_holder - 1) * grid_size) + (x_holder + 1)];
 					north_w_site = old_num[((y_holder - 1) * grid_size) + (x_holder - 1)];
@@ -526,8 +531,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				occurances.push_back(south_e_site);
 				occurances.push_back(south_w_site);
 
-				
-
 				//this removes all numbers that arent site numbers - eg possible tracks or start/end positions
 				old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 0), old_occurances.end());
 				old_occurances.erase(std::remove(old_occurances.begin(), old_occurances.end(), 2000), old_occurances.end());
@@ -550,9 +553,11 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 				std::sort(old_occurances.begin(), old_occurances.end());
 				unique_count_old_occuarances = std::unique(old_occurances.begin(), old_occurances.end()) - old_occurances.begin();
 
-				spaces_++;
-
-
+				//test code
+				if (unique_count_old_occuarances >4||unique_count_occuarances>4)
+				{
+					int hee = 23;
+				}
 				
 				//if all of them are == to 2 then check for corner 
 				if (unique_count_occuarances == 2 && unique_count_old_occuarances == 2)
@@ -561,27 +566,25 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 					auto it = minmax_element(std::begin(occurances), std::end(occurances));
 					auto it_old = minmax_element(std::begin(old_occurances), std::end(old_occurances));
 
-				/*	if (spaces_ > 1)
-					{*/
-						if (*it.first != *it_old.first || *it.second != *it_old.second)
-						{
-							number_of_turns++;
-							segment_lengths_.push_back(DistanceSqrt(first_position.first, first_position.second, x_holder, y_holder));
-							line_positions.emplace_back(first_position.first, first_position.second);
-							line_positions.emplace_back(x_holder, y_holder);
+					if (*it.first != *it_old.first || *it.second != *it_old.second)
+					{
+						number_of_turns++;
+						segment_lengths_.push_back(DistanceSqrt(first_position.first, first_position.second, x_holder, y_holder));
+						line_positions.emplace_back(first_position.first, first_position.second);
+						line_positions.emplace_back(x_holder, y_holder);
 							//control points for curves
-							temp_vec_c_p.emplace_back(x_holder, y_holder);
+						temp_vec_c_p.emplace_back(x_holder, y_holder);
 							//
-							first_position.first = x_holder;
-							first_position.second = y_holder;
-							spaces_ = 0;
-						}
-					//}
+						first_position.first = x_holder;
+						first_position.second = y_holder;
+					}
 					old_occurances.clear();										//clear the vectors so that when it comes to checking a new poosition theres nothjing there
 					occurances.clear();
 				}
 				else
 				{
+					std::cout << unique_count_old_occuarances << "\n";
+					std::cout << unique_count_occuarances << "\n";
 					occurances.clear();						//only clear the new positions sites not the old if there are not 2 sites in it - you want to preserve the old position because this is where a change begins	
 				}
 			}
@@ -592,8 +595,6 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 			}
 		}
 		
-		
-
 		if (count_holder<=end_n)
 		{
 			if (do_testing_)
@@ -609,7 +610,7 @@ void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, in
 		}
 	}
 
-
+	std::cout << spaces_ << "\n";
 	//re orderers the vector to follow thje correct order - also fixes issue with multiple points.
 	std::reverse(temp_vec_c_p.begin(),temp_vec_c_p.end());
 	for (int i = 0; i < temp_vec_c_p.size(); i++)
