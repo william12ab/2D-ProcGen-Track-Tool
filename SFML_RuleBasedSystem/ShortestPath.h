@@ -54,6 +54,8 @@ public:
 
 	void SetNESW(int y_holder, int x_holder, int grid_size, std::vector<int> &occ);
 	void EraseVector(std::vector<int> &occ, int &unique);
+
+	void FindCompassPoss(int compass, int &count_holdeer, int &y_holder, int &x_holder, int* grid, int grid_size, int &how_many, int &track_d, int x, int y);
 	
 private:
 
