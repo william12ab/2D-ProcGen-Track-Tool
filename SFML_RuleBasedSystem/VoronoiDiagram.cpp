@@ -361,6 +361,50 @@ void VoronoiDiagram::SetPointModi(int& x, int&x_2, int& y, int&y_2, int grid_siz
 	y_2 = (grid_size * y_v_2);
 }
 
+void VoronoiDiagram::PlacePoint(int x, int y, int grid_size, int i, bool& found_)
+{
+	if (grid_v_1[(y * grid_size) + x] == 0)
+	{
+		found_ = true;
+		grid_v_1[(y * grid_size) + x] = 2000 + i;
+	}
+}
+
+void VoronoiDiagram::ThreePoints(int grid_size, int num_points, bool& b_failed, float values_[12])
+{
+	int x_pos_one;
+	int x_pos_two;
+	int y_pos_one;
+	int y_pos_two;
+	SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, grid_size, values_[0], values_[1], values_[2], values_[3]);
+	for (int i = 0; i < num_points; i++)
+	{
+		bool found = false;
+		int counter = 0;
+		while (!found)
+		{
+			int x = rand() % x_pos_one + x_pos_two;
+			int y = rand() % y_pos_one + y_pos_two;
+			PlacePoint(x, y, grid_size, i, found);
+			counter++;
+			if (counter > 200)
+			{
+				b_failed = true;
+				break;
+				std::cout << "didnt set a point\n";
+			}
+		}
+		if (i == 0)
+		{
+			SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, grid_size, values_[4], values_[5], values_[6], values_[7]);
+		}
+		if (i == 1)
+		{
+			SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, grid_size, values_[8], values_[9], values_[10], values_[11]);
+		}
+	}
+}
+
 //clear the vector if empty
 //find out what type and then how many points
 //two different methods, loop needs to go in a loop, point to point needs to go from one side to other.
@@ -373,49 +417,19 @@ void VoronoiDiagram::SetPointModi(int& x, int&x_2, int& y, int&y_2, int grid_siz
 void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_failed)
 {
 	//zero is iother, 1 is p2p,2 loop
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::default_random_engine generator(seed);
+	std::uniform_int_distribution<int> distribution((grid_size / 16), (int)(grid_size / 1.1));
+
 
 	switch (type)
 	{
 	case 0:
 	{
-		int x_pos_one; 
-		int x_pos_two;
-		int y_pos_one;
-		int y_pos_two;
-		SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, grid_size, 0.3, 0.01, 0.2, 0.75);
-		for (int i = 0; i < num_points; i++)
-		{
-			bool found = false;
-			int counter = 0;
-			while (!found)
-			{
-				int x = rand() % x_pos_one + x_pos_two;
-				int y = rand() % y_pos_one + y_pos_two;
-				if (grid_v_1[(y * grid_size) + x] == 0)
-				{
-					found = true;
-					grid_v_1[(y * grid_size) + x] = 2000 + i;
-				}
-				counter++;
-				if (counter > 200)
-				{
-					b_failed = true;
-					break;
-					std::cout << "didnt set a point\n";
-				}
-			}
-			if (i == 0)
-			{
-				SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, grid_size, 0.2, 0.45, 0.3, 0.01);
-			}
-			if (i == 1)
-			{
-				SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, grid_size, 0.2, 0.75, 0.2, 0.75);
-			}
-		}
+		float arr[12] = { 0.3f,0.05f,0.2f,0.75f, 0.2f,0.45f,0.4f,0.05f, 0.2f,0.75f,0.2f,0.75f };
+		ThreePoints(grid_size, num_points, b_failed, arr);
 	}
 	break;
-
 	case 1:
 	{
 		int iter = grid_size / num_points;
@@ -437,12 +451,8 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 				counter++;
 				//so first is between 0 and grid_size/numpoints, second is iter and iter+iter, etc
 				int x = rand() % iter + start;
-				int y = rand() % (int)(grid_size / 1.1) + (grid_size / 16);
-				if (grid_v_1[(y * grid_size) + x] == 0)
-				{
-					found = true;
-					grid_v_1[(y * grid_size) + x] = 2000 + i;
-				}
+				int y = distribution(generator);
+				PlacePoint(x, y, grid_size, i, found);
 				if (counter > 200)
 				{
 					failed_ = true;
@@ -457,43 +467,8 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 	break;
 	case 2:
 	{
-		int x_pos_one;
-		int x_pos_two;
-		int y_pos_one;
-		int y_pos_two;
-		SetPointModi(x_pos_one,x_pos_two,y_pos_one,y_pos_two,grid_size,0.05f,0.15f,0.2f,0.4f);
-		for (int i = 0; i < num_points; i++)				//run for number of points needed(3)
-		{
-			bool found = false;
-			int counter = 0;
-			while (!found)									//create a point in the ranges until that point exists on the v_d
-			{
-				int x = rand() % x_pos_one + x_pos_two;
-				int y = rand() % y_pos_one + y_pos_two;
-				if (grid_v_1[(y * grid_size) + x] == 0)			//if found then set the grid structure to be the starting/middle/end point
-				{
-					found = true;
-					grid_v_1[(y * grid_size) + x] = 2000 + i;
-				}
-				counter++;
-				if (counter > 200)								//this is used incase there is no point that could be this - so if its taken too long to search for a point, give up and let the main program know that youve given up so it can make a decision from there
-				{
-					failed_ = true;
-					break;
-					std::cout << "didnt set a point\n";
-				}
-			}
-			std::cout << "counter(how many iters to find point): " << counter << std::endl;
-
-			if (i == 0)					//now change the point selection based on the iterator, so change to the middle and then the end for the selection
-			{
-				SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, grid_size, 0.20f, 0.40f, 0.15f, 0.15f);
-			}
-			if (i == 1)
-			{	
-				SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, grid_size, 0.05f, 0.80f, 0.2f, 0.4f);
-			}
-		}
+		float arr[12] = { 0.05f,0.15f,0.2f,0.4f, 0.2f,0.4f,0.15f,0.15f, 0.05f,0.80f,0.2f,0.4f };
+		ThreePoints(grid_size, num_points, b_failed, arr);
 	}
 	break;
 	}
