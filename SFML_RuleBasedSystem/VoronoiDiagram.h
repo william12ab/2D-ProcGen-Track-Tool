@@ -11,7 +11,6 @@ public:
 	~VoronoiDiagram();
 	
 	void RandomPlaceSites(int num_sites, int grid_size);				//distrubutes the sites
-	void EqualDSites(int num_sites, int grid_size, int times_, int displacement);						//distributes the sites in equal distance first then displaces them 
 	void EqaullyDispursSites(int num_sites, int grid_size, int times_, int displacement);
 	void DistributeSites(int num_sites, int grid_size);					//random but one in the centre
 	void TerrainSites(int num_sites, int grid_size);
@@ -41,6 +40,9 @@ public:
 	int GetGridSize() { return grid_size_x; };							//returns the size of the grid
 	int GetType() { return type; };										//returns the type of track, closed or open
 	int GetNumberOfPoints() { return num_of_points; }					//returns the number of points
+	bool GetTesting() { return do_testing_; }
+	int GetTrackMax() { return track_max; }
+	int GetTrackMin() { return track_min; }
 	//
 
 	//setters
@@ -49,6 +51,8 @@ public:
 	void SetNumberOfPoints(int p) { num_of_points = p; }				//sets the number of points in the track
 	void SetType(int p) { type = p; }									//sets the type of track
 	void SetFaile(bool f) { failed_ = f; }
+	void SetTesting(bool f) { do_testing_ = f; }
+
 	//
 	
 	//these functions should go in another class
@@ -62,16 +66,8 @@ public:
 
 	void ResizeGrid(int grid_size, float scale);																//resizes the grid
 	void UpScaleGrid(int grid_size, float scale);																//upscales the grid
-
-
-	int GetTrackMax() { return track_max; }
-	int GetTrackMin() { return track_min; }
-
-
 	void vector_all(int size);
 
-	void SetTesting(bool f) { do_testing_ = f; }
-	bool GetTesting() { return do_testing_; }
 private:
 	SimplexNoise perlin_;
 
@@ -79,16 +75,11 @@ private:
 	int num_of_sites;							//number of sites that form the diagram
 	int num_of_points;							//number of points that form the track.
 	int type;
-
 	int grid_size_x;							//size in the x axis of the diagram
-
 	int* sites_v_1;								//stores the sites in dynamic array
 	int* grid_v_1;								//stores the grid in dynamic array
-
 	int* grid_distance;
 
-
-	
 	std::vector<int> temp_rad;
 
 	int max_distance_;

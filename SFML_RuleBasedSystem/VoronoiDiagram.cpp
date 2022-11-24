@@ -22,24 +22,16 @@ VoronoiDiagram::VoronoiDiagram()
 	grid_distance = nullptr;
 	failed_ = false;
 	srand(static_cast <unsigned> (time(0)));
-
 	max_distance_ = 0;
 	site_iterator = 0;
-
 	high_point = 0;
 	high_point_x = 0;
 	high_point_y = 0;
 	found_raidus = false;
 	radius_length = 0;
-
-	
-
 	do_testing_ = false;
-	
-	track_max=0;
-	track_min=0;
-
-
+	track_max = 0;
+	track_min = 0;
 }
 
 VoronoiDiagram::~VoronoiDiagram()
@@ -53,8 +45,8 @@ void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
 {
 	grid_size_x = grid_size;
 	grid_v_1 = new int[grid_size_x * grid_size_x];
-	grid_distance = new int[ grid_size_x * grid_size_x ];
-	sites_v_1 = new int[num_sites*2];
+	grid_distance = new int[grid_size_x * grid_size_x];
+	sites_v_1 = new int[num_sites * 2];
 }
 
 void VoronoiDiagram::ResizeGrid(int grid_size, float scale)
@@ -134,11 +126,14 @@ void VoronoiDiagram::UpScaleGrid(int grid_size, float scale)
 
 void VoronoiDiagram::RandomPlaceSites(int num_sites, int grid_size)
 {
-	
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::default_random_engine generator(seed);
+	std::uniform_int_distribution<int> distribution(0, grid_size);
 	//loop over the number of sites and push back sites
-	for (int i = 0; i < (num_sites*2); i++)
+	for (int i = 0; i < (num_sites * 2); i++)
 	{
-		sites_v_1[i] = rand() % grid_size;
+		sites_v_1[i] = distribution(generator);
+		//sites_v_1[i] = rand() % grid_size;
 	}
 }
 
@@ -148,22 +143,21 @@ void VoronoiDiagram::DistributeSites(int num_sites, int grid_size)
 {
 	for (int i = 0; i < (num_sites * 2); i++)
 	{
-		
 		sites_v_1[i] = rand() % (grid_size);
 		i++;
-		sites_v_1[i] = rand() % (grid_size );
+		sites_v_1[i] = rand() % (grid_size);
 	}
-	sites_v_1[24] = grid_size/2;
-	sites_v_1[25] = grid_size/2;
+	sites_v_1[24] = grid_size / 2;
+	sites_v_1[25] = grid_size / 2;
 	for (int i = 0; i < (num_sites * 2); i++)
 	{
 		//if x is within the x of number 24 and if y is within y of 25
 		if (i != 24)
 		{
-			if (sites_v_1[i] > (sites_v_1[24] - 50) && sites_v_1[i]< (sites_v_1[24] + 50) && sites_v_1[i + 1] > (sites_v_1[25] - 50) && sites_v_1[i+1] < (sites_v_1[25] + 50))
+			if (sites_v_1[i] > (sites_v_1[24] - 50) && sites_v_1[i]< (sites_v_1[24] + 50) && sites_v_1[i + 1] > (sites_v_1[25] - 50) && sites_v_1[i + 1] < (sites_v_1[25] + 50))
 			{
-				int s = sites_v_1[24]-sites_v_1[i];
-				sites_v_1[i] -= rand() % 50+ 100;
+				int s = sites_v_1[24] - sites_v_1[i];
+				sites_v_1[i] -= rand() % 50 + 100;
 				i++;
 				int a = sites_v_1[25] - sites_v_1[i];
 				sites_v_1[i] -= rand() % 50 + 100;
@@ -197,11 +191,11 @@ void VoronoiDiagram::EqaullyDispursSites(int num_sites, int grid_size, int times
 	int site_iter = 0;											//index for sites
 	for (int i = 0; i < sqrt_sites; i++)
 	{
-		for (int j =0; j< sqrt_sites;j++)
+		for (int j = 0; j < sqrt_sites; j++)
 		{
 			sites_v_1[site_iter] = (x_spacing - x_modifier);					//sets x
 			site_iter++;
-			sites_v_1[site_iter] =(y_spacing - y_modifier);						//sets y
+			sites_v_1[site_iter] = (y_spacing - y_modifier);						//sets y
 			site_iter++;
 			x_spacing += spacing_;												//add to spacing
 		}
@@ -246,109 +240,6 @@ void VoronoiDiagram::EqaullyDispursSites(int num_sites, int grid_size, int times
 }
 
 
-void VoronoiDiagram::EqualDSites(int num_sites, int grid_size, int times_, int displacement)
-{	
-	srand(time(NULL));
-	site_iterator = 0;
-	sites_v_1[site_iterator] = 0;
-	site_iterator++;
-	sites_v_1[site_iterator] = 0;
-	site_iterator++;
-
-	sites_v_1[site_iterator] = 0;
-	site_iterator++;
-	sites_v_1[site_iterator] = (grid_size-1);
-	site_iterator++;
-
-	sites_v_1[site_iterator] = grid_size;
-	site_iterator++;
-	sites_v_1[site_iterator] = (grid_size)-1;
-	site_iterator++;
-
-	sites_v_1[site_iterator] = grid_size;
-	site_iterator++;
-	sites_v_1[site_iterator] = (grid_size - 1);
-	site_iterator++;
-
-	//only works for 25 sites for some reason
-	//so 25 = 256, 81 = 128, 289=64
-	int iter_max = 0;
-	if (num_sites==25)
-	{
-		iter_max = 256;
-	}
-	if (num_sites==81)
-	{
-		iter_max = 128;
-	}
-	for (int sideLength = grid_size - 1; sideLength >= iter_max; sideLength /= 2)
-	{
-		int halfSide = sideLength / 2;
-
-		//diamond
-		for (int y = 0; y < (grid_size - 1); y += sideLength)
-		{
-			for (int x = 0; x < (grid_size - 1); x += sideLength)
-			{
-				sites_v_1[site_iterator] = (x + halfSide);
-				site_iterator++;
-				sites_v_1[site_iterator] = y + halfSide;
-				site_iterator++;
-			}
-		}
-			//square
-		for (int j = 0; j < (grid_size ); j += halfSide)
-		{
-			for (int i = (j + halfSide) % sideLength; i < (grid_size ); i += sideLength)
-			{
-				sites_v_1[site_iterator] = i;
-				site_iterator++;
-				sites_v_1[site_iterator] = j;
-				site_iterator++;
-			}
-
-		}
-
-	}
-
-	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-	std::default_random_engine generator(seed);
-	std::uniform_int_distribution<int> distribution(-displacement, displacement);
-
-	
-	for (int t = 0; t < times_; t++)
-	{
-		for (int i = 0; i < (num_sites * 2); i++)
-		{
-			sites_v_1[i] += distribution(generator);
-			//sites_v_1[i] += rand() % (displacement *2) + (-displacement);
-			//so this is the amount added on
-			//so between -80 and 80
-			if (sites_v_1[i] >= grid_size)									//if bigger than the max res then max res - the amount bigger than = new pos
-			{
-				int difference = sites_v_1[i] - grid_size;
-				sites_v_1[i] = grid_size - difference;
-			}
-			if (sites_v_1[i] <= 0)											//if less than, new pos = amount less than but positive
-			{
-				sites_v_1[i] += (-sites_v_1[i] - sites_v_1[i]);
-			}
-			i++;
-			//sites_v_1[i] += rand() % (displacement * 2) + (-displacement);
-			sites_v_1[i] += distribution(generator);
-			if (sites_v_1[i] >= grid_size)
-			{
-				int difference = sites_v_1[i] - grid_size;
-				sites_v_1[i] = grid_size - difference;
-			}
-			if (sites_v_1[i] <= 0)
-			{
-				sites_v_1[i] += (-sites_v_1[i] - sites_v_1[i]);
-			}
-		}
-	}
-}
-
 
 int VoronoiDiagram::DistanceSqrt(int x, int y, int x2, int y2)
 {
@@ -363,17 +254,13 @@ void VoronoiDiagram::DiagramAMP(int num_sites, int grid_size)
 	max_distance_ = 0;
 	int* incr;
 	incr = new int[num_sites];
-
-	
-
 	for (int i = 0; i < num_sites; i++)
 	{
 		incr[i] = i + 1;
 	}
 
-
 	parallel_for(0, grid_size, [&](int j)
-	{
+		{
 			for (int i = 0; i < grid_size; i++)
 			{
 				int ind = -1, dist = INT_MAX;
@@ -382,14 +269,13 @@ void VoronoiDiagram::DiagramAMP(int num_sites, int grid_size)
 				for (int p = 0; p < num_sites; p++)
 				{
 					d = DistanceSqrt(sites_v_1[s], sites_v_1[s + 1], i, j);
-					
+
 					s += 2;
 					if (d < dist)
 					{
 						dist = d;
 						ind = p;
 					}
-					
 				}
 				//so if this point has a distance which all points do
 				if (ind > -1)
@@ -405,10 +291,8 @@ void VoronoiDiagram::DiagramAMP(int num_sites, int grid_size)
 					int w = grid_v_1[(j * grid_size) + i];
 				}
 			}
-	});
+		});
 	delete[] incr;
-
-	//std::cout << "max distance :" << max_distance_<<"\n";
 }
 
 
@@ -419,45 +303,44 @@ void VoronoiDiagram::DiagramAMP(int num_sites, int grid_size)
 //relative to the distance the cell is found of the diagram.
 void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size, int start, int end)
 {
-	int d = 0;											
+	int d = 0;
 	int* incr;
 	incr = new int[num_sites];
-	
+
 	for (size_t i = 0; i < num_sites; i++)
 	{
-		incr[i] = i+1;
+		incr[i] = i + 1;
 	}
 	for (size_t j = start; j < end; j++)
 	{
-		for (size_t i=0;i< grid_size;i++)
+		for (size_t i = 0; i < grid_size; i++)
 		{
 			int ind = -1, dist = INT_MAX;
 
 			int s = 0;
 			for (int p = 0; p < num_sites; p++)
 			{
-				d = DistanceSqrt(sites_v_1[s], sites_v_1[s+1], i, j);
+				d = DistanceSqrt(sites_v_1[s], sites_v_1[s + 1], i, j);
 				s += 2;
-		
-				if (d<dist)
+
+				if (d < dist)
 				{
 					dist = d;
 					ind = p;
 				}
 			}
 			//so if this point has a distance which all points do
-			if (ind>-1)
+			if (ind > -1)
 			{
 				int s = grid_v_1[(j * grid_size) + i];
 				int p = incr[ind];
-				grid_v_1[(j* grid_size)+i]=incr[ind];
+				grid_v_1[(j * grid_size) + i] = incr[ind];
 				grid_distance[(j * grid_size) + i] = dist;
 				int w = grid_v_1[(j * grid_size) + i];
 			}
 		}
 	}
 	delete[] incr;
-
 }
 
 
@@ -470,35 +353,25 @@ void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size, int start, int 
 //so if theres 25 sites, each position will be 1-25 
 void VoronoiDiagram::SetEdges(int grid_size)
 {
-
 	for (int j = 0; j < grid_size; j++)
 	{
-		for (int i=0; i< grid_size; i++)
+		for (int i = 0; i < grid_size; i++)
 		{
-			if (i+1<grid_size&& j + 1 < grid_size)		//if in the bounds
+			if (i + 1 < grid_size && j + 1 < grid_size)		//if in the bounds
 			{
 				if (grid_v_1[(j * grid_size) + i] != grid_v_1[(j * grid_size) + (i + 1)])		//if the current pos and pos 1 to the left are not the same
 				{
-					
 					grid_v_1[(j * grid_size) + i] = 0;			//set to path way
 					//here you could find what the sites bordering are
-
 				}
 				else if (grid_v_1[(j * grid_size) + i] != grid_v_1[((j + 1) * grid_size) + i])
 				{
-		
 					grid_v_1[(j * grid_size) + i] = 0;
-
 				}
 			}
-
-
 		}
 	}
 }
-
-
-
 
 void VoronoiDiagram::FindMax(int grid_size, int layers_, int* noise_grid)
 {
@@ -524,17 +397,17 @@ void VoronoiDiagram::FindMax(int grid_size, int layers_, int* noise_grid)
 					int a = pow((j - circles_[c].centre_x), 2);				//x part squared
 					int b = pow((i - circles_[c].centre_y), 2);
 
-					if (a+b>r)		//outside the circle, so find the max
+					if (a + b > r)		//outside the circle, so find the max
 					{
 						not_found_in_circle = false;
-						
+
 					}
 					else
 					{
 						found_in_first_circle = true;
 					}
 				}
-				if (!not_found_in_circle&&!found_in_first_circle)				//so if not in ANY circle 
+				if (!not_found_in_circle && !found_in_first_circle)				//so if not in ANY circle 
 				{
 					if (!found_in_first_circle)
 					{
@@ -559,7 +432,7 @@ void VoronoiDiagram::FindMax(int grid_size, int layers_, int* noise_grid)
 					high_point_y = i;
 				}
 			}
-		
+
 		}
 	}
 
@@ -600,15 +473,15 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 					grid_v_1[(y * grid_size) + x] = 2000 + i;
 				}
 				counter++;
-				if (counter>200)
+				if (counter > 200)
 				{
 					b_failed = true;
 					break;
 					std::cout << "didnt set a point\n";
 				}
 			}
-			std::cout <<"counter(how many iters to find point): "<< counter<<std::endl;
-			if (i==0)
+			std::cout << "counter(how many iters to find point): " << counter << std::endl;
+			if (i == 0)
 			{
 				x_pos_one = (grid_size * 0.20);
 				x_pos_two = (grid_size * 0.45);
@@ -624,7 +497,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 			}
 		}
 	}
-		break;
+	break;
 
 	case 1:
 	{
@@ -636,7 +509,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 		{
 
 			bool found = false;
-			if (start+iter>grid_size)
+			if (start + iter > grid_size)
 			{
 				int difference_ = (start + iter) - grid_size;
 				start -= difference_;
@@ -665,7 +538,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 			start += iter;
 		}
 	}
-		break;
+	break;
 	case 2:
 	{
 		int x_pos_one = (grid_size * 0.05);					//setting initial points so start point ranges
@@ -711,30 +584,29 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 			}
 		}
 	}
-		break;
+	break;
 	}
-
 }
 
 
-void VoronoiDiagram::HighPointFunc(int grid_size, int radius_cutoff_, int layers_,int index_v,int* noise_h_m)
+void VoronoiDiagram::HighPointFunc(int grid_size, int radius_cutoff_, int layers_, int index_v, int* noise_h_m)
 {
 	//identify where x and y are in relation to the complete image
 	//so are they top left, top right, bottom left, bottom right
 	//then mark that as the direction to go in 
-	int signal, x_pos,y_pos;
+	int signal, x_pos, y_pos;
 	std::cout << "HIGHEST point(peak): " << high_point_x << " " << high_point_y << "\n";
-	if (high_point_x<=(grid_size/2) && high_point_y<=(grid_size/2))
-	{ 
+	if (high_point_x <= (grid_size / 2) && high_point_y <= (grid_size / 2))
+	{
 		//square 1 in diagram(top left) - going south east
 		//[((y-1)*grid_size) + (x+1)]
 		//y=-1, x=+1;
-		x_pos =1;
-		y_pos =1;
+		x_pos = 1;
+		y_pos = 1;
 		signal = 1;
-		
+
 	}
-	else if (high_point_x>= (grid_size / 2) && high_point_x <= (grid_size) && high_point_y<=(grid_size/2))
+	else if (high_point_x >= (grid_size / 2) && high_point_x <= (grid_size) && high_point_y <= (grid_size / 2))
 	{
 		//square 2 in diagram(top right) - going south west 
 		//[((y-1)*grid_size) + (x-1)]
@@ -742,43 +614,43 @@ void VoronoiDiagram::HighPointFunc(int grid_size, int radius_cutoff_, int layers
 		x_pos = -1;
 		y_pos = 1;
 		signal = 2;
-		
+
 	}
-	else if (high_point_x<=(grid_size/2) && high_point_y>=(grid_size/2) && high_point_y<=grid_size)
+	else if (high_point_x <= (grid_size / 2) && high_point_y >= (grid_size / 2) && high_point_y <= grid_size)
 	{
 		//square 3 in diagram(bottom left) - going north east
 		//[((y+1)*grid_size) + (x+1)]
 		//y=+1,x=+1
 		signal = 3;
 		x_pos = 1;
-		y_pos =- 1;
+		y_pos = -1;
 	}
-	else if (high_point_x >= (grid_size / 2) && high_point_x <= (grid_size) && high_point_y>=(grid_size / 2) && high_point_y <= grid_size)
+	else if (high_point_x >= (grid_size / 2) && high_point_x <= (grid_size) && high_point_y >= (grid_size / 2) && high_point_y <= grid_size)
 	{
 		//square 4 in diagram(bottom right) - going north west
 		//[((y+1)*grid_size) + (x-1)]
 		//y=+1, x=-1
 		signal = 4;
-		x_pos =- 1;
-		y_pos =- 1;	
+		x_pos = -1;
+		y_pos = -1;
 	}
 	temp_rad.resize(2);
-	
-	LoopPart(grid_size, x_pos, y_pos, signal, radius_cutoff_, layers_,1,0, noise_h_m);
-	LoopPart(grid_size, -x_pos, -y_pos, signal, radius_cutoff_, layers_,-1,1, noise_h_m);
+
+	LoopPart(grid_size, x_pos, y_pos, signal, radius_cutoff_, layers_, 1, 0, noise_h_m);
+	LoopPart(grid_size, -x_pos, -y_pos, signal, radius_cutoff_, layers_, -1, 1, noise_h_m);
 	radiiDecider(index_v);
 }
 
-void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place,int*noise_h_m)
+void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place, int* noise_h_m)
 {
-	int y =high_point_y;
-	int x=high_point_x;
+	int y = high_point_y;
+	int x = high_point_x;
 	int iterator_ = 0;
 	found_raidus = false;
 	do
 	{
 		//travelled the length of the radius then set found etc
-		if (y > 0 &&  x>0 &&y<400 &&x<400)
+		if (y > 0 && x > 0 && y < 400 && x < 400)
 		{
 			if ((noise_h_m[((y + y_value_) * grid_size) + (x + x_value_)] / layers_) <= (radius_cutoff_))
 			{
@@ -819,36 +691,34 @@ void VoronoiDiagram::LoopPart(int grid_size, int x_value_, int y_value_, int sig
 			found_raidus = true;
 			temp_rad.at(place) = (iterator_);
 		}
-	} while (found_raidus!=true&& !failed_);
-
-	
+	} while (found_raidus != true && !failed_);
 }
 
 void VoronoiDiagram::radiiDecider(int index_v)
 {
-	if (temp_rad.at(0)>temp_rad.at(1) )					//chooses the bigger of the two but if its > 300 then chooses the smaller cos thats large
+	if (temp_rad.at(0) > temp_rad.at(1))					//chooses the bigger of the two but if its > 300 then chooses the smaller cos thats large
 	{
 		int p = 0;
-		if (temp_rad.at(0) > 200 )
+		if (temp_rad.at(0) > 200)
 		{
 			p = 1;
 		}
-		std::cout << "Selected radius "<< p <<"\n\n\n";
-		
+		std::cout << "Selected radius " << p << "\n\n\n";
+
 		radius_length = temp_rad.at(p);
-		if (radius_length>200)
+		if (radius_length > 200)
 		{
 			radius_length = 200 - (radius_length - 200);
 		}
 
 		circles_[index_v].centre_x = high_point_x;
 		circles_[index_v].centre_y = high_point_y;
-		circles_[index_v].r_length= radius_length;
+		circles_[index_v].r_length = radius_length;
 	}
 	else
 	{
 		int p = 1;
-		if (temp_rad.at(1)>200)
+		if (temp_rad.at(1) > 200)
 		{
 			p = 0;
 		}
@@ -867,15 +737,9 @@ void VoronoiDiagram::radiiDecider(int index_v)
 
 
 	}
-	//temp_rad.clear();
-	
-	
 }
 void VoronoiDiagram::vector_all(int size)
 {
-	//circles_.reserve(size);
-
-	
 	circles_.resize(size);
 }
 
@@ -905,7 +769,7 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
 				int b = pow((sites_v_1[i] - circles_[c].centre_y), 2);					//y part squared
 				if (a + b < r || a + b == r)				//the circle formula - checking whether the point exist in the circle and if it does then set the iterator back to what it was and go again
 				{
-									
+
 					found = false;
 					false_in_first_cirlce = true;			//so if this is true then when it comes to circle(n+1) the found wont trigger
 				}
@@ -915,7 +779,6 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
 					{
 						found = true;		//point is not in the circle so exit loop and create new site
 					}
-
 				}
 			}
 			if (false_in_first_cirlce)
@@ -923,7 +786,6 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
 				i--;
 			}
 		}
-		
 	}
 
 	int iterator_ = 0;
@@ -931,21 +793,18 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
 	{
 		sites_v_1[iterator_] = circles_[i].centre_x;				//setting the first sites the the centre point of the circles
 		iterator_++;
-		sites_v_1[iterator_ ] = circles_[i].centre_y;
+		sites_v_1[iterator_] = circles_[i].centre_y;
 		iterator_++;
 	}
-	
-
-
 }
 
 void VoronoiDiagram::ResetVars()
 {
-	high_point=0;
-	high_point_x=0;
-	high_point_y=0;
-	found_raidus=false;
-	radius_length=0;
+	high_point = 0;
+	high_point_x = 0;
+	high_point_y = 0;
+	found_raidus = false;
+	radius_length = 0;
 	circles_.clear();
 	temp_rad.clear();
 }
@@ -964,7 +823,7 @@ void VoronoiDiagram::FindMinMax(int grid_size, int layers_, int* noise_grid)
 		{
 			if (grid_v_1[(i * grid_size) + j] == 0)							//diagram
 			{
-				if ((noise_grid[i * grid_size + j] / layers_)>max_)
+				if ((noise_grid[i * grid_size + j] / layers_) > max_)
 				{
 					max_ = noise_grid[i * grid_size + j] / layers_;
 				}
@@ -976,11 +835,9 @@ void VoronoiDiagram::FindMinMax(int grid_size, int layers_, int* noise_grid)
 				//find max
 				//find min of noise heighmap
 				//noise_heightmap_[i * grid_size + j] / layers_
-
 			}
 		}
 	}
-
-	track_max=max_;
-	track_min=min_;
+	track_max = max_;
+	track_min = min_;
 }
