@@ -137,43 +137,6 @@ void VoronoiDiagram::RandomPlaceSites(int num_sites, int grid_size)
 	}
 }
 
-
-
-void VoronoiDiagram::DistributeSites(int num_sites, int grid_size)
-{
-	for (int i = 0; i < (num_sites * 2); i++)
-	{
-		sites_v_1[i] = rand() % (grid_size);
-		i++;
-		sites_v_1[i] = rand() % (grid_size);
-	}
-	sites_v_1[24] = grid_size / 2;
-	sites_v_1[25] = grid_size / 2;
-	for (int i = 0; i < (num_sites * 2); i++)
-	{
-		//if x is within the x of number 24 and if y is within y of 25
-		if (i != 24)
-		{
-			if (sites_v_1[i] > (sites_v_1[24] - 50) && sites_v_1[i]< (sites_v_1[24] + 50) && sites_v_1[i + 1] > (sites_v_1[25] - 50) && sites_v_1[i + 1] < (sites_v_1[25] + 50))
-			{
-				int s = sites_v_1[24] - sites_v_1[i];
-				sites_v_1[i] -= rand() % 50 + 100;
-				i++;
-				int a = sites_v_1[25] - sites_v_1[i];
-				sites_v_1[i] -= rand() % 50 + 100;
-			}
-			else
-			{
-				i++;
-			}
-		}
-		else
-		{
-			i++;
-		}
-	}
-}
-
 void VoronoiDiagram::EqaullyDispursSites(int num_sites, int grid_size, int times_, int displacement)
 {
 	srand(time(NULL));
@@ -239,8 +202,6 @@ void VoronoiDiagram::EqaullyDispursSites(int num_sites, int grid_size, int times
 	}
 }
 
-
-
 int VoronoiDiagram::DistanceSqrt(int x, int y, int x2, int y2)
 {
 	int xd = x2 - x;
@@ -248,7 +209,11 @@ int VoronoiDiagram::DistanceSqrt(int x, int y, int x2, int y2)
 	return (xd * xd) + (yd * yd);
 }
 
-
+//the vector of ints "incr" is used in replace of the colors for the bruteforce method 
+//the loop pushes back i into the vector at the amount of sites.
+//each element is a sites "colour" 
+//the distance is found at each site in comparison to the index of the loop in x and y direction.
+//relative to the distance the cell is found of the diagram.
 void VoronoiDiagram::DiagramAMP(int num_sites, int grid_size)
 {
 	max_distance_ = 0;
@@ -288,62 +253,11 @@ void VoronoiDiagram::DiagramAMP(int num_sites, int grid_size)
 						max_distance_ = dist;
 					}
 					grid_distance[(j * grid_size) + i] = dist;
-					int w = grid_v_1[(j * grid_size) + i];
 				}
 			}
 		});
 	delete[] incr;
 }
-
-
-//the vector of ints "incr" is used in replace of the colors for the bruteforce method 
-//the loop pushes back i into the vector at the amount of sites.
-//each element is a sites "colour" 
-//the distance is found at each site in comparison to the index of the loop in x and y direction.
-//relative to the distance the cell is found of the diagram.
-void VoronoiDiagram::CreateDiagram(int num_sites, int grid_size, int start, int end)
-{
-	int d = 0;
-	int* incr;
-	incr = new int[num_sites];
-
-	for (size_t i = 0; i < num_sites; i++)
-	{
-		incr[i] = i + 1;
-	}
-	for (size_t j = start; j < end; j++)
-	{
-		for (size_t i = 0; i < grid_size; i++)
-		{
-			int ind = -1, dist = INT_MAX;
-
-			int s = 0;
-			for (int p = 0; p < num_sites; p++)
-			{
-				d = DistanceSqrt(sites_v_1[s], sites_v_1[s + 1], i, j);
-				s += 2;
-
-				if (d < dist)
-				{
-					dist = d;
-					ind = p;
-				}
-			}
-			//so if this point has a distance which all points do
-			if (ind > -1)
-			{
-				int s = grid_v_1[(j * grid_size) + i];
-				int p = incr[ind];
-				grid_v_1[(j * grid_size) + i] = incr[ind];
-				grid_distance[(j * grid_size) + i] = dist;
-				int w = grid_v_1[(j * grid_size) + i];
-			}
-		}
-	}
-	delete[] incr;
-}
-
-
 
 
 //loop over all points
@@ -438,6 +352,15 @@ void VoronoiDiagram::FindMax(int grid_size, int layers_, int* noise_grid)
 
 }
 
+
+void VoronoiDiagram::SetPointModi(int& x, int&x_2, int& y, int&y_2, int grid_size, float x_v_1, float x_v_2, float y_v_1, float y_v_2)
+{
+	x = (grid_size * x_v_1);
+	x_2 = (grid_size * x_v_2);
+	y = (grid_size * y_v_1);
+	y_2 = (grid_size * y_v_2);
+}
+
 //clear the vector if empty
 //find out what type and then how many points
 //two different methods, loop needs to go in a loop, point to point needs to go from one side to other.
@@ -455,10 +378,11 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 	{
 	case 0:
 	{
-		int x_pos_one = (grid_size * 0.19);
-		int x_pos_two = (grid_size * 0.01);
-		int y_pos_one = (grid_size * 0.20);
-		int y_pos_two = (grid_size * 0.75);
+		int x_pos_one; 
+		int x_pos_two;
+		int y_pos_one;
+		int y_pos_two;
+		SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, grid_size, 0.3, 0.01, 0.2, 0.75);
 		for (int i = 0; i < num_points; i++)
 		{
 			bool found = false;
@@ -480,20 +404,13 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 					std::cout << "didnt set a point\n";
 				}
 			}
-			std::cout << "counter(how many iters to find point): " << counter << std::endl;
 			if (i == 0)
 			{
-				x_pos_one = (grid_size * 0.20);
-				x_pos_two = (grid_size * 0.45);
-				y_pos_one = (grid_size * 0.19);
-				y_pos_two = (grid_size * 0.01);
+				SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, grid_size, 0.2, 0.45, 0.3, 0.01);
 			}
 			if (i == 1)
 			{
-				x_pos_one = (grid_size * 0.20);
-				x_pos_two = (grid_size * 0.75);
-				y_pos_one = (grid_size * 0.20);
-				y_pos_two = (grid_size * 0.75);
+				SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, grid_size, 0.2, 0.75, 0.2, 0.75);
 			}
 		}
 	}
@@ -507,7 +424,6 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 		int position = 0;
 		for (int i = 0; i < num_points; i++)
 		{
-
 			bool found = false;
 			if (start + iter > grid_size)
 			{
@@ -541,10 +457,11 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 	break;
 	case 2:
 	{
-		int x_pos_one = (grid_size * 0.05);					//setting initial points so start point ranges
-		int x_pos_two = (grid_size * 0.15);					//so its between 15% and 20% of x 
-		int y_pos_one = (grid_size * 0.20);					//45% and 55% of y
-		int y_pos_two = (grid_size * 0.40);
+		int x_pos_one;
+		int x_pos_two;
+		int y_pos_one;
+		int y_pos_two;
+		SetPointModi(x_pos_one,x_pos_two,y_pos_one,y_pos_two,grid_size,0.05f,0.15f,0.2f,0.4f);
 		for (int i = 0; i < num_points; i++)				//run for number of points needed(3)
 		{
 			bool found = false;
@@ -570,17 +487,11 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 
 			if (i == 0)					//now change the point selection based on the iterator, so change to the middle and then the end for the selection
 			{
-				x_pos_one = (grid_size * 0.20);
-				x_pos_two = (grid_size * 0.40);			//x is between 45% and 55%
-				y_pos_one = (grid_size * 0.15);			//y is between 20% and 30%
-				y_pos_two = (grid_size * 0.15);
+				SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, grid_size, 0.20f, 0.40f, 0.15f, 0.15f);
 			}
 			if (i == 1)
-			{
-				x_pos_one = (grid_size * 0.05);
-				x_pos_two = (grid_size * 0.80);			//x is between 80% and 85%
-				y_pos_one = (grid_size * 0.20);
-				y_pos_two = (grid_size * 0.40);			//y is between 45% and 55%
+			{	
+				SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, grid_size, 0.05f, 0.80f, 0.2f, 0.4f);
 			}
 		}
 	}

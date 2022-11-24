@@ -12,11 +12,9 @@ public:
 	
 	void RandomPlaceSites(int num_sites, int grid_size);				//distrubutes the sites
 	void EqaullyDispursSites(int num_sites, int grid_size, int times_, int displacement);
-	void DistributeSites(int num_sites, int grid_size);					//random but one in the centre
 	void TerrainSites(int num_sites, int grid_size);
 
 	int DistanceSqrt(int x, int y, int x2, int y2);						//the distance formula
-	void CreateDiagram(int num_sites,int grid_size, int start, int end);					//creates the voronoi diagram
 	void SetEdges(int grid_size);										//sets the edges of voronoi diagram, so it is just the edges in the vector
 	
 	void SetPoint(int grid_size, int num_points, int type, bool b_failed);				//Sets the point(s) for the distance.
@@ -68,9 +66,10 @@ public:
 	void UpScaleGrid(int grid_size, float scale);																//upscales the grid
 	void vector_all(int size);
 
+	void SetPointModi(int& x, int& x_2, int& y, int& y_2, int grid_size, float x_v_1, float x_v_2, float y_v_1, float y_v_2);
+
 private:
 	SimplexNoise perlin_;
-
 
 	int num_of_sites;							//number of sites that form the diagram
 	int num_of_points;							//number of points that form the track.
@@ -81,16 +80,12 @@ private:
 	int* grid_distance;
 
 	std::vector<int> temp_rad;
-
 	int max_distance_;
-
 	int site_iterator;
-
 	bool failed_;
 
 	float pFrequency = 1.0f;	//simplex noise frequency
 	float pHeightRange = 1.0f;
-
 
 	struct peaks_
 	{
@@ -109,12 +104,6 @@ private:
 
 	int track_max;
 	int track_min;
-	
-
 	bool do_testing_;
-
-
-
-
 };
 
