@@ -503,7 +503,7 @@ void VoronoiDiagram::DirectionDecider(int grid_size, int radius_cutoff_, int lay
 
 	temp_rad.resize(2);
 	circum_points.push_back(sf::Vector2i(0, 0));
-	circum_points.push_back(sf::Vector2i(0, 0));
+	circum_points.push_back(sf::Vector2i(0, 0));																					//crashes here
 	FindCircumPoint(grid_size, x_pos, y_pos, signal, radius_cutoff_, layers_, 1, 0, noise_h_m,circum_points[0]);
 	FindCircumPoint(grid_size, -x_pos, -y_pos, signal, radius_cutoff_, layers_, -1, 1, noise_h_m,circum_points[1]);
 	radiiDecider(index_v);
@@ -577,7 +577,7 @@ void VoronoiDiagram::SelectRadii(int index_v, int a, int b)
 	}
 	std::cout << "\nSelected radius: " << p << "\n";
 	std::cout << "RADIUS Length: " << radius_length << "\n";
-	std::cout << "Point on circumferenece: " << circum_points[p].x << ", " << circum_points[p].y << "\n";
+	std::cout << "Point on circumferenece: " << circum_points[p].x << ", " << circum_points[p].y << "\n\n";
 	circles_[index_v].centre_x = high_point_v.x;
 	circles_[index_v].centre_y = high_point_v.y;
 	circles_[index_v].r_length = radius_length;
