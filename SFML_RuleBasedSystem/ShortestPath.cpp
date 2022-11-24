@@ -418,8 +418,6 @@ void ShortestPath::FindCompassPoss(int compass, int& count_holdeer, int& y_holde
 	}
 }
 
-
-
 //same here remove the north and all that
 //from phase one you use the x and y holder vars and count holder and end
 void ShortestPath::PhaseTwo(int grid_size, int* grid, bool end, int x_holder, int y_holder, int count_holder, int end_n)

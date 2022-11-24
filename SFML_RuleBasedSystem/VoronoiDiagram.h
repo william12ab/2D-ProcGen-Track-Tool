@@ -17,7 +17,6 @@ public:
 	int DistanceSqrt(int x, int y, int x2, int y2);						//the distance formula
 	void SetEdges(int grid_size);										//sets the edges of voronoi diagram, so it is just the edges in the vector
 	
-	void SetPoint(int grid_size, int num_points, int type, bool b_failed);				//Sets the point(s) for the distance.
 	void InitVector(int grid_size, int num_points, int num_sites);		//inits the vector to correct size;
 
 
@@ -26,8 +25,8 @@ public:
 
 	//getters		
 	int GetRadius() { return radius_length; }
-	int GetCentreX() { return high_point_x; }
-	int GetCentreY() { return high_point_y; }
+	int GetCentreX() { return high_point_v.x; }
+	int GetCentreY() { return high_point_v.y; }
 	bool GetFailed() { return failed_; }						
 
 	int* GetGrid() { return grid_v_1; }
@@ -54,23 +53,27 @@ public:
 	//
 	
 	//these functions should go in another class
-	void HighPointFunc(int grid_size, int radius_cutoff_,int layers_, int index_v,int*noise_h_m);
-	void LoopPart(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place, int* noise_h_m);
+	void DirectionDecider(int grid_size, int radius_cutoff_,int layers_, int index_v,int*noise_h_m);
+	void FindCircumPoint(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place, int* noise_h_m, sf::Vector2i&circum_point_);
 	void radiiDecider(int index_v);
 	void ResetVars();
-	void FindMax(int grid_size, int layers_,int* noise_grid);
-	void FindMinMax(int grid_size, int layers_,int*noise_grid);
+	void FindMax(int grid_size, int layers_,int* noise_grid);			//finds high point in terrain
+	void FindMinMax(int grid_size, int layers_,int*noise_grid);			//finds low and high
+	void SetHighPoint(int grid_size, int layers_, int* noise_grid, sf::Vector2i& high_point_v_, int& high_point_, int i, int j);
+	void vector_all(int size); //resets vectors for terrain.
+	void SetDirectionXY(int &signal, int &x, int &y, int a, int b, int c);
 	//
 
+	//this annoying is here
 	void ResizeGrid(int grid_size, float scale);																//resizes the grid
 	void UpScaleGrid(int grid_size, float scale);																//upscales the grid
-	void vector_all(int size);
+	
 
+	//for setting points
 	void SetPointModi(int& x, int& x_2, int& y, int& y_2, int grid_size, float x_v_1, float x_v_2, float y_v_1, float y_v_2);
-
 	void PlacePoint(int x,int y,int grid_size, int i, bool&found_);
 	void ThreePoints(int grid_size, int num_points, bool &b_failed, float values_[12]);
-
+	void SetPoint(int grid_size, int num_points, int type, bool b_failed);				//Sets the point(s) for the distance.
 private:
 	SimplexNoise perlin_;
 
@@ -97,11 +100,12 @@ private:
 		int r_length;
 	};
 
-	int high_point;
-	int high_point_x;
-	int high_point_y;
+	int high_point;			//used			stores value of highest point. eg: say it was 200m in real values
+	sf::Vector2i high_point_v;		//used		coords of highpoint
 	bool found_raidus;
 	int radius_length;
+
+	std::vector<sf::Vector2i> circum_points;		//keeps track of the poiints on the circumference
 
 	std::vector<peaks_>circles_;
 

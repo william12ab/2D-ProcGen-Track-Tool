@@ -21,6 +21,17 @@ void SettingText()
 	title_name_.setPosition(sf::Vector2f(805, 10));
 }
 
+void ClearConsoleWin() {
+	char fill = ' ';
+	COORD tl = { 0,0 };
+	CONSOLE_SCREEN_BUFFER_INFO s;
+	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+	GetConsoleScreenBufferInfo(console, &s);
+	DWORD written, cells = s.dwSize.X * s.dwSize.Y;
+	FillConsoleOutputCharacter(console, fill, cells, tl, &written);
+	FillConsoleOutputAttribute(console, s.wAttributes, cells, tl, &written);
+	SetConsoleCursorPosition(console, tl);
+}
 
 void Init(sf::RenderWindow &window)
 {
@@ -288,11 +299,12 @@ int main()
 		{
 			if (ImGui::Button("Renerate (Noise Method)"))
 			{
+				ClearConsoleWin();
 				v_d_p->vector_all(peaks_to_count_);
 				for (int i = 0; i < peaks_to_count_; i++)
 				{
-					v_d_p->FindMax(v_d_p->GetGridSize(), layers_, i_p_p->GetNoiseMap());
-					v_d_p->HighPointFunc(v_d_p->GetGridSize(), radius_cutoff, layers_, i, i_p_p->GetNoiseMap());
+					v_d_p->FindMax(v_d_p->GetGridSize(), layers_, i_p_p->GetNoiseMap());								//finds the highest point in the terrain
+					v_d_p->DirectionDecider(v_d_p->GetGridSize(), radius_cutoff, layers_, i, i_p_p->GetNoiseMap());		//finds point on circumference 
 				}
 				do
 				{
@@ -307,6 +319,7 @@ int main()
 			}
 			if (ImGui::Button("Regenerate"))
 			{
+				ClearConsoleWin();
 				t_t_p->ClearStructs(v_d_p, voronoi_d, n_height_map, height_map, i_p_p, track_type_, resolution_, sites_, points_);
 				t_t_p->Generate(v_d_p, s_p_p, voronoi_d, height_map, n_height_map, i_p_p, times_, displacement_, number_, full_random_, track_type_);
 			}
@@ -353,15 +366,7 @@ int main()
 		}
 		if (ImGui::Button("Clear Console"))																	//https://stackoverflow.com/questions/5866529/how-do-we-clear-the-console-in-assembly/5866648#5866648
 		{
-			char fill = ' ';
-			COORD tl = { 0,0 };
-			CONSOLE_SCREEN_BUFFER_INFO s;
-			HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
-			GetConsoleScreenBufferInfo(console, &s);
-			DWORD written, cells = s.dwSize.X * s.dwSize.Y;
-			FillConsoleOutputCharacter(console, fill, cells, tl, &written);
-			FillConsoleOutputAttribute(console, s.wAttributes, cells, tl, &written);
-			SetConsoleCursorPosition(console, tl);
+			ClearConsoleWin();
 		}
 		ImGui::End();
 		//used to display the whole voronoi diagram
