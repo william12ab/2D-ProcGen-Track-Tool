@@ -62,6 +62,8 @@ public:
 	void SetHighPoint(int grid_size, int layers_, int* noise_grid, sf::Vector2i& high_point_v_, int& high_point_, int i, int j);
 	void vector_all(int size); //resets vectors for terrain.
 	void SetDirectionXY(int &signal, int &x, int &y, int a, int b, int c);
+	void SetCircumPoint(sf::Vector2i& circum_point_, int x, int y, int iterator_, int place);
+	void SelectRadii(int index_v,int a,int b);
 	//
 
 	//this annoying is here
