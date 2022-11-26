@@ -125,9 +125,21 @@ void TrackTools::Generate(VoronoiDiagram* v_d_p, ShortestPath* s_p_p, sf::Vertex
 void TrackTools::GenerateTerrainMethod(VoronoiDiagram* v_d_p, sf::VertexArray& vertex_array, ImageProcessing* i_p_p, int number_, int track_track_)
 {
 	v_d_p->TerrainSites(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());							//this takes no time
-
 	v_d_p->DiagramAMP(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize());
 	i_p_p->DrawVoronoiNoise(vertex_array, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(), number_, v_d_p->GetGridDistance());
 	v_d_p->SetEdges(v_d_p->GetGridSize());
 	v_d_p->SetPoint(v_d_p->GetGridSize(), v_d_p->GetNumberOfPoints(), track_track_, v_d_p->GetFailed());
+}
+
+void TrackTools::TerrainLoop(VoronoiDiagram* v_d_p,ShortestPath* s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray&height_map, sf::VertexArray&n_height_map,ImageProcessing*i_p_p, int number_, int track_type_)
+{
+	do
+	{
+		if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
+		{
+			ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
+		}
+		GenerateTerrainMethod(v_d_p, height_map, i_p_p, number_, track_type_);
+		CreateTrack(v_d_p, s_p_p);
+	} while (v_d_p->GetFailed() || s_p_p->GetFailed());
 }

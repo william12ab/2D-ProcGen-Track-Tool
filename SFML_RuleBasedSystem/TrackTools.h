@@ -18,6 +18,8 @@ public:
 	void Generate(VoronoiDiagram* v_d_p, ShortestPath* s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map, ImageProcessing* i_p_p, int times_, int displacement_, int number_, bool full_random_, int track_type_);				//pulls above together and outputs.
 	void GenerateTerrainMethod(VoronoiDiagram* v_d_p, sf::VertexArray& vertex_array, ImageProcessing* i_p_p, int number_, int track_track_);
 
+	void TerrainLoop(VoronoiDiagram* v_d_p, ShortestPath* s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map, ImageProcessing* i_p_p, int number_, int track_type_);
+
 private:
 };
 

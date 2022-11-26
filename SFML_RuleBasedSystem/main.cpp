@@ -306,16 +306,7 @@ int main()
 					v_d_p->FindMax(v_d_p->GetGridSize(), layers_, i_p_p->GetNoiseMap());								//finds the highest point in the terrain
 					v_d_p->DirectionDecider(v_d_p->GetGridSize(), radius_cutoff, layers_, i, i_p_p->GetNoiseMap());		//finds point on circumference 
 				}
-				do
-				{
-					if (v_d_p->GetFailed() || s_p_p->GetFailed())		//clears the diagram and resets the fail condition
-					{
-						t_t_p->ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
-					}
-					t_t_p->GenerateTerrainMethod(v_d_p, height_map, i_p_p, number_, track_type_);
-					t_t_p->CreateTrack(v_d_p, s_p_p);
-				} while (v_d_p->GetFailed() || s_p_p->GetFailed());
-
+				t_t_p->TerrainLoop(v_d_p, s_p_p,voronoi_d,height_map,n_height_map,i_p_p,number_,track_type_);
 			}
 			if (ImGui::Button("Regenerate"))
 			{
