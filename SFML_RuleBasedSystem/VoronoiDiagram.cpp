@@ -31,6 +31,8 @@ VoronoiDiagram::VoronoiDiagram()
 	do_testing_ = false;
 	track_max = 0;
 	track_min = 0;
+	circum_points.resize(2);
+	
 }
 
 VoronoiDiagram::~VoronoiDiagram()
@@ -502,8 +504,8 @@ void VoronoiDiagram::DirectionDecider(int grid_size, int radius_cutoff_, int lay
 	}
 
 	temp_rad.resize(2);
-	circum_points.push_back(sf::Vector2i(0, 0));
-	circum_points.push_back(sf::Vector2i(0, 0));																					//crashes here
+	/*circum_points.push_back(sf::Vector2i(0, 0));
+	circum_points.push_back(sf::Vector2i(0, 0));*/																					//crashes here
 	FindCircumPoint(grid_size, x_pos, y_pos, signal, radius_cutoff_, layers_, 1, 0, noise_h_m,circum_points[0]);
 	FindCircumPoint(grid_size, -x_pos, -y_pos, signal, radius_cutoff_, layers_, -1, 1, noise_h_m,circum_points[1]);
 	radiiDecider(index_v);
@@ -598,7 +600,7 @@ void VoronoiDiagram::radiiDecider(int index_v)
 void VoronoiDiagram::vector_all(int size)
 {
 	circles_.resize(size);
-	circum_points.clear();
+	circum_points.resize(2);
 }
 
 
