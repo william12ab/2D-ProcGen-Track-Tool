@@ -40,6 +40,8 @@ public:
 	bool GetTesting() { return do_testing_; }
 	int GetTrackMax() { return track_max; }
 	int GetTrackMin() { return track_min; }
+	sf::Vector2i &GetHighPoint() { return high_point_v; }
+	sf::Vector2i &GetLowPoint() { return low_point_v; }
 	//
 
 	//setters
@@ -53,13 +55,13 @@ public:
 	//
 	
 	//these functions should go in another class
-	void DirectionDecider(int grid_size, int radius_cutoff_,int layers_, int index_v,int*noise_h_m);
+	void DirectionDecider(int grid_size, int radius_cutoff_,int layers_, int index_v,int*noise_h_m, sf::Vector2i& high_or_low);
 	void FindCircumPoint(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place, int* noise_h_m, sf::Vector2i&circum_point_);
 	void radiiDecider(int index_v);
 	void ResetVars();
 	void FindMax(int grid_size, int layers_,int* noise_grid);			//finds high point in terrain
 	void FindMinMax(int grid_size, int layers_,int*noise_grid);			//finds low and high
-	void SetHighPoint(int grid_size, int layers_, int* noise_grid, sf::Vector2i& high_point_v_, int& high_point_, int i, int j);
+	void SetHighPoint(int grid_size, int layers_, int* noise_grid, sf::Vector2i& high_point_v_, int& high_point_, int i, int j, int& min_height, sf::Vector2i &low_point_v_);
 	void vector_all(int size); //resets vectors for terrain.
 	void SetDirectionXY(int &signal, int &x, int &y, int a, int b, int c);
 	void SetCircumPoint(sf::Vector2i& circum_point_, int x, int y, int iterator_, int place);
@@ -104,6 +106,7 @@ private:
 
 	int high_point;			//used			stores value of highest point. eg: say it was 200m in real values
 	sf::Vector2i high_point_v;		//used		coords of highpoint
+	sf::Vector2i low_point_v;
 	bool found_raidus;
 	int radius_length;
 
