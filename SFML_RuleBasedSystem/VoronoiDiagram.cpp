@@ -485,7 +485,7 @@ void VoronoiDiagram::SetDirectionXY(int& signal, int& x, int& y, int a,int b, in
 	y = c;
 }
 
-void VoronoiDiagram::DirectionDecider(int grid_size, int radius_cutoff_, int layers_, int index_v, int* noise_h_m, sf::Vector2i& high_or_low)
+void VoronoiDiagram::DirectionDecider(int grid_size, int radius_cutoff_, int layers_, int index_v, int* noise_h_m, sf::Vector2i& high_or_low, bool b_what_p)
 {
 	//identify where x and y are in relation to the complete image
 	//so are they top left, top right, bottom left, bottom right
@@ -514,8 +514,8 @@ void VoronoiDiagram::DirectionDecider(int grid_size, int radius_cutoff_, int lay
 	}
 
 	temp_rad.resize(2);																		
-	FindCircumPoint(grid_size, x_pos, y_pos, signal, radius_cutoff_, layers_, 1, 0, noise_h_m,circum_points[0]);
-	FindCircumPoint(grid_size, -x_pos, -y_pos, signal, radius_cutoff_, layers_, -1, 1, noise_h_m,circum_points[1]);
+	FindCircumPoint(grid_size, x_pos, y_pos, signal, radius_cutoff_, layers_, 1, 0, noise_h_m,circum_points[0],high_or_low, b_what_p);
+	FindCircumPoint(grid_size, -x_pos, -y_pos, signal, radius_cutoff_, layers_, -1, 1, noise_h_m,circum_points[1], high_or_low, b_what_p);
 	radiiDecider(index_v);
 }
 
@@ -528,10 +528,30 @@ void VoronoiDiagram::SetCircumPoint(sf::Vector2i& circum_point_, int x, int y, i
 	temp_rad.at(place) = (iterator_);
 }
 
-void VoronoiDiagram::FindCircumPoint(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place, int* noise_h_m, sf::Vector2i& circum_point_)
+void VoronoiDiagram::SwitchPoint(int& iterator, int& y_, int& x_, int signal_, int modifier_)
 {
-	int y = high_point_v.y;
-	int x = high_point_v.x;
+	iterator++;
+	switch (signal_)
+	{
+	case 1:
+		y_ += (1 * modifier_), x_ += (1 * modifier_);
+		break;
+	case 2:
+		y_ += (1 * modifier_), x_ -= (1 * modifier_);
+		break;
+	case 3:
+		y_ -= 1, x_ += 1;
+		break;
+	case 4:
+		y_ -= (1 * modifier_), x_ -= (1 * modifier_);
+		break;
+	}
+}
+
+void VoronoiDiagram::FindCircumPoint(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place, int* noise_h_m, sf::Vector2i& circum_point_, sf::Vector2i& high_or_low, bool b_what_p)
+{
+	int y = high_or_low.y;
+	int x = high_or_low.x;
 	int iterator_ = 0;
 	found_raidus = false;
 	do
@@ -539,30 +559,30 @@ void VoronoiDiagram::FindCircumPoint(int grid_size, int x_value_, int y_value_, 
 		//travelled the length of the radius then set found etc
 		if (y > 0 && x > 0 && y < grid_size && x < grid_size)
 		{
-			if ((noise_h_m[((y + y_value_) * grid_size) + (x + x_value_)] / layers_) <= (radius_cutoff_))
+			switch (b_what_p)
 			{
-				x += x_value_, y += y_value_;
-				SetCircumPoint(circum_point_, x, y, iterator_, place);
-			}
-			else
-			{
-				//other wise move one place in the correct direction 
-				iterator_++;
-				switch (signal_)
+			case true:
+				if ((noise_h_m[((y + y_value_) * grid_size) + (x + x_value_)] / layers_) <= (radius_cutoff_))
 				{
-				case 1:
-					y += (1 * modifier_), x += (1 * modifier_);
-					break;
-				case 2:
-					y += (1 * modifier_), x -= (1 * modifier_);
-					break;
-				case 3:
-					y -= 1, x += 1;
-					break;
-				case 4:
-					y -= (1 * modifier_), x -= (1 * modifier_);
-					break;
+					x += x_value_, y += y_value_;
+					SetCircumPoint(circum_point_, x, y, iterator_, place);
 				}
+				else
+				{
+					SwitchPoint(iterator_, y, x, signal_, modifier_);
+				}
+				break;
+			case false:
+				if ((noise_h_m[((y + y_value_) * grid_size) + (x + x_value_)] / layers_) >= (radius_cutoff_))
+				{
+					x += x_value_, y += y_value_;
+					SetCircumPoint(circum_point_, x, y, iterator_, place);
+				}
+				else
+				{
+					SwitchPoint(iterator_, y, x, signal_, modifier_);
+				}
+				break;
 			}
 		}
 		else
@@ -637,7 +657,6 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
 				int b = pow((sites_v_1[i] - circles_[c].centre_y), 2);					//y part squared
 				if (a + b < r || a + b == r)				//the circle formula - checking whether the point exist in the circle and if it does then set the iterator back to what it was and go again
 				{
-
 					found = false;
 					false_in_first_cirlce = true;			//so if this is true then when it comes to circle(n+1) the found wont trigger
 				}
