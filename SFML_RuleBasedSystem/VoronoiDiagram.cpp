@@ -356,8 +356,6 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::default_random_engine generator(seed);
 	std::uniform_int_distribution<int> distribution((grid_size / 16), (int)(grid_size / 1.1));
-
-
 	switch (type)
 	{
 	case 0:
@@ -516,7 +514,7 @@ void VoronoiDiagram::DirectionDecider(int grid_size, int radius_cutoff_, int lay
 	temp_rad.resize(2);																		
 	FindCircumPoint(grid_size, x_pos, y_pos, signal, radius_cutoff_, layers_, 1, 0, noise_h_m,circum_points[0],high_or_low, b_what_p);
 	FindCircumPoint(grid_size, -x_pos, -y_pos, signal, radius_cutoff_, layers_, -1, 1, noise_h_m,circum_points[1], high_or_low, b_what_p);
-	radiiDecider(index_v);
+	radiiDecider(index_v, high_or_low);
 }
 
 void VoronoiDiagram::SetCircumPoint(sf::Vector2i& circum_point_, int x, int y, int iterator_, int place)
@@ -593,7 +591,7 @@ void VoronoiDiagram::FindCircumPoint(int grid_size, int x_value_, int y_value_, 
 	} while (found_raidus != true && !failed_);
 }
 
-void VoronoiDiagram::SelectRadii(int index_v, int a, int b)
+void VoronoiDiagram::SelectRadii(int index_v, int a, int b, sf::Vector2i& high_or_low)
 {
 	int p = a;
 	if (temp_rad.at(a) > 200)
@@ -608,21 +606,21 @@ void VoronoiDiagram::SelectRadii(int index_v, int a, int b)
 	std::cout << "\nSelected radius: " << p << "\n";
 	std::cout << "RADIUS Length: " << radius_length << "\n";
 	std::cout << "Point on circumferenece: " << circum_points[p].x << ", " << circum_points[p].y << "\n\n";
-	circles_[index_v].centre_x = high_point_v.x;
-	circles_[index_v].centre_y = high_point_v.y;
+	circles_[index_v].centre_x = high_or_low.x;
+	circles_[index_v].centre_y = high_or_low.y;
 	circles_[index_v].r_length = radius_length;
 }
 
-void VoronoiDiagram::radiiDecider(int index_v)
+void VoronoiDiagram::radiiDecider(int index_v, sf::Vector2i& high_or_low)
 {
 	int p = 0;
 	if (temp_rad.at(0) > temp_rad.at(1))					//chooses the bigger of the two but if its > 300 then chooses the smaller cos thats large
 	{
-		SelectRadii(index_v,0,1);
+		SelectRadii(index_v,0,1, high_or_low);
 	}
 	else
 	{
-		SelectRadii(index_v, 1, 0);
+		SelectRadii(index_v, 1, 0, high_or_low);
 	}
 }
 void VoronoiDiagram::vector_all(int size)
