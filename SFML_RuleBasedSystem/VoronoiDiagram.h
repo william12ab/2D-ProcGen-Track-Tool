@@ -42,6 +42,7 @@ public:
 	int GetTrackMin() { return track_min; }
 	sf::Vector2i &GetHighPoint() { return high_point_v; }
 	sf::Vector2i &GetLowPoint() { return low_point_v; }
+	bool GetStop() { return stop_; }
 	//
 
 	//setters
@@ -67,6 +68,8 @@ public:
 	void SetCircumPoint(sf::Vector2i& circum_point_, int x, int y, int iterator_, int place);
 	void SelectRadii(int index_v,int a,int b, sf::Vector2i& high_or_low);
 	void SwitchPoint(int& iterator, int& y_, int& x_, int signal_, int modifier_);
+
+	void ArePointsFound();
 	//
 
 	//this annoying is here
@@ -118,5 +121,9 @@ private:
 	int track_max;
 	int track_min;
 	bool do_testing_;
+
+
+	int max_value_height;			//for chekcing if all points of interest have been found.
+	bool stop_;						//for returning if all points have been found
 };
 

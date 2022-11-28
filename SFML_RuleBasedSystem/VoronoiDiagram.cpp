@@ -34,6 +34,10 @@ VoronoiDiagram::VoronoiDiagram()
 	track_min = 0;
 	circum_points.resize(2);
 	
+
+
+	stop_ = false;
+	max_value_height = -1000000;
 }
 
 VoronoiDiagram::~VoronoiDiagram()
@@ -425,11 +429,23 @@ void VoronoiDiagram::SetHighPoint(int grid_size, int layers_, int* noise_grid, s
 	}
 }
 
+void VoronoiDiagram::ArePointsFound()
+{
+	if (high_point_v.x == max_value_height && high_point_v.y ==max_value_height)
+	{
+		stop_ = true;
+	}
+	if (low_point_v.x == max_value_height && low_point_v.y == max_value_height)
+	{
+		stop_ = true;
+	}
+}
+
 void VoronoiDiagram::FindMax(int grid_size, int layers_, int* noise_grid)
 {
 	high_point = 0;
-	high_point_v = sf::Vector2i(0, 0);
-	low_point_v= sf::Vector2i(0, 0);
+	high_point_v = sf::Vector2i(max_value_height, max_value_height);
+	low_point_v= sf::Vector2i(max_value_height, max_value_height);
 	found_raidus = false;
 	radius_length = 0;
 
@@ -624,7 +640,7 @@ void VoronoiDiagram::radiiDecider(int index_v, sf::Vector2i& high_or_low)
 }
 void VoronoiDiagram::vector_all(int size)
 {
-	circles_.resize(size);
+	circles_.resize(5);
 	circum_points.resize(2);
 }
 
