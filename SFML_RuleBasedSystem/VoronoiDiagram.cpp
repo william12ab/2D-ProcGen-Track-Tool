@@ -429,13 +429,13 @@ void VoronoiDiagram::SetHighPoint(int grid_size, int layers_, int* noise_grid, s
 	}
 }
 
-void VoronoiDiagram::ArePointsFound()
+void VoronoiDiagram::ArePointsFound(int &high_point, int &low_point)
 {
-	if (high_point_v.x == max_value_height && high_point_v.y ==max_value_height)
+	if (high_point<190)
 	{
 		stop_ = true;
 	}
-	if (low_point_v.x == max_value_height && low_point_v.y == max_value_height)
+	if (low_point>40)
 	{
 		stop_ = true;
 	}
@@ -489,6 +489,7 @@ void VoronoiDiagram::FindMax(int grid_size, int layers_, int* noise_grid)
 				}
 			}
 		});
+	ArePointsFound(high_point,min_height);
 }
 
 void VoronoiDiagram::SetDirectionXY(int& signal, int& x, int& y, int a,int b, int c)
@@ -570,15 +571,23 @@ void VoronoiDiagram::FindCircumPoint(int grid_size, int x_value_, int y_value_, 
 	do
 	{
 		//travelled the length of the radius then set found etc
-		if (y >= 0 && x >= 0 && y <= grid_size && x <= grid_size)
+		if ((y + y_value_) >= 0 && (x+x_value_) >= 0 && (y + y_value_) <= grid_size && (x + x_value_) <= grid_size)
 		{
 			switch (b_what_p)
 			{
 			case true:
-				if ((noise_h_m[((y + y_value_) * grid_size) + (x + x_value_)] / layers_) <= (radius_cutoff_))
+				if ((noise_h_m[((y + y_value_) * grid_size) + (x + x_value_)] / layers_) <= (radius_cutoff_))				//set the circumferences because you have reached a point on the circumference
 				{
-					x += x_value_, y += y_value_;
-					SetCircumPoint(circum_point_, x, y, iterator_, place);
+					if ((y+y_value_) >= 0 && (x+x_value_) >= 0 && (y + y_value_) <= grid_size && (x+x_value_) <= grid_size)
+					{
+						x += x_value_, y += y_value_;
+						SetCircumPoint(circum_point_, x, y, iterator_, place);
+					}
+					else
+					{
+						SetCircumPoint(circum_point_, x, y, 50, place);
+						std::cout << "		Else Statement.\n";
+					}
 				}
 				else
 				{
@@ -588,8 +597,16 @@ void VoronoiDiagram::FindCircumPoint(int grid_size, int x_value_, int y_value_, 
 			case false:
 				if ((noise_h_m[((y + y_value_) * grid_size) + (x + x_value_)] / layers_) >= (radius_cutoff_))
 				{
-					x += x_value_, y += y_value_;
-					SetCircumPoint(circum_point_, x, y, iterator_, place);
+					if ((y + y_value_) >= 0 && (x + x_value_) >= 0 && (y + y_value_) <= grid_size && (x + x_value_) <= grid_size)
+					{
+						x += x_value_, y += y_value_;
+						SetCircumPoint(circum_point_, x, y, iterator_, place);
+					}
+					else
+					{
+						SetCircumPoint(circum_point_, x, y, 50, place);
+						std::cout << "		Else Statement.\n";
+					}
 				}
 				else
 				{
@@ -600,7 +617,7 @@ void VoronoiDiagram::FindCircumPoint(int grid_size, int x_value_, int y_value_, 
 		}
 		else
 		{
-			SetCircumPoint(circum_point_, x, y, iterator_, place);
+			SetCircumPoint(circum_point_, x, y, 70, place);						//if out of bounds (greater than resolution or less than resolution) then tell yourself that and set a fake radius.
 			std::cout << "		Point too far.\n";
 		}
 	} while (found_raidus != true && !failed_);
@@ -640,7 +657,7 @@ void VoronoiDiagram::radiiDecider(int index_v, sf::Vector2i& high_or_low)
 }
 void VoronoiDiagram::vector_all(int size)
 {
-	circles_.resize(5);
+	circles_.resize(20);
 	circum_points.resize(2);
 }
 
@@ -691,10 +708,13 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
 	int iterator_ = 0;
 	for (int i = 0; i < circles_.size(); i++)
 	{
-		sites_v_1[iterator_] = circles_[i].centre_x;				//setting the first sites the the centre point of the circles
-		iterator_++;
-		sites_v_1[iterator_] = circles_[i].centre_y;
-		iterator_++;
+		if (circles_[i].centre_x +circles_[i].centre_y!=0)
+		{
+			sites_v_1[iterator_] = circles_[i].centre_x;				//setting the first sites the the centre point of the circles
+			iterator_++;
+			sites_v_1[iterator_] = circles_[i].centre_y;
+			iterator_++;
+		}
 	}
 }
 
@@ -729,14 +749,10 @@ void VoronoiDiagram::FindMinMax(int grid_size, int layers_, int* noise_grid)
 				{
 					max_ = noise_grid[i * grid_size + j] / layers_;
 				}
-
 				if ((noise_grid[i * grid_size + j] / layers_) > min_)
 				{
 					min_ = noise_grid[i * grid_size + j] / layers_;
 				}
-				//find max
-				//find min of noise heighmap
-				//noise_heightmap_[i * grid_size + j] / layers_
 			}
 		}
 	}

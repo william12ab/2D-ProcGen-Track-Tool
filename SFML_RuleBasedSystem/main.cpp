@@ -301,13 +301,16 @@ int main()
 			{
 				ClearConsoleWin();
 				v_d_p->vector_all(peaks_to_count_*2);
-				for (int i = 0; i < (peaks_to_count_*2); i++)
+				int i = 0;
+				while (!v_d_p->GetStop())
 				{
 					v_d_p->FindMax(v_d_p->GetGridSize(), layers_, i_p_p->GetNoiseMap());								//finds the highest point in the terrain
-					v_d_p->ArePointsFound();
-					v_d_p->DirectionDecider(v_d_p->GetGridSize(), radius_cutoff, layers_, i, i_p_p->GetNoiseMap(),v_d_p->GetHighPoint(),true);		//finds point on circumference 
-					v_d_p->DirectionDecider(v_d_p->GetGridSize(), 110, layers_, i+1, i_p_p->GetNoiseMap(), v_d_p->GetLowPoint(),false);		//finds point on circumference 
-					i++;		//because the iterator changes above right here |
+					if (!v_d_p->GetStop())
+					{
+						v_d_p->DirectionDecider(v_d_p->GetGridSize(), radius_cutoff, layers_, i, i_p_p->GetNoiseMap(), v_d_p->GetHighPoint(), true);		//finds point on circumference 
+						v_d_p->DirectionDecider(v_d_p->GetGridSize(), 110, layers_, i + 1, i_p_p->GetNoiseMap(), v_d_p->GetLowPoint(), false);		//finds point on circumference 
+						i += 2;		//because the iterator changes above right here |
+					}
 				}
 				t_t_p->TerrainLoop(v_d_p, s_p_p,voronoi_d,height_map,n_height_map,i_p_p,number_,track_type_);
 			}

@@ -69,7 +69,7 @@ public:
 	void SelectRadii(int index_v,int a,int b, sf::Vector2i& high_or_low);
 	void SwitchPoint(int& iterator, int& y_, int& x_, int signal_, int modifier_);
 
-	void ArePointsFound();
+	void ArePointsFound(int& high_point, int& low_point);
 	//
 
 	//this annoying is here
