@@ -1,19 +1,21 @@
-total length: 224
-number of turns: 6
-number of segments: 7
-shortest distance(euclidean distance): 211
+total length: 164
+number of turns: 7
+number of segments: 8
+shortest distance(euclidean distance): 218
 
-length 1: 9
-length 2: 38
-length 3: 74
-length 4: 22
-length 5: 24
-length 6: 1
-length 7: 93
+length 1: 26
+length 2: 2
+length 3: 61
+length 4: 4
+length 5: 60
+length 6: 25
+length 7: 1
+length 8: 9
 
-angle 1: 214
-angle 2: 206
-angle 3: 131
-angle 4: 142
-angle 5: 249
-angle 6: 173
+angle 1: 111
+angle 2: 184
+angle 3: 187
+angle 4: 127
+angle 5: 201
+angle 6: 270
+angle 7: 180

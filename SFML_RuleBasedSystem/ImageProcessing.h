@@ -25,7 +25,7 @@ public:
 	void DrawTrack(sf::VertexArray& vertexarray, int grid_size, int num_sites, int* grid);									//draws the track
 	void DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size, int* grid);									//draws the voronoi diagram
 	void DrawVoronoiNoise(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_,int *grid_distance);				//draws the voronoi noise "worely noise" etc
-	void DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_);									//draws the perlin noise
+	void DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_, float frequency);									//draws the perlin noise
 	void DrawFBM(sf::VertexArray& vertexarray, int grid_size, int octaves_);									//draws the fbm
 	//
 

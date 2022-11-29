@@ -138,7 +138,7 @@ void ImageProcessing::DrawVoronoiNoise(sf::VertexArray& vertextarray, int grid_s
 			}
 		});
 }
-void ImageProcessing::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_)
+void ImageProcessing::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_, float frequency)
 {
 	for (size_t i = 0; i < grid_size; i++)
 	{
@@ -150,7 +150,7 @@ void ImageProcessing::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int
 	const float scale = 100.0f / (float)grid_size;
 	float low_ = 0.01f;
 	float high_ = 0.020f;
-	float r3 = low_ + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high_ - low_)));				//the frequency of the noise between low and high
+	float r3 = low_ + static_cast <float>(0.1f);//<float> (rand()) / (static_cast <float> (RAND_MAX / (high_ - low_)));				//the frequency of the noise between low and high
 	float e2 = r3;
 
 	float min_ = INT_MAX;
@@ -162,8 +162,8 @@ void ImageProcessing::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int
 
 	for (int a = 0; a < layers_; a++)
 	{
-		float r3 = low_ + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high_ - low_)));
-
+		//float r3 =  static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high_ - low_)));
+		float r3 = frequency;
 		for (int i = 0; i < grid_size; i++)
 		{
 			for (int j = 0; j < grid_size; j++)

@@ -181,6 +181,7 @@ int main()
 			ImGui::Text("higher = smaller radius");
 			ImGui::SliderInt("Number of Peaks:", &peaks_to_count_, 1, 9);
 			ImGui::SliderInt("Octaves: ", &octaves_, 1, 8);
+			ImGui::SliderFloat("Frequency:,", &frequency_, 0.0, 1.0f);
 			if (ImGui::Button("Change alpha"))
 			{
 				i_p_p->ChangeAlpha(n_height_map, v_d_p->GetGridSize(), alpha_);
@@ -188,7 +189,7 @@ int main()
 			if (ImGui::Button("Create Noise Image"))
 			{
 				t_t_p->ClearStructs(v_d_p, voronoi_d, n_height_map, height_map, i_p_p,track_type_,resolution_,sites_,points_);
-				i_p_p->DrawNoise(n_height_map, v_d_p->GetGridSize(), layers_);
+				i_p_p->DrawNoise(n_height_map, v_d_p->GetGridSize(), layers_, frequency_);
 			}
 
 			if (ImGui::Button("Create FBM Image"))
