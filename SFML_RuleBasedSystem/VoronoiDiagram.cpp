@@ -434,9 +434,11 @@ void VoronoiDiagram::ArePointsFound(int &high_point, int &low_point)
 	if (high_point<190)
 	{
 		stop_ = true;
+		std::cout << "high condition\n";
 	}
 	if (low_point>40)
 	{
+		std::cout << "low condition\n";
 		stop_ = true;
 	}
 }
@@ -505,7 +507,7 @@ void VoronoiDiagram::DirectionDecider(int grid_size, int radius_cutoff_, int lay
 	//so are they top left, top right, bottom left, bottom right
 	//then mark that as the direction to go in 
 	int signal, x_pos, y_pos;
-	std::cout << "		HIGHEST point(peak): " << high_or_low.x << " " << high_or_low.y << "\n\n";
+//	std::cout << "		HIGHEST point(peak): " << high_or_low.x << " " << high_or_low.y << "\n\n";
 	if (high_or_low.x <= (grid_size / 2) && high_or_low.y <= (grid_size / 2))
 	{
 		//square 1 in diagram(top left) - going south east
@@ -536,8 +538,8 @@ void VoronoiDiagram::DirectionDecider(int grid_size, int radius_cutoff_, int lay
 void VoronoiDiagram::SetCircumPoint(sf::Vector2i& circum_point_, int x, int y, int iterator_, int place)
 {
 	circum_point_ = sf::Vector2i(x, y );
-	std::cout << "		POINT on circumferenece: " << x << ", " << y << "\n";
-	std::cout << "		RADIUS Length: " << iterator_ << "\n";
+	/*std::cout << "		POINT on circumferenece: " << x << ", " << y << "\n";
+	std::cout << "		RADIUS Length: " << iterator_ << "\n";*/
 	found_raidus = true;
 	temp_rad.at(place) = (iterator_);
 }
@@ -635,9 +637,9 @@ void VoronoiDiagram::SelectRadii(int index_v, int a, int b, sf::Vector2i& high_o
 	{
 		radius_length = 200 - (radius_length - 200);
 	}
-	std::cout << "\nSelected radius: " << p << "\n";
+	/*std::cout << "\nSelected radius: " << p << "\n";
 	std::cout << "RADIUS Length: " << radius_length << "\n";
-	std::cout << "Point on circumferenece: " << circum_points[p].x << ", " << circum_points[p].y << "\n\n";
+	std::cout << "Point on circumferenece: " << circum_points[p].x << ", " << circum_points[p].y << "\n\n";*/
 	circles_[index_v].centre_x = high_or_low.x;
 	circles_[index_v].centre_y = high_or_low.y;
 	circles_[index_v].r_length = radius_length;
@@ -714,6 +716,7 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
 			iterator_++;
 			sites_v_1[iterator_] = circles_[i].centre_y;
 			iterator_++;
+			std::cout << "Centre " << i << " (" << circles_[i].centre_x << ", " << circles_[i].centre_y << ") Radius: " << circles_[i].r_length << "\n";
 		}
 	}
 }

@@ -51,7 +51,7 @@ void Init(sf::RenderWindow &window)
 	number_ = 35;
 	div_ = 2.0f;
 	height_ = 1.0f;
-	frequency_ = 1.0f;
+	frequency_ = 0.010f;
 	alpha_ = 255;
 	layers_ = 1;
 	octaves_ = 1;
@@ -314,6 +314,7 @@ int main()
 					}
 				}
 				t_t_p->TerrainLoop(v_d_p, s_p_p,voronoi_d,height_map,n_height_map,i_p_p,number_,track_type_);
+				v_d_p->SetStop(false);
 			}
 			if (ImGui::Button("Regenerate"))
 			{

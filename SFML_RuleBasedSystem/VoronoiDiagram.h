@@ -52,7 +52,7 @@ public:
 	void SetType(int p) { type = p; }									//sets the type of track
 	void SetFaile(bool f) { failed_ = f; }
 	void SetTesting(bool f) { do_testing_ = f; }
-
+	void SetStop(bool f) { stop_ = f; }
 	//
 	
 	//these functions should go in another class
