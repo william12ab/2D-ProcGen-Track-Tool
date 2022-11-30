@@ -436,7 +436,7 @@ void VoronoiDiagram::ArePointsFound(int &high_point, int &low_point)
 		stop_ = true;
 		std::cout << "high condition\n";
 	}
-	if (low_point>40)
+	if (low_point>25)			//was 40
 	{
 		std::cout << "low condition\n";
 		stop_ = true;
@@ -550,16 +550,16 @@ void VoronoiDiagram::SwitchPoint(int& iterator, int& y_, int& x_, int signal_, i
 	switch (signal_)
 	{
 	case 1:
-		y_ += (1 * modifier_), x_ += (1 * modifier_);
+		y_ += (1 * modifier_), x_ += (1 * modifier_);		//south east
 		break;
 	case 2:
-		y_ += (1 * modifier_), x_ -= (1 * modifier_);
+		y_ += (1 * modifier_), x_ -= (1 * modifier_);		//sw
 		break;
 	case 3:
-		y_ -= 1, x_ += 1;
+		y_ -= (1 * modifier_), x_ += (1 * modifier_);		//ne
 		break;
 	case 4:
-		y_ -= (1 * modifier_), x_ -= (1 * modifier_);
+		y_ -= (1 * modifier_), x_ -= (1 * modifier_);		//nw
 		break;
 	}
 }
