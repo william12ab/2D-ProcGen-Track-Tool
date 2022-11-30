@@ -309,7 +309,7 @@ int main()
 					if (!v_d_p->GetStop())
 					{
 						v_d_p->DirectionDecider(v_d_p->GetGridSize(), radius_cutoff, layers_, i, i_p_p->GetNoiseMap(), v_d_p->GetHighPoint(), true);		//finds point on circumference 
-						v_d_p->DirectionDecider(v_d_p->GetGridSize(), 110, layers_, i + 1, i_p_p->GetNoiseMap(), v_d_p->GetLowPoint(), false);		//finds point on circumference 
+						v_d_p->DirectionDecider(v_d_p->GetGridSize(), 80, layers_, i + 1, i_p_p->GetNoiseMap(), v_d_p->GetLowPoint(), false);		//finds point on circumference 
 						i += 2;		//because the iterator changes above right here |
 					}
 				}

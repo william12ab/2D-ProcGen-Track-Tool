@@ -512,21 +512,25 @@ void VoronoiDiagram::DirectionDecider(int grid_size, int radius_cutoff_, int lay
 	{
 		//square 1 in diagram(top left) - going south east
 		SetDirectionXY(signal, x_pos, y_pos, 1, 1, 1);
+		std::cout << "se\n";
 	}
 	else if (high_or_low.x >= (grid_size / 2) && high_or_low.x <= (grid_size) && high_or_low.y <= (grid_size / 2))
 	{
 		//square 2 in diagram(top right) - going south west 
 		SetDirectionXY(signal, x_pos, y_pos, 2, -1, 1);
+		std::cout << "sw\n";
 	}
 	else if (high_or_low.x >= (grid_size / 2) && high_or_low.x <= (grid_size) && high_or_low.y >= (grid_size / 2) && high_or_low.y <= grid_size)
 	{
 		//square 4 in diagram(bottom right) - going north west
 		SetDirectionXY(signal, x_pos, y_pos, 4, -1, -1);
+		std::cout << "nw\n";
 	}
 	else if (high_or_low.x <= (grid_size / 2) && high_or_low.y >= (grid_size / 2) && high_or_low.y<= grid_size)
 	{
 		//square 3 in diagram(bottom left) - going north east
 		SetDirectionXY(signal, x_pos, y_pos, 3, 1, -1);
+		std::cout << "ne\n";
 	}
 
 	temp_rad.resize(2);																		
@@ -636,6 +640,12 @@ void VoronoiDiagram::SelectRadii(int index_v, int a, int b, sf::Vector2i& high_o
 	if (radius_length > 200)
 	{
 		radius_length = 200 - (radius_length - 200);
+	}
+
+	int r_ = (temp_rad[0] + temp_rad[1]) / 2;
+	if (radius_length<r_)
+	{
+		radius_length = r_;
 	}
 	/*std::cout << "\nSelected radius: " << p << "\n";
 	std::cout << "RADIUS Length: " << radius_length << "\n";
