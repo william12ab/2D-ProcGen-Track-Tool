@@ -58,7 +58,7 @@ void Init(sf::RenderWindow &window)
 	full_random_ = true;
 	times_ = 1;
 	displacement_ = 100;
-	radius_cutoff = 120;
+	radius_cutoff = 115;
 	peaks_to_count_ = 1;
 	do_testing_ = true;
 	step_curve=0.01;
