@@ -74,10 +74,10 @@ public:
 	
 
 	//for setting points
-	void SetPointModi(int& x, int& x_2, int& y, int& y_2, int grid_size, float x_v_1, float x_v_2, float y_v_1, float y_v_2);
-	void PlacePoint(int x,int y,int grid_size, int i, bool&found_);
-	void ThreePoints(int grid_size, int num_points, bool &b_failed, float values_[12]);
-	void SetPoint(int grid_size, int num_points, int type, bool b_failed);				//Sets the point(s) for the distance.
+	void SetPointModi(int& x, int& x_2, int& y, int& y_2, const float &x_v_1, const float &x_v_2, const float &y_v_1, const float &y_v_2);
+	void PlacePoint(int x,int y, int i, bool&found_);
+	void ThreePoints(const float values_[12]);
+	void SetPoint(int type);				//Sets the point(s) for the distance.
 private:
 	SimplexNoise perlin_;
 

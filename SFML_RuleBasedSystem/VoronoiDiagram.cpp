@@ -298,31 +298,31 @@ void VoronoiDiagram::SetEdges()
 	}
 }
 
-void VoronoiDiagram::SetPointModi(int& x, int&x_2, int& y, int&y_2, int grid_size, float x_v_1, float x_v_2, float y_v_1, float y_v_2)
+void VoronoiDiagram::SetPointModi(int& x, int&x_2, int& y, int&y_2, const float &x_v_1, const float &x_v_2, const float &y_v_1, const float &y_v_2)
 {
-	x = (grid_size * x_v_1);
-	x_2 = (grid_size * x_v_2);
-	y = (grid_size * y_v_1);
-	y_2 = (grid_size * y_v_2);
+	x = (grid_size_x * x_v_1);
+	x_2 = (grid_size_x * x_v_2);
+	y = (grid_size_x * y_v_1);
+	y_2 = (grid_size_x * y_v_2);
 }
 
-void VoronoiDiagram::PlacePoint(int x, int y, int grid_size, int i, bool& found_)
+void VoronoiDiagram::PlacePoint(int x, int y, int i, bool& found_)
 {
-	if (grid_v_1[(y * grid_size) + x] == 0)
+	if (grid_v_1[(y * grid_size_x) + x] == 0)
 	{
 		found_ = true;
-		grid_v_1[(y * grid_size) + x] = 2000 + i;
+		grid_v_1[(y * grid_size_x) + x] = 2000 + i;
 	}
 }
 
-void VoronoiDiagram::ThreePoints(int grid_size, int num_points, bool& b_failed, float values_[12])
+void VoronoiDiagram::ThreePoints(const float values_[12])
 {
 	int x_pos_one;
 	int x_pos_two;
 	int y_pos_one;
 	int y_pos_two;
-	SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, grid_size, values_[0], values_[1], values_[2], values_[3]);
-	for (int i = 0; i < num_points; i++)
+	SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, values_[0], values_[1], values_[2], values_[3]);
+	for (int i = 0; i < num_of_points; i++)
 	{
 		bool found = false;
 		int counter = 0;
@@ -330,22 +330,22 @@ void VoronoiDiagram::ThreePoints(int grid_size, int num_points, bool& b_failed, 
 		{
 			int x = rand() % x_pos_one + x_pos_two;
 			int y = rand() % y_pos_one + y_pos_two;
-			PlacePoint(x, y, grid_size, i, found);
+			PlacePoint(x, y, i, found);
 			counter++;
 			if (counter > 200)
 			{
-				b_failed = true;
+				failed_= true;
 				break;
 				std::cout << "didnt set a point\n";
 			}
 		}
 		if (i == 0)
 		{
-			SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, grid_size, values_[4], values_[5], values_[6], values_[7]);
+			SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, values_[4], values_[5], values_[6], values_[7]);
 		}
 		if (i == 1)
 		{
-			SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, grid_size, values_[8], values_[9], values_[10], values_[11]);
+			SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, values_[8], values_[9], values_[10], values_[11]);
 		}
 	}
 }
@@ -359,32 +359,32 @@ void VoronoiDiagram::ThreePoints(int grid_size, int num_points, bool& b_failed, 
 //loop over num of points
 //point 1
 //
-void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_failed)
+void VoronoiDiagram::SetPoint(int type)
 {
 	//zero is iother, 1 is p2p,2 loop
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::default_random_engine generator(seed);
-	std::uniform_int_distribution<int> distribution((grid_size / 16), (int)(grid_size / 1.1));
+	std::uniform_int_distribution<int> distribution((grid_size_x / 16), (int)(grid_size_x / 1.1));
 	switch (type)
 	{
 	case 0:
 	{
 		float arr[12] = { 0.3f,0.05f,0.2f,0.75f, 0.2f,0.45f,0.4f,0.05f, 0.2f,0.75f,0.2f,0.75f };
-		ThreePoints(grid_size, num_points, b_failed, arr);
+		ThreePoints(arr);
 	}
 	break;
 	case 1:
 	{
-		int iter = grid_size / num_points;
+		int iter = grid_size_x / num_of_points;
 		iter -= (iter) / 2;
 		int start = 1;
 		int position = 0;
-		for (int i = 0; i < num_points; i++)
+		for (int i = 0; i < num_of_points; i++)
 		{
 			bool found = false;
-			if (start + iter > grid_size)
+			if (start + iter > grid_size_x)
 			{
-				int difference_ = (start + iter) - grid_size;
+				int difference_ = (start + iter) - grid_size_x;
 				start -= difference_;
 			}
 			int counter = 0;
@@ -395,7 +395,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 				//so first is between 0 and grid_size/numpoints, second is iter and iter+iter, etc
 				int x = rand() % iter + start;
 				int y = distribution(generator);
-				PlacePoint(x, y, grid_size, i, found);
+				PlacePoint(x, y, i, found);
 				if (counter > 200)
 				{
 					failed_ = true;
@@ -403,7 +403,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 					std::cout << "didnt set a point\n";
 				}
 			}
-			iter = grid_size / num_points;
+			iter = grid_size_x / num_of_points;
 			start += iter;
 		}
 	}
@@ -411,7 +411,7 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 	case 2:
 	{
 		float arr[12] = { 0.05f,0.15f,0.2f,0.4f, 0.2f,0.4f,0.15f,0.15f, 0.05f,0.80f,0.2f,0.4f };
-		ThreePoints(grid_size, num_points, b_failed, arr);
+		ThreePoints(arr);
 	}
 	break;
 	}

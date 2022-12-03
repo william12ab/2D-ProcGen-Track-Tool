@@ -56,7 +56,7 @@ void TrackTools::CreateVoronoi(VoronoiDiagram &v_d_p, sf::VertexArray& height_ma
 	v_d_p.DiagramAMP();
 	i_p_p.DrawVoronoiNoise(height_map, v_d_p.GetGridSize(), v_d_p.GetNumberOfSites(), number_, v_d_p.GetGridDistance());
 	v_d_p.SetEdges();
-	v_d_p.SetPoint(v_d_p.GetGridSize(), v_d_p.GetNumberOfPoints(), track_type_, v_d_p.GetFailed());
+	v_d_p.SetPoint(track_type_);
 }
 
 void TrackTools::CreateTrack(VoronoiDiagram &v_d_p, ShortestPath &s_p_p)
@@ -84,7 +84,6 @@ void TrackTools::CreateTrack(VoronoiDiagram &v_d_p, ShortestPath &s_p_p)
 			s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(), start - i, -3);
 			s_p_p.CleanGrid(v_d_p.GetGridSize(), v_d_p.GetGrid());
 		}
-
 	}
 	else
 	{
@@ -124,7 +123,7 @@ void TrackTools::GenerateTerrainMethod(VoronoiDiagram &v_d_p, sf::VertexArray& v
 	v_d_p.DiagramAMP();
 	i_p_p.DrawVoronoiNoise(vertex_array, v_d_p.GetGridSize(), v_d_p.GetNumberOfSites(), number_, v_d_p.GetGridDistance());
 	v_d_p.SetEdges();
-	v_d_p.SetPoint(v_d_p.GetGridSize(), v_d_p.GetNumberOfPoints(), track_track_, v_d_p.GetFailed());
+	v_d_p.SetPoint(track_track_);
 }
 
 void TrackTools::TerrainLoop(VoronoiDiagram &v_d_p,ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray&height_map, sf::VertexArray&n_height_map,ImageProcessing&i_p_p, int number_, int track_type_)

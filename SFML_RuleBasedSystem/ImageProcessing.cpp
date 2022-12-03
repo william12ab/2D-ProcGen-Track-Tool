@@ -100,7 +100,7 @@ void ImageProcessing::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int g
 		}
 	}
 }
-void ImageProcessing::DrawVoronoiNoise(sf::VertexArray& vertextarray, int grid_size, int num_sites, int num_, int* grid_distance)
+void ImageProcessing::DrawVoronoiNoise(sf::VertexArray& vertextarray, const int &grid_size, const int &num_sites, const int &num_, int* const &grid_distance)
 {
 	int max_d_ = 0;
 	parallel_for(0, grid_size, [&](int i)
@@ -109,7 +109,6 @@ void ImageProcessing::DrawVoronoiNoise(sf::VertexArray& vertextarray, int grid_s
 			{
 				float s = float((float)1 / (float)num_sites);							//gets the thing as a percentage
 						//for example 1/100 = 0.01
-
 				int d = grid_distance[(i * grid_size) + j] / (float)num_;			//the distance divided by a number, so makes the distance smaller or bigger
 						//for example could be 1000/25 = 40
 						//so distance is higher with less sites, distance lower with more sites, so with higher sites you need lower num_
