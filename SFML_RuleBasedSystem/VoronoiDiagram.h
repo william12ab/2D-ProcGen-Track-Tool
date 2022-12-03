@@ -42,7 +42,7 @@ public:
 	int GetTrackMin() { return track_min; }
 	sf::Vector2i &GetHighPoint() { return high_point_v; }
 	sf::Vector2i &GetLowPoint() { return low_point_v; }
-	bool GetStop() { return stop_; }
+	bool GetStop() const{ return stop_; }
 	//
 
 	//setters
@@ -56,20 +56,19 @@ public:
 	//
 	
 	//these functions should go in another class
-	void DirectionDecider(int grid_size, int radius_cutoff_,int layers_, int index_v,int*noise_h_m, sf::Vector2i& high_or_low, bool b_what_p);
-	void FindCircumPoint(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place, int* noise_h_m, sf::Vector2i&circum_point_, sf::Vector2i& high_or_low, bool b_what_p);
+	void DirectionDecider(int radius_cutoff_,int layers_, int index_v, int* const& noise_h_m, sf::Vector2i& high_or_low, bool b_what_p);
+	void FindCircumPoint(int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place, int* const& noise_h_m, sf::Vector2i&circum_point_, sf::Vector2i& high_or_low, bool b_what_p);
 	void radiiDecider(int index_v, sf::Vector2i& high_or_low);
 	void ResetVars();
-	void FindMax(int grid_size, int layers_,int* noise_grid);			//finds high point in terrain
-	void FindMinMax(int grid_size, int layers_,int*noise_grid);			//finds low and high
-	void SetHighPoint(int grid_size, int layers_, int* noise_grid, sf::Vector2i& high_point_v_, int& high_point_, int i, int j, int& min_height, sf::Vector2i &low_point_v_);
+	void FindMax(const int &layers_,int* const &noise_grid);			//finds high point in terrain
+	void FindMinMax(int layers_, int* const& noise_grid);			//finds low and high
+	void SetHighPoint(const int &layers_, int* const &noise_grid, sf::Vector2i& high_point_v_, int& high_point_,const int &i,const int &j, int& min_height, sf::Vector2i &low_point_v_);
 	void vector_all(int size); //resets vectors for terrain.
 	void SetDirectionXY(int &signal, int &x, int &y, int a, int b, int c);
 	void SetCircumPoint(sf::Vector2i& circum_point_, int x, int y, int iterator_, int place);
 	void SelectRadii(int index_v,int a,int b, sf::Vector2i& high_or_low);
 	void SwitchPoint(int& iterator, int& y_, int& x_, int signal_, int modifier_);
-
-	void ArePointsFound(int& high_point, int& low_point);
+	void ArePointsFound(const int& high_point,const int& low_point);
 	//
 
 	//this annoying is here

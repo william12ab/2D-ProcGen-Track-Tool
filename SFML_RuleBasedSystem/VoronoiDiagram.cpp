@@ -415,10 +415,10 @@ void VoronoiDiagram::SetPoint(int grid_size, int num_points, int type, bool b_fa
 	}
 }
 
-void VoronoiDiagram::SetHighPoint(int grid_size, int layers_, int* noise_grid, sf::Vector2i& high_point_v_, int& high_point_, int i, int j, int &min_height, sf::Vector2i &low_point_v_)
+void VoronoiDiagram::SetHighPoint(const int &layers_, int* const& noise_grid, sf::Vector2i& high_point_v_, int& high_point_,const int &i,const int &j, int &min_height, sf::Vector2i &low_point_v_)
 {
-	int temp_height = noise_grid[(i * grid_size) + j] / layers_;
-	if (temp_height > high_point)
+	int temp_height = noise_grid[(i * grid_size_x) + j] / layers_;
+	if (temp_height > high_point_)
 	{
 		high_point_ = temp_height;
 		high_point_v_.x = j;
@@ -432,7 +432,7 @@ void VoronoiDiagram::SetHighPoint(int grid_size, int layers_, int* noise_grid, s
 	}
 }
 
-void VoronoiDiagram::ArePointsFound(int &high_point, int &low_point)
+void VoronoiDiagram::ArePointsFound(const int &high_point, const int &low_point)
 {
 	if (high_point<190)
 	{
@@ -446,7 +446,7 @@ void VoronoiDiagram::ArePointsFound(int &high_point, int &low_point)
 	}
 }
 
-void VoronoiDiagram::FindMax(int grid_size, int layers_, int* noise_grid)
+void VoronoiDiagram::FindMax(const int &layers_, int* const &noise_grid)
 {
 	high_point = 0;
 	high_point_v = sf::Vector2i(max_value_height, max_value_height);
@@ -457,17 +457,18 @@ void VoronoiDiagram::FindMax(int grid_size, int layers_, int* noise_grid)
 	int min_height=10000;
 	//if circles vector is empty then just find the max - meaning that no peaks exist currently so no  worries about checking for other peaks
 	//if there are peaks, check if the current point is within a peak and if so dont find the max
-	parallel_for(0, grid_size, [&](int i)
+	parallel_for(0, grid_size_x, [&](int i)
 		{
-			for (int j = 0; j < grid_size; j++)
+			for (int j = 0; j < grid_size_x; j++)
 			{
 				if (!circles_.empty())
 				{
 					bool found_in_first_circle = false;
 					bool not_found_in_circle = true;
+					
 					for (int c = 0; c < circles_.size(); c++)
 					{
-						int r = pow(circles_[c].r_length, 2);						//radius squared
+						int r = circles_[c].r_length * circles_[c].r_length;
 						int a = pow((j - circles_[c].point.x), 2);				//x part squared
 						int b = pow((i - circles_[c].point.y), 2);
 						if (a + b > r)		//outside the circle, so find the max
@@ -478,22 +479,18 @@ void VoronoiDiagram::FindMax(int grid_size, int layers_, int* noise_grid)
 						{
 							found_in_first_circle = true;
 						}
-						/*if (circles_[c + 1].centre_x + circles_[c + 1].centre_y == 0)
-						{
-							c = circles_.size();
-						}*/
 					}
 					if (!not_found_in_circle && !found_in_first_circle)				//so if not in ANY circle 
 					{
 						if (!found_in_first_circle)
 						{
-							SetHighPoint(grid_size, layers_, noise_grid, high_point_v, high_point, i, j, min_height, low_point_v);
+							SetHighPoint(layers_, noise_grid, high_point_v, high_point, i, j, min_height, low_point_v);
 						}
 					}
 				}
 				else
 				{
-					SetHighPoint(grid_size, layers_, noise_grid, high_point_v, high_point, i, j, min_height, low_point_v);
+					SetHighPoint(layers_, noise_grid, high_point_v, high_point, i, j, min_height, low_point_v);
 				}
 			}
 		});
@@ -507,32 +504,32 @@ void VoronoiDiagram::SetDirectionXY(int& signal, int& x, int& y, int a,int b, in
 	y = c;
 }
 
-void VoronoiDiagram::DirectionDecider(int grid_size, int radius_cutoff_, int layers_, int index_v, int* noise_h_m, sf::Vector2i& high_or_low, bool b_what_p)
+void VoronoiDiagram::DirectionDecider(int radius_cutoff_, int layers_, int index_v, int* const& noise_h_m, sf::Vector2i& high_or_low, bool b_what_p)
 {
 	//identify where x and y are in relation to the complete image
 	//so are they top left, top right, bottom left, bottom right
 	//then mark that as the direction to go in 
 	int signal, x_pos, y_pos;
 //	std::cout << "		HIGHEST point(peak): " << high_or_low.x << " " << high_or_low.y << "\n\n";
-	if (high_or_low.x <= (grid_size / 2) && high_or_low.y <= (grid_size / 2))
+	if (high_or_low.x <= (grid_size_x / 2) && high_or_low.y <= (grid_size_x / 2))
 	{
 		//square 1 in diagram(top left) - going south east
 		SetDirectionXY(signal, x_pos, y_pos, 1, 1, 1);
 		std::cout << "se\n";
 	}
-	else if (high_or_low.x >= (grid_size / 2) && high_or_low.x <= (grid_size) && high_or_low.y <= (grid_size / 2))
+	else if (high_or_low.x >= (grid_size_x / 2) && high_or_low.x <= (grid_size_x) && high_or_low.y <= (grid_size_x / 2))
 	{
 		//square 2 in diagram(top right) - going south west 
 		SetDirectionXY(signal, x_pos, y_pos, 2, -1, 1);
 		std::cout << "sw\n";
 	}
-	else if (high_or_low.x >= (grid_size / 2) && high_or_low.x <= (grid_size) && high_or_low.y >= (grid_size / 2) && high_or_low.y <= grid_size)
+	else if (high_or_low.x >= (grid_size_x / 2) && high_or_low.x <= (grid_size_x) && high_or_low.y >= (grid_size_x / 2) && high_or_low.y <= grid_size_x)
 	{
 		//square 4 in diagram(bottom right) - going north west
 		SetDirectionXY(signal, x_pos, y_pos, 4, -1, -1);
 		std::cout << "nw\n";
 	}
-	else if (high_or_low.x <= (grid_size / 2) && high_or_low.y >= (grid_size / 2) && high_or_low.y<= grid_size)
+	else if (high_or_low.x <= (grid_size_x / 2) && high_or_low.y >= (grid_size_x / 2) && high_or_low.y<= grid_size_x)
 	{
 		//square 3 in diagram(bottom left) - going north east
 		SetDirectionXY(signal, x_pos, y_pos, 3, 1, -1);
@@ -540,8 +537,8 @@ void VoronoiDiagram::DirectionDecider(int grid_size, int radius_cutoff_, int lay
 	}
 
 	temp_rad.resize(2);																		
-	FindCircumPoint(grid_size, x_pos, y_pos, signal, radius_cutoff_, layers_, 1, 0, noise_h_m,circum_points[0],high_or_low, b_what_p);
-	FindCircumPoint(grid_size, -x_pos, -y_pos, signal, radius_cutoff_, layers_, -1, 1, noise_h_m,circum_points[1], high_or_low, b_what_p);
+	FindCircumPoint(x_pos, y_pos, signal, radius_cutoff_, layers_, 1, 0, noise_h_m,circum_points[0],high_or_low, b_what_p);
+	FindCircumPoint(-x_pos, -y_pos, signal, radius_cutoff_, layers_, -1, 1, noise_h_m,circum_points[1], high_or_low, b_what_p);
 	radiiDecider(index_v, high_or_low);
 }
 
@@ -574,7 +571,7 @@ void VoronoiDiagram::SwitchPoint(int& iterator, int& y_, int& x_, int signal_, i
 	}
 }
 
-void VoronoiDiagram::FindCircumPoint(int grid_size, int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place, int* noise_h_m, sf::Vector2i& circum_point_, sf::Vector2i& high_or_low, bool b_what_p)
+void VoronoiDiagram::FindCircumPoint(int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place, int* const& noise_h_m, sf::Vector2i& circum_point_, sf::Vector2i& high_or_low, bool b_what_p)
 {
 	int y = high_or_low.y;
 	int x = high_or_low.x;
@@ -583,14 +580,14 @@ void VoronoiDiagram::FindCircumPoint(int grid_size, int x_value_, int y_value_, 
 	do
 	{
 		//travelled the length of the radius then set found etc
-		if ((y + y_value_) >= 0 && (x+x_value_) >= 0 && (y + y_value_) <= grid_size && (x + x_value_) <= grid_size)
+		if ((y + y_value_) >= 0 && (x+x_value_) >= 0 && (y + y_value_) <= grid_size_x && (x + x_value_) <= grid_size_x)
 		{
 			switch (b_what_p)
 			{
 			case true:
-				if ((noise_h_m[((y + y_value_) * grid_size) + (x + x_value_)] / layers_) <= (radius_cutoff_))				//set the circumferences because you have reached a point on the circumference
+				if ((noise_h_m[((y + y_value_) * grid_size_x) + (x + x_value_)] / layers_) <= (radius_cutoff_))				//set the circumferences because you have reached a point on the circumference
 				{
-					if ((y+y_value_) >= 0 && (x+x_value_) >= 0 && (y + y_value_) <= grid_size && (x+x_value_) <= grid_size)
+					if ((y+y_value_) >= 0 && (x+x_value_) >= 0 && (y + y_value_) <= grid_size_x && (x+x_value_) <= grid_size_x)
 					{
 						x += x_value_, y += y_value_;
 						SetCircumPoint(circum_point_, x, y, iterator_, place);
@@ -607,9 +604,9 @@ void VoronoiDiagram::FindCircumPoint(int grid_size, int x_value_, int y_value_, 
 				}
 				break;
 			case false:
-				if ((noise_h_m[((y + y_value_) * grid_size) + (x + x_value_)] / layers_) >= (radius_cutoff_))
+				if ((noise_h_m[((y + y_value_) * grid_size_x) + (x + x_value_)] / layers_) >= (radius_cutoff_))
 				{
-					if ((y + y_value_) >= 0 && (x + x_value_) >= 0 && (y + y_value_) <= grid_size && (x + x_value_) <= grid_size)
+					if ((y + y_value_) >= 0 && (x + x_value_) >= 0 && (y + y_value_) <= grid_size_x && (x + x_value_) <= grid_size_x)
 					{
 						x += x_value_, y += y_value_;
 						SetCircumPoint(circum_point_, x, y, iterator_, place);
@@ -671,7 +668,6 @@ void VoronoiDiagram::radiiDecider(int index_v, sf::Vector2i& high_or_low)
 }
 void VoronoiDiagram::vector_all(int size)
 {
-	circles_.resize(1);
 	circum_points.resize(2);
 }
 
@@ -747,26 +743,26 @@ void VoronoiDiagram::ResetVars()
 }
 
 
-void VoronoiDiagram::FindMinMax(int grid_size, int layers_, int* noise_grid)
+void VoronoiDiagram::FindMinMax(int layers_, int* const& noise_grid)
 {
 	int min_ = 100000;
 	int max_ = 0;
 
 	//finds the min and max of the track ---when theres terrrain
 	//this is better than finding the min and max of the whole image as there will be areas where the track does not pass by
-	for (int i = 0; i < grid_size; i++)
+	for (int i = 0; i < grid_size_x; i++)
 	{
-		for (int j = 0; j < grid_size; j++)
+		for (int j = 0; j < grid_size_x; j++)
 		{
-			if (grid_v_1[(i * grid_size) + j] == 0)							//diagram
+			if (grid_v_1[(i * grid_size_x) + j] == 0)							//diagram
 			{
-				if ((noise_grid[i * grid_size + j] / layers_) > max_)
+				if ((noise_grid[i * grid_size_x + j] / layers_) > max_)
 				{
-					max_ = noise_grid[i * grid_size + j] / layers_;
+					max_ = noise_grid[i * grid_size_x + j] / layers_;
 				}
-				if ((noise_grid[i * grid_size + j] / layers_) > min_)
+				if ((noise_grid[i * grid_size_x + j] / layers_) > min_)
 				{
-					min_ = noise_grid[i * grid_size + j] / layers_;
+					min_ = noise_grid[i * grid_size_x+ j] / layers_;
 				}
 			}
 		}
