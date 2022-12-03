@@ -199,7 +199,7 @@ int main()
 			if (ImGui::Button("Create FBM Image"))
 			{
 				t_t.ClearStructs(v_d, voronoi_d, n_height_map, height_map, i_p, track_type_, resolution_, sites_, points_);
-				i_p.DrawFBM(n_height_map, v_d.GetGridSize(), octaves_);
+				i_p.DrawFBM(n_height_map, v_d.GetGridSize(), octaves_, frequency_);
 			}
 
 		}

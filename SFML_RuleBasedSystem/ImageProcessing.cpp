@@ -137,7 +137,7 @@ void ImageProcessing::DrawVoronoiNoise(sf::VertexArray& vertextarray, const int 
 			}
 		});
 }
-void ImageProcessing::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_, float frequency)
+void ImageProcessing::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_, const float &frequency)
 {
 	for (size_t i = 0; i < grid_size; i++)
 	{
@@ -195,7 +195,7 @@ void ImageProcessing::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int
 		}
 	}
 }
-void ImageProcessing::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int octaves_)
+void ImageProcessing::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int octaves_, const float &frequency)
 {
 	for (size_t i = 0; i < grid_size; i++)
 	{
@@ -208,7 +208,7 @@ void ImageProcessing::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int o
 	float low_ = 0.01f;
 	float high_ = 0.020f;
 	float r3 = low_ + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (high_ - low_)));//the frequency of the noise between low and high
-
+	
 
 	float min_ = INT_MAX;
 	float max_ = 0.0f;
@@ -226,7 +226,7 @@ void ImageProcessing::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int o
 			float height = 0.0f;
 			for (int o = 0; o < octaves_; o++)
 			{
-				height += (perlin_.noise(i * mul, j * mul, r3)) * a;
+				height += (perlin_.noise(i * mul, j * mul, frequency)) * a;
 				a *= 0.5f;
 				mul *= 2.0f;
 			}

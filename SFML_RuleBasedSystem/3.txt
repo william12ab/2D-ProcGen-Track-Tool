@@ -1,29 +1,15 @@
-total length: 405
-number of turns: 11
-number of segments: 12
-shortest distance(euclidean distance): 92
+total length: 163
+number of turns: 4
+number of segments: 5
+shortest distance(euclidean distance): 293
 
-length 1: 10
-length 2: 51
-length 3: 24
-length 4: 67
-length 5: 29
-length 6: 37
-length 7: 84
-length 8: 30
-length 9: 46
-length 10: 25
-length 11: 1
-length 12: 35
+length 1: 5
+length 2: 78
+length 3: 64
+length 4: 2
+length 5: 32
 
-angle 1: 101
-angle 2: 217
-angle 3: 193
-angle 4: 221
-angle 5: 116
-angle 6: 212
-angle 7: 155
-angle 8: 134
-angle 9: 142
-angle 10: 253
-angle 11: 163
+angle 1: 222
+angle 2: 114
+angle 3: 218
+angle 4: 180
