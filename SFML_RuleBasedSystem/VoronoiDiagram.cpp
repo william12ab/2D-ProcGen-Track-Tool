@@ -37,7 +37,9 @@ VoronoiDiagram::VoronoiDiagram()
 	track_min = 0;
 	circum_points.resize(2);
 	
-	stop_ = false;
+	//stop_ = false;
+	stop_high_ = false;
+	stop_low_ = false;
 	max_value_height = -1000000;
 
 	
@@ -434,15 +436,15 @@ void VoronoiDiagram::SetHighPoint(const int &layers_, int* const& noise_grid, sf
 
 void VoronoiDiagram::ArePointsFound(const int &high_point, const int &low_point)
 {
-	if (high_point<190)
+	if (high_point<210)
 	{
-		stop_ = true;
+		stop_high_ = true;
 		std::cout << "high condition\n";
 	}
 	if (low_point>25)			//was 40
 	{
 		std::cout << "low condition\n";
-		stop_ = true;
+		stop_low_ = true;
 	}
 }
 

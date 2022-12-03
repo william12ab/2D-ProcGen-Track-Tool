@@ -42,7 +42,8 @@ public:
 	int GetTrackMin() { return track_min; }
 	sf::Vector2i &GetHighPoint() { return high_point_v; }
 	sf::Vector2i &GetLowPoint() { return low_point_v; }
-	bool GetStop() const{ return stop_; }
+	bool GetStopH() const{ return stop_high_; }
+	bool GetStopL() const { return stop_low_; }
 	//
 
 	//setters
@@ -52,7 +53,8 @@ public:
 	void SetType(int p) { type = p; }									//sets the type of track
 	void SetFaile(bool f) { failed_ = f; }
 	void SetTesting(bool f) { do_testing_ = f; }
-	void SetStop(bool f) { stop_ = f; }
+	void SetStopH(bool f) { stop_high_ = f; }
+	void SetStopL(bool f) { stop_low_ = f; }
 	//
 	
 	//these functions should go in another class
@@ -123,6 +125,7 @@ private:
 
 
 	int max_value_height;			//for chekcing if all points of interest have been found.
-	bool stop_;						//for returning if all points have been found
+	bool stop_high_;						//for returning if all points have been found
+	bool stop_low_;
 };
 

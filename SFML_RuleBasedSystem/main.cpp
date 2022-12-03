@@ -307,14 +307,20 @@ int main()
 				ClearConsoleWin();
 				v_d.vector_all(peaks_to_count_*2);
 				int i = 0;
-				while (!v_d.GetStop())
+				while (!v_d.GetStopH() || !v_d.GetStopL())
 				{
 					v_d.FindMax(layers_, i_p.GetNoiseMap());								//finds the highest point in the terrain
-					if (!v_d.GetStop())
+					if (!v_d.GetStopH())
 					{
 						v_d.DirectionDecider(radius_cutoff, layers_, i, i_p.GetNoiseMap(), v_d.GetHighPoint(), true);		//finds point on circumference 
+						//i += 2;
+						i++;
+					}
+					if (!v_d.GetStopL())
+					{
 						v_d.DirectionDecider(80, layers_, i + 1, i_p.GetNoiseMap(), v_d.GetLowPoint(), false);		//finds point on circumference 
-						i += 2;		//because the iterator changes above 
+						//i += 2;		//because the iterator changes above 
+						i++;
 					}
 				}
 				the_clock::time_point startTime = the_clock::now();
@@ -322,7 +328,8 @@ int main()
 				the_clock::time_point endTime = the_clock::now();
 				auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
 				std::cout << "time(v d): " << time_taken; std::cout << std::endl;
-				v_d.SetStop(false);
+				v_d.SetStopL(false);
+				v_d.SetStopH(false);
 			}
 			if (ImGui::Button("Regenerate"))
 			{
