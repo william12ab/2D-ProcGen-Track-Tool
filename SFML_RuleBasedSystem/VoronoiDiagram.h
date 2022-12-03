@@ -56,9 +56,9 @@ public:
 	//
 	
 	//these functions should go in another class
-	void DirectionDecider(int radius_cutoff_,int layers_, int index_v, int* const& noise_h_m, sf::Vector2i& high_or_low, bool b_what_p);
-	void FindCircumPoint(int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place, int* const& noise_h_m, sf::Vector2i&circum_point_, sf::Vector2i& high_or_low, bool b_what_p);
-	void radiiDecider(int index_v, sf::Vector2i& high_or_low);
+	void DirectionDecider(const int &radius_cutoff_,const int &layers_,const int &index_v, int* const& noise_h_m, const sf::Vector2i& high_or_low, bool b_what_p);
+	void FindCircumPoint(int x_value_, int y_value_, int signal_, const int radius_cutoff_, const int layers_, int modifier_, int place, int* const& noise_h_m, sf::Vector2i&circum_point_, const sf::Vector2i& high_or_low, bool b_what_p);
+	void radiiDecider(const int &index_v, const sf::Vector2i& high_or_low);
 	void ResetVars();
 	void FindMax(const int &layers_,int* const &noise_grid);			//finds high point in terrain
 	void FindMinMax(int layers_, int* const& noise_grid);			//finds low and high
@@ -66,8 +66,8 @@ public:
 	void vector_all(int size); //resets vectors for terrain.
 	void SetDirectionXY(int &signal, int &x, int &y, int a, int b, int c);
 	void SetCircumPoint(sf::Vector2i& circum_point_, int x, int y, int iterator_, int place);
-	void SelectRadii(int index_v,int a,int b, sf::Vector2i& high_or_low);
-	void SwitchPoint(int& iterator, int& y_, int& x_, int signal_, int modifier_);
+	void SelectRadii(const int &index_v,int a,int b, const sf::Vector2i& high_or_low);
+	void SwitchPoint(int& iterator, int& y_, int& x_, const int signal_, int modifier_);
 	void ArePointsFound(const int& high_point,const int& low_point);
 	//
 

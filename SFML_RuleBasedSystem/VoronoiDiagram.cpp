@@ -504,7 +504,7 @@ void VoronoiDiagram::SetDirectionXY(int& signal, int& x, int& y, int a,int b, in
 	y = c;
 }
 
-void VoronoiDiagram::DirectionDecider(int radius_cutoff_, int layers_, int index_v, int* const& noise_h_m, sf::Vector2i& high_or_low, bool b_what_p)
+void VoronoiDiagram::DirectionDecider(const int& radius_cutoff_, const int& layers_,const int &index_v, int* const& noise_h_m,const sf::Vector2i& high_or_low, bool b_what_p)
 {
 	//identify where x and y are in relation to the complete image
 	//so are they top left, top right, bottom left, bottom right
@@ -551,7 +551,7 @@ void VoronoiDiagram::SetCircumPoint(sf::Vector2i& circum_point_, int x, int y, i
 	temp_rad.at(place) = (iterator_);
 }
 
-void VoronoiDiagram::SwitchPoint(int& iterator, int& y_, int& x_, int signal_, int modifier_)
+void VoronoiDiagram::SwitchPoint(int& iterator, int& y_, int& x_, const int signal_, int modifier_)
 {
 	iterator++;
 	switch (signal_)
@@ -571,7 +571,7 @@ void VoronoiDiagram::SwitchPoint(int& iterator, int& y_, int& x_, int signal_, i
 	}
 }
 
-void VoronoiDiagram::FindCircumPoint(int x_value_, int y_value_, int signal_, int radius_cutoff_, int layers_, int modifier_, int place, int* const& noise_h_m, sf::Vector2i& circum_point_, sf::Vector2i& high_or_low, bool b_what_p)
+void VoronoiDiagram::FindCircumPoint(int x_value_, int y_value_, int signal_,const int radius_cutoff_, const int layers_, int modifier_, int place, int* const& noise_h_m, sf::Vector2i& circum_point_, const sf::Vector2i& high_or_low, bool b_what_p)
 {
 	int y = high_or_low.y;
 	int x = high_or_low.x;
@@ -632,7 +632,7 @@ void VoronoiDiagram::FindCircumPoint(int x_value_, int y_value_, int signal_, in
 	} while (found_raidus != true && !failed_);
 }
 
-void VoronoiDiagram::SelectRadii(int index_v, int a, int b, sf::Vector2i& high_or_low)
+void VoronoiDiagram::SelectRadii(const int &index_v, int a, int b,const sf::Vector2i& high_or_low)
 {
 	int p = a;
 	if (temp_rad.at(a) > 200)
@@ -654,7 +654,7 @@ void VoronoiDiagram::SelectRadii(int index_v, int a, int b, sf::Vector2i& high_o
 	circles_.push_back(peak_);
 }
 
-void VoronoiDiagram::radiiDecider(int index_v, sf::Vector2i& high_or_low)
+void VoronoiDiagram::radiiDecider(const int &index_v, const sf::Vector2i& high_or_low)
 {
 	int p = 0;
 	if (temp_rad.at(0) > temp_rad.at(1))					//chooses the bigger of the two but if its > 300 then chooses the smaller cos thats large

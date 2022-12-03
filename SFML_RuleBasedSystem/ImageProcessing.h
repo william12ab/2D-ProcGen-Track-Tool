@@ -18,7 +18,7 @@ public:
 
 	//Getters
 	float* GetHeightVal() { return heightmap_; }
-	int* GetNoiseMap() { return noise_heightmap_; }
+	int* GetNoiseMap() const { return noise_heightmap_; }
 
 	//Drawing functions
 	void DrawCurve(sf::VertexArray& vertexarray, int grid_size, int num_sites,int *grid);						//draws the curve to the vertex array
