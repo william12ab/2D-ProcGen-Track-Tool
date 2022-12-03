@@ -103,10 +103,9 @@ private:
 
 	struct peaks_
 	{
-		int centre_x;
-		int centre_y;
-		int r_length;
-	};
+		sf::Vector2i point=sf::Vector2i(0,0);
+		int r_length=0;
+	}peak_;
 
 	int high_point;			//used			stores value of highest point. eg: say it was 200m in real values
 	sf::Vector2i high_point_v;		//used		coords of highpoint
@@ -116,7 +115,8 @@ private:
 
 	std::vector<sf::Vector2i> circum_points;		//keeps track of the poiints on the circumference
 
-	std::vector<peaks_>circles_;
+	static std::vector<peaks_>circles_;
+	
 
 	int track_max;
 	int track_min;

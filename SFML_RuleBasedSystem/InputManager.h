@@ -11,7 +11,7 @@ public:
 	InputManager(Input*in, sf::View* view);
 	~InputManager();
 
-	void HandleInput(VoronoiDiagram* v_d_p, sf::VertexArray& vertexarray,bool &r_h_m,bool &r_n_h_m,bool &r_f_h_m, ImageProcessing* i_p_p);
+	void HandleInput(VoronoiDiagram &v_d_p, sf::VertexArray& vertexarray,bool &r_h_m,bool &r_n_h_m,bool &r_f_h_m, ImageProcessing &i_p_p);
 
 	void Zoom();
 private:

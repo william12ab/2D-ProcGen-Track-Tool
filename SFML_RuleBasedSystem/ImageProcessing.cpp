@@ -342,7 +342,7 @@ void ImageProcessing::ResizeImage(int grid_size, float scale)
 	}
 	scaled_image.saveToFile("test.png");
 }
-void ImageProcessing::UpScaleGrid(int grid_size, float scale,int *grid, VoronoiDiagram* v_d_p)
+void ImageProcessing::UpScaleGrid(int grid_size, float scale,int *grid, VoronoiDiagram &v_d_p)
 {
 	int new_size = grid_size * scale;
 	int* new_arr = new int[new_size * new_size];
@@ -393,7 +393,7 @@ void ImageProcessing::UpScaleGrid(int grid_size, float scale,int *grid, VoronoiD
 	}
 
 	//re sizing the grid
-	v_d_p->ResizeGrid(grid_size, scale);
+	v_d_p.ResizeGrid(grid_size, scale);
 
 	parallel_for(0, new_size, [&](int i)
 		{

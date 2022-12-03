@@ -36,7 +36,7 @@ public:
 
 	//sampling functions
 	void ResizeImage(int grid_size, float scale);																//downscales image
-	void UpScaleGrid(int grid_size, float scale, int* grid, VoronoiDiagram* v_d_p);																//upscales the grid
+	void UpScaleGrid(int grid_size, float scale, int* grid, VoronoiDiagram& v_d_p);																//upscales the grid
 	void UpScaleVertexArray(int grid_size, float scale, sf::VertexArray& vertextarray);							//upscales a vertexarray
 	void ResizeGrid(int grid_size, float scale, int* grid);																//resizes the grid
 	//

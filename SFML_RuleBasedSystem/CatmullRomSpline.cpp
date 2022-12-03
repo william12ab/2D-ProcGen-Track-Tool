@@ -4,11 +4,6 @@ CatmullRomSpline::CatmullRomSpline()
 	step_size = 0.005f;
 	alpha_ = 0.5f;
 }
-CatmullRomSpline::~CatmullRomSpline()
-{
-
-}
-
 int* CatmullRomSpline::GetIndices(bool is_looped, float t, int size_)
 {
 	int p0, p1, p2, p3;

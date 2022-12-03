@@ -11,6 +11,9 @@ using namespace concurrency;
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
 using the_clock = std::chrono::steady_clock;
+std::vector<VoronoiDiagram::peaks_> VoronoiDiagram::circles_(1);
+
+
 VoronoiDiagram::VoronoiDiagram()
 {
 	type = 1;
@@ -34,10 +37,10 @@ VoronoiDiagram::VoronoiDiagram()
 	track_min = 0;
 	circum_points.resize(2);
 	
-
-
 	stop_ = false;
 	max_value_height = -1000000;
+
+	
 }
 
 VoronoiDiagram::~VoronoiDiagram()
@@ -465,9 +468,8 @@ void VoronoiDiagram::FindMax(int grid_size, int layers_, int* noise_grid)
 					for (int c = 0; c < circles_.size(); c++)
 					{
 						int r = pow(circles_[c].r_length, 2);						//radius squared
-						int a = pow((j - circles_[c].centre_x), 2);				//x part squared
-						int b = pow((i - circles_[c].centre_y), 2);
-
+						int a = pow((j - circles_[c].point.x), 2);				//x part squared
+						int b = pow((i - circles_[c].point.y), 2);
 						if (a + b > r)		//outside the circle, so find the max
 						{
 							not_found_in_circle = false;
@@ -476,6 +478,10 @@ void VoronoiDiagram::FindMax(int grid_size, int layers_, int* noise_grid)
 						{
 							found_in_first_circle = true;
 						}
+						/*if (circles_[c + 1].centre_x + circles_[c + 1].centre_y == 0)
+						{
+							c = circles_.size();
+						}*/
 					}
 					if (!not_found_in_circle && !found_in_first_circle)				//so if not in ANY circle 
 					{
@@ -647,12 +653,8 @@ void VoronoiDiagram::SelectRadii(int index_v, int a, int b, sf::Vector2i& high_o
 	{
 		radius_length = r_;
 	}
-	/*std::cout << "\nSelected radius: " << p << "\n";
-	std::cout << "RADIUS Length: " << radius_length << "\n";
-	std::cout << "Point on circumferenece: " << circum_points[p].x << ", " << circum_points[p].y << "\n\n";*/
-	circles_[index_v].centre_x = high_or_low.x;
-	circles_[index_v].centre_y = high_or_low.y;
-	circles_[index_v].r_length = radius_length;
+	peak_.point = sf::Vector2i(high_or_low.x,high_or_low.y), peak_.r_length = radius_length;
+	circles_.push_back(peak_);
 }
 
 void VoronoiDiagram::radiiDecider(int index_v, sf::Vector2i& high_or_low)
@@ -669,7 +671,7 @@ void VoronoiDiagram::radiiDecider(int index_v, sf::Vector2i& high_or_low)
 }
 void VoronoiDiagram::vector_all(int size)
 {
-	circles_.resize(20);
+	circles_.resize(1);
 	circum_points.resize(2);
 }
 
@@ -695,8 +697,8 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
 			for (int c = 0; c < circles_.size(); c++)
 			{
 				int r = pow(circles_[c].r_length, 2);						//radius squared
-				int a = pow((sites_v_1[i - 1] - circles_[c].centre_x), 2);				//x part squared
-				int b = pow((sites_v_1[i] - circles_[c].centre_y), 2);					//y part squared
+				int a = pow((sites_v_1[i - 1] - circles_[c].point.x), 2);				//x part squared
+				int b = pow((sites_v_1[i] - circles_[c].point.y), 2);					//y part squared
 				if (a + b < r || a + b == r)				//the circle formula - checking whether the point exist in the circle and if it does then set the iterator back to what it was and go again
 				{
 					found = false;
@@ -720,13 +722,13 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
 	int iterator_ = 0;
 	for (int i = 0; i < circles_.size(); i++)
 	{
-		if (circles_[i].centre_x +circles_[i].centre_y!=0)
+		if (circles_[i].point.x +circles_[i].point.y!=0)
 		{
-			sites_v_1[iterator_] = circles_[i].centre_x;				//setting the first sites the the centre point of the circles
+			sites_v_1[iterator_] = circles_[i].point.x;				//setting the first sites the the centre point of the circles
 			iterator_++;
-			sites_v_1[iterator_] = circles_[i].centre_y;
+			sites_v_1[iterator_] = circles_[i].point.y;
 			iterator_++;
-			std::cout << "Centre " << i << " (" << circles_[i].centre_x << ", " << circles_[i].centre_y << ") Radius: " << circles_[i].r_length << "\n";
+			std::cout << "Centre " << i << " (" << circles_[i].point.x << ", " << circles_[i].point.y << ") Radius: " << circles_[i].r_length << "\n";
 		}
 	}
 }

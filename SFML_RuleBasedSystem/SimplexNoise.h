@@ -14,8 +14,6 @@ public:
 	//frequency determines the zoom level of the noise.
 	static float noise(float xpo, float ypo, float frequency);
 
-
-
 private:
 
 	static int32_t fastFloor(float fp);

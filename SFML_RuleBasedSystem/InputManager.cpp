@@ -46,11 +46,11 @@ void InputManager::Zoom()
 	}
 }
 
-void InputManager::HandleInput(VoronoiDiagram* v_d_p,sf::VertexArray& vertexarray, bool &r_h_m, bool &r_n_h_m, bool &r_f_h_m, ImageProcessing* i_p_p)
+void InputManager::HandleInput(VoronoiDiagram &v_d_p,sf::VertexArray& vertexarray, bool &r_h_m, bool &r_n_h_m, bool &r_f_h_m, ImageProcessing& i_p_p)
 {
 	if (input->isKeyDown(sf::Keyboard::Keyboard::A))
 	{
-		i_p_p->DrawFullVoronoiDiagram(vertexarray, v_d_p->GetGridSize(),v_d_p->GetGrid());
+		i_p_p.DrawFullVoronoiDiagram(vertexarray, v_d_p.GetGridSize(),v_d_p.GetGrid());
 		input->setKeyUp(sf::Keyboard::A);
 	}
 	if (input->isKeyDown(sf::Keyboard::S))
@@ -71,7 +71,7 @@ void InputManager::HandleInput(VoronoiDiagram* v_d_p,sf::VertexArray& vertexarra
 	}
 	if (input->isKeyDown(sf::Keyboard::F))
 	{
-		i_p_p->DrawTrack(vertexarray, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites(),v_d_p->GetGrid());
+		i_p_p.DrawTrack(vertexarray, v_d_p.GetGridSize(), v_d_p.GetNumberOfSites(),v_d_p.GetGrid());
 		input->setKeyUp(sf::Keyboard::F);
 
 	}
