@@ -45,17 +45,17 @@ void TrackTools::CreateVoronoi(VoronoiDiagram &v_d_p, sf::VertexArray& height_ma
 	//bool choosing what distribution to use
 	if (full_random_)
 	{
-		v_d_p.RandomPlaceSites(v_d_p.GetNumberOfSites(), v_d_p.GetGridSize());
+		v_d_p.RandomPlaceSites();
 	}
 	else
 	{
-		v_d_p.EqaullyDispursSites(v_d_p.GetNumberOfSites(), v_d_p.GetGridSize(), times_, displacement_);
+		v_d_p.EqaullyDispursSites(times_, displacement_);
 	}
 
 	//creates vd diagram, creates distance map, sets only edges in vertexarray, sets points of track. in that order.
-	v_d_p.DiagramAMP(v_d_p.GetNumberOfSites(), v_d_p.GetGridSize());
+	v_d_p.DiagramAMP();
 	i_p_p.DrawVoronoiNoise(height_map, v_d_p.GetGridSize(), v_d_p.GetNumberOfSites(), number_, v_d_p.GetGridDistance());
-	v_d_p.SetEdges(v_d_p.GetGridSize());
+	v_d_p.SetEdges();
 	v_d_p.SetPoint(v_d_p.GetGridSize(), v_d_p.GetNumberOfPoints(), track_type_, v_d_p.GetFailed());
 }
 
@@ -120,10 +120,10 @@ void TrackTools::Generate(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, sf::Vertex
 
 void TrackTools::GenerateTerrainMethod(VoronoiDiagram &v_d_p, sf::VertexArray& vertex_array, ImageProcessing &i_p_p, int number_, int track_track_)
 {
-	v_d_p.TerrainSites(v_d_p.GetNumberOfSites(), v_d_p.GetGridSize());							//this takes no time
-	v_d_p.DiagramAMP(v_d_p.GetNumberOfSites(), v_d_p.GetGridSize());
+	v_d_p.TerrainSites();							//this takes no time
+	v_d_p.DiagramAMP();
 	i_p_p.DrawVoronoiNoise(vertex_array, v_d_p.GetGridSize(), v_d_p.GetNumberOfSites(), number_, v_d_p.GetGridDistance());
-	v_d_p.SetEdges(v_d_p.GetGridSize());
+	v_d_p.SetEdges();
 	v_d_p.SetPoint(v_d_p.GetGridSize(), v_d_p.GetNumberOfPoints(), track_track_, v_d_p.GetFailed());
 }
 

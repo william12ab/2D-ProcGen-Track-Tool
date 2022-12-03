@@ -10,23 +10,18 @@ public:
 	VoronoiDiagram();
 	~VoronoiDiagram();
 	
-	void RandomPlaceSites(int num_sites, int grid_size);				//distrubutes the sites
-	void EqaullyDispursSites(int num_sites, int grid_size, int times_, int displacement);
-	void TerrainSites(int num_sites, int grid_size);
+	void RandomPlaceSites();				//distrubutes the sites
+	void EqaullyDispursSites(const int &times_, const int &displacement);				//equally places sites
+	void TerrainSites();					//site placement for terrain 
 
 	int DistanceSqrt(int x, int y, int x2, int y2);						//the distance formula
-	void SetEdges(int grid_size);										//sets the edges of voronoi diagram, so it is just the edges in the vector
-	
-	void InitVector(int grid_size, int num_points, int num_sites);		//inits the vector to correct size;
-
-
-	void DiagramAMP(int num_sites, int grid_size);						//creates the vd using parallel for
+	void SetEdges();										//sets the edges of voronoi diagram, so it is just the edges in the vector
+	void InitVector(const int &grid_size, const int &num_points, const int &num_sites);		//inits the vector to correct size;
+	void DiagramAMP();						//creates the vd using parallel for
 
 
 	//getters		
 	int GetRadius() { return radius_length; }
-	int GetCentreX() { return high_point_v.x; }
-	int GetCentreY() { return high_point_v.y; }
 	bool GetFailed() { return failed_; }						
 
 	int* GetGrid() { return grid_v_1; }
@@ -74,7 +69,7 @@ public:
 	//
 
 	//this annoying is here
-	void ResizeGrid(int grid_size, float scale);																//resizes the grid
+	void ResizeGrid(float scale);																//resizes the grid
 	void UpScaleGrid(int grid_size, float scale);																//upscales the grid
 	
 

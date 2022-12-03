@@ -393,7 +393,7 @@ void ImageProcessing::UpScaleGrid(int grid_size, float scale,int *grid, VoronoiD
 	}
 
 	//re sizing the grid
-	v_d_p.ResizeGrid(grid_size, scale);
+	v_d_p.ResizeGrid( scale);
 
 	parallel_for(0, new_size, [&](int i)
 		{

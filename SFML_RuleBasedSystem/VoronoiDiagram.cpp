@@ -52,7 +52,7 @@ VoronoiDiagram::~VoronoiDiagram()
 	delete[] grid_distance;
 }
 
-void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
+void VoronoiDiagram::InitVector(const int& grid_size, const int& num_points, const int& num_sites)
 {
 	grid_size_x = grid_size;
 	grid_v_1 = new int[grid_size_x * grid_size_x];
@@ -60,14 +60,14 @@ void VoronoiDiagram::InitVector(int grid_size, int num_points, int num_sites)
 	sites_v_1 = new int[num_sites * 2];
 }
 
-void VoronoiDiagram::ResizeGrid(int grid_size, float scale)
+void VoronoiDiagram::ResizeGrid(float scale)
 {
-	size_t new_size = grid_size * scale;
+	size_t new_size = grid_size_x * scale;
 	int* temp_arr = new int[new_size * new_size];
 
 	//resizing grid
-	std::copy(grid_v_1, grid_v_1 + (grid_size * grid_size), temp_arr + 0);
-	grid_size = new_size;
+	std::copy(grid_v_1, grid_v_1 + (grid_size_x * grid_size_x), temp_arr + 0);
+	grid_size_x = new_size;
 	delete[] grid_v_1;
 	grid_v_1 = temp_arr;
 }
@@ -123,7 +123,7 @@ void VoronoiDiagram::UpScaleGrid(int grid_size, float scale)
 	}
 
 	//re sizing the grid
-	ResizeGrid(grid_size, scale);
+	ResizeGrid(scale);
 
 	parallel_for(0, new_size, [&](int i)
 		{
@@ -135,26 +135,26 @@ void VoronoiDiagram::UpScaleGrid(int grid_size, float scale)
 		});
 }
 
-void VoronoiDiagram::RandomPlaceSites(int num_sites, int grid_size)
+void VoronoiDiagram::RandomPlaceSites()
 {
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::default_random_engine generator(seed);
-	std::uniform_int_distribution<int> distribution(0, grid_size);
+	std::uniform_int_distribution<int> distribution(0, grid_size_x);
 	//loop over the number of sites and push back sites
-	for (int i = 0; i < (num_sites * 2); i++)
+	for (int i = 0; i < (num_of_sites * 2); i++)
 	{
 		sites_v_1[i] = distribution(generator);
 		//sites_v_1[i] = rand() % grid_size;
 	}
 }
 
-void VoronoiDiagram::EqaullyDispursSites(int num_sites, int grid_size, int times_, int displacement)
+void VoronoiDiagram::EqaullyDispursSites(const int& times_, const int& displacement)
 {
 	srand(time(NULL));
 
-	int sqrt_sites = sqrt(num_sites);							//gives the sqrt of the number of sites
+	int sqrt_sites = sqrt(num_of_sites);							//gives the sqrt of the number of sites
 
-	int spacing_ = grid_size / sqrt_sites;						//spacing for all spaces of sites
+	int spacing_ = grid_size_x / sqrt_sites;						//spacing for all spaces of sites
 
 	int x_spacing = spacing_;									//x axis spacing: |.|.|.|.|
 	int y_spacing = spacing_;									//y axis spacing: that but vertical
@@ -186,13 +186,13 @@ void VoronoiDiagram::EqaullyDispursSites(int num_sites, int grid_size, int times
 
 	for (int t = 0; t < times_; t++)
 	{
-		for (int i = 0; i < (num_sites * 2); i++)
+		for (int i = 0; i < (num_of_sites * 2); i++)
 		{
 			sites_v_1[i] += distribution(generator);
-			if (sites_v_1[i] >= grid_size)									//if bigger than the max res then max res - the amount bigger than = new pos
+			if (sites_v_1[i] >= grid_size_x)									//if bigger than the max res then max res - the amount bigger than = new pos
 			{
-				int difference = sites_v_1[i] - grid_size;
-				sites_v_1[i] = grid_size - difference;
+				int difference = sites_v_1[i] - grid_size_x;
+				sites_v_1[i] = grid_size_x - difference;
 			}
 			if (sites_v_1[i] <= 0)											//if less than, new pos = amount less than but positive
 			{
@@ -200,10 +200,10 @@ void VoronoiDiagram::EqaullyDispursSites(int num_sites, int grid_size, int times
 			}
 			i++;
 			sites_v_1[i] += distribution(generator);
-			if (sites_v_1[i] >= grid_size)
+			if (sites_v_1[i] >= grid_size_x)
 			{
-				int difference = sites_v_1[i] - grid_size;
-				sites_v_1[i] = grid_size - difference;
+				int difference = sites_v_1[i] - grid_size_x;
+				sites_v_1[i] = grid_size_x - difference;
 			}
 			if (sites_v_1[i] <= 0)
 			{
@@ -225,24 +225,24 @@ int VoronoiDiagram::DistanceSqrt(int x, int y, int x2, int y2)
 //each element is a sites "colour" 
 //the distance is found at each site in comparison to the index of the loop in x and y direction.
 //relative to the distance the cell is found of the diagram.
-void VoronoiDiagram::DiagramAMP(int num_sites, int grid_size)
+void VoronoiDiagram::DiagramAMP()
 {
 	max_distance_ = 0;
 	int* incr;
-	incr = new int[num_sites];
-	for (int i = 0; i < num_sites; i++)
+	incr = new int[num_of_sites];
+	for (int i = 0; i < num_of_sites; i++)
 	{
 		incr[i] = i + 1;
 	}
 
-	parallel_for(0, grid_size, [&](int j)
+	parallel_for(0, grid_size_x, [&](int j)
 		{
-			for (int i = 0; i < grid_size; i++)
+			for (int i = 0; i < grid_size_x; i++)
 			{
 				int ind = -1, dist = INT_MAX;
 				int s = 0;
 				int d = 0;
-				for (int p = 0; p < num_sites; p++)
+				for (int p = 0; p < num_of_sites; p++)
 				{
 					d = DistanceSqrt(sites_v_1[s], sites_v_1[s + 1], i, j);
 
@@ -256,14 +256,14 @@ void VoronoiDiagram::DiagramAMP(int num_sites, int grid_size)
 				//so if this point has a distance which all points do
 				if (ind > -1)
 				{
-					int s = grid_v_1[(j * grid_size) + i];
+					int s = grid_v_1[(j * grid_size_x) + i];
 					int p = incr[ind];
-					grid_v_1[(j * grid_size) + i] = incr[ind];
+					grid_v_1[(j * grid_size_x) + i] = incr[ind];
 					if (dist > max_distance_)
 					{
 						max_distance_ = dist;
 					}
-					grid_distance[(j * grid_size) + i] = dist;
+					grid_distance[(j * grid_size_x) + i] = dist;
 				}
 			}
 		});
@@ -276,22 +276,22 @@ void VoronoiDiagram::DiagramAMP(int num_sites, int grid_size)
 //j =y/z, i=x
 //at this stage: all positions are equal to a number representing a site
 //so if theres 25 sites, each position will be 1-25 
-void VoronoiDiagram::SetEdges(int grid_size)
+void VoronoiDiagram::SetEdges()
 {
-	for (int j = 0; j < grid_size; j++)
+	for (int j = 0; j < grid_size_x; j++)
 	{
-		for (int i = 0; i < grid_size; i++)
+		for (int i = 0; i < grid_size_x; i++)
 		{
-			if (i + 1 < grid_size && j + 1 < grid_size)		//if in the bounds
+			if (i + 1 < grid_size_x && j + 1 < grid_size_x)		//if in the bounds
 			{
-				if (grid_v_1[(j * grid_size) + i] != grid_v_1[(j * grid_size) + (i + 1)])		//if the current pos and pos 1 to the left are not the same
+				if (grid_v_1[(j * grid_size_x) + i] != grid_v_1[(j * grid_size_x) + (i + 1)])		//if the current pos and pos 1 to the left are not the same
 				{
-					grid_v_1[(j * grid_size) + i] = 0;			//set to path way
+					grid_v_1[(j * grid_size_x) + i] = 0;			//set to path way
 					//here you could find what the sites bordering are
 				}
-				else if (grid_v_1[(j * grid_size) + i] != grid_v_1[((j + 1) * grid_size) + i])
+				else if (grid_v_1[(j * grid_size_x) + i] != grid_v_1[((j + 1) * grid_size_x) + i])
 				{
-					grid_v_1[(j * grid_size) + i] = 0;
+					grid_v_1[(j * grid_size_x) + i] = 0;
 				}
 			}
 		}
@@ -674,7 +674,7 @@ void VoronoiDiagram::vector_all(int size)
 }
 
 
-void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
+void VoronoiDiagram::TerrainSites()
 {
 	//loop over number of sites for x and y 
 	//generate random point for site and loop over this generation until it is not within the circle
@@ -683,15 +683,19 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
 	//create a random coordinate
 	//check if that coordinate is within ANY circle or ON ANY circle
 	//if true then discard point and create new point UNTIL point is NOT in circle
-	for (int i = 0; i < (num_sites * 2); i++)
+
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::default_random_engine generator(seed);
+	std::uniform_int_distribution<int> distribution(0, grid_size_x);
+	for (int i = 0; i < (num_of_sites * 2); i++)
 	{
 		bool found = false;
 		while (!found)
 		{
 			bool false_in_first_cirlce = false;
-			sites_v_1[i] = rand() % (grid_size);
+			sites_v_1[i] = distribution(generator);
 			i++;
-			sites_v_1[i] = rand() % (grid_size);
+			sites_v_1[i] = distribution(generator);
 			for (int c = 0; c < circles_.size(); c++)
 			{
 				int r = pow(circles_[c].r_length, 2);						//radius squared
@@ -720,14 +724,11 @@ void VoronoiDiagram::TerrainSites(int num_sites, int grid_size)
 	int iterator_ = 0;
 	for (int i = 0; i < circles_.size(); i++)
 	{
-		if (circles_[i].point.x +circles_[i].point.y!=0)
-		{
-			sites_v_1[iterator_] = circles_[i].point.x;				//setting the first sites the the centre point of the circles
-			iterator_++;
-			sites_v_1[iterator_] = circles_[i].point.y;
-			iterator_++;
-			std::cout << "Centre " << i << " (" << circles_[i].point.x << ", " << circles_[i].point.y << ") Radius: " << circles_[i].r_length << "\n";
-		}
+		sites_v_1[iterator_] = circles_[i].point.x;				//setting the first sites the the centre point of the circles
+		iterator_++;
+		sites_v_1[iterator_] = circles_[i].point.y;
+		iterator_++;
+		std::cout << "Centre " << i << " (" << circles_[i].point.x << ", " << circles_[i].point.y << ") Radius: " << circles_[i].r_length << "\n";
 	}
 }
 
