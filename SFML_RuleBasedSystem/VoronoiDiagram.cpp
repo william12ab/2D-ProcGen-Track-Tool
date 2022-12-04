@@ -1,8 +1,6 @@
 #include "VoronoiDiagram.h"
 #include <iostream>
 #include <ppl.h>
-
-
 using namespace concurrency;
 
 #include <SFML/Graphics.hpp>
@@ -36,13 +34,10 @@ VoronoiDiagram::VoronoiDiagram()
 	track_max = 0;
 	track_min = 0;
 	circum_points.resize(2);
-	
 	//stop_ = false;
 	stop_high_ = false;
 	stop_low_ = false;
 	max_value_height = -1000000;
-
-	
 }
 
 VoronoiDiagram::~VoronoiDiagram()

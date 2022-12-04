@@ -10,15 +10,15 @@ class ShortestPath
 {
 public:
 	ShortestPath();
-	void Initgrid(int grid_size, int*grid, int num_points);																				//inits the grid to the correct numbers
-	void PhaseOne(int grid_size, int *grid, int count_holder, bool found_end,int it,bool end, int x_holder, int y_holder, int end_n, bool b_failed_, int start_p, int end_p);	//finds the distances between start and end
-	void PhaseTwo(int grid_size, int *grid, bool end, int x_holder, int y_holder, int count_holder, int end_n);							//finds a pathway between start and end
+	void Initgrid(const int &grid_size, int*grid, const int &num_points);																				//inits the grid to the correct numbers
+	void PhaseOne(const int &grid_size, int *grid, int end_n, int start_p, int end_p);	//finds the distances between start and end
+	void PhaseTwo(const int &grid_size, int *grid, int end_n);							//finds a pathway between start and end
 
 	void CleanGrid(int grid_size, int* grid);																							//removes numbers found by phase 1
 
 
 	void ChangePoint(int grid_size, int* grid, int point, int new_point);																//changes the point passed in
-	void PrintOutStartEnd(int grid_size, int* grid);																					//prints out the points in the track, useful for debugging
+	void PrintOutStartEnd(const int &grid_size,int* const& grid);																					//prints out the points in the track, useful for debugging
 
 	//getters
 	bool bGetFoundEnd() { return found_end; }								
@@ -52,10 +52,10 @@ public:
 	void OrderControlPoints();
 	void ScaleControlPoints(float scale);
 
-	void SetNESW(int y_holder, int x_holder, int grid_size, std::vector<int> &occ);
+	void SetNESW(const int &grid_size, std::vector<int> &occ);
 	void EraseVector(std::vector<int> &occ, int &unique);
 
-	void FindCompassPoss(int compass, int &count_holdeer, int &y_holder, int &x_holder, int* grid, int grid_size, int &how_many, int &track_d, int x, int y);
+	void FindCompassPoss(int compass, int* grid, int grid_size, int &how_many, int &track_d, int x, int y);
 	
 private:
 
