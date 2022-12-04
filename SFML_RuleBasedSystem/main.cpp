@@ -307,7 +307,7 @@ int main()
 				ClearConsoleWin();
 				v_d.vector_all(peaks_to_count_*2);
 				int i = 0;
-				the_clock::time_point startTime = the_clock::now();
+				
 				while (!v_d.GetStopH() || !v_d.GetStopL())
 				{
 					v_d.FindMax(layers_, i_p.GetNoiseMap());								//finds the highest point in the terrain
@@ -325,9 +325,7 @@ int main()
 					}
 				}
 				t_t.TerrainLoop(v_d, s_p,voronoi_d,height_map,n_height_map,i_p,number_,track_type_);
-				the_clock::time_point endTime = the_clock::now();
-				auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-				std::cout << "time(v d): " << time_taken; std::cout << std::endl;
+
 				v_d.SetStopL(false);
 				v_d.SetStopH(false);
 			}

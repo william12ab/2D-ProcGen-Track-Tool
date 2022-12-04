@@ -14,10 +14,8 @@ public:
 	void PhaseOne(const int &grid_size, int *grid, int end_n, int start_p, int end_p);	//finds the distances between start and end
 	void PhaseTwo(const int &grid_size, int *grid, int end_n);							//finds a pathway between start and end
 
-	void CleanGrid(int grid_size, int* grid);																							//removes numbers found by phase 1
-
-
-	void ChangePoint(int grid_size, int* grid, int point, int new_point);																//changes the point passed in
+	void CleanGrid(const int &grid_size, int* grid);																							//removes numbers found by phase 1
+	void ChangePoint(const int &grid_size, int* grid, int point, int new_point);																//changes the point passed in
 	void PrintOutStartEnd(const int &grid_size,int* const& grid);																					//prints out the points in the track, useful for debugging
 
 	//getters
@@ -27,13 +25,11 @@ public:
 	bool bGetEnd() { return end_;}
 	int GetXHolder() { return x_holder_; }
 	int GetYHolder() { return y_holder_; }
-
 	int GetTotalDistance() { return total_track_distance; }
 	int GetNumberOfTurns() { return number_of_turns; }
 	int GetNumberOfSegments() { return number_of_segments; }
 	bool GetFailed() { return failed_; }
 	bool GetTesting() { return do_testing_; }
-
 	std::vector<sf::Vector2i> GetControlPoints() { return control_points; }
 	
 	void SetControlPoints(std::vector<sf::Vector2i> temp_) { control_points = temp_; }

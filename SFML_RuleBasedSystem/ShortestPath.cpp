@@ -302,7 +302,7 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 }
 
 //passes in the current point, finds it and then changes it to the new number
-void ShortestPath::ChangePoint(int grid_size, int* grid, int point, int new_point)
+void ShortestPath::ChangePoint(const int &grid_size, int* grid, int point, int new_point)
 {
 	if (!failed_)
 	{
@@ -324,39 +324,42 @@ void ShortestPath::PrintOutStartEnd(const int& grid_size, int* const& grid)
 {
 	for (int i = 0; i < grid_size; i++)
 	{
-			for (int j = 0; j < grid_size; j++)
+		for (int j = 0; j < grid_size; j++)
+		{
+			if (grid[(i * grid_size) + j] == 0)
 			{
-				if (grid[(i * grid_size) + j] == 0)
-				{
-					std::cout << "first x " << j << " y " << i; std::cout << std::endl;
-					start_p.first = j;
-					start_p.second = i;
-				}
-				if (grid[(i * grid_size) + j] == -3)
-				{
-					std::cout << "second x " << j << " y " << i; std::cout << std::endl;
-				}
-				if (grid[(i * grid_size) + j] == -4)
-				{
-					end_p.first = j;
-					end_p.second = i;
-					std::cout << "third x " << j << " y " << i; std::cout << std::endl;
-				}
-				if (grid[(i * grid_size) + j] == -5)
-				{
-					std::cout << "fourth x " << j << " y " << i; std::cout << std::endl;
-				}
-				if (grid[(i * grid_size) + j] == -6)
-				{
-					std::cout << "fith x " << j << " y " << i; std::cout << std::endl;
-				}
-
+				std::cout << "first x " << j << " y " << i; std::cout << std::endl;
+				start_p.first = j;
+				start_p.second = i;
+			}
+			if (grid[(i * grid_size) + j] == -3)
+			{
+				std::cout << "second x " << j << " y " << i;
+				std::cout << std::endl;
+			}
+			if (grid[(i * grid_size) + j] == -4)
+			{
+				end_p.first = j;
+				end_p.second = i;
+				std::cout << "third x " << j << " y " << i; 
+				std::cout << std::endl;				
+			}
+			if (grid[(i * grid_size) + j] == -5)
+			{
+				std::cout << "fourth x " << j << " y " << i;
+				std::cout << std::endl;
+			}	
+			if (grid[(i * grid_size) + j] == -6)
+			{
+				std::cout << "fith x " << j << " y " << i;
+				std::cout << std::endl;
 			}
 		}
+	}
 }
 
 //removes all numbers found by the initial phase, so that the method can run again and be used to find another path
-void ShortestPath::CleanGrid(int grid_size, int* grid)
+void ShortestPath::CleanGrid(const int &grid_size, int* grid)
 {
 	for (int i = 0; i < grid_size; i++)
 	{
