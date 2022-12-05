@@ -58,11 +58,12 @@ void ShortestPath::Initgrid(const int &grid_size, int* grid, const int &num_poin
 	south_e_site = 0;
 	south_w_site = 0;
 	segment_lengths_.clear();
-	first_position.first = 0;
-	first_position.second = 0;
+	first_position.x= 0;
+	first_position.y = 0;
 	line_positions.clear();
 	control_points.clear();
 	angles_.clear();
+	new_angles_.clear();
 	int size_ = num_points - 1;
 	for (int i = 0; i < grid_size; i++)
 	{
@@ -329,8 +330,8 @@ void ShortestPath::PrintOutStartEnd(const int& grid_size, int* const& grid)
 			if (grid[(i * grid_size) + j] == 0)
 			{
 				std::cout << "first x " << j << " y " << i; std::cout << std::endl;
-				start_p.first = j;
-				start_p.second = i;
+				start_p.x = j;
+				start_p.y = i;
 			}
 			if (grid[(i * grid_size) + j] == -3)
 			{
@@ -339,8 +340,8 @@ void ShortestPath::PrintOutStartEnd(const int& grid_size, int* const& grid)
 			}
 			if (grid[(i * grid_size) + j] == -4)
 			{
-				end_p.first = j;
-				end_p.second = i;
+				end_p.x = j;
+				end_p.y = i;
 				std::cout << "third x " << j << " y " << i; 
 				std::cout << std::endl;				
 			}
@@ -435,9 +436,9 @@ void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
 {
 	std::vector<sf::Vector2i> temp_vec_c_p;
 	bool found_start = false;
-	first_position.first = x_holder_;
-	first_position.second = y_holder_;
-	temp_vec_c_p.emplace_back(first_position.first, first_position.second);
+	first_position.x = x_holder_;
+	first_position.y = y_holder_;
+	temp_vec_c_p.emplace_back(first_position.x, first_position.y);
 
 	while (!found_start && !end_)
 	{
@@ -497,12 +498,12 @@ void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
 				if (*it.first != *it_old.first || *it.second != *it_old.second)						//checks if theres a difference hence a new cell.
 				{
 					number_of_turns++;
-					segment_lengths_.push_back(DistanceSqrt(first_position.first, first_position.second, x_holder_, y_holder_));
-					line_positions.emplace_back(first_position.first, first_position.second);
-					line_positions.emplace_back(x_holder_, y_holder_);
-					temp_vec_c_p.emplace_back(x_holder_, y_holder_);
-					first_position.first = x_holder_;
-					first_position.second = y_holder_;
+					segment_lengths_.push_back(DistanceSqrt(first_position.x, first_position.y, x_holder_, y_holder_));			//finds length of segment
+					line_positions.emplace_back(first_position.x, first_position.y);											//pushes back first position of segment
+					line_positions.emplace_back(x_holder_, y_holder_);															//pushes second position
+					temp_vec_c_p.emplace_back(x_holder_, y_holder_);															//current c.p
+					first_position.x = x_holder_;
+					first_position.y= y_holder_;
 				}
 				old_occurances.clear();										//clear the vectors so that when it comes to checking a new poosition theres nothjing there
 				occurances.clear();
@@ -521,10 +522,10 @@ void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
 
 		if (count_holder_ <= end_n)
 		{
-			segment_lengths_.push_back(DistanceSqrt(x_holder_, y_holder_, first_position.first, first_position.second));			//finds the length of the final segment 
-			line_positions.emplace_back(first_position.first, first_position.second);
-			line_positions.emplace_back(x_holder_, y_holder_);
-			temp_vec_c_p.emplace_back(x_holder_, y_holder_);
+			segment_lengths_.push_back(DistanceSqrt(x_holder_, y_holder_, first_position.x, first_position.y));			//finds the length of the final segment 
+			line_positions.emplace_back(first_position.x, first_position.y);					//final segment coords
+			line_positions.emplace_back(x_holder_, y_holder_);									//last coord
+			temp_vec_c_p.emplace_back(x_holder_, y_holder_);						//last c.p
 			number_of_segments = segment_lengths_.size();
 			found_start = true;
 			end_ = true;
@@ -533,6 +534,8 @@ void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
 
 	//re orderers the vector to follow thje correct order - also fixes issue with multiple points.
 	std::reverse(temp_vec_c_p.begin(), temp_vec_c_p.end());
+	std::reverse(line_positions.begin(), line_positions.end());
+	std::reverse(segment_lengths_.begin(), segment_lengths_.end());
 	for (int i = 0; i < temp_vec_c_p.size(); i++)
 	{
 		control_points.emplace_back(temp_vec_c_p[i]);
@@ -576,61 +579,77 @@ void ShortestPath::SegmentAngles()
 	int line_iterator = 0;
 	for (int i = 0; i < number_of_turns; i++)
 	{
-		float m1 = 0;
-		float m2 = 0;
+		float m1 = 0;				//gradient
+		float m2 = 0;				//gradient
 		float y1, y2, y3, y4;
 		float x1, x2, x3, x4;
-		y1 = line_positions[line_iterator].second;
-		y2 = line_positions[line_iterator + 1].second;
-		y3 = y2;
-		y4 = line_positions[line_iterator + 3].second;
-		x1 = line_positions[line_iterator].first;
-		x2 = line_positions[line_iterator + 1].first;
-		x3 = x2;
-		x4 = line_positions[line_iterator + 3].first;
+	//	if (segment_lengths_[i] > 5)
+		//{
+			y1 = line_positions[line_iterator].y;
+			y2 = line_positions[line_iterator + 1].y;
+			y3 = y2;
+			y4 = line_positions[line_iterator + 3].y;
+			x1 = line_positions[line_iterator].x;
+			x2 = line_positions[line_iterator + 1].x;
+			x3 = x2;
+			x4 = line_positions[line_iterator + 3].x;
 
-		if ((y2 - y1) == 0 || (x2 - x1) == 0)								//if the result of y2-1 or x2-x1 is going to be 0 - set the gradient(m1) to 0 because you cant divide by 0
-		{
-			m1 = 0;
-			if ((y4 - y3) == 0 || (x4 - x3) == 0)					//check if m2 is going to be 0 and set to 0
-			{
-				m2 = 0;
-			}
-			else
-			{
-				m2 = (y4 - y3) / (x4 - x3);							//or just calculate the m normally
-			}
-		}
-		else if ((y4 - y3) == 0 || (x4 - x3) == 0)					//same here
-		{
-			m2 = 0;
-			if ((y2 - y1) == 0 || (x2 - x1) == 0)
+			if ((y2 - y1) == 0 || (x2 - x1) == 0)								//if the result of y2-1 or x2-x1 is going to be 0 - set the gradient(m1) to 0 because you cant divide by 0
 			{
 				m1 = 0;
+				if ((y4 - y3) == 0 || (x4 - x3) == 0)					//check if m2 is going to be 0 and set to 0
+				{
+					m2 = 0;
+				}
+				else
+				{
+					m2 = (y4 - y3) / (x4 - x3);							//or just calculate the m normally
+				}
+			}
+			else if ((y4 - y3) == 0 || (x4 - x3) == 0)					//same here
+			{
+				m2 = 0;
+				if ((y2 - y1) == 0 || (x2 - x1) == 0)
+				{
+					m1 = 0;
+				}
+				else
+				{
+					m1 = (y2 - y1) / (x2 - x1);
+				}
 			}
 			else
 			{
-				m1 = (y2 - y1) / (x2 - x1);
+				m1 = (y2 - y1) / (x2 - x1);								//or calculat normally		
+				m2 = (y4 - y3) / (x4 - x3);
+
+
 			}
-		}
-		else
+			float angle = atanf((m1 - m2) / (1 + (m2 * m1)));			//angle in rads
+
+			angle = angle * (180.0 / 3.141592653589793238463);			//angle as degrees because its easier to understand
+			angles_.push_back(180.0f - angle);								//have to find the angle at this point instead
+			float new_angle = 360 - angles_.back();
+			float final_angle = new_angle - 180;
+			if (final_angle < 0)
+			{
+				final_angle *= -1;
+			}
+			new_angles_.push_back(final_angle);
+		//}
+		/*else
 		{
-			m1 = (y2 - y1) / (x2 - x1);								//or calculat normally		
-			m2 = (y4 - y3) / (x4 - x3);
-
-
-		}
-		float angle = atanf((m1 - m2) / (1 + (m2 * m1)));			//angle in rads
-
-		angle = angle * (180.0 / 3.141592653589793238463);			//angle as degrees because its easier to understand
-		angles_.push_back(180.0f - angle);								//have to find the angle at this point instead
-
+			int dfdfgdgd = 1;
+		}*/
 		line_iterator += 2;			//go to next set of lines
 	}
 
 }
 
+void ShortestPath::FindDirection()
+{
 
+}
 
 void ShortestPath::WriteToFile(int track_max, int track_min)
 {
@@ -649,16 +668,26 @@ void ShortestPath::WriteToFile(int track_max, int track_min)
 	results_ << "total length: " << total_track_distance << "\n";
 	results_ << "number of turns: " << number_of_turns << "\n";
 	results_ << "number of segments: " << segment_lengths_.size() << "\n";
-	results_ << "shortest distance(euclidean distance): " << DistanceSqrt(start_p.first, start_p.second, end_p.first, end_p.second) << "\n";
+	results_ << "shortest distance(euclidean distance): " << DistanceSqrt(start_p.x, start_p.y, end_p.x, end_p.y) << "\n";
 	results_ << "\n";
 	for (int i = 0; i < segment_lengths_.size(); i++)
 	{
 		results_ << "length " << i + 1 << ": " << segment_lengths_[i] << "\n";
 	}
 	results_ << "\n";
-	for (int i = 0; i < number_of_turns; i++)
+	for (int i = 0; i < angles_.size(); i++)
 	{
 		results_ << "angle " << i + 1 << ": " << angles_[i] << "\n";
+	}
+	results_ << "\n";
+	for (int i = 0; i < angles_.size(); i++)
+	{
+		results_ << "angles for turn " << i + 1 << ": " << new_angles_[i] << "\n";
+	}
+	results_ << "\n";
+	for (int i = 0; i < control_points.size(); i++)
+	{
+		results_ << "Control-points " << i + 1 << ": (" << control_points[i].x << ", " << control_points[i].y<<")\n";
 	}
 	results_.close();
 }

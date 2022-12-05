@@ -40,7 +40,7 @@ public:
 	void SortControlPoints();
 
 	int DistanceSqrt(int x, int y, int x2, int y2);
-
+	void FindDirection();
 	void SegmentAngles();
 	void WriteToFile(int track_max, int track_min);
 	
@@ -85,17 +85,18 @@ private:
 	std::vector<int> old_num;				//used
 	std::vector<int> occurances;			//used
 	std::vector<int> old_occurances;		//used
-	std::pair<int, int> first_position;		//used
+	sf::Vector2i first_position;			//used		takes first position in track
 	std::vector<int> segment_lengths_;		//used
 	std::vector<int> angles_;				//used
+	std::vector<int> new_angles_;
 
-	std::vector<std::pair<int, int>> line_positions; //used
+	std::vector<sf::Vector2i> line_positions;		//used for angles - each control point but doubled
 	std::vector<sf::Vector2i> control_points;		//control points used
 
 
 	int number = 1;
-	std::pair<int, int> start_p;
-	std::pair<int, int> middle_p;
-	std::pair<int, int> end_p;
+	sf::Vector2i start_p;
+	sf::Vector2i middle_p;
+	sf::Vector2i end_p;
 };
 

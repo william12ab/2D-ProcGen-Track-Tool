@@ -1,108 +1,39 @@
-total length: 669
-number of turns: 49
-number of segments: 53
-shortest distance(euclidean distance): 297
+total length: 208
+number of turns: 7
+number of segments: 8
+shortest distance(euclidean distance): 346
 
-length 1: 2
-length 2: 10
-length 3: 8
-length 4: 28
-length 5: 2
-length 6: 4
-length 7: 38
-length 8: 3
-length 9: 27
-length 10: 14
-length 11: 23
-length 12: 3
-length 13: 38
-length 14: 11
-length 15: 14
-length 16: 6
-length 17: 1
-length 18: 2
-length 19: 10
-length 20: 22
-length 21: 7
-length 22: 24
-length 23: 2
-length 24: 31
-length 25: 2
-length 26: 9
-length 27: 22
-length 28: 13
-length 29: 8
-length 30: 7
-length 31: 27
-length 32: 33
-length 33: 5
-length 34: 4
-length 35: 25
-length 36: 18
-length 37: 17
-length 38: 2
-length 39: 33
-length 40: 4
-length 41: 15
-length 42: 34
-length 43: 29
-length 44: 11
-length 45: 10
-length 46: 24
-length 47: 10
-length 48: 6
-length 49: 19
-length 50: 20
-length 51: 1
-length 52: 12
-length 53: 14
+length 1: 3
+length 2: 51
+length 3: 1
+length 4: 47
+length 5: 5
+length 6: 49
+length 7: 15
+length 8: 54
 
-angle 1: 216
-angle 2: 129
-angle 3: 131
-angle 4: 125
-angle 5: 116
-angle 6: 111
-angle 7: 248
-angle 8: 113
-angle 9: 212
-angle 10: 170
-angle 11: 114
-angle 12: 225
-angle 13: 158
-angle 14: 214
-angle 15: 192
-angle 16: 263
-angle 17: 180
-angle 18: 258
-angle 19: 199
-angle 20: 161
-angle 21: 245
-angle 22: 220
-angle 23: 137
-angle 24: 257
-angle 25: 177
-angle 26: 92
-angle 27: 226
-angle 28: 217
-angle 29: 167
-angle 30: 215
-angle 31: 103
-angle 32: 175
-angle 33: 153
-angle 34: 204
-angle 35: 241
-angle 36: 131
-angle 37: 180
-angle 38: 161
-angle 39: 135
-angle 40: 203
-angle 41: 208
-angle 42: 265
-angle 43: 112
-angle 44: 155
-angle 45: 248
-angle 46: 133
-angle 47: 209
-angle 48: 122
-angle 49: 251
+angle 1: 110
+angle 2: 222
+angle 3: 105
+angle 4: 141
+angle 5: 213
+angle 6: 259
+angle 7: 129
+
+angles for turn 1: 70
+angles for turn 2: 42
+angles for turn 3: 75
+angles for turn 4: 39
+angles for turn 5: 33
+angles for turn 6: 79
+angles for turn 7: 51
+
+Control-points 1: (58, 341)
+Control-points 2: (57, 338)
+Control-points 3: (108, 340)
+Control-points 4: (109, 341)
+Control-points 5: (150, 318)
+Control-points 6: (152, 313)
+Control-points 7: (193, 285)
+Control-points 8: (204, 296)
+Control-points 9: (258, 291)
