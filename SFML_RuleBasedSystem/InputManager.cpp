@@ -1,10 +1,11 @@
 #include "InputManager.h"
 #include <SFML/Window/Keyboard.hpp>
 
-InputManager::InputManager(Input*in, sf::View* view)
+InputManager::InputManager(Input*in, sf::View* view, sf::RenderWindow* hwnd)
 {
 	input = in;
 	view_ = view;
+	window = hwnd;
 }
 
 InputManager::~InputManager() 
@@ -82,6 +83,30 @@ void InputManager::HandleInput(VoronoiDiagram &v_d_p,sf::VertexArray& vertexarra
 	if (input->isKeyDown(sf::Keyboard::X))
 	{
 		r_f_h_m = false;
+	}
+
+	if (input->isKeyDown(sf::Keyboard::Escape))
+	{
+		window->close();
+		input->setKeyUp(sf::Keyboard::Escape);
+	}
+	if (input->isKeyDown(sf::Keyboard::F1))
+	{
+		window->setSize(sf::Vector2u(1080, 800));
+		view_->reset(sf::FloatRect(0.f, 0.f, (float)window->getSize().x, (float)window->getSize().y));
+		input->setKeyUp(sf::Keyboard::F1);
+	}
+	if (input->isKeyDown(sf::Keyboard::F2))
+	{
+		window->create(sf::VideoMode::VideoMode(), "2D Track Generator,", sf::Style::Fullscreen);
+		view_->reset(sf::FloatRect(0.f, 0.f, (float)window->getSize().x, (float)window->getSize().y));
+		input->setKeyUp(sf::Keyboard::F2);
+	}
+	if (input->isKeyDown(sf::Keyboard::F3))
+	{
+		window->create(sf::VideoMode::getDesktopMode(), "2D Track Generator,", sf::Style::Default);
+		view_->reset(sf::FloatRect(0.f, 0.f, (float)window->getSize().x, (float)window->getSize().y));
+		input->setKeyUp(sf::Keyboard::F3);
 	}
 }
 

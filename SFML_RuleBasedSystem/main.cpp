@@ -73,7 +73,7 @@ int main()
 	// Seed the random number generator
 	srand(static_cast <unsigned> (time(0)));
 	// Create the window and UI bar on the right
-	sf::RenderWindow window(sf::VideoMode(1000,800), "2D Track Generator", sf::Style::Close);
+	sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "2D Track Generator",sf::Style::Default);
 	Init(window);
 	sf::View view_;
 	view_.reset(sf::FloatRect(0.f, 0.f, (float)window.getSize().x, (float)window.getSize().y));
@@ -92,8 +92,10 @@ int main()
 	TrackTools t_t;
 	CatmullRomSpline c_r;
 
+	
 
-	InputManager input_manager(&input,&view_);
+
+	InputManager input_manager(&input,&view_,&window);
 	//
 	//
 	t_t.SetVars(v_d, i_p, track_type_, resolution_, sites_, points_);
@@ -119,6 +121,9 @@ int main()
 			{
 			case sf::Event::Closed:
 				window.close();
+				break;
+			case sf::Event::Resized:
+				window.setView(view_);
 				break;
 			case sf::Event::KeyPressed:
 				// update input class
