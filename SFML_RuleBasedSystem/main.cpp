@@ -92,8 +92,6 @@ int main()
 	TrackTools t_t;
 	CatmullRomSpline c_r;
 
-	
-
 
 	InputManager input_manager(&input,&view_,&window);
 	//
@@ -109,7 +107,8 @@ int main()
 	//creates a track initially 
 	t_t.Generate(v_d, s_p, voronoi_d, height_map, n_height_map, i_p, times_, displacement_, number_, full_random_, track_type_);
 	//
-	// While the window is open, update
+	// While the window is open, update	
+
 	while (window.isOpen())
 	{
 		// Parse events
