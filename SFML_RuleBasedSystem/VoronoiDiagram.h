@@ -39,6 +39,8 @@ public:
 	sf::Vector2i &GetLowPoint() { return low_point_v; }
 	bool GetStopH() const{ return stop_high_; }
 	bool GetStopL() const { return stop_low_; }
+
+	std::vector<sf::Vector2i> GetPointPos() { return point_pos; }
 	//
 
 	//setters
@@ -58,7 +60,7 @@ public:
 	void radiiDecider(const int &index_v, const sf::Vector2i& high_or_low);
 	void ResetVars();
 	void FindMax(const int &layers_,int* const &noise_grid);			//finds high point in terrain
-	void FindMinMax(int layers_, int* const& noise_grid);			//finds low and high
+	void FindMinMax(const int& layers_, int* const& noise_grid);			//finds low and high
 	void SetHighPoint(const int &layers_, int* const &noise_grid, sf::Vector2i& high_point_v_, int& high_point_,const int &i,const int &j, int& min_height, sf::Vector2i &low_point_v_);
 	void vector_all(int size); //resets vectors for terrain.
 	void SetDirectionXY(int &signal, int &x, int &y, int a, int b, int c);
@@ -89,6 +91,7 @@ private:
 	int* grid_v_1;								//stores the grid in dynamic array
 	int* grid_distance;
 
+	static std::vector<sf::Vector2i> point_pos;
 
 	std::vector<int> temp_rad;
 	int max_distance_;
@@ -111,7 +114,6 @@ private:
 	int radius_length;
 
 	std::vector<sf::Vector2i> circum_points;		//keeps track of the poiints on the circumference
-
 	static std::vector<peaks_>circles_;
 	
 

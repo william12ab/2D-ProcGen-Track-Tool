@@ -706,3 +706,33 @@ void ImageProcessing::SaveUpScaledImage(int grid_sizez, sf::VertexArray& vertexa
 	scaled_image.saveToFile("test.jpg");																//this takes the longest time complexituy wise.
 
 }
+
+void ImageProcessing::FindTrackMinMax(const std::vector<sf::Vector2i>& track_points, const int& grid_size, const int& layers_)
+{
+	track_min = 0;
+	track_max = 0;
+	int min_ = 10000000;
+	int max_ = 0;
+	for (const sf::Vector2i& iter : track_points)
+	{
+		int i = iter.x;
+		int j = iter.y;
+		if ((noise_heightmap_[i * grid_size + j] / layers_) > max_)
+		{
+			max_ = noise_heightmap_[i * grid_size + j] / layers_;
+		}
+		if ((noise_heightmap_[i * grid_size + j] / layers_) < min_)
+		{
+			min_ = noise_heightmap_[i * grid_size + j] / layers_;
+		}
+	}
+	track_max = max_,track_min=min_;
+}
+
+void ImageProcessing::FindInclinePoints(const int& points_, const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& point_pos, const int& grid_size, const int& layers_)
+{
+	point_max = 0;
+	point_min = 0;
+
+
+}

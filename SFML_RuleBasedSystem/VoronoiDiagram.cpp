@@ -10,6 +10,9 @@ using std::chrono::duration_cast;
 using std::chrono::milliseconds;
 using the_clock = std::chrono::steady_clock;
 std::vector<VoronoiDiagram::peaks_> VoronoiDiagram::circles_(1);
+std::vector<sf::Vector2i> VoronoiDiagram::point_pos(1);
+
+
 
 VoronoiDiagram::VoronoiDiagram()
 {
@@ -36,12 +39,13 @@ VoronoiDiagram::VoronoiDiagram()
 	stop_high_ = false;
 	stop_low_ = false;
 	max_value_height = -1000000;
+	point_pos.clear();
 }
 
 VoronoiDiagram::~VoronoiDiagram()
 {
 	delete[] grid_v_1;
-	delete[] sites_v_1;				//crashes on this line 
+	delete[] sites_v_1;				
 	delete[] grid_distance;
 }
 
@@ -305,6 +309,7 @@ void VoronoiDiagram::PlacePoint(int x, int y, int i, bool& found_)
 	{
 		found_ = true;
 		grid_v_1[(y * grid_size_x) + x] = 2000 + i;
+		point_pos.push_back(sf::Vector2i(x, y));
 	}
 }
 
@@ -354,6 +359,7 @@ void VoronoiDiagram::ThreePoints(const float values_[12])
 //
 void VoronoiDiagram::SetPoint(int type)
 {
+	point_pos.clear();
 	//zero is iother, 1 is p2p,2 loop
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::default_random_engine generator(seed);
@@ -739,27 +745,23 @@ void VoronoiDiagram::ResetVars()
 }
 
 
-void VoronoiDiagram::FindMinMax(int layers_, int* const& noise_grid)
+void VoronoiDiagram::FindMinMax(const int &layers_, int* const& noise_grid)
 {
 	int min_ = 100000;
 	int max_ = 0;
 
-	//finds the min and max of the track ---when theres terrrain
-	//this is better than finding the min and max of the whole image as there will be areas where the track does not pass by
+	//finds the min and max of the terrrain
 	for (int i = 0; i < grid_size_x; i++)
 	{
 		for (int j = 0; j < grid_size_x; j++)
 		{
-			if (grid_v_1[(i * grid_size_x) + j] == 0)							//diagram
+			if ((noise_grid[i * grid_size_x + j] / layers_) > max_)
 			{
-				if ((noise_grid[i * grid_size_x + j] / layers_) > max_)
-				{
-					max_ = noise_grid[i * grid_size_x + j] / layers_;
-				}
-				if ((noise_grid[i * grid_size_x + j] / layers_) > min_)
-				{
-					min_ = noise_grid[i * grid_size_x+ j] / layers_;
-				}
+				max_ = noise_grid[i * grid_size_x + j] / layers_;
+			}
+			if ((noise_grid[i * grid_size_x + j] / layers_) < min_)
+			{
+				min_ = noise_grid[i * grid_size_x+ j] / layers_;
 			}
 		}
 	}

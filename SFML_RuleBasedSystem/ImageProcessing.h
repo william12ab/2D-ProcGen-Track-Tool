@@ -47,8 +47,9 @@ public:
 	void SaveUpScale(int grid_sizez, float scale);																//saves a upscaled image- first version
 	void SaveUpScaledImage(int grid_sizez, sf::VertexArray& vertexarray, float scale);							//saves an upscaled image
 
-
-
+	//finding inclines
+	void FindTrackMinMax(const std::vector<sf::Vector2i> &track_points, const int&grid_size, const int&layers_);
+	void FindInclinePoints(const int& points_, const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& point_pos, const int& grid_size, const int& layers_);
 
 private:
 	SimplexNoise perlin_;
@@ -61,5 +62,10 @@ private:
 
 	float pFrequency = 1.0f;	//simplex noise frequency
 	float pHeightRange = 1.0f;
+
+	int track_max;
+	int track_min;
+	int point_max;
+	int point_min;
 };
 

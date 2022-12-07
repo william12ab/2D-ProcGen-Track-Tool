@@ -351,7 +351,10 @@ int main()
 			}
 			if (ImGui::Button("test"))
 			{
+				v_d.FindMinMax(layers_,i_p.GetNoiseMap());
+				i_p.FindTrackMinMax(s_p.GetTrackPoints(),v_d.GetGridSize(),layers_);
 				s_p.TrackTValues();
+				i_p.FindInclinePoints(v_d.GetNumberOfPoints(),s_p.GetTrackPoints(),v_d.GetPointPos(),v_d.GetGridSize(),layers_);
 			}
 		}
 		ImGui::Text("\n");
