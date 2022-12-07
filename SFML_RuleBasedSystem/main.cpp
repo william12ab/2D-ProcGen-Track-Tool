@@ -351,8 +351,7 @@ int main()
 			}
 			if (ImGui::Button("test"))
 			{
-				s_p.Lerp(sf::Vector2i(1, 0), sf::Vector2i(2, 0),0.5f);
-				s_p.FindT(sf::Vector2i(1, 0), sf::Vector2i(3, 0), sf::Vector2i(2, 0));
+				s_p.TrackTValues();
 			}
 		}
 		ImGui::Text("\n");

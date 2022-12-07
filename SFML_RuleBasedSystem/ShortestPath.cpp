@@ -528,6 +528,7 @@ void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
 			line_positions.emplace_back(first_position.x, first_position.y);					//final segment coords
 			line_positions.emplace_back(x_holder_, y_holder_);									//last coord
 			temp_vec_c_p.emplace_back(x_holder_, y_holder_);						//last c.p
+			track_points.push_back(sf::Vector2i(x_holder_, y_holder_));
 			number_of_segments = segment_lengths_.size();
 			found_start = true;
 			end_ = true;
@@ -538,6 +539,7 @@ void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
 	std::reverse(temp_vec_c_p.begin(), temp_vec_c_p.end());
 	std::reverse(line_positions.begin(), line_positions.end());
 	std::reverse(segment_lengths_.begin(), segment_lengths_.end());
+	std::reverse(track_points.begin(), track_points.end());
 	for (int i = 0; i < temp_vec_c_p.size(); i++)
 	{
 		control_points.emplace_back(temp_vec_c_p[i]);
@@ -718,6 +720,10 @@ float ShortestPath::FindT(const sf::Vector2i& p1, const sf::Vector2i& p2, const 
 	{
 		float c2 = ((float)a.y / (float)b.y);
 		t = c2;
+		if (t<0.0f)
+		{
+			throw;
+		}
 	}
 	else if (a.y==0||b.y==0)
 	{
@@ -731,4 +737,28 @@ float ShortestPath::FindT(const sf::Vector2i& p1, const sf::Vector2i& p2, const 
 		t = (c1 + c2) / 2.0f;
 	}
 	return t;
+}
+
+
+
+void ShortestPath::TrackTValues()
+{
+	int iter = 0;								//iterator for control points, chnages when a new control point is hit
+	sf::Vector2i current_cp;					//stores current control point could just do control_points[iter-1]
+
+	std::vector<float> t_values;				//stores t values - should be track_points-amount of control points					CHECK THAT IS CORRECT!!!!!!!
+
+	for (const sf::Vector2i&i : track_points)
+	{
+		if (i==control_points[iter])						//if is currenctly over a control point
+		{
+			current_cp = i;
+			iter++;
+		}
+		else
+		{
+			t_values.push_back(FindT(current_cp, control_points[iter], i));					//pushes back t value
+		}
+	}
+	int asasdsad = 1;
 }

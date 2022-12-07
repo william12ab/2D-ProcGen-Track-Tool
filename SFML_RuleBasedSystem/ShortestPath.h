@@ -56,6 +56,8 @@ public:
 
 	sf::Vector2i Lerp(const sf::Vector2i &p1, const sf::Vector2i &p2, const float &t);
 	float FindT(const sf::Vector2i&p1,const sf::Vector2i&p2,const sf::Vector2i&p3);
+
+	void TrackTValues();
 	
 private:
 
