@@ -92,6 +92,7 @@ int main()
 	TrackTools t_t;
 	CatmullRomSpline c_r;
 
+	
 
 	InputManager input_manager(&input,&view_,&window);
 	//
@@ -311,7 +312,6 @@ int main()
 				ClearConsoleWin();
 				v_d.vector_all(peaks_to_count_*2);
 				int i = 0;
-				
 				while (!v_d.GetStopH() || !v_d.GetStopL())
 				{
 					v_d.FindMax(layers_, i_p.GetNoiseMap());								//finds the highest point in the terrain
@@ -329,7 +329,6 @@ int main()
 					}
 				}
 				t_t.TerrainLoop(v_d, s_p,voronoi_d,height_map,n_height_map,i_p,number_,track_type_);
-
 				v_d.SetStopL(false);
 				v_d.SetStopH(false);
 			}
@@ -349,6 +348,11 @@ int main()
 				i_p.CreateFinalHM(v_d.GetGridSize(), final_map, layers_);
 				i_p.WriteToFile(v_d.GetGridSize(), voronoi_d, layers_);
 				s_p.WriteToFile(v_d.GetTrackMax(), v_d.GetTrackMin());
+			}
+			if (ImGui::Button("test"))
+			{
+				s_p.Lerp(sf::Vector2i(1, 0), sf::Vector2i(2, 0),0.5f);
+				s_p.FindT(sf::Vector2i(1, 0), sf::Vector2i(3, 0), sf::Vector2i(2, 0));
 			}
 		}
 		ImGui::Text("\n");

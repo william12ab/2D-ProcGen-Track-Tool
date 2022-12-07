@@ -5,6 +5,7 @@
 
 
 using namespace concurrency;
+std::vector<sf::Vector2i>ShortestPath::track_points(1);
 
 ShortestPath::ShortestPath()
 {
@@ -16,7 +17,6 @@ ShortestPath::ShortestPath()
 	failed_ = false;
 	total_track_distance = 0;
 	number_of_turns = 0;
-
 	do_testing_ = true;
 }
 
@@ -45,6 +45,7 @@ void ShortestPath::Initgrid(const int &grid_size, int* grid, const int &num_poin
 	unique_count_old_occuarances = 0;
 	unique_count_occuarances = 0;
 
+	track_points.clear();
 	it = 0;
 	x_holder_ = 0;
 	y_holder_ = 0;
@@ -425,6 +426,7 @@ void ShortestPath::FindCompassPoss(int compass, int* grid, int grid_size, int& h
 		x_holder_ += x;
 		count_holder_ -= 1;
 		grid[(y_holder_ * grid_size) + x_holder_] = -12303;
+		track_points.push_back(sf::Vector2i(x_holder_, y_holder_));
 		how_many++;
 		track_d++;
 	}
@@ -690,4 +692,43 @@ void ShortestPath::WriteToFile(int track_max, int track_min)
 		results_ << "Control-points " << i + 1 << ": (" << control_points[i].x << ", " << control_points[i].y<<")\n";
 	}
 	results_.close();
+}
+
+
+sf::Vector2i ShortestPath::Lerp(const sf::Vector2i& p1, const sf::Vector2i& p2, const float& t)
+{
+	//auto r = p1 + ((p2 - p1) * t);
+	auto a = p2 - p1;
+	auto b = sf::Vector2i(a.x * t,a.y*t);
+	auto c = p1 + b;
+	return c;
+}
+
+float ShortestPath::FindT(const sf::Vector2i& p1, const sf::Vector2i& p2, const sf::Vector2i& p3)
+{
+	//t = (p1-p3)/(p1-p2)
+
+	//have check somewhere to stop running if p1==p2
+
+	auto a = p1 - p3;
+	auto b = p1 - p2;
+
+	float t = 0.0f;
+	if (a.x==0||b.x==0)
+	{
+		float c2 = ((float)a.y / (float)b.y);
+		t = c2;
+	}
+	else if (a.y==0||b.y==0)
+	{
+		float c1 = ((float)a.x / (float)b.x);
+		t = c1;
+	}
+	else
+	{
+		float c1 = ((float)a.x / (float)b.x);
+		float c2 = ((float)a.y / (float)b.y);
+		t = (c1 + c2) / 2.0f;
+	}
+	return t;
 }

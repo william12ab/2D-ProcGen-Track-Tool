@@ -11,7 +11,6 @@ using std::chrono::milliseconds;
 using the_clock = std::chrono::steady_clock;
 std::vector<VoronoiDiagram::peaks_> VoronoiDiagram::circles_(1);
 
-
 VoronoiDiagram::VoronoiDiagram()
 {
 	type = 1;
@@ -34,7 +33,6 @@ VoronoiDiagram::VoronoiDiagram()
 	track_max = 0;
 	track_min = 0;
 	circum_points.resize(2);
-	//stop_ = false;
 	stop_high_ = false;
 	stop_low_ = false;
 	max_value_height = -1000000;

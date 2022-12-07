@@ -89,6 +89,7 @@ private:
 	int* grid_v_1;								//stores the grid in dynamic array
 	int* grid_distance;
 
+
 	std::vector<int> temp_rad;
 	int max_distance_;
 	int site_iterator;

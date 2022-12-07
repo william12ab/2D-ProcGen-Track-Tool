@@ -52,6 +52,10 @@ public:
 	void EraseVector(std::vector<int> &occ, int &unique);
 
 	void FindCompassPoss(int compass, int* grid, int grid_size, int &how_many, int &track_d, int x, int y);
+
+
+	sf::Vector2i Lerp(const sf::Vector2i &p1, const sf::Vector2i &p2, const float &t);
+	float FindT(const sf::Vector2i&p1,const sf::Vector2i&p2,const sf::Vector2i&p3);
 	
 private:
 
@@ -92,6 +96,7 @@ private:
 
 	std::vector<sf::Vector2i> line_positions;		//used for angles - each control point but doubled
 	std::vector<sf::Vector2i> control_points;		//control points used
+	static std::vector<sf::Vector2i> track_points;
 
 
 	int number = 1;
