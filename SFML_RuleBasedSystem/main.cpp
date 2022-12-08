@@ -347,7 +347,7 @@ int main()
 				final_map.resize(v_d.GetGridSize() * v_d.GetGridSize());
 				i_p.CreateFinalHM(v_d.GetGridSize(), final_map, layers_);
 				i_p.WriteToFile(v_d.GetGridSize(), voronoi_d, layers_);
-				s_p.WriteToFile(v_d.GetTrackMax(), v_d.GetTrackMin());
+				s_p.WriteToFile();
 			}
 			if (ImGui::Button("test"))
 			{
@@ -355,8 +355,8 @@ int main()
 				w_c.FindMinMax(layers_,i_p.GetNoiseMap(),v_d.GetGridSize());															//min max of image
 				w_c.FindTrackMinMax(s_p.GetTrackPoints(),v_d.GetGridSize(),layers_,i_p.GetNoiseMap());								//min max of track
 				w_c.TrackTValues(s_p.GetTrackPoints(),s_p.GetControlPoints());																					//give t value of lerp
-				w_c.FindInclinePoints(s_p.GetControlPoints(),v_d.GetGridSize(),layers_, i_p.GetCPIncline(),i_p.GetNoiseMap());		//for the control points
-				w_c.FindInclinePoints(v_d.GetPointPos(), v_d.GetGridSize(), layers_, i_p.GetPointIncline(),i_p.GetNoiseMap());		//for the points
+				w_c.FindInclinePoints(s_p.GetControlPoints(),v_d.GetGridSize(),layers_, w_c.GetCPIncline(),i_p.GetNoiseMap());		//for the control points
+				w_c.FindInclinePoints(v_d.GetPointPos(), v_d.GetGridSize(), layers_, w_c.GetPointIncline(),i_p.GetNoiseMap());		//for the points
 			}
 		}
 		ImGui::Text("\n");

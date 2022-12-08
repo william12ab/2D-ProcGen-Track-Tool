@@ -33,8 +33,6 @@ public:
 	int GetType() { return type; };										//returns the type of track, closed or open
 	int GetNumberOfPoints() { return num_of_points; }					//returns the number of points
 	bool GetTesting() { return do_testing_; }
-	int GetTrackMax() { return track_max; }
-	int GetTrackMin() { return track_min; }
 	sf::Vector2i &GetHighPoint() { return high_point_v; }
 	sf::Vector2i &GetLowPoint() { return low_point_v; }
 	bool GetStopH() const{ return stop_high_; }
@@ -60,7 +58,6 @@ public:
 	void radiiDecider(const int &index_v, const sf::Vector2i& high_or_low);
 	void ResetVars();
 	void FindMax(const int &layers_,int* const &noise_grid);			//finds high point in terrain
-	void FindMinMax(const int& layers_, int* const& noise_grid);			//finds low and high
 	void SetHighPoint(const int &layers_, int* const &noise_grid, sf::Vector2i& high_point_v_, int& high_point_,const int &i,const int &j, int& min_height, sf::Vector2i &low_point_v_);
 	void vector_all(int size); //resets vectors for terrain.
 	void SetDirectionXY(int &signal, int &x, int &y, int a, int b, int c);
@@ -116,9 +113,6 @@ private:
 	std::vector<sf::Vector2i> circum_points;		//keeps track of the poiints on the circumference
 	static std::vector<peaks_>circles_;
 	
-
-	int track_max;
-	int track_min;
 	bool do_testing_;
 
 

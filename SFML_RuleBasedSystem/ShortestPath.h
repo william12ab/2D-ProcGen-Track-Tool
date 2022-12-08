@@ -44,7 +44,7 @@ public:
 	int DistanceSqrt(int x, int y, int x2, int y2);
 	void FindDirection();
 	void SegmentAngles();
-	void WriteToFile(int track_max, int track_min);
+	void WriteToFile();
 	
 
 	void OrderControlPoints();
@@ -54,17 +54,8 @@ public:
 	void EraseVector(std::vector<int> &occ, int &unique);
 
 	void FindCompassPoss(int compass, int* grid, int grid_size, int &how_many, int &track_d, int x, int y);
-
-
-	sf::Vector2i Lerp(const sf::Vector2i &p1, const sf::Vector2i &p2, const float &t);
-	float FindT(const sf::Vector2i&p1,const sf::Vector2i&p2,const sf::Vector2i&p3);
-
-	void TrackTValues();
 	
 private:
-
-
-	
 	bool found_end;				//start as false;
 	int count_holder_;
 	int it;
@@ -77,7 +68,6 @@ private:
 	int total_track_distance;		//the total distance of the track
 	int number_of_turns;			//the total number of turns
 	int number_of_segments;
-
 
 	int north_site;
 	int north_e_site;
@@ -101,7 +91,6 @@ private:
 	std::vector<sf::Vector2i> line_positions;		//used for angles - each control point but doubled
 	std::vector<sf::Vector2i> control_points;		//control points used
 	static std::vector<sf::Vector2i> track_points;
-
 
 	int number = 1;
 	sf::Vector2i start_p;

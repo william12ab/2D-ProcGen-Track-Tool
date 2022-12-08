@@ -19,8 +19,7 @@ public:
 	//Getters
 	float* GetHeightVal() { return heightmap_; }
 	int* GetNoiseMap() const { return noise_heightmap_; }
-	std::vector<int> &GetCPIncline() { return cp_inc_; }
-	std::vector<int> &GetPointIncline() { return point_inc_; }
+
 
 
 	//Drawing functions
@@ -51,8 +50,7 @@ public:
 	void SaveUpScaledImage(int grid_sizez, sf::VertexArray& vertexarray, float scale);							//saves an upscaled image
 
 	//finding inclines
-	void FindTrackMinMax(const std::vector<sf::Vector2i> &track_points, const int&grid_size, const int&layers_);
-	void FindInclinePoints(const std::vector<sf::Vector2i>& vector_, const int& grid_size, const int& layers_, std::vector<int>& results_);
+
 
 private:
 	SimplexNoise perlin_;
@@ -62,16 +60,7 @@ private:
 	int* alpha_channel_;
 	float* heightmap_fbm_;
 
-
 	float pFrequency = 1.0f;	//simplex noise frequency
 	float pHeightRange = 1.0f;
-
-	int track_max;
-	int track_min;
-	int point_a_height;
-	int point_b_height;
-
-	static std::vector<int> point_inc_;
-	static std::vector<int> cp_inc_;
 };
 

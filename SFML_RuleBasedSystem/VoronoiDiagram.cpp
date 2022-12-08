@@ -33,8 +33,6 @@ VoronoiDiagram::VoronoiDiagram()
 	found_raidus = false;
 	radius_length = 0;
 	do_testing_ = false;
-	track_max = 0;
-	track_min = 0;
 	circum_points.resize(2);
 	stop_high_ = false;
 	stop_low_ = false;
@@ -742,29 +740,4 @@ void VoronoiDiagram::ResetVars()
 	radius_length = 0;
 	circles_.clear();
 	temp_rad.clear();
-}
-
-
-void VoronoiDiagram::FindMinMax(const int &layers_, int* const& noise_grid)
-{
-	int min_ = 100000;
-	int max_ = 0;
-
-	//finds the min and max of the terrrain
-	for (int i = 0; i < grid_size_x; i++)
-	{
-		for (int j = 0; j < grid_size_x; j++)
-		{
-			if ((noise_grid[i * grid_size_x + j] / layers_) > max_)
-			{
-				max_ = noise_grid[i * grid_size_x + j] / layers_;
-			}
-			if ((noise_grid[i * grid_size_x + j] / layers_) < min_)
-			{
-				min_ = noise_grid[i * grid_size_x+ j] / layers_;
-			}
-		}
-	}
-	track_max = max_;
-	track_min = min_;
 }

@@ -640,11 +640,6 @@ void ShortestPath::SegmentAngles()
 				final_angle *= -1;
 			}
 			new_angles_.push_back(final_angle);
-		//}
-		/*else
-		{
-			int dfdfgdgd = 1;
-		}*/
 		line_iterator += 2;			//go to next set of lines
 	}
 
@@ -655,7 +650,7 @@ void ShortestPath::FindDirection()
 
 }
 
-void ShortestPath::WriteToFile(int track_max, int track_min)
+void ShortestPath::WriteToFile()
 {
 	SegmentAngles();
 	std::ofstream results_;
@@ -697,69 +692,3 @@ void ShortestPath::WriteToFile(int track_max, int track_min)
 }
 
 
-sf::Vector2i ShortestPath::Lerp(const sf::Vector2i& p1, const sf::Vector2i& p2, const float& t)
-{
-	//auto r = p1 + ((p2 - p1) * t);
-	auto a = p2 - p1;
-	auto b = sf::Vector2i(a.x * t,a.y*t);
-	auto c = p1 + b;
-	return c;
-}
-
-float ShortestPath::FindT(const sf::Vector2i& p1, const sf::Vector2i& p2, const sf::Vector2i& p3)
-{
-	//t = (p1-p3)/(p1-p2)
-
-	//have check somewhere to stop running if p1==p2
-
-	auto a = p1 - p3;
-	auto b = p1 - p2;
-
-	float t = 0.0f;
-	if (a.x==0||b.x==0)
-	{
-		float c2 = ((float)a.y / (float)b.y);
-		t = c2;
-		if (t<0.0f)
-		{
-			int gggg = 1;
-			throw;
-		}
-	}
-	else if (a.y==0||b.y==0)
-	{
-		float c1 = ((float)a.x / (float)b.x);
-		t = c1;
-	}
-	else
-	{
-		float c1 = ((float)a.x / (float)b.x);
-		float c2 = ((float)a.y / (float)b.y);
-		t = (c1 + c2) / 2.0f;
-	}
-	return t;
-}
-
-
-
-void ShortestPath::TrackTValues()
-{
-	int iter = 0;								//iterator for control points, chnages when a new control point is hit
-	sf::Vector2i current_cp;					//stores current control point could just do control_points[iter-1]
-
-	std::vector<float> t_values;				//stores t values - should be track_points-amount of control points					CHECK THAT IS CORRECT!!!!!!!
-
-	for (const sf::Vector2i&i : track_points)
-	{
-		if (i==control_points[iter])						//if is currenctly over a control point
-		{
-			current_cp = i;
-			iter++;
-		}
-		else
-		{
-			t_values.push_back(FindT(current_cp, control_points[iter], i));					//pushes back t value
-		}
-	}
-	int asasdsad = 1;
-}
