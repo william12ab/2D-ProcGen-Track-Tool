@@ -60,6 +60,9 @@
     <ClCompile Include="CatmullRomSpline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WidthCalculator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VoronoiDiagram.h">
@@ -117,6 +120,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CatmullRomSpline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WidthCalculator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

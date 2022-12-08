@@ -6,6 +6,22 @@ std::vector<int>WidthCalculator::point_inc_(1);
 std::vector<int>WidthCalculator::cp_inc_(1);
 WidthCalculator::WidthCalculator()
 {
+	image_max = 0;
+	image_min = 0;
+	track_max = 0;
+	track_min = 0;
+}
+
+
+void WidthCalculator::Clear()
+{
+	image_max = 0;
+	image_min = 0;
+	track_max = 0;
+	track_min = 0;
+
+	point_inc_.clear();
+	cp_inc_.clear();
 }
 
 void WidthCalculator::FindMinMax(const int& layers_, int* const& noise_grid, const int& grid_size)

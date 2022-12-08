@@ -8,6 +8,7 @@
 #include "TrackTools.h"
 #include "InputManager.h"
 #include "CatmullRomSpline.h"
+#include "WidthCalculator.h"
 
 sf::Font font;
 

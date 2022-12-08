@@ -16,6 +16,8 @@ public:
 
 	void TrackTValues(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points);
 	void FindInclinePoints(const std::vector<sf::Vector2i>& vector_, const int& grid_size, const int& layers_, std::vector<int>& results_, int* const& noise_grid);
+
+	void Clear();
 private:
 
 	int track_max;

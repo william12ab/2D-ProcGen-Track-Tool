@@ -91,7 +91,7 @@ int main()
 	ImageProcessing i_p;
 	TrackTools t_t;
 	CatmullRomSpline c_r;
-
+	WidthCalculator w_c;
 	
 
 	InputManager input_manager(&input,&view_,&window);
@@ -351,11 +351,12 @@ int main()
 			}
 			if (ImGui::Button("test"))
 			{
-				v_d.FindMinMax(layers_,i_p.GetNoiseMap());															//min max of image
-				i_p.FindTrackMinMax(s_p.GetTrackPoints(),v_d.GetGridSize(),layers_);								//min max of track
-				s_p.TrackTValues();																					//give t value of lerp
-				i_p.FindInclinePoints(s_p.GetControlPoints(),v_d.GetGridSize(),layers_, i_p.GetCPIncline());		//for the control points
-				i_p.FindInclinePoints(v_d.GetPointPos(), v_d.GetGridSize(), layers_, i_p.GetPointIncline());		//for the points
+				w_c.Clear();
+				w_c.FindMinMax(layers_,i_p.GetNoiseMap(),v_d.GetGridSize());															//min max of image
+				w_c.FindTrackMinMax(s_p.GetTrackPoints(),v_d.GetGridSize(),layers_,i_p.GetNoiseMap());								//min max of track
+				w_c.TrackTValues(s_p.GetTrackPoints(),s_p.GetControlPoints());																					//give t value of lerp
+				w_c.FindInclinePoints(s_p.GetControlPoints(),v_d.GetGridSize(),layers_, i_p.GetCPIncline(),i_p.GetNoiseMap());		//for the control points
+				w_c.FindInclinePoints(v_d.GetPointPos(), v_d.GetGridSize(), layers_, i_p.GetPointIncline(),i_p.GetNoiseMap());		//for the points
 			}
 		}
 		ImGui::Text("\n");

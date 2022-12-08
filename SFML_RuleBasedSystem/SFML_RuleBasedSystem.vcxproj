@@ -98,6 +98,7 @@
     <ClCompile Include="SimplexNoise.cpp" />
     <ClCompile Include="TrackTools.cpp" />
     <ClCompile Include="VoronoiDiagram.cpp" />
+    <ClCompile Include="WidthCalculator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CatmullRomSpline.h" />
@@ -119,6 +120,7 @@
     <ClInclude Include="SimplexNoise.h" />
     <ClInclude Include="TrackTools.h" />
     <ClInclude Include="VoronoiDiagram.h" />
+    <ClInclude Include="WidthCalculator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
