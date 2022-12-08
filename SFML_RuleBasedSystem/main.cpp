@@ -357,6 +357,8 @@ int main()
 				w_c.TrackTValues(s_p.GetTrackPoints(),s_p.GetControlPoints());																					//give t value of lerp
 				w_c.FindInclinePoints(s_p.GetControlPoints(),v_d.GetGridSize(),layers_, w_c.GetCPIncline(),i_p.GetNoiseMap());		//for the control points
 				w_c.FindInclinePoints(v_d.GetPointPos(), v_d.GetGridSize(), layers_, w_c.GetPointIncline(),i_p.GetNoiseMap());		//for the points
+
+				w_c.FindDirectionBetweenCP(s_p.GetControlPoints());
 			}
 		}
 		ImGui::Text("\n");

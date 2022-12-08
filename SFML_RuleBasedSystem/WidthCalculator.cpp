@@ -154,3 +154,43 @@ void WidthCalculator::FindInclinePoints(const std::vector<sf::Vector2i>& vector_
 		results_.push_back(difference);
 	}
 }
+
+
+//gets the normalised direction vector between two control points.
+void WidthCalculator::FindDirectionBetweenCP(const std::vector<sf::Vector2i>& control_points)
+{
+	sf::Vector2f dir_, dir_norm_, dir_opp_, dir_norm_opp_;
+	//getting positions front back
+
+	for (int i = 0; i < control_points.size()-1;i++)
+	{
+		auto p1 = control_points[i];
+		auto p2 = control_points[i+1];
+
+		auto p3 = sf::Vector2i(p1.x, p2.y);
+		auto p4 = sf::Vector2i(p2.x, p1.y);
+
+		//directional vector
+		dir_ = sf::Vector2f(p2 - p1);
+		dir_opp_ = sf::Vector2f(p4 - p3);
+
+		//normalising vector
+		dir_norm_.x = dir_.x / sqrt(pow(dir_.x, 2) + pow(dir_.y, 2));
+		dir_norm_.y = dir_.y / sqrt(pow(dir_.x, 2) + pow(dir_.y, 2));
+
+		dir_norm_opp_.x = dir_opp_.x / sqrt(pow(dir_opp_.x, 2) + pow(dir_opp_.y, 2));
+		dir_norm_opp_.y = dir_opp_.y / sqrt(pow(dir_opp_.x, 2) + pow(dir_opp_.y, 2));
+
+
+		//doesnt work if the line is | or -, you know what i mean 
+		if (dir_norm_==sf::Vector2f(0.0,1.0)||dir_norm_==sf::Vector2f(0.0,-1.0))
+		{
+			dir_norm_opp_ = sf::Vector2f(1, 0);
+		}
+		if (dir_norm_ == sf::Vector2f(1.0, 0.0) || dir_norm_ == sf::Vector2f(1.0, 0.0))
+		{
+			dir_norm_opp_ = sf::Vector2f(0,1);
+		}
+		
+	}
+}
