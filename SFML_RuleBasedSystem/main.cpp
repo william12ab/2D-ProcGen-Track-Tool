@@ -351,10 +351,11 @@ int main()
 			}
 			if (ImGui::Button("test"))
 			{
-				v_d.FindMinMax(layers_,i_p.GetNoiseMap());
-				i_p.FindTrackMinMax(s_p.GetTrackPoints(),v_d.GetGridSize(),layers_);
-				s_p.TrackTValues();
-				i_p.FindInclinePoints(v_d.GetNumberOfPoints(),s_p.GetTrackPoints(),v_d.GetPointPos(),v_d.GetGridSize(),layers_);
+				v_d.FindMinMax(layers_,i_p.GetNoiseMap());															//min max of image
+				i_p.FindTrackMinMax(s_p.GetTrackPoints(),v_d.GetGridSize(),layers_);								//min max of track
+				s_p.TrackTValues();																					//give t value of lerp
+				i_p.FindInclinePoints(s_p.GetControlPoints(),v_d.GetGridSize(),layers_, i_p.GetCPIncline());		//for the control points
+				i_p.FindInclinePoints(v_d.GetPointPos(), v_d.GetGridSize(), layers_, i_p.GetPointIncline());		//for the points
 			}
 		}
 		ImGui::Text("\n");

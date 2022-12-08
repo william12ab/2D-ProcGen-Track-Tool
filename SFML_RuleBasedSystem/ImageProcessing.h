@@ -19,6 +19,9 @@ public:
 	//Getters
 	float* GetHeightVal() { return heightmap_; }
 	int* GetNoiseMap() const { return noise_heightmap_; }
+	std::vector<int> &GetCPIncline() { return cp_inc_; }
+	std::vector<int> &GetPointIncline() { return point_inc_; }
+
 
 	//Drawing functions
 	void DrawCurve(sf::VertexArray& vertexarray, int grid_size, int num_sites,int *grid);						//draws the curve to the vertex array
@@ -49,7 +52,7 @@ public:
 
 	//finding inclines
 	void FindTrackMinMax(const std::vector<sf::Vector2i> &track_points, const int&grid_size, const int&layers_);
-	void FindInclinePoints(const int& points_, const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& point_pos, const int& grid_size, const int& layers_);
+	void FindInclinePoints(const std::vector<sf::Vector2i>& vector_, const int& grid_size, const int& layers_, std::vector<int>& results_);
 
 private:
 	SimplexNoise perlin_;
@@ -65,7 +68,10 @@ private:
 
 	int track_max;
 	int track_min;
-	int point_max;
-	int point_min;
+	int point_a_height;
+	int point_b_height;
+
+	static std::vector<int> point_inc_;
+	static std::vector<int> cp_inc_;
 };
 

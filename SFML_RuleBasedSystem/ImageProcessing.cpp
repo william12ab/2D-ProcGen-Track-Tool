@@ -2,12 +2,20 @@
 #include <ppl.h>
 #include <SFML/Graphics/Image.hpp>
 using namespace concurrency;
+
+std::vector<int>ImageProcessing::point_inc_(1);
+std::vector<int> ImageProcessing::cp_inc_(1);
+
 ImageProcessing::ImageProcessing()
 {
 	heightmap_ = nullptr;
 	heightmap_fbm_ = nullptr;
 	noise_heightmap_ = nullptr;
 	alpha_channel_ = nullptr;
+	track_max=0;
+	track_min=0;
+	point_a_height=0;
+	point_b_height=0;
 }
 
 ImageProcessing::~ImageProcessing()
@@ -24,6 +32,8 @@ void ImageProcessing::InitStructures(int grid_size)
 	heightmap_fbm_ = new float[grid_size * grid_size];
 	noise_heightmap_ = new int[grid_size * grid_size];
 	alpha_channel_ = new int[grid_size * grid_size];
+	cp_inc_.clear();
+	point_inc_.clear();
 }
 
 void ImageProcessing::DrawCurve(sf::VertexArray& vertexarray, int grid_size, int num_sites,int *grid)
@@ -715,24 +725,33 @@ void ImageProcessing::FindTrackMinMax(const std::vector<sf::Vector2i>& track_poi
 	int max_ = 0;
 	for (const sf::Vector2i& iter : track_points)
 	{
-		int i = iter.x;
-		int j = iter.y;
-		if ((noise_heightmap_[i * grid_size + j] / layers_) > max_)
+		int x = iter.x;
+		int y = iter.y;
+		if ((noise_heightmap_[y * grid_size + x] / layers_) > max_)
 		{
-			max_ = noise_heightmap_[i * grid_size + j] / layers_;
+			max_ = noise_heightmap_[y * grid_size + x] / layers_;
 		}
-		if ((noise_heightmap_[i * grid_size + j] / layers_) < min_)
+		if ((noise_heightmap_[y * grid_size + x] / layers_) < min_)
 		{
-			min_ = noise_heightmap_[i * grid_size + j] / layers_;
+			min_ = noise_heightmap_[y * grid_size +x] / layers_;
 		}
 	}
 	track_max = max_,track_min=min_;
 }
 
-void ImageProcessing::FindInclinePoints(const int& points_, const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& point_pos, const int& grid_size, const int& layers_)
+void ImageProcessing::FindInclinePoints(const std::vector<sf::Vector2i>& vector_, const int& grid_size, const int& layers_, std::vector<int>&results_)
 {
-	point_max = 0;
-	point_min = 0;
+	int difference = 0;
 
-
+	for (int i =0;i< vector_.size()-1;)
+	{
+		int x = vector_[i].x;
+		int y = vector_[i].y;
+		int point_a_height = noise_heightmap_[y * grid_size + x] / layers_;
+		i++;
+		x = vector_[i].x, y = vector_[i].y;
+		int point_b_height = noise_heightmap_[y * grid_size + x] / layers_;
+		difference = point_b_height-point_a_height;
+		results_.push_back(difference);
+	}
 }

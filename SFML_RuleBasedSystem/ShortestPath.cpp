@@ -722,6 +722,7 @@ float ShortestPath::FindT(const sf::Vector2i& p1, const sf::Vector2i& p2, const 
 		t = c2;
 		if (t<0.0f)
 		{
+			int gggg = 1;
 			throw;
 		}
 	}
