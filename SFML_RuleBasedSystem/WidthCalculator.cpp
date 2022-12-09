@@ -1,9 +1,9 @@
 #include "WidthCalculator.h"
-
-
-
 std::vector<int>WidthCalculator::point_inc_(1);
 std::vector<int>WidthCalculator::cp_inc_(1);
+std::vector<sf::Vector2f>WidthCalculator::normalised_opposite_direction(1);
+std::vector<sf::Vector2i> WidthCalculator::height_both_dir(1);
+
 WidthCalculator::WidthCalculator()
 {
 	image_max = 0;
@@ -19,9 +19,10 @@ void WidthCalculator::Clear()
 	image_min = 0;
 	track_max = 0;
 	track_min = 0;
-
+	normalised_opposite_direction.clear();
 	point_inc_.clear();
 	cp_inc_.clear();
+	height_both_dir.clear();
 }
 
 void WidthCalculator::FindMinMax(const int& layers_, int* const& noise_grid, const int& grid_size)
@@ -164,10 +165,10 @@ void WidthCalculator::FindDirectionBetweenCP(const std::vector<sf::Vector2i>& co
 
 	for (int i = 0; i < control_points.size()-1;i++)
 	{
-		auto p1 = control_points[i];
+		auto p1 = control_points[i];					//control points
 		auto p2 = control_points[i+1];
 
-		auto p3 = sf::Vector2i(p1.x, p2.y);
+		auto p3 = sf::Vector2i(p1.x, p2.y);				//opposite of control points kinda
 		auto p4 = sf::Vector2i(p2.x, p1.y);
 
 		//directional vector
@@ -177,10 +178,8 @@ void WidthCalculator::FindDirectionBetweenCP(const std::vector<sf::Vector2i>& co
 		//normalising vector
 		dir_norm_.x = dir_.x / sqrt(pow(dir_.x, 2) + pow(dir_.y, 2));
 		dir_norm_.y = dir_.y / sqrt(pow(dir_.x, 2) + pow(dir_.y, 2));
-
 		dir_norm_opp_.x = dir_opp_.x / sqrt(pow(dir_opp_.x, 2) + pow(dir_opp_.y, 2));
 		dir_norm_opp_.y = dir_opp_.y / sqrt(pow(dir_opp_.x, 2) + pow(dir_opp_.y, 2));
-
 
 		//doesnt work if the line is | or -, you know what i mean 
 		if (dir_norm_==sf::Vector2f(0.0,1.0)||dir_norm_==sf::Vector2f(0.0,-1.0))
@@ -191,6 +190,38 @@ void WidthCalculator::FindDirectionBetweenCP(const std::vector<sf::Vector2i>& co
 		{
 			dir_norm_opp_ = sf::Vector2f(0,1);
 		}
+		normalised_opposite_direction.push_back(dir_norm_opp_);
+	}
+}
+
+
+void WidthCalculator::FindRelatedHeight(int* const& noise_grid, const int& grid_size, const int& layers_, const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points)
+{
+	int iter = 0;
+	sf::Vector2i current_cp=sf::Vector2i(0,0);
+	//find the height in the direction of the vector calculated above.
+	//for all track points.
+	for (const sf::Vector2i& i : track_points)
+	{
+		if (i == control_points[iter])						//if is currenctly over a control point
+		{
+			current_cp = i;
+			iter++;								//use iter and iter-1 to get the direction
+		}
+		int x = i.x;
+		int y = i.y;
+
+		//for both directions going only a few places, check the height difference isnt greater than x amount or less than x amount.
+		x+=normalised_opposite_direction[iter - 1].x*10;									//CHECK THIS VALUE THE *10 PART
+		y+= normalised_opposite_direction[iter - 1].y* 10;
+		int height_this_way = noise_grid[y * grid_size + x] / layers_;
 		
+		x = i.x;
+		y = i.y;
+		x -= normalised_opposite_direction[iter - 1].x * 10;
+		y -= normalised_opposite_direction[iter - 1].y * 10;
+		int height_that_way = noise_grid[y * grid_size + x] / layers_;
+
+		height_both_dir.push_back(sf::Vector2i(height_this_way, height_that_way));				//maybe not best way but you get the idea
 	}
 }

@@ -18,22 +18,20 @@ public:
 	void FindInclinePoints(const std::vector<sf::Vector2i>& vector_, const int& grid_size, const int& layers_, std::vector<int>& results_, int* const& noise_grid);
 
 	void FindDirectionBetweenCP(const std::vector<sf::Vector2i>& control_points);
-
+	void FindRelatedHeight(int* const& noise_grid, const int&grid_size, const int&layers_, const std::vector<sf::Vector2i> &track_points, const std::vector<sf::Vector2i>& control_points);
 
 	std::vector<int>& GetCPIncline() { return cp_inc_; }
 	std::vector<int>& GetPointIncline() { return point_inc_; }
 	void Clear();
 private:
-
 	int track_max;
 	int image_max;
-
 	int image_min;
 	int track_min;
 
-
 	static std::vector<int> point_inc_;
 	static std::vector<int> cp_inc_;
-	
+	static std::vector<sf::Vector2f> normalised_opposite_direction;
+	static std::vector<sf::Vector2i> height_both_dir;
 };
 

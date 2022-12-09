@@ -359,6 +359,7 @@ int main()
 				w_c.FindInclinePoints(v_d.GetPointPos(), v_d.GetGridSize(), layers_, w_c.GetPointIncline(),i_p.GetNoiseMap());		//for the points
 
 				w_c.FindDirectionBetweenCP(s_p.GetControlPoints());
+				w_c.FindRelatedHeight(i_p.GetNoiseMap(), v_d.GetGridSize(), layers_, s_p.GetTrackPoints(), s_p.GetControlPoints());
 			}
 		}
 		ImGui::Text("\n");
