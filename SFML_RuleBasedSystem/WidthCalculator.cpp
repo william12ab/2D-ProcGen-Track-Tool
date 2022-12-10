@@ -2,7 +2,7 @@
 std::vector<int>WidthCalculator::point_inc_(1);
 std::vector<int>WidthCalculator::cp_inc_(1);
 std::vector<sf::Vector2f>WidthCalculator::normalised_opposite_direction(1);
-std::vector<sf::Vector2i> WidthCalculator::height_both_dir(1);
+std::vector<sf::Vector2i> WidthCalculator::max_width_directions(1);
 
 WidthCalculator::WidthCalculator()
 {
@@ -10,6 +10,13 @@ WidthCalculator::WidthCalculator()
 	image_min = 0;
 	track_max = 0;
 	track_min = 0;
+}
+
+int WidthCalculator::DistanceSqrt(int x, int y, int x2, int y2)
+{
+	int xd = x2 - x;
+	int yd = y2 - y;
+	return sqrt((xd * xd) + (yd * yd));
 }
 
 
@@ -22,7 +29,7 @@ void WidthCalculator::Clear()
 	normalised_opposite_direction.clear();
 	point_inc_.clear();
 	cp_inc_.clear();
-	height_both_dir.clear();
+	max_width_directions.clear();
 }
 
 void WidthCalculator::FindMinMax(const int& layers_, int* const& noise_grid, const int& grid_size)
@@ -194,6 +201,25 @@ void WidthCalculator::FindDirectionBetweenCP(const std::vector<sf::Vector2i>& co
 	}
 }
 
+void WidthCalculator::FindMaxWidth(int& max_width_d,int &x, int &y, const int&iter, int* const& noise_grid, const int& grid_size, const int& layers_, const sf::Vector2i& i, const int &mody)
+{
+	for (float adder = 0; adder < 10; adder += 0.1)
+	{
+		x += (mody*normalised_opposite_direction[iter - 1].x) * adder;									//CHECK THIS VALUE THE *10 PART
+		y += (mody * normalised_opposite_direction[iter - 1].x) * adder;
+		int height_this_way = noise_grid[i.y * grid_size + i.x] / layers_ - noise_grid[y * grid_size + x] / layers_;
+		if (height_this_way < 0)
+		{
+			height_this_way *= -1;
+		}
+		if (height_this_way > 10)																	//TEMP VALYE
+		{
+			max_width_d = DistanceSqrt(i.x, i.y, x, y);
+			adder = 10;
+		}
+	}
+}
+
 
 void WidthCalculator::FindRelatedHeight(int* const& noise_grid, const int& grid_size, const int& layers_, const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points)
 {
@@ -210,18 +236,69 @@ void WidthCalculator::FindRelatedHeight(int* const& noise_grid, const int& grid_
 		}
 		int x = i.x;
 		int y = i.y;
-
-		//for both directions going only a few places, check the height difference isnt greater than x amount or less than x amount.
-		x+=normalised_opposite_direction[iter - 1].x*10;									//CHECK THIS VALUE THE *10 PART
-		y+= normalised_opposite_direction[iter - 1].y* 10;
-		int height_this_way = noise_grid[y * grid_size + x] / layers_;
-		
+		FindMaxWidth(max_width_right, x, y, iter, noise_grid, grid_size, layers_, i, 1);
 		x = i.x;
 		y = i.y;
-		x -= normalised_opposite_direction[iter - 1].x * 10;
-		y -= normalised_opposite_direction[iter - 1].y * 10;
-		int height_that_way = noise_grid[y * grid_size + x] / layers_;
-
-		height_both_dir.push_back(sf::Vector2i(height_this_way, height_that_way));				//maybe not best way but you get the idea
+		FindMaxWidth(max_width_left, x, y, iter, noise_grid, grid_size, layers_, i, -1);
+		max_width_directions.emplace_back(max_width_left, max_width_right);
 	}
+}
+
+
+void WidthCalculator::CompareHeights(const int& max_, const int& min_)
+{
+	if (max_>180 && min_ >180)
+	{
+		//this is high
+		default_width -= 1;
+		width_m.modi_left -= 0.01;
+		width_m.modi_right -= 0.01f;
+	}
+	if (max_ < 180 && min_ < 180)
+	{
+		//this is low
+		default_width += 1;
+		width_m.modi_left += 0.01;
+		width_m.modi_right += 0.01f;
+	}
+	int difference_ = max_ - min_;
+	if (difference_>150)
+	{
+		//big differnce	so height chnages a lot
+		default_width -= 1;
+		width_m.modi_left -= 0.01;
+		width_m.modi_right -= 0.01f;
+	}
+	if (difference_<100)
+	{
+		//small difference
+		default_width += 1;
+		width_m.modi_left += 0.01;
+		width_m.modi_right += 0.01f;
+	}
+}
+
+
+
+void WidthCalculator::FindWidth()
+{
+	width_m.max_m_left = 1.50f;
+	width_m.max_m_right = 1.50f;
+	width_m.min_m_left = 0.5f;
+	width_m.min_m_right = 0.5f;
+	width_m.modi_left = 1.0f;
+	width_m.modi_right = 1.0f;
+	min_width = 1.0f;
+	switch (track_surface)
+	{
+	case 1:						//dirt		//not fixed
+		default_width = 2;
+		CompareHeights(track_max,track_min);
+		break;
+	case 0:						//tarmac		//fixed width unless constraint
+		default_width = 3;
+		CompareHeights(track_max, track_min);
+		break;
+	}
+
 }

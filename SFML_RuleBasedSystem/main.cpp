@@ -360,6 +360,7 @@ int main()
 
 				w_c.FindDirectionBetweenCP(s_p.GetControlPoints());
 				w_c.FindRelatedHeight(i_p.GetNoiseMap(), v_d.GetGridSize(), layers_, s_p.GetTrackPoints(), s_p.GetControlPoints());
+
 			}
 		}
 		ImGui::Text("\n");
