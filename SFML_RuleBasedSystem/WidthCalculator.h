@@ -23,15 +23,23 @@ public:
 	std::vector<int>& GetCPIncline() { return cp_inc_; }
 	std::vector<int>& GetPointIncline() { return point_inc_; }
 
+
+	void SetTrackSurface(int t) { track_surface = t; }
+
 	void CompareHeights(const int&max_,const int&min_);
 
 
-	void FindWidth();
+	void FindWidth(const std::vector<int>& lengths_);
 	void Clear();
 	int DistanceSqrt(int x, int y, int x2, int y2);
+	void TrackLoop(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos,const std::vector<int>& lengths_);
 
 	void FindMaxWidth(int& max_width_d, int& x, int& y, const int& iter, int* const& noise_grid, const int& grid_size, const int& layers_, const sf::Vector2i& i,const int& mody);
 
+	void CheckPoints(const std::vector<int>& inc_, const int& iter, const int& height_diff);
+	void CheckLength(const std::vector<int>& lengths_, const int& it);
+	void CheckTValues(const int& i);
+	void CheckAngle();
 private:
 	int track_max;
 	int image_max;
@@ -43,11 +51,15 @@ private:
 	static std::vector<sf::Vector2f> normalised_opposite_direction;
 	static std::vector<sf::Vector2i> max_width_directions;
 
+	static std::vector<float> t_values;
+
 	int max_width_left;
 	int max_width_right;
 	float min_width;
 	int default_width;
 	int track_surface;
+
+	float average_length;
 
 	struct width_modi
 	{

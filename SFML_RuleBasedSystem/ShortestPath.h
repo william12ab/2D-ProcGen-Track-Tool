@@ -42,11 +42,9 @@ public:
 	void SortControlPoints();
 
 	int DistanceSqrt(int x, int y, int x2, int y2);
-	void FindDirection();
 	void SegmentAngles();
 	void WriteToFile();
 	
-
 	void OrderControlPoints();
 	void ScaleControlPoints(float scale);
 

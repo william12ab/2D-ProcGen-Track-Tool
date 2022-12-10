@@ -642,12 +642,6 @@ void ShortestPath::SegmentAngles()
 			new_angles_.push_back(final_angle);
 		line_iterator += 2;			//go to next set of lines
 	}
-
-}
-
-void ShortestPath::FindDirection()
-{
-
 }
 
 void ShortestPath::WriteToFile()

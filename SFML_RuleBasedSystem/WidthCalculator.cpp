@@ -3,6 +3,7 @@ std::vector<int>WidthCalculator::point_inc_(1);
 std::vector<int>WidthCalculator::cp_inc_(1);
 std::vector<sf::Vector2f>WidthCalculator::normalised_opposite_direction(1);
 std::vector<sf::Vector2i> WidthCalculator::max_width_directions(1);
+std::vector<float> WidthCalculator::t_values(1);
 
 WidthCalculator::WidthCalculator()
 {
@@ -10,6 +11,12 @@ WidthCalculator::WidthCalculator()
 	image_min = 0;
 	track_max = 0;
 	track_min = 0;
+	average_length = 0;
+	default_width = 0;
+	max_width_right = 0;
+	max_width_left = 0;
+	min_width = 0;
+	track_surface = 0;
 }
 
 int WidthCalculator::DistanceSqrt(int x, int y, int x2, int y2)
@@ -123,13 +130,10 @@ float WidthCalculator::FindT(const sf::Vector2i& p1, const sf::Vector2i& p2, con
 }
 
 
-
 void WidthCalculator::TrackTValues(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points)
 {
 	int iter = 0;								//iterator for control points, chnages when a new control point is hit
 	sf::Vector2i current_cp;					//stores current control point could just do control_points[iter-1]
-
-	std::vector<float> t_values;				//stores t values - should be track_points-amount of control points					CHECK THAT IS CORRECT!!!!!!!
 
 	for (const sf::Vector2i& i : track_points)
 	{
@@ -143,6 +147,7 @@ void WidthCalculator::TrackTValues(const std::vector<sf::Vector2i>& track_points
 			t_values.push_back(FindT(current_cp, control_points[iter], i));					//pushes back t value
 		}
 	}
+	
 }
 
 
@@ -159,6 +164,10 @@ void WidthCalculator::FindInclinePoints(const std::vector<sf::Vector2i>& vector_
 		x = vector_[i].x, y = vector_[i].y;
 		int point_b_height = noise_grid[y * grid_size + x] / layers_;
 		difference = point_b_height - point_a_height;
+		if (difference<0)
+		{
+			difference *= -1;
+		}
 		results_.push_back(difference);
 	}
 }
@@ -278,9 +287,116 @@ void WidthCalculator::CompareHeights(const int& max_, const int& min_)
 	}
 }
 
+void WidthCalculator::CheckPoints(const std::vector<int>& inc_, const int&iter, const int&height_diff)
+{
+	if (inc_[iter] > height_diff)
+	{
+		//high incline
+		width_m.modi_left -= 0.01;
+		width_m.modi_right -= 0.01f;
+	}
+	else
+	{
+		//low incline
+		width_m.modi_left += 0.01;
+		width_m.modi_right += 0.01f;
+	}
+}
+
+void WidthCalculator::CheckLength(const std::vector<int>& lengths_, const int &it)
+{
+	if (lengths_[it]> average_length+(average_length/2))		//high length
+	{
+		width_m.modi_left += 0.01;
+		width_m.modi_right += 0.01f;
+	}
+	else if (lengths_[it] < average_length - (average_length / 2))		//low length
+	{
+		width_m.modi_left -= 0.01;
+		width_m.modi_right -= 0.01f;
+	}
+	else                     //avr length
+	{
+		//do nothing. . . 
+	}
+}
 
 
-void WidthCalculator::FindWidth()
+void WidthCalculator::CheckTValues(const int& i)
+{
+	if (t_values[i]>=0.0 && t_values[i]<=0.14)
+	{
+		//exit
+		width_m.modi_left += 0.01;
+		width_m.modi_right += 0.01f;
+	}
+	if (t_values[i] >= 0.9 && t_values[i] <= 0.97)
+	{
+		//entry
+		width_m.modi_left -= 0.01;
+		width_m.modi_right -= 0.01f;
+	}
+	if (t_values[i] >= 0.98)
+	{
+		//apex
+		width_m.modi_left -= 0.01;
+		width_m.modi_right -= 0.01f;
+	}
+	if (t_values[i]>0.38 &&t_values[i]<0.62)
+	{
+		//middle
+		width_m.modi_left += 0.01;
+		width_m.modi_right += 0.01f;
+	}
+}
+
+void WidthCalculator::CheckAngle() 
+{
+
+}
+
+void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos, const std::vector<int>& lengths_)
+{
+	int iter_points=0;
+	auto next_point=sf::Vector2i(0,0);
+	auto current_point = points_pos[iter_points];
+
+	int iter_control_points = 0;
+	auto next_control_point = sf::Vector2i(0, 0);
+	auto current_control_point = points_pos[iter_points];
+	auto count = 0;
+	for (const sf::Vector2i& i : track_points)
+	{
+		if (i == points_pos[iter_points])			//finds what point the trackpoint is on
+		{
+			CheckPoints(point_inc_, iter_points, 60);
+			current_point = i;
+			iter_points++;							
+			if (iter_points < points_pos.size())
+			{
+				next_point = points_pos[iter_points];
+			}
+		}
+		if (i == control_points[iter_control_points])			//finds what point the trackpoint is on
+		{
+			CheckPoints(cp_inc_, iter_control_points, 30);
+			CheckLength(lengths_, iter_control_points);
+			current_control_point = i;
+			iter_control_points++;
+			if (iter_control_points < control_points.size())
+			{
+				next_control_point = control_points[iter_control_points];
+			}
+		}
+
+		CheckTValues(count);
+		count++;
+
+		//angle
+	}
+}
+
+void WidthCalculator::FindWidth(const std::vector<int>& lengths_)
 {
 	width_m.max_m_left = 1.50f;
 	width_m.max_m_right = 1.50f;
@@ -289,6 +405,14 @@ void WidthCalculator::FindWidth()
 	width_m.modi_left = 1.0f;
 	width_m.modi_right = 1.0f;
 	min_width = 1.0f;
+
+	auto sum_=0;
+	for (size_t i = 0; i < lengths_.size(); i++)
+	{
+		sum_ += lengths_[i];
+	}
+	average_length = sum_ / lengths_.size();
+
 	switch (track_surface)
 	{
 	case 1:						//dirt		//not fixed
