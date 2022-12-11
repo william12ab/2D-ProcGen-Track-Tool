@@ -23,6 +23,7 @@ public:
 	std::vector<int>& GetCPIncline() { return cp_inc_; }
 	std::vector<int>& GetPointIncline() { return point_inc_; }
 
+	void Modi(const int& sign);
 
 	void SetTrackSurface(int t) { track_surface = t; }
 
@@ -40,6 +41,11 @@ public:
 	void CheckLength(const std::vector<int>& lengths_, const int& it);
 	void CheckTValues(const int& i);
 	void CheckAngle(const int &angle_);
+
+	void DefaultWidth();
+	void DefaultPlus();
+	void TarmacWidth();
+	void TarmacPlus();
 
 	void CalculateWidth(const sf::Vector2i& track_point, const int& size_, const int& count_);
 private:

@@ -27,6 +27,12 @@ int WidthCalculator::DistanceSqrt(int x, int y, int x2, int y2)
 	return sqrt((xd * xd) + (yd * yd));
 }
 
+void WidthCalculator::Modi(const int& sign)
+{
+	width_m.modi_left += sign*0.01;
+	width_m.modi_right += sign*0.01f;
+}
+
 
 void WidthCalculator::Clear()
 {
@@ -129,7 +135,6 @@ float WidthCalculator::FindT(const sf::Vector2i& p1, const sf::Vector2i& p2, con
 	}
 	return t;
 }
-
 
 void WidthCalculator::TrackTValues(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points)
 {
@@ -254,37 +259,32 @@ void WidthCalculator::FindRelatedHeight(int* const& noise_grid, const int& grid_
 	}
 }
 
-
 void WidthCalculator::CompareHeights(const int& max_, const int& min_)
 {
 	if (max_>180 && min_ >180)
 	{
 		//this is high
 		default_width -= 1;
-		width_m.modi_left -= 0.01;
-		width_m.modi_right -= 0.01f;
+		Modi(-1);
 	}
 	if (max_ < 180 && min_ < 180)
 	{
 		//this is low
 		default_width += 1;
-		width_m.modi_left += 0.01;
-		width_m.modi_right += 0.01f;
+		Modi(1);
 	}
 	int difference_ = max_ - min_;
 	if (difference_>150)
 	{
 		//big differnce	so height chnages a lot
 		default_width -= 1;
-		width_m.modi_left -= 0.01;
-		width_m.modi_right -= 0.01f;
+		Modi(-1);
 	}
 	if (difference_<100)
 	{
 		//small difference
 		default_width += 1;
-		width_m.modi_left += 0.01;
-		width_m.modi_right += 0.01f;
+		Modi(1);
 	}
 }
 
@@ -293,14 +293,12 @@ void WidthCalculator::CheckPoints(const std::vector<int>& inc_, const int&iter, 
 	if (inc_[iter] > height_diff)
 	{
 		//high incline
-		width_m.modi_left -= 0.01;
-		width_m.modi_right -= 0.01f;
+		Modi(-1);
 	}
 	else
 	{
 		//low incline
-		width_m.modi_left += 0.01;
-		width_m.modi_right += 0.01f;
+		Modi(1);
 	}
 }
 
@@ -308,13 +306,11 @@ void WidthCalculator::CheckLength(const std::vector<int>& lengths_, const int &i
 {
 	if (lengths_[it]> average_length+(average_length/2))		//high length
 	{
-		width_m.modi_left += 0.01;
-		width_m.modi_right += 0.01f;
+		Modi(1);
 	}
 	else if (lengths_[it] < average_length - (average_length / 2))		//low length
 	{
-		width_m.modi_left -= 0.01;
-		width_m.modi_right -= 0.01f;
+		Modi(-1);
 	}
 	else                     //avr length
 	{
@@ -328,26 +324,22 @@ void WidthCalculator::CheckTValues(const int& i)
 	if (t_values[i]>=0.0 && t_values[i]<=0.14)
 	{
 		//exit
-		width_m.modi_left += 0.01;
-		width_m.modi_right += 0.01f;
+		Modi(1);
 	}
 	if (t_values[i] >= 0.9 && t_values[i] <= 0.97)
 	{
 		//entry
-		width_m.modi_left -= 0.01;
-		width_m.modi_right -= 0.01f;
+		Modi(-1);
 	}
 	if (t_values[i] >= 0.98)
 	{
 		//apex
-		width_m.modi_left -= 0.01;
-		width_m.modi_right -= 0.01f;
+		Modi(-1);
 	}
 	if (t_values[i]>0.38 &&t_values[i]<0.62)
 	{
 		//middle
-		width_m.modi_left += 0.01;
-		width_m.modi_right += 0.01f;
+		Modi(1);
 	}
 }
 
@@ -359,14 +351,31 @@ void WidthCalculator::CheckAngle(const int &angle_)
 	a /= 100;							//gives %age
 	if (a<50)
 	{
-		width_m.modi_left += 0.01;
-		width_m.modi_right += 0.01f;
+		Modi(1);
 	}
 	else
 	{
-		width_m.modi_left -= 0.01;
-		width_m.modi_right -= 0.01f;
+		Modi(-1);
 	}
+}
+
+
+void WidthCalculator::DefaultWidth()
+{
+		//default in shape of +
+}
+void WidthCalculator::DefaultPlus()
+{
+	//defuyalt plus shape of *
+}
+
+void WidthCalculator::TarmacWidth()
+{
+	//default *2
+}
+void WidthCalculator::TarmacPlus()
+{
+	//plus *2
 }
 
 
