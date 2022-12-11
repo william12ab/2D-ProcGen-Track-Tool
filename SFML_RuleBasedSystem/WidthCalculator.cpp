@@ -3,6 +3,7 @@ std::vector<int>WidthCalculator::point_inc_(1);
 std::vector<int>WidthCalculator::cp_inc_(1);
 std::vector<sf::Vector2f>WidthCalculator::normalised_opposite_direction(1);
 std::vector<sf::Vector2i> WidthCalculator::max_width_directions(1);
+std::vector<sf::Vector2i> WidthCalculator::new_track(1);
 std::vector<float> WidthCalculator::t_values(1);
 
 WidthCalculator::WidthCalculator()
@@ -365,18 +366,38 @@ void WidthCalculator::CheckAngle(const int &angle_)
 	{
 		width_m.modi_left -= 0.01;
 		width_m.modi_right -= 0.01f;
-	}}
+	}
+}
+
+
+void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&size_, const int&count_)
+{
+	
+	//n,ne,e,se,s,sw,w,nw
+	std::vector<sf::Vector2i> temp_vec = { sf::Vector2i(track_point.x,track_point.y - 1),sf::Vector2i(track_point.x + 1,track_point.y - 1),sf::Vector2i(track_point.x + 1,track_point.y),
+										sf::Vector2i(track_point.x + 1,track_point.y + 1),sf::Vector2i(track_point.x,track_point.y + 1),sf::Vector2i(track_point.x - 1,track_point.y + 1),
+										sf::Vector2i(track_point.x - 1,track_point.y),sf::Vector2i(track_point.x - 1,track_point.y-1) };
+
+	//get iterator to start of the track
+	auto iterator_ = new_track.begin();
+	//find difference in size
+	int size_difference = new_track.size() - size_;  
+	size_difference += count_;
+
+	new_track.insert(iterator_+size_difference, temp_vec.begin(), temp_vec.end());
+}
 
 void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos, const std::vector<int>& lengths_, const std::vector<int> angles_)
 {
-	int iter_points=0;
-	auto next_point=sf::Vector2i(0,0);
-	auto current_point = points_pos[iter_points];
+	int iter_points=0;												//iterator for the points - keeps track of what point youre on ( a point is the number of points connecting the vd - not the control points, or track_points)
+	auto next_point=sf::Vector2i(0,0);								//stores the next point 
+	auto current_point = points_pos[iter_points];					//stores current point
 
-	int iter_control_points = 0;
+	int iter_control_points = 0;									//iterator for the control points
 	auto next_control_point = sf::Vector2i(0, 0);
 	auto current_control_point = points_pos[iter_points];
-	auto count = 0;
+	auto count = 0;													//iterator in form of int rather than vector obj - used for accessing elements of vectors
+
 	for (const sf::Vector2i& i : track_points)
 	{
 		if (i == points_pos[iter_points])			//finds what point the trackpoint is on
@@ -407,9 +428,22 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 				next_control_point = control_points[iter_control_points];
 			}
 		}
-
 		CheckTValues(count);
+
+		CalculateWidth(i,track_points.size(),count);
+
+
 		count++;
+
+
+		//sf::Vector2i current_pos = track_points[count];
+		////n,ne,e,se,s,sw,w,nw
+		//std::vector<sf::Vector2i> temp_vec = { sf::Vector2i(current_pos.x,current_pos.y-1),sf::Vector2i(current_pos.x+1,current_pos.y - 1),sf::Vector2i(current_pos.x+1,current_pos.y),
+		//									sf::Vector2i(current_pos.x+1,current_pos.y + 1),sf::Vector2i(current_pos.x,current_pos.y + 1),sf::Vector2i(current_pos.x-1,current_pos.y + 1),
+		//									sf::Vector2i(current_pos.x-1,current_pos.y ),sf::Vector2i(current_pos.x-1,current_pos.y) };
+
+		//auto iterator_ = test.begin();
+		//test.insert(iterator_, temp_vec.begin(), temp_vec.end());
 
 		//now use width modifiers to calc the width
 	}
@@ -433,6 +467,9 @@ void WidthCalculator::FindWidth(const std::vector<sf::Vector2i>& track_points, c
 		sum_ += lengths_[i];
 	}
 	average_length = sum_ / lengths_.size();
+
+
+	new_track = track_points;
 
 	switch (track_surface)
 	{

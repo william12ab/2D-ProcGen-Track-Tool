@@ -40,6 +40,8 @@ public:
 	void CheckLength(const std::vector<int>& lengths_, const int& it);
 	void CheckTValues(const int& i);
 	void CheckAngle(const int &angle_);
+
+	void CalculateWidth(const sf::Vector2i& track_point, const int& size_, const int& count_);
 private:
 	int track_max;
 	int image_max;
@@ -52,6 +54,7 @@ private:
 	static std::vector<sf::Vector2i> max_width_directions;
 
 	static std::vector<float> t_values;
+	static std::vector<sf::Vector2i> new_track;
 
 	int max_width_left;
 	int max_width_right;
