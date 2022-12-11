@@ -141,13 +141,13 @@ void WidthCalculator::TrackTValues(const std::vector<sf::Vector2i>& track_points
 		{
 			current_cp = i;
 			iter++;
+			t_values.push_back(FindT(current_cp, control_points[iter], i));
 		}
 		else
 		{
 			t_values.push_back(FindT(current_cp, control_points[iter], i));					//pushes back t value
 		}
 	}
-	
 }
 
 
@@ -392,8 +392,14 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 		if (i == control_points[iter_control_points])			//finds what point the trackpoint is on
 		{
 			CheckPoints(cp_inc_, iter_control_points, 30);
-			CheckLength(lengths_, iter_control_points);
-			CheckAngle(angles_[iter_control_points]);
+			if (iter_control_points<control_points.size())
+			{
+				CheckLength(lengths_, iter_control_points);
+				if (iter_control_points < (control_points.size()-2))
+				{
+					CheckAngle(angles_[iter_control_points]);
+				}
+			}
 			current_control_point = i;
 			iter_control_points++;
 			if (iter_control_points < control_points.size())
