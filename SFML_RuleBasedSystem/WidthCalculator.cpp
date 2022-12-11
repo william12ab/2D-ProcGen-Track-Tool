@@ -350,12 +350,24 @@ void WidthCalculator::CheckTValues(const int& i)
 	}
 }
 
-void WidthCalculator::CheckAngle() 
+void WidthCalculator::CheckAngle(const int &angle_)
 {
+	//closer to 0 = easier
+	//closer to 90 =harder
+	auto a = angle_ * 90;
+	a /= 100;							//gives %age
+	if (a<50)
+	{
+		width_m.modi_left += 0.01;
+		width_m.modi_right += 0.01f;
+	}
+	else
+	{
+		width_m.modi_left -= 0.01;
+		width_m.modi_right -= 0.01f;
+	}}
 
-}
-
-void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos, const std::vector<int>& lengths_)
+void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos, const std::vector<int>& lengths_, const std::vector<int> angles_)
 {
 	int iter_points=0;
 	auto next_point=sf::Vector2i(0,0);
@@ -381,6 +393,7 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 		{
 			CheckPoints(cp_inc_, iter_control_points, 30);
 			CheckLength(lengths_, iter_control_points);
+			CheckAngle(angles_[iter_control_points]);
 			current_control_point = i;
 			iter_control_points++;
 			if (iter_control_points < control_points.size())
@@ -392,11 +405,11 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 		CheckTValues(count);
 		count++;
 
-		//angle
+		//now use width modifiers to calc the width
 	}
 }
 
-void WidthCalculator::FindWidth(const std::vector<int>& lengths_)
+void WidthCalculator::FindWidth(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos, const std::vector<int>& lengths_, const std::vector<int> angles_)
 {
 	width_m.max_m_left = 1.50f;
 	width_m.max_m_right = 1.50f;
@@ -405,6 +418,8 @@ void WidthCalculator::FindWidth(const std::vector<int>& lengths_)
 	width_m.modi_left = 1.0f;
 	width_m.modi_right = 1.0f;
 	min_width = 1.0f;
+
+	track_surface = 1;
 
 	auto sum_=0;
 	for (size_t i = 0; i < lengths_.size(); i++)
@@ -418,6 +433,7 @@ void WidthCalculator::FindWidth(const std::vector<int>& lengths_)
 	case 1:						//dirt		//not fixed
 		default_width = 2;
 		CompareHeights(track_max,track_min);
+		TrackLoop(track_points,control_points, points_pos,lengths_, angles_);
 		break;
 	case 0:						//tarmac		//fixed width unless constraint
 		default_width = 3;

@@ -352,6 +352,7 @@ int main()
 			if (ImGui::Button("test"))
 			{
 				w_c.Clear();
+				s_p.SegmentAngles();
 				w_c.FindMinMax(layers_,i_p.GetNoiseMap(),v_d.GetGridSize());															//min max of image
 				w_c.FindTrackMinMax(s_p.GetTrackPoints(),v_d.GetGridSize(),layers_,i_p.GetNoiseMap());								//min max of track
 				w_c.TrackTValues(s_p.GetTrackPoints(),s_p.GetControlPoints());																					//give t value of lerp
@@ -361,6 +362,8 @@ int main()
 				w_c.FindDirectionBetweenCP(s_p.GetControlPoints());
 				w_c.FindRelatedHeight(i_p.GetNoiseMap(), v_d.GetGridSize(), layers_, s_p.GetTrackPoints(), s_p.GetControlPoints());
 
+
+				w_c.FindWidth(s_p.GetTrackPoints(), s_p.GetControlPoints(), v_d.GetPointPos(), s_p.GetLengths(), s_p.GetAngles());
 			}
 		}
 		ImGui::Text("\n");

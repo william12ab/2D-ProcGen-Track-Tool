@@ -32,6 +32,8 @@ public:
 	bool GetTesting() { return do_testing_; }
 	std::vector<sf::Vector2i> GetControlPoints() { return control_points; }
 	std::vector<sf::Vector2i> GetTrackPoints() { return track_points; }
+	std::vector<int> GetAngles() { return new_angles_;}
+	std::vector<int> GetLengths() { return segment_lengths_; }
 
 
 	void SetControlPoints(std::vector<sf::Vector2i> temp_) { control_points = temp_; }

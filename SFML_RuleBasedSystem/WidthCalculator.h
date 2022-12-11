@@ -29,17 +29,17 @@ public:
 	void CompareHeights(const int&max_,const int&min_);
 
 
-	void FindWidth(const std::vector<int>& lengths_);
+	void FindWidth(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos, const std::vector<int>& lengths_, const std::vector<int> angles_);
 	void Clear();
 	int DistanceSqrt(int x, int y, int x2, int y2);
-	void TrackLoop(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos,const std::vector<int>& lengths_);
+	void TrackLoop(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos,const std::vector<int>& lengths_, const std::vector<int> angles_);
 
 	void FindMaxWidth(int& max_width_d, int& x, int& y, const int& iter, int* const& noise_grid, const int& grid_size, const int& layers_, const sf::Vector2i& i,const int& mody);
 
 	void CheckPoints(const std::vector<int>& inc_, const int& iter, const int& height_diff);
 	void CheckLength(const std::vector<int>& lengths_, const int& it);
 	void CheckTValues(const int& i);
-	void CheckAngle();
+	void CheckAngle(const int &angle_);
 private:
 	int track_max;
 	int image_max;
