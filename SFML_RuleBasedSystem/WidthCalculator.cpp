@@ -372,7 +372,6 @@ void WidthCalculator::CheckAngle(const int &angle_)
 
 void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&size_, const int&count_)
 {
-	
 	//n,ne,e,se,s,sw,w,nw
 	std::vector<sf::Vector2i> temp_vec = { sf::Vector2i(track_point.x,track_point.y - 1),sf::Vector2i(track_point.x + 1,track_point.y - 1),sf::Vector2i(track_point.x + 1,track_point.y),
 										sf::Vector2i(track_point.x + 1,track_point.y + 1),sf::Vector2i(track_point.x,track_point.y + 1),sf::Vector2i(track_point.x - 1,track_point.y + 1),
@@ -381,9 +380,9 @@ void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&
 	//get iterator to start of the track
 	auto iterator_ = new_track.begin();
 	//find difference in size
-	int size_difference = new_track.size() - size_;  //0,8,16
-	int c_ = count_ + 1;
-	int iter = size_difference + c_;
+	int size_difference = new_track.size() - size_;  
+	int c_ = count_ + 1;								//add one to index
+	int iter = size_difference + c_;					//iterator to place new pos in is: difference in size +index
 	new_track.insert(iterator_+iter, temp_vec.begin(), temp_vec.end());
 }
 
