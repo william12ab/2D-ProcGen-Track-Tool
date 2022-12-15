@@ -1,5 +1,6 @@
 #include "WidthCalculator.h"
 #include <iostream>
+#include <iomanip>
 std::vector<int>WidthCalculator::point_inc_(1);
 std::vector<int>WidthCalculator::cp_inc_(1);
 std::vector<sf::Vector2f>WidthCalculator::normalised_opposite_direction(1);
@@ -30,8 +31,8 @@ int WidthCalculator::DistanceSqrt(int x, int y, int x2, int y2)
 
 void WidthCalculator::Modi(const int& sign)
 {
-	width_m.modi_left += sign*0.25;
-	width_m.modi_right += sign*0.25f;
+	width_m.modi_left += sign*0.34;
+	width_m.modi_right += sign*0.34f;
 }
 
 
@@ -44,6 +45,7 @@ void WidthCalculator::Clear()
 	normalised_opposite_direction.clear();
 	point_inc_.clear();
 	cp_inc_.clear();
+	t_values.clear()
 	max_width_directions.clear();
 }
 
@@ -359,8 +361,6 @@ void WidthCalculator::CheckAngle(const int &angle_)
 
 void WidthCalculator::DefaultWidth(const sf::Vector2i& track_point, const int& size_, const int& count_)
 {
-
-
 	std::vector<sf::Vector2i> temp_vec;
 	//default in shape of +
 	for (int i = 1; i <= default_width; i++)
@@ -418,7 +418,7 @@ void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&
 
 void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos, const std::vector<int>& lengths_, const std::vector<int> angles_)
 {
-	int iter_points=0;												//iterator for the points - keeps track of what point youre on ( a point is the number of points connecting the vd - not the control points, or track_points)
+	int iter_points=1;												//iterator for the points - keeps track of what point youre on ( a point is the number of points connecting the vd - not the control points, or track_points)
 	auto next_point=sf::Vector2i(0,0);								//stores the next point 
 	auto current_point = points_pos[iter_points];					//stores current point
 
@@ -431,6 +431,13 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 	{
 		width_m.modi_left = 0.0f;
 		width_m.modi_right = 0.0f;
+		if (iter_control_points< lengths_.size())
+		{
+			CheckLength(lengths_, iter_control_points);
+		}
+		
+		CheckTValues(count);
+
 		if (i == points_pos[iter_points])			//finds what point the trackpoint is on
 		{
 			CheckPoints(point_inc_, iter_points, 60);
@@ -444,13 +451,9 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 		if (i == control_points[iter_control_points])			//finds what point the trackpoint is on
 		{
 			CheckPoints(cp_inc_, iter_control_points, 30);
-			if (iter_control_points<control_points.size())
+			if (iter_control_points < (control_points.size()-2))
 			{
-				CheckLength(lengths_, iter_control_points);
-				if (iter_control_points < (control_points.size()-2))
-				{
-					CheckAngle(angles_[iter_control_points]);
-				}
+				CheckAngle(angles_[iter_control_points]);
 			}
 			current_control_point = i;
 			iter_control_points++;
@@ -459,9 +462,10 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 				next_control_point = control_points[iter_control_points];
 			}
 		}
-		CheckTValues(count);
 		DefaultWidth( i, track_points.size(), count);
-		std::cout << width_m.modi_left << " right: " << width_m.modi_right << "\n";
+		std::cout << std::fixed;
+		std::cout << std::setprecision(2);
+		std::cout << (float)width_m.modi_left  << " right: " << (float)width_m.modi_right << "\n";
 		count++;
 	}
 }
