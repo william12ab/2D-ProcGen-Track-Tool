@@ -1,4 +1,5 @@
 #include "WidthCalculator.h"
+#include <iostream>
 std::vector<int>WidthCalculator::point_inc_(1);
 std::vector<int>WidthCalculator::cp_inc_(1);
 std::vector<sf::Vector2f>WidthCalculator::normalised_opposite_direction(1);
@@ -29,8 +30,8 @@ int WidthCalculator::DistanceSqrt(int x, int y, int x2, int y2)
 
 void WidthCalculator::Modi(const int& sign)
 {
-	width_m.modi_left += sign*0.01;
-	width_m.modi_right += sign*0.01f;
+	width_m.modi_left += sign*0.25;
+	width_m.modi_right += sign*0.25f;
 }
 
 
@@ -221,13 +222,13 @@ void WidthCalculator::FindMaxWidth(int& max_width_d,int &x, int &y, const int&it
 	for (float adder = 0; adder < 10; adder += 0.1)
 	{
 		x += (mody*normalised_opposite_direction[iter - 1].x) * adder;									//CHECK THIS VALUE THE *10 PART
-		y += (mody * normalised_opposite_direction[iter - 1].x) * adder;
+		y += (mody * normalised_opposite_direction[iter - 1].y) * adder;
 		int height_this_way = noise_grid[i.y * grid_size + i.x] / layers_ - noise_grid[y * grid_size + x] / layers_;
 		if (height_this_way < 0)
 		{
 			height_this_way *= -1;
 		}
-		if (height_this_way > 10)																	//TEMP VALYE
+		if (height_this_way > 4)																	//TEMP VALYE
 		{
 			max_width_d = DistanceSqrt(i.x, i.y, x, y);
 			adder = 10;
@@ -265,26 +266,22 @@ void WidthCalculator::CompareHeights(const int& max_, const int& min_)
 	{
 		//this is high
 		default_width -= 1;
-		Modi(-1);
 	}
 	if (max_ < 180 && min_ < 180)
 	{
 		//this is low
 		default_width += 1;
-		Modi(1);
 	}
 	int difference_ = max_ - min_;
 	if (difference_>150)
 	{
 		//big differnce	so height chnages a lot
 		default_width -= 1;
-		Modi(-1);
 	}
 	if (difference_<100)
 	{
 		//small difference
 		default_width += 1;
-		Modi(1);
 	}
 }
 
@@ -304,11 +301,11 @@ void WidthCalculator::CheckPoints(const std::vector<int>& inc_, const int&iter, 
 
 void WidthCalculator::CheckLength(const std::vector<int>& lengths_, const int &it)
 {
-	if (lengths_[it]> average_length+(average_length/2))		//high length
+	if (lengths_[it]>= average_length+(average_length/4))		//high length
 	{
 		Modi(1);
 	}
-	else if (lengths_[it] < average_length - (average_length / 2))		//low length
+	else if (lengths_[it] <= average_length - (average_length / 4))		//low length
 	{
 		Modi(-1);
 	}
@@ -326,17 +323,17 @@ void WidthCalculator::CheckTValues(const int& i)
 		//exit
 		Modi(1);
 	}
-	if (t_values[i] >= 0.9 && t_values[i] <= 0.97)
+	else if (t_values[i] >= 0.9 && t_values[i] <= 0.97)
 	{
 		//entry
 		Modi(-1);
 	}
-	if (t_values[i] >= 0.98)
+	else if (t_values[i] >= 0.98)
 	{
 		//apex
 		Modi(-1);
 	}
-	if (t_values[i]>0.38 &&t_values[i]<0.62)
+	else if (t_values[i]>0.38 &&t_values[i]<0.62)
 	{
 		//middle
 		Modi(1);
@@ -360,39 +357,63 @@ void WidthCalculator::CheckAngle(const int &angle_)
 }
 
 
-void WidthCalculator::DefaultWidth()
+void WidthCalculator::DefaultWidth(const sf::Vector2i& track_point, const int& size_, const int& count_)
 {
-		//default in shape of +
+
+
+	std::vector<sf::Vector2i> temp_vec;
+	//default in shape of +
+	for (int i = 1; i <= default_width; i++)
+	{
+		std::vector<sf::Vector2i> temp_temp_vec;
+		temp_temp_vec = { sf::Vector2i(track_point.x,track_point.y - i),sf::Vector2i(track_point.x + i,track_point.y), sf::Vector2i(track_point.x,track_point.y + i),sf::Vector2i(track_point.x - i,track_point.y) };
+		temp_vec.insert(temp_vec.begin(), temp_temp_vec.begin(),temp_temp_vec.end());
+	}
+ 
+	auto iterator_ = new_track.begin();
+	//find difference in size
+	int size_difference = new_track.size() - size_;
+	int c_ = count_ + 1;								//add one to index
+	int iter = size_difference + c_;					//iterator to place new pos in is: difference in size +index
+	new_track.insert(iterator_ + iter, temp_vec.begin(), temp_vec.end());
 }
-void WidthCalculator::DefaultPlus()
+void WidthCalculator::DefaultPlus(const sf::Vector2i& track_point, const int& size_, const int& count_)
 {
+	int final_l_mod = 2;
+
+	std::vector<sf::Vector2i> temp_vec;
+	for (int i = 1; i <= final_l_mod; i++)
+	{
+		std::vector<sf::Vector2i> temp_temp_vec;
+		temp_temp_vec = { sf::Vector2i(track_point.x,track_point.y - i),sf::Vector2i(track_point.x + i,track_point.y - i),sf::Vector2i(track_point.x + i,track_point.y),
+										sf::Vector2i(track_point.x + i,track_point.y + i),sf::Vector2i(track_point.x,track_point.y + i),sf::Vector2i(track_point.x - i,track_point.y + i),
+										sf::Vector2i(track_point.x - i,track_point.y),sf::Vector2i(track_point.x - i,track_point.y - i) };
+		temp_vec.insert(temp_vec.begin(), temp_temp_vec.begin(), temp_temp_vec.end());
+	}
+
 	//defuyalt plus shape of *
-}
-
-void WidthCalculator::TarmacWidth()
-{
-	//default *2
-}
-void WidthCalculator::TarmacPlus()
-{
-	//plus *2
-}
-
-
-void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&size_, const int&count_)
-{
-	//n,ne,e,se,s,sw,w,nw
-	std::vector<sf::Vector2i> temp_vec = { sf::Vector2i(track_point.x,track_point.y - 1),sf::Vector2i(track_point.x + 1,track_point.y - 1),sf::Vector2i(track_point.x + 1,track_point.y),
-										sf::Vector2i(track_point.x + 1,track_point.y + 1),sf::Vector2i(track_point.x,track_point.y + 1),sf::Vector2i(track_point.x - 1,track_point.y + 1),
-										sf::Vector2i(track_point.x - 1,track_point.y),sf::Vector2i(track_point.x - 1,track_point.y-1) };
+	
 
 	//get iterator to start of the track
 	auto iterator_ = new_track.begin();
 	//find difference in size
-	int size_difference = new_track.size() - size_;  
+	int size_difference = new_track.size() - size_;
 	int c_ = count_ + 1;								//add one to index
 	int iter = size_difference + c_;					//iterator to place new pos in is: difference in size +index
-	new_track.insert(iterator_+iter, temp_vec.begin(), temp_vec.end());
+	new_track.insert(iterator_ + iter, temp_vec.begin(), temp_vec.end());
+}
+
+
+
+void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&size_, const int&count_)
+{
+	//first check within min max bounds of modi
+	//then bounds of width
+	//then calc
+	if (width_m.modi_left>=-1.0f&& width_m.modi_left<=1.0f && width_m.modi_right >= -1.0f && width_m.modi_right <= 1.0f)
+	{
+
+	}
 }
 
 void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos, const std::vector<int>& lengths_, const std::vector<int> angles_)
@@ -408,6 +429,8 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 
 	for (const sf::Vector2i& i : track_points)
 	{
+		width_m.modi_left = 0.0f;
+		width_m.modi_right = 0.0f;
 		if (i == points_pos[iter_points])			//finds what point the trackpoint is on
 		{
 			CheckPoints(point_inc_, iter_points, 60);
@@ -437,19 +460,20 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 			}
 		}
 		CheckTValues(count);
-		CalculateWidth(i, track_points.size(), count);
+		DefaultWidth( i, track_points.size(), count);
+		std::cout << width_m.modi_left << " right: " << width_m.modi_right << "\n";
 		count++;
 	}
 }
 
 void WidthCalculator::FindWidth(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos, const std::vector<int>& lengths_, const std::vector<int> angles_)
 {
-	width_m.max_m_left = 1.50f;
-	width_m.max_m_right = 1.50f;
-	width_m.min_m_left = 0.5f;
-	width_m.min_m_right = 0.5f;
-	width_m.modi_left = 1.0f;
-	width_m.modi_right = 1.0f;
+	width_m.max_m_left = 1.0f;
+	width_m.max_m_right = 1.0f;
+	width_m.min_m_left = -1.f;
+	width_m.min_m_right = -1.0f;
+	width_m.modi_left = 0.0f;
+	width_m.modi_right = 0.0f;
 	min_width = 1.0f;
 
 	track_surface = 1;
@@ -460,8 +484,6 @@ void WidthCalculator::FindWidth(const std::vector<sf::Vector2i>& track_points, c
 		sum_ += lengths_[i];
 	}
 	average_length = sum_ / lengths_.size();
-
-
 	new_track = track_points;
 
 	switch (track_surface)
@@ -472,7 +494,7 @@ void WidthCalculator::FindWidth(const std::vector<sf::Vector2i>& track_points, c
 		TrackLoop(track_points,control_points, points_pos,lengths_, angles_);
 		break;
 	case 0:						//tarmac		//fixed width unless constraint
-		default_width = 3;
+		default_width = 2;
 		CompareHeights(track_max, track_min);
 		break;
 	}

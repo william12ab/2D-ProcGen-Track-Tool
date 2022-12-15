@@ -42,10 +42,9 @@ public:
 	void CheckTValues(const int& i);
 	void CheckAngle(const int &angle_);
 
-	void DefaultWidth();
-	void DefaultPlus();
-	void TarmacWidth();
-	void TarmacPlus();
+	void DefaultWidth(const sf::Vector2i& track_point, const int& size_, const int& count_);
+	void DefaultPlus(const sf::Vector2i& track_point, const int& size_, const int& count_);
+
 
 	void CalculateWidth(const sf::Vector2i& track_point, const int& size_, const int& count_);
 private:
