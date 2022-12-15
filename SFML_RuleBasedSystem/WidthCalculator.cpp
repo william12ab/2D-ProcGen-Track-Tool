@@ -31,8 +31,10 @@ int WidthCalculator::DistanceSqrt(int x, int y, int x2, int y2)
 
 void WidthCalculator::Modi(const int& sign)
 {
-	width_m.modi_left += sign*0.34;
-	width_m.modi_right += sign*0.34f;
+	/*width_m.modi_left += sign*0.34;
+	width_m.modi_right += sign*0.34f;*/
+	width_m.modi_left += sign*1;
+	width_m.modi_right += sign*1;
 }
 
 
@@ -45,7 +47,7 @@ void WidthCalculator::Clear()
 	normalised_opposite_direction.clear();
 	point_inc_.clear();
 	cp_inc_.clear();
-	t_values.clear()
+	t_values.clear();
 	max_width_directions.clear();
 }
 
@@ -361,9 +363,16 @@ void WidthCalculator::CheckAngle(const int &angle_)
 
 void WidthCalculator::DefaultWidth(const sf::Vector2i& track_point, const int& size_, const int& count_)
 {
+	default_width = 2;
+	default_width += width_m.modi_left;
+	if (default_width<min_width)
+	{
+		default_width = min_width;
+	}
+	std::cout << "Current Width: " << default_width<<"\n";
 	std::vector<sf::Vector2i> temp_vec;
 	//default in shape of +
-	for (int i = 1; i <= default_width; i++)
+	for (int i = 1; i <= 1; i++)
 	{
 		std::vector<sf::Vector2i> temp_temp_vec;
 		temp_temp_vec = { sf::Vector2i(track_point.x,track_point.y - i),sf::Vector2i(track_point.x + i,track_point.y), sf::Vector2i(track_point.x,track_point.y + i),sf::Vector2i(track_point.x - i,track_point.y) };
@@ -410,8 +419,10 @@ void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&
 	//first check within min max bounds of modi
 	//then bounds of width
 	//then calc
-	if (width_m.modi_left>=-1.0f&& width_m.modi_left<=1.0f && width_m.modi_right >= -1.0f && width_m.modi_right <= 1.0f)
+	if (width_m.modi_left<=-1.0f&& width_m.modi_left>=1.0f && width_m.modi_right <= -1.0f && width_m.modi_right >= 1.0f)
 	{
+		width_m.modi_left = 1;
+		width_m.modi_right = 1;
 
 	}
 }
@@ -463,9 +474,9 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 			}
 		}
 		DefaultWidth( i, track_points.size(), count);
-		std::cout << std::fixed;
-		std::cout << std::setprecision(2);
-		std::cout << (float)width_m.modi_left  << " right: " << (float)width_m.modi_right << "\n";
+		//std::cout << std::fixed;
+		//std::cout << std::setprecision(2);
+		//std::cout << (float)width_m.modi_left  << " right: " << (float)width_m.modi_right << "\n";
 		count++;
 	}
 }

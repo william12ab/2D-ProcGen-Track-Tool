@@ -363,6 +363,8 @@ int main()
 				w_c.FindRelatedHeight(i_p.GetNoiseMap(), v_d.GetGridSize(), layers_, s_p.GetTrackPoints(), s_p.GetControlPoints());
 
 				w_c.FindWidth(s_p.GetTrackPoints(), s_p.GetControlPoints(), v_d.GetPointPos(), s_p.GetLengths(), s_p.GetAngles());
+
+				i_p.DrawWidthTrack(voronoi_d, v_d.GetGridSize(), w_c.GetNewTrack());
 			}
 		}
 		ImGui::Text("\n");

@@ -22,6 +22,8 @@ public:
 
 	std::vector<int>& GetCPIncline() { return cp_inc_; }
 	std::vector<int>& GetPointIncline() { return point_inc_; }
+	std::vector<sf::Vector2i>& GetNewTrack() { return new_track; }
+
 
 	void Modi(const int& sign);
 
@@ -47,6 +49,8 @@ public:
 
 
 	void CalculateWidth(const sf::Vector2i& track_point, const int& size_, const int& count_);
+
+	
 private:
 	int track_max;
 	int image_max;

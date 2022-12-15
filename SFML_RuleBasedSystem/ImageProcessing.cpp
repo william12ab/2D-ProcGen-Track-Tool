@@ -665,11 +665,9 @@ void ImageProcessing::SaveUpScale(int grid_size, float scale)
 void ImageProcessing::SaveUpScaledImage(int grid_sizez, sf::VertexArray& vertexarray, float scale)
 {
 	int new_size = grid_sizez * scale;
-
 	//Creates the new image
 	sf::Image scaled_image;
 	scaled_image.create(new_size, new_size);
-
 	parallel_for(0, grid_sizez, [&](int i)
 		{
 			for (int j = 0; j < (grid_sizez); j++)										//x
@@ -706,5 +704,22 @@ void ImageProcessing::SaveUpScaledImage(int grid_sizez, sf::VertexArray& vertexa
 			});
 	}
 	scaled_image.saveToFile("test.jpg");																//this takes the longest time complexituy wise.
+}
 
+
+void ImageProcessing::DrawWidthTrack(sf::VertexArray& vertexarray, int grid_size, const std::vector<sf::Vector2i>& track_)
+{
+	//for (int i = 0; i < grid_size; i++)
+	//{
+	//	for (int j = 0; j < grid_size; j++)
+	//	{
+	//		vertexarray[i * grid_size + j].color = sf::Color::Black;
+	//	}
+	//}
+	for (int i = 0; i < track_.size(); i++)
+	{
+		auto x =track_[i].x;
+		auto y = track_[i].y;
+		vertexarray[y*grid_size+x].color = sf::Color::White;
+	}
 }
