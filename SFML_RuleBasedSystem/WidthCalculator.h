@@ -44,12 +44,14 @@ public:
 	void CheckTValues(const int& i);
 	void CheckAngle(const int &angle_);
 
-	void DefaultWidth(const sf::Vector2i& track_point, const int& size_, const int& count_);
-	void DefaultPlus(const sf::Vector2i& track_point, const int& size_, const int& count_);
-
+	void DefaultWidth(const sf::Vector2i& track_point, const int& size_, const int& count_);		//used right now
+	void DefaultPlus(const sf::Vector2i& track_point, const int& size_, const int& count_);			//un-used
+	
+	void WidthDirectionDecider(const int& count, const sf::Vector2i& track_point, std::vector<sf::Vector2i>& temp_vec);
+	void WidthLoop(const sf::Vector2i& track_point, std::vector<sf::Vector2i>& temp_vec, const int& x_, const int& y_, const int& x_r, const int& y_r);
 
 	void CalculateWidth(const sf::Vector2i& track_point, const int& size_, const int& count_);
-
+	//used
 	
 private:
 	int track_max;
@@ -61,6 +63,8 @@ private:
 	static std::vector<int> cp_inc_;
 	static std::vector<sf::Vector2f> normalised_opposite_direction;
 	static std::vector<sf::Vector2i> max_width_directions;
+	static std::vector<sf::Vector2f> normailised_direction_;
+
 
 	static std::vector<float> t_values;
 	static std::vector<sf::Vector2i> new_track;

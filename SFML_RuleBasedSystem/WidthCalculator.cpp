@@ -1,12 +1,16 @@
 #include "WidthCalculator.h"
 #include <iostream>
+#include <random>
 #include <iomanip>
+#include <chrono>
 std::vector<int>WidthCalculator::point_inc_(1);
 std::vector<int>WidthCalculator::cp_inc_(1);
 std::vector<sf::Vector2f>WidthCalculator::normalised_opposite_direction(1);
 std::vector<sf::Vector2i> WidthCalculator::max_width_directions(1);
 std::vector<sf::Vector2i> WidthCalculator::new_track(1);
 std::vector<float> WidthCalculator::t_values(1);
+std::vector<sf::Vector2f> WidthCalculator::normailised_direction_(1);
+
 
 WidthCalculator::WidthCalculator()
 {
@@ -31,10 +35,8 @@ int WidthCalculator::DistanceSqrt(int x, int y, int x2, int y2)
 
 void WidthCalculator::Modi(const int& sign)
 {
-	/*width_m.modi_left += sign*0.34;
-	width_m.modi_right += sign*0.34f;*/
-	width_m.modi_left += sign*1;
-	width_m.modi_right += sign*1;
+	width_m.modi_left += sign*0.34;
+	width_m.modi_right += sign*0.34f;
 }
 
 
@@ -218,6 +220,7 @@ void WidthCalculator::FindDirectionBetweenCP(const std::vector<sf::Vector2i>& co
 			dir_norm_opp_ = sf::Vector2f(0,1);
 		}
 		normalised_opposite_direction.push_back(dir_norm_opp_);
+		normailised_direction_.push_back(dir_norm_);
 	}
 }
 
@@ -361,20 +364,26 @@ void WidthCalculator::CheckAngle(const int &angle_)
 }
 
 
+
+
 void WidthCalculator::DefaultWidth(const sf::Vector2i& track_point, const int& size_, const int& count_)
 {
 	default_width = 2;
-	default_width += width_m.modi_left;
+	CalculateWidth(track_point, size_, count_);
 	if (default_width<min_width)
 	{
 		default_width = min_width;
 	}
+
 	std::cout << "Current Width: " << default_width<<"\n";
+
+
 	std::vector<sf::Vector2i> temp_vec;
 	//default in shape of +
 	for (int i = 1; i <= 1; i++)
 	{
 		std::vector<sf::Vector2i> temp_temp_vec;
+		//north, east, south, west currently
 		temp_temp_vec = { sf::Vector2i(track_point.x,track_point.y - i),sf::Vector2i(track_point.x + i,track_point.y), sf::Vector2i(track_point.x,track_point.y + i),sf::Vector2i(track_point.x - i,track_point.y) };
 		temp_vec.insert(temp_vec.begin(), temp_temp_vec.begin(),temp_temp_vec.end());
 	}
@@ -412,18 +421,119 @@ void WidthCalculator::DefaultPlus(const sf::Vector2i& track_point, const int& si
 	new_track.insert(iterator_ + iter, temp_vec.begin(), temp_vec.end());
 }
 
+void WidthCalculator::WidthDirectionDecider(const int&count,const sf::Vector2i& track_point, std::vector<sf::Vector2i>& temp_vec)
+{
+	int rounded_dir_x = round(normailised_direction_[count].x);
+	int rounded_dir_y = round(normailised_direction_[count].y);
 
+	int x_l, x_r, y_l, y_r;
+
+	switch (rounded_dir_y)
+	{
+	case 1:
+		//south
+		switch (rounded_dir_x)
+		{
+		case 1:
+			//se = N+E left, S+W right
+			x_l = 1;
+			y_l = -1;
+			x_r = -1;
+			y_r = 1;
+			break;
+		case -1:
+			x_l = -1;
+			y_l = -1;
+			x_r = 1;
+			y_r = 1;
+			//sw N+W left, S+E right
+			break;
+		case 0:
+			x_l = 1;
+			y_l = 1;
+			x_r = -1;
+			y_r = -1;
+			//s S+E left, N+W right
+			break;
+		}
+		break;
+	case -1:
+		switch (rounded_dir_x)
+		{
+		case 1:
+			//ne N+W left, S+E right
+			x_l = -1;
+			y_l = -1;
+			x_r = 1;
+			y_r = 1;
+			break;
+		case -1:
+			//nw S+W left, N+E right
+			x_l = -1;
+			y_l = 1;
+			x_r = 1;
+			y_r = -1;
+			break;
+		case 0:
+			//n N+W left, S+E right
+			x_l = -1;
+			y_l = -1;
+			x_r = 1;
+			y_r = 1;
+			break;
+		}
+		//north
+		break;
+	case 0:
+		switch (rounded_dir_x)
+		{
+		case 1:
+			//e N+E left, S+W right
+			x_l = 1;
+			y_l = -1;
+			x_r = -1;
+			y_r = 1;
+			break;
+		case -1:
+			//w S+W left, N+E right
+			x_l = -1;
+			y_l = 1;
+			x_r = 1;
+			y_r = -1;
+			break;
+		case 0:
+			//mistake
+			break;
+		}
+		break;
+	}
+	WidthLoop(track_point,temp_vec,x_l,y_l,x_r,y_r);
+}
+
+void WidthCalculator::WidthLoop(const sf::Vector2i&track_point, std::vector<sf::Vector2i>&temp_vec, const int& x_l, const int& y_l, const int& x_r, const int&y_r)
+{
+	for (int i = 1; i <= 1; i++)
+	{
+		std::vector<sf::Vector2i> temp_temp_vec;
+		temp_temp_vec = { sf::Vector2i(track_point.x + x_l,track_point.y + y_l),sf::Vector2i(track_point.x + x_r,track_point.y + y_r) };
+		temp_vec.insert(temp_vec.begin(), temp_temp_vec.begin(), temp_temp_vec.end());
+	}
+}
 
 void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&size_, const int&count_)
 {
 	//first check within min max bounds of modi
 	//then bounds of width
 	//then calc
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::default_random_engine generator(seed);
+	std::uniform_int_distribution<int> distribution(0, 100);
+
+	int percent = distribution(generator);
 	if (width_m.modi_left<=-1.0f&& width_m.modi_left>=1.0f && width_m.modi_right <= -1.0f && width_m.modi_right >= 1.0f)
 	{
 		width_m.modi_left = 1;
 		width_m.modi_right = 1;
-
 	}
 }
 
@@ -474,9 +584,6 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 			}
 		}
 		DefaultWidth( i, track_points.size(), count);
-		//std::cout << std::fixed;
-		//std::cout << std::setprecision(2);
-		//std::cout << (float)width_m.modi_left  << " right: " << (float)width_m.modi_right << "\n";
 		count++;
 	}
 }
