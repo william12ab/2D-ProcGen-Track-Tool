@@ -511,15 +511,21 @@ void WidthCalculator::WidthDirectionDecider(int count,const sf::Vector2i& track_
 		}
 		break;
 	}
-	WidthLoop(track_point,temp_vec,x_l,y_l,x_r,y_r);
+	WidthLoop(track_point,temp_vec,x_l,y_l,x_r,y_r,1,4);
 }
 
-void WidthCalculator::WidthLoop(const sf::Vector2i&track_point, std::vector<sf::Vector2i>&temp_vec, const int& x_l, const int& y_l, const int& x_r, const int&y_r)
+void WidthCalculator::WidthLoop(const sf::Vector2i&track_point, std::vector<sf::Vector2i>&temp_vec, const int& x_l, const int& y_l, const int& x_r, const int&y_r, const int& left_iter, const int& right_iter)
 {
-	for (int i = 1; i <= 1; i++)
+	for (int i = 1; i <= left_iter; i++)
 	{
 		std::vector<sf::Vector2i> temp_temp_vec;
-		temp_temp_vec = { sf::Vector2i(track_point.x + x_l,track_point.y ),sf::Vector2i(track_point.x, track_point.y + y_l), sf::Vector2i(track_point.x + x_r,track_point.y ), sf::Vector2i(track_point.x, track_point.y + y_r) };
+		temp_temp_vec = { sf::Vector2i(track_point.x + x_l*i,track_point.y ),sf::Vector2i(track_point.x, track_point.y + y_l*i) };
+		temp_vec.insert(temp_vec.begin(), temp_temp_vec.begin(), temp_temp_vec.end());
+	}
+	for (int i = 1; i <= right_iter; i++)
+	{
+		std::vector<sf::Vector2i> temp_temp_vec;
+		temp_temp_vec = { sf::Vector2i(track_point.x + x_r*i,track_point.y), sf::Vector2i(track_point.x, track_point.y + y_r*i) };
 		temp_vec.insert(temp_vec.begin(), temp_temp_vec.begin(), temp_temp_vec.end());
 	}
 }
