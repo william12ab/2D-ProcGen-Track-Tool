@@ -19,11 +19,8 @@ WidthCalculator::WidthCalculator()
 	track_max = 0;
 	track_min = 0;
 	average_length = 0;
-	default_width = 0;
 	max_width_right = 0;
 	max_width_left = 0;
-	min_width = 0;
-	track_surface = 0;
 }
 
 int WidthCalculator::DistanceSqrt(int x, int y, int x2, int y2)
@@ -272,20 +269,20 @@ void WidthCalculator::CompareHeights(const int& max_, const int& min_)
 {
 	if (max_>180 && min_ >180)
 	{//this is high
-		default_width -= 1;
+		width_m.default_width -= 1;
 	}
 	if (max_ < 180 && min_ < 180)
 	{//this is low
-		default_width += 1;
+		width_m.default_width += 1;
 	}
 	int difference_ = max_ - min_;
 	if (difference_>150)
 	{//big differnce	so height chnages a lot
-		default_width -= 1;
+		width_m.default_width -= 1;
 	}
 	if (difference_<100)
 	{//small difference
-		default_width += 1;
+		width_m.default_width += 1;
 	}
 }
 
@@ -361,17 +358,17 @@ void WidthCalculator::CheckAngle(const int &angle_)
 
 void WidthCalculator::DefaultWidth(const sf::Vector2i& track_point, const int& size_, const int& count_, const int& count_c_p)
 {
-	default_width = 2;
+	width_m.default_width = 2;
 	CalculateWidth(track_point, size_, count_);					//choses width for left and right
 	std::vector<sf::Vector2i> temp_vec;
 	WidthDirectionDecider(count_c_p, track_point, temp_vec);			//applies this to the correct places
-	if (width_m.w_left<min_width)
+	if (width_m.w_left< width_m.min_width)
 	{
-		width_m.w_left = min_width;									//if its out of bounds
+		width_m.w_left = width_m.min_width;									//if its out of bounds
 	}
-	if (width_m.w_right< min_width)
+	if (width_m.w_right< width_m.min_width)
 	{
-		width_m.w_right = min_width;									//if its out of bounds
+		width_m.w_right = width_m.min_width;									//if its out of bounds
 	}
 
 	std::cout << "Current Width: " << width_m.w_left<<" "<< width_m.w_right<<"\n";
@@ -649,9 +646,9 @@ void WidthCalculator::FindWidth(const std::vector<sf::Vector2i>& track_points, c
 	width_m.w_right = 1.0;
 	width_m.modi_left = 0.0f;
 	width_m.modi_right = 0.0f;
-	min_width = 1.0f;
+	width_m.min_width = 0.0f;
 
-	track_surface = 1;
+	width_m.track_surface = 1;
 
 	auto sum_=0;
 	for (size_t i = 0; i < lengths_.size(); i++)
@@ -661,15 +658,15 @@ void WidthCalculator::FindWidth(const std::vector<sf::Vector2i>& track_points, c
 	average_length = sum_ / lengths_.size();
 	new_track = track_points;
 
-	switch (track_surface)
+	switch (width_m.track_surface)
 	{
 	case 1:						//dirt		//not fixed
-		default_width = 2;
+		width_m.default_width = 1;
 		CompareHeights(track_max,track_min);
 		TrackLoop(track_points,control_points, points_pos,lengths_, angles_);
 		break;
 	case 0:						//tarmac		//fixed width unless constraint
-		default_width = 2;
+		width_m.default_width = 2;
 		CompareHeights(track_max, track_min);
 		break;
 	}
