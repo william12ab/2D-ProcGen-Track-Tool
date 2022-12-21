@@ -100,7 +100,7 @@ void WidthCalculator::FindTrackMinMax(const std::vector<sf::Vector2i>& track_poi
 
 sf::Vector2i WidthCalculator::Lerp(const sf::Vector2i& p1, const sf::Vector2i& p2, const float& t)
 {
-	//auto r = p1 + ((p2 - p1) * t);
+	//auto p3 = p1 + ((p2 - p1) * t);
 	auto a = p2 - p1;
 	auto b = sf::Vector2i(a.x * t, a.y * t);
 	auto c = p1 + b;
@@ -125,7 +125,7 @@ float WidthCalculator::FindT(const sf::Vector2i& p1, const sf::Vector2i& p2, con
 		if (t < 0.0f)
 		{
 			int gggg = 1;				//forgot what this is - fuck
-			throw;
+			//throw;
 		}
 	}
 	else if (a.y == 0 || b.y == 0)
@@ -146,19 +146,24 @@ void WidthCalculator::TrackTValues(const std::vector<sf::Vector2i>& track_points
 {
 	int iter = 0;								//iterator for control points, chnages when a new control point is hit
 	sf::Vector2i current_cp;					//stores current control point could just do control_points[iter-1]
-
+	int temp_count = 0;				//counter for track points
 	for (const sf::Vector2i& i : track_points)
 	{
 		if (i == control_points[iter])						//if is currenctly over a control point
 		{
 			current_cp = i;
 			iter++;
+			if (iter==control_points.size())
+			{
+				iter -= 1;
+			}
 			t_values.push_back(FindT(current_cp, control_points[iter], i));
 		}
 		else
 		{
 			t_values.push_back(FindT(current_cp, control_points[iter], i));					//pushes back t value
 		}
+		temp_count++;
 	}
 }
 
