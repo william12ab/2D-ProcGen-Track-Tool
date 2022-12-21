@@ -1,4 +1,5 @@
 #include "CatmullRomSpline.h"
+#include <unordered_set>
 std::vector<sf::Vector2i> CatmullRomSpline::new_track(1);
 CatmullRomSpline::CatmullRomSpline()
 {
@@ -178,7 +179,6 @@ void CatmullRomSpline::CreateCurve(int grid_size, sf::VertexArray& vertexarray, 
 			sf::Vector2f point = CentripetalCurve(i, control_points,j, is_looped);
 			sf::Vector2i point_ = (sf::Vector2i)point;
 			new_track.push_back(point_);
-			//vertexarray[point_.y * grid_size + point_.x].color = sf::Color::White;
 		}
 	}
 }
@@ -189,6 +189,16 @@ int CatmullRomSpline::DistanceSqrt(int x, int y, int x2, int y2)
 	int yd = y2 - y;
 	return sqrt((xd * xd) + (yd * yd));
 }
+
+void CatmullRomSpline::RemoveDuplicates()
+{
+	auto end = new_track.end();
+	for (auto it = new_track.begin(); it != end; ++it) {
+		end = std::remove(it + 1, end, *it);
+	}
+	new_track.erase(end, new_track.end());
+}
+
 
 
 void CatmullRomSpline::ResetArray(sf::VertexArray& vertexarray, int grid_size)

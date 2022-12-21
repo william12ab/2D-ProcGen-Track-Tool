@@ -264,6 +264,7 @@ int main()
 					looped = true;
 				}
 				c_r.CreateCurve(v_d.GetGridSize(), voronoi_d, s_p.GetControlPoints(), looped);
+				c_r.RemoveDuplicates();
 				i_p.DrawWidthTrack(voronoi_d, v_d.GetGridSize(), c_r.GetCurve());
 			}
 			if (ImGui::Button("Draw Control Points"))
