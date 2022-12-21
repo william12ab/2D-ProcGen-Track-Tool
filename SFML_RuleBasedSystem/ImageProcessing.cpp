@@ -709,13 +709,6 @@ void ImageProcessing::SaveUpScaledImage(int grid_sizez, sf::VertexArray& vertexa
 
 void ImageProcessing::DrawWidthTrack(sf::VertexArray& vertexarray, int grid_size, const std::vector<sf::Vector2i>& track_)
 {
-	//for (int i = 0; i < grid_size; i++)
-	//{
-	//	for (int j = 0; j < grid_size; j++)
-	//	{
-	//		vertexarray[i * grid_size + j].color = sf::Color::Black;
-	//	}
-	//}
 	for (int i = 0; i < track_.size(); i++)
 	{
 		auto x =track_[i].x;

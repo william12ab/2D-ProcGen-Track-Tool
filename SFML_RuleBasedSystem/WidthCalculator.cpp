@@ -35,8 +35,8 @@ int WidthCalculator::DistanceSqrt(int x, int y, int x2, int y2)
 
 void WidthCalculator::Modi(const int& sign)
 {
-	width_m.modi_left += sign*0.34;
-	width_m.modi_right += sign*0.34f;
+	width_m.modi_left += sign*0.25;
+	width_m.modi_right += sign*0.25f;
 }
 
 
@@ -236,7 +236,7 @@ void WidthCalculator::FindMaxWidth(int& max_width_d,int &x, int &y, const int&it
 		{
 			height_this_way *= -1;
 		}
-		if (height_this_way > 4)																	//TEMP VALYE
+		if (height_this_way > 2)																	//two becuase 1% of 255 is 2.5 =2 rounded down
 		{
 			max_width_d = DistanceSqrt(i.x, i.y, x, y);
 			adder = 10;
@@ -271,24 +271,20 @@ void WidthCalculator::FindRelatedHeight(int* const& noise_grid, const int& grid_
 void WidthCalculator::CompareHeights(const int& max_, const int& min_)
 {
 	if (max_>180 && min_ >180)
-	{
-		//this is high
+	{//this is high
 		default_width -= 1;
 	}
 	if (max_ < 180 && min_ < 180)
-	{
-		//this is low
+	{//this is low
 		default_width += 1;
 	}
 	int difference_ = max_ - min_;
 	if (difference_>150)
-	{
-		//big differnce	so height chnages a lot
+	{//big differnce	so height chnages a lot
 		default_width -= 1;
 	}
 	if (difference_<100)
-	{
-		//small difference
+	{//small difference
 		default_width += 1;
 	}
 }
@@ -296,13 +292,11 @@ void WidthCalculator::CompareHeights(const int& max_, const int& min_)
 void WidthCalculator::CheckPoints(const std::vector<int>& inc_, const int&iter, const int&height_diff)
 {
 	if (inc_[iter] > height_diff)
-	{
-		//high incline
+	{//high incline
 		Modi(-1);
 	}
 	else
-	{
-		//low incline
+	{//low incline
 		Modi(1);
 	}
 }
@@ -346,6 +340,7 @@ void WidthCalculator::CheckTValues(const int& i)
 		//middle
 		Modi(1);
 	}
+	//on no event... width stays the same.
 }
 
 void WidthCalculator::CheckAngle(const int &angle_)
@@ -364,21 +359,22 @@ void WidthCalculator::CheckAngle(const int &angle_)
 	}
 }
 
-
-
-
 void WidthCalculator::DefaultWidth(const sf::Vector2i& track_point, const int& size_, const int& count_, const int& count_c_p)
 {
 	default_width = 2;
 	CalculateWidth(track_point, size_, count_);					//choses width for left and right
 	std::vector<sf::Vector2i> temp_vec;
 	WidthDirectionDecider(count_c_p, track_point, temp_vec);			//applies this to the correct places
-	if (default_width<min_width)
+	if (width_m.w_left<min_width)
 	{
-		default_width = min_width;									//if its out of bounds
+		width_m.w_left = min_width;									//if its out of bounds
+	}
+	if (width_m.w_right< min_width)
+	{
+		width_m.w_right = min_width;									//if its out of bounds
 	}
 
-	std::cout << "Current Width: " << default_width<<"\n";
+	std::cout << "Current Width: " << width_m.w_left<<" "<< width_m.w_right<<"\n";
 
 	auto iterator_ = new_track.begin();
 	//find difference in size
@@ -432,14 +428,12 @@ void WidthCalculator::WidthDirectionDecider(int count,const sf::Vector2i& track_
 		{
 		case 1:
 			//se = N+E left, S+W right
-			std::cout << "se\n";
 			x_l = 1;
 			y_l = -1;
 			x_r = -1;
 			y_r = 1;
 			break;
 		case -1:
-			std::cout << "sw\n";
 			x_l = -1;
 			y_l = -1;
 			x_r = 1;
@@ -447,7 +441,6 @@ void WidthCalculator::WidthDirectionDecider(int count,const sf::Vector2i& track_
 			//sw N+W left, S+E right
 			break;
 		case 0:
-			std::cout << "s\n";
 			x_l = 1;
 			y_l = 1;
 			x_r = -1;
@@ -461,7 +454,6 @@ void WidthCalculator::WidthDirectionDecider(int count,const sf::Vector2i& track_
 		{
 		case 1:
 			//ne N+W left, S+E right
-			std::cout << "ne\n";
 			x_l = -1;
 			y_l = -1;
 			x_r = 1;
@@ -473,7 +465,6 @@ void WidthCalculator::WidthDirectionDecider(int count,const sf::Vector2i& track_
 			y_l = 1;
 			x_r = 1;
 			y_r = -1;
-			std::cout << "nw\n";
 			break;
 		case 0:
 			//n N+W left, S+E right
@@ -481,7 +472,6 @@ void WidthCalculator::WidthDirectionDecider(int count,const sf::Vector2i& track_
 			y_l = -1;
 			x_r = 1;
 			y_r = 1;
-			std::cout << "n\n";
 			break;
 		}
 		//north
@@ -495,7 +485,6 @@ void WidthCalculator::WidthDirectionDecider(int count,const sf::Vector2i& track_
 			y_l = -1;
 			x_r = -1;
 			y_r = 1;
-			std::cout << "e\n";
 			break;
 		case -1:
 			//w S+W left, N+E right
@@ -503,7 +492,6 @@ void WidthCalculator::WidthDirectionDecider(int count,const sf::Vector2i& track_
 			y_l = 1;
 			x_r = 1;
 			y_r = -1;
-			std::cout << "w\n";
 			break;
 		case 0:
 			//mistake
@@ -511,18 +499,18 @@ void WidthCalculator::WidthDirectionDecider(int count,const sf::Vector2i& track_
 		}
 		break;
 	}
-	WidthLoop(track_point,temp_vec,x_l,y_l,x_r,y_r,1,4);
+	WidthLoop(track_point,temp_vec,x_l,y_l,x_r,y_r);
 }
 
-void WidthCalculator::WidthLoop(const sf::Vector2i&track_point, std::vector<sf::Vector2i>&temp_vec, const int& x_l, const int& y_l, const int& x_r, const int&y_r, const int& left_iter, const int& right_iter)
+void WidthCalculator::WidthLoop(const sf::Vector2i&track_point, std::vector<sf::Vector2i>&temp_vec, const int& x_l, const int& y_l, const int& x_r, const int&y_r)
 {
-	for (int i = 1; i <= left_iter; i++)
+	for (int i = 1; i <= width_m.w_left; i++)
 	{
 		std::vector<sf::Vector2i> temp_temp_vec;
 		temp_temp_vec = { sf::Vector2i(track_point.x + x_l*i,track_point.y ),sf::Vector2i(track_point.x, track_point.y + y_l*i) };
 		temp_vec.insert(temp_vec.begin(), temp_temp_vec.begin(), temp_temp_vec.end());
 	}
-	for (int i = 1; i <= right_iter; i++)
+	for (int i = 1; i <= width_m.w_right; i++)
 	{
 		std::vector<sf::Vector2i> temp_temp_vec;
 		temp_temp_vec = { sf::Vector2i(track_point.x + x_r*i,track_point.y), sf::Vector2i(track_point.x, track_point.y + y_r*i) };
@@ -540,10 +528,67 @@ void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&
 	std::uniform_int_distribution<int> distribution(0, 100);
 
 	int percent = distribution(generator);
-	if (width_m.modi_left<=-1.0f&& width_m.modi_left>=1.0f && width_m.modi_right <= -1.0f && width_m.modi_right >= 1.0f)
+	float p_ = (float)percent / 100;
+	if ( width_m.modi_left>=1.0f  && width_m.modi_right >= 1.0f)
 	{
 		width_m.modi_left = 1;
 		width_m.modi_right = 1;
+	}
+	else if (width_m.modi_left <= -1.0f && width_m.modi_right <= -1.0f)
+	{
+		width_m.modi_left = -1;
+		width_m.modi_right = -1;
+	}
+
+	if (width_m.modi_left<0)
+	{
+		NegativeCheck(width_m.modi_left, p_, width_m.w_left);
+	}
+	else
+	{
+		PositiveCheck(width_m.modi_left, p_, width_m.w_left);
+	}
+
+	if (width_m.modi_right < 0)
+	{
+		NegativeCheck(width_m.modi_right, p_, width_m.w_right);
+	}
+	else
+	{
+		PositiveCheck(width_m.modi_right, p_, width_m.w_right);
+	}
+
+	if (width_m.w_left > 3)
+	{
+		width_m.w_left = 3;
+		if (width_m.w_left > max_width_directions[count_].x)
+		{
+			width_m.w_left = max_width_directions[count_].x;
+		}
+	}
+	if (width_m.w_right > 3)
+	{
+		width_m.w_right = 3;
+		if (width_m.w_right > max_width_directions[count_].y)
+		{
+			width_m.w_right = max_width_directions[count_].y;
+		}
+	}
+}
+
+void WidthCalculator::PositiveCheck(const float &dir_, const float &p_, int&width_)
+{
+	if (dir_>p_)
+	{
+		width_ += 1;
+	}
+}
+
+void WidthCalculator::NegativeCheck(const float & dir_, const float& p_, int &width_)
+{
+	if (dir_ < p_)
+	{
+		width_ -= 1;
 	}
 }
 
@@ -600,10 +645,8 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 
 void WidthCalculator::FindWidth(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos, const std::vector<int>& lengths_, const std::vector<int> angles_)
 {
-	width_m.max_m_left = 1.0f;
-	width_m.max_m_right = 1.0f;
-	width_m.min_m_left = -1.f;
-	width_m.min_m_right = -1.0f;
+	width_m.w_left = 1.0;
+	width_m.w_right = 1.0;
 	width_m.modi_left = 0.0f;
 	width_m.modi_right = 0.0f;
 	min_width = 1.0f;
@@ -630,5 +673,4 @@ void WidthCalculator::FindWidth(const std::vector<sf::Vector2i>& track_points, c
 		CompareHeights(track_max, track_min);
 		break;
 	}
-
 }

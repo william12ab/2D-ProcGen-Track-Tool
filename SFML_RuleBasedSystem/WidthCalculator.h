@@ -48,10 +48,13 @@ public:
 	void DefaultPlus(const sf::Vector2i& track_point, const int& size_, const int& count_);			//un-used
 	
 	void WidthDirectionDecider(int count, const sf::Vector2i& track_point, std::vector<sf::Vector2i>& temp_vec);
-	void WidthLoop(const sf::Vector2i& track_point, std::vector<sf::Vector2i>& temp_vec, const int& x_, const int& y_, const int& x_r, const int& y_r, const int& left_iter, const int& right_iter);
+	void WidthLoop(const sf::Vector2i& track_point, std::vector<sf::Vector2i>& temp_vec, const int& x_, const int& y_, const int& x_r, const int& y_r);
 
 	void CalculateWidth(const sf::Vector2i& track_point, const int& size_, const int& count_);
-	//used
+
+	void PositiveCheck(const float& dir_, const float&p_, int &width_);
+	void NegativeCheck(const float& dir_, const float&p_, int& width_);
+	void MaxWidthCheck(int& width_, const int& count);
 	
 private:
 	int track_max;
@@ -79,12 +82,10 @@ private:
 
 	struct width_modi
 	{
-		float modi_left;
-		float max_m_left;
-		float min_m_left;
+		float modi_left;			//modi
 		float modi_right;
-		float min_m_right;
-		float max_m_right;
+		int w_left;
+		int w_right;
 	}width_m;
 };
 
