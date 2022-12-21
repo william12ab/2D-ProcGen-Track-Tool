@@ -1,11 +1,7 @@
 #include "TrackTools.h"
-
 TrackTools::TrackTools()
 {
-
 }
-
-
 void TrackTools::ResetVars(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map)
 {
 	n_height_map.clear();

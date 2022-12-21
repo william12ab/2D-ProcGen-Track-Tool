@@ -257,20 +257,20 @@ int main()
 			}
 			if (ImGui::Button("Centripetal CatmullRom"))
 			{
+				i_p.CreateImage(voronoi_d,v_d.GetGridSize());
 				bool looped = false;
 				if (track_type_ == 2)
 				{
 					looped = true;
 				}
 				c_r.CreateCurve(v_d.GetGridSize(), voronoi_d, s_p.GetControlPoints(), looped);
+				i_p.DrawWidthTrack(voronoi_d, v_d.GetGridSize(), c_r.GetCurve());
 			}
 			if (ImGui::Button("Draw Control Points"))
 			{
 				s_p.OrderControlPoints();
 				c_r.DrawControlPoints(s_p.GetControlPoints(), v_d.GetGridSize(), voronoi_d);
 			}
-			
-
 		}
 		ImGui::Text("\n");
 		if (ImGui::CollapsingHeader("Scaling Variables"))
@@ -352,19 +352,18 @@ int main()
 			}
 			if (ImGui::Button("test"))
 			{
+				
 				w_c.Clear();
 				s_p.SegmentAngles();
 				w_c.FindMinMax(layers_,i_p.GetNoiseMap(),v_d.GetGridSize());															//min max of image
-				w_c.FindTrackMinMax(s_p.GetTrackPoints(),v_d.GetGridSize(),layers_,i_p.GetNoiseMap());								//min max of track
-				w_c.TrackTValues(s_p.GetTrackPoints(),s_p.GetControlPoints());																					//give t value of lerp
+				w_c.FindTrackMinMax(c_r.GetCurve(),v_d.GetGridSize(),layers_,i_p.GetNoiseMap());								//min max of track
+				w_c.TrackTValues(c_r.GetCurve(),s_p.GetControlPoints());																					//give t value of lerp
 				w_c.FindInclinePoints(s_p.GetControlPoints(),v_d.GetGridSize(),layers_, w_c.GetCPIncline(),i_p.GetNoiseMap());		//for the control points
 				w_c.FindInclinePoints(v_d.GetPointPos(), v_d.GetGridSize(), layers_, w_c.GetPointIncline(),i_p.GetNoiseMap());		//for the points
-
 				w_c.FindDirectionBetweenCP(s_p.GetControlPoints());
-				w_c.FindRelatedHeight(i_p.GetNoiseMap(), v_d.GetGridSize(), layers_, s_p.GetTrackPoints(), s_p.GetControlPoints());
-
-				w_c.FindWidth(s_p.GetTrackPoints(), s_p.GetControlPoints(), v_d.GetPointPos(), s_p.GetLengths(), s_p.GetAngles());
-
+				w_c.FindRelatedHeight(i_p.GetNoiseMap(), v_d.GetGridSize(), layers_, c_r.GetCurve(), s_p.GetControlPoints());
+				w_c.FindWidth(c_r.GetCurve(), s_p.GetControlPoints(), v_d.GetPointPos(), s_p.GetLengths(), s_p.GetAngles());
+				i_p.CreateImage(voronoi_d, v_d.GetGridSize());
 				i_p.DrawWidthTrack(voronoi_d, v_d.GetGridSize(), w_c.GetNewTrack());
 			}
 		}
@@ -402,7 +401,7 @@ int main()
 		}
 		ImGui::End();
 		//used to display the whole voronoi diagram
-		input_manager.HandleInput(v_d, voronoi_d, render_height_map_, n_render_height_map_, f_render_height_map_,i_p);
+		input_manager.HandleInput(v_d, voronoi_d, render_height_map_, n_render_height_map_, f_render_height_map_,i_p,s_p);
 		input_manager.Zoom();
 		//render
 		window.clear();
@@ -419,21 +418,11 @@ int main()
 			window.draw(final_map);
 		}
 		window.draw(voronoi_d);
-		
 		window.draw(title_name_);
 		ImGui::SFML::Render(window);
-
 		window.setView(window.getDefaultView());
 		window.display();
-		//
 	}
-	
-	/*delete v_d_p;
-	delete s_p_p;
-	delete d_c;
-	delete i_p_p;
-	delete t_t_p;
-	delete c_r_s;*/
 	ImGui::SFML::Shutdown();
 	return 0;
 }

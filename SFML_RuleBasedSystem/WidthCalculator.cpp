@@ -30,7 +30,7 @@ int WidthCalculator::DistanceSqrt(int x, int y, int x2, int y2)
 	return sqrt((xd * xd) + (yd * yd));
 }
 
-void WidthCalculator::Modi(const int& sign)
+void WidthCalculator::Modi(const int& sign)					//so theres 4 checks to perform. so 1/4 =.25. so at each part add .25. could make this rand(between 0 and .25)
 {
 	width_m.modi_left += sign*0.25;
 	width_m.modi_right += sign*0.25f;
@@ -109,10 +109,11 @@ sf::Vector2i WidthCalculator::Lerp(const sf::Vector2i& p1, const sf::Vector2i& p
 
 float WidthCalculator::FindT(const sf::Vector2i& p1, const sf::Vector2i& p2, const sf::Vector2i& p3)
 {
+	//this is lerp rearanged to find t value
+	//since you have p1,p2,p3
 	//t = (p1-p3)/(p1-p2)
 
-	//have check somewhere to stop running if p1==p2
-
+	//if you dont understand, look at lerp function and then rearrange formula to find T - thats what this is and theres some checks incase of things happenning.
 	auto a = p1 - p3;
 	auto b = p1 - p2;
 
@@ -123,7 +124,7 @@ float WidthCalculator::FindT(const sf::Vector2i& p1, const sf::Vector2i& p2, con
 		t = c2;
 		if (t < 0.0f)
 		{
-			int gggg = 1;
+			int gggg = 1;				//forgot what this is - fuck
 			throw;
 		}
 	}
@@ -358,18 +359,11 @@ void WidthCalculator::CheckAngle(const int &angle_)
 
 void WidthCalculator::DefaultWidth(const sf::Vector2i& track_point, const int& size_, const int& count_, const int& count_c_p)
 {
-	width_m.default_width = 2;
+	
 	CalculateWidth(track_point, size_, count_);					//choses width for left and right
 	std::vector<sf::Vector2i> temp_vec;
 	WidthDirectionDecider(count_c_p, track_point, temp_vec);			//applies this to the correct places
-	if (width_m.w_left< width_m.min_width)
-	{
-		width_m.w_left = width_m.min_width;									//if its out of bounds
-	}
-	if (width_m.w_right< width_m.min_width)
-	{
-		width_m.w_right = width_m.min_width;									//if its out of bounds
-	}
+
 
 	std::cout << "Current Width: " << width_m.w_left<<" "<< width_m.w_right<<"\n";
 
@@ -496,7 +490,20 @@ void WidthCalculator::WidthDirectionDecider(int count,const sf::Vector2i& track_
 		}
 		break;
 	}
+	BoundsCheck();
 	WidthLoop(track_point,temp_vec,x_l,y_l,x_r,y_r);
+}
+
+void WidthCalculator::BoundsCheck()
+{
+	if (width_m.w_left < width_m.min_width)
+	{
+		width_m.w_left = width_m.min_width;									//if its out of bounds
+	}
+	if (width_m.w_right < width_m.min_width)
+	{
+		width_m.w_right = width_m.min_width;									//if its out of bounds
+	}
 }
 
 void WidthCalculator::WidthLoop(const sf::Vector2i&track_point, std::vector<sf::Vector2i>&temp_vec, const int& x_l, const int& y_l, const int& x_r, const int&y_r)
@@ -610,17 +617,6 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 		}
 		
 		CheckTValues(count);
-
-		if (i == points_pos[iter_points])			//finds what point the trackpoint is on
-		{
-			CheckPoints(point_inc_, iter_points, 60);
-			current_point = i;
-			iter_points++;							
-			if (iter_points < points_pos.size())
-			{
-				next_point = points_pos[iter_points];
-			}
-		}
 		if (i == control_points[iter_control_points])			//finds what point the trackpoint is on
 		{
 			CheckPoints(cp_inc_, iter_control_points, 30);

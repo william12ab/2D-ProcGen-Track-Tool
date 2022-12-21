@@ -1,8 +1,10 @@
 #include "CatmullRomSpline.h"
+std::vector<sf::Vector2i> CatmullRomSpline::new_track(1);
 CatmullRomSpline::CatmullRomSpline()
 {
 	step_size = 0.005f;
 	alpha_ = 0.5f;
+	new_track.clear();
 }
 int* CatmullRomSpline::GetIndices(bool is_looped, float t, int size_)
 {
@@ -151,7 +153,6 @@ void CatmullRomSpline::CreateCurve(int grid_size, sf::VertexArray& vertexarray, 
 	ResetArray(vertexarray, grid_size);
 	if (!is_looped)
 	{
-		
 		if (alpha_==0.5f)
 		{
 			auto first_ = control_points[0];
@@ -170,17 +171,14 @@ void CatmullRomSpline::CreateCurve(int grid_size, sf::VertexArray& vertexarray, 
 			control_points.insert(it, control_points[0]);
 		}
 	}
-
-	
-
 	for (int j = 0; j < control_points.size(); j++)
 	{
-		
 		for (float i = 0; i < 1; i += step_size)
 		{
 			sf::Vector2f point = CentripetalCurve(i, control_points,j, is_looped);
 			sf::Vector2i point_ = (sf::Vector2i)point;
-			vertexarray[point_.y * grid_size + point_.x].color = sf::Color::White;
+			new_track.push_back(point_);
+			//vertexarray[point_.y * grid_size + point_.x].color = sf::Color::White;
 		}
 	}
 }
@@ -195,11 +193,12 @@ int CatmullRomSpline::DistanceSqrt(int x, int y, int x2, int y2)
 
 void CatmullRomSpline::ResetArray(sf::VertexArray& vertexarray, int grid_size)
 {
-	for (int i = 0; i < grid_size; i++)
+	new_track.clear();
+	/*for (int i = 0; i < grid_size; i++)
 	{
 		for (int j = 0; j < grid_size; j++)
 		{
-			vertexarray[i * grid_size + j].color = sf::Color::Black;
+			vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 		}
-	}
+	}*/
 }

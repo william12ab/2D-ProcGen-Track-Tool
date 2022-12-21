@@ -71,6 +71,9 @@ public:
 	//loop for if decreasing or increasing
 	void PositiveCheck(const float& dir_, const float&p_, int &width_);
 	void NegativeCheck(const float& dir_, const float&p_, int& width_);
+
+	//checks if below min width and stuff like that
+	void BoundsCheck();
 	
 private:
 	int track_max;

@@ -1,59 +1,47 @@
-total length: 363
-number of turns: 8
-number of segments: 9
-shortest distance(euclidean distance): 314
+total length: 313
+number of turns: 9
+number of segments: 10
+shortest distance(euclidean distance): 159
 
-length 1: 35
-length 2: 2
-length 3: 79
-length 4: 28
-length 5: 93
-length 6: 36
-length 7: 49
-length 8: 36
-length 9: 45
+length 1: 29
+length 2: 44
+length 3: 52
+length 4: 44
+length 5: 1
+length 6: 57
+length 7: 7
+length 8: 1
+length 9: 98
+length 10: 4
 
-angle 1: 146
-angle 2: 238
-angle 3: 201
-angle 4: 191
-angle 5: 232
-angle 6: 138
-angle 7: 227
-angle 8: 155
-angle 9: 146
-angle 10: 238
-angle 11: 201
-angle 12: 191
-angle 13: 232
-angle 14: 138
-angle 15: 227
-angle 16: 155
+angle 1: 95
+angle 2: 265
+angle 3: 119
+angle 4: 225
+angle 5: 102
+angle 6: 246
+angle 7: 191
+angle 8: 133
+angle 9: 257
 
-angles for turn 1: 34
-angles for turn 2: 58
-angles for turn 3: 21
-angles for turn 4: 11
-angles for turn 5: 52
-angles for turn 6: 42
-angles for turn 7: 47
-angles for turn 8: 25
-angles for turn 9: 34
-angles for turn 10: 58
-angles for turn 11: 21
-angles for turn 12: 11
-angles for turn 13: 52
-angles for turn 14: 42
-angles for turn 15: 47
-angles for turn 16: 25
+angles for turn 1: 85
+angles for turn 2: 85
+angles for turn 3: 61
+angles for turn 4: 45
+angles for turn 5: 78
+angles for turn 6: 66
+angles for turn 7: 11
+angles for turn 8: 47
+angles for turn 9: 77
 
-Control-points 1: (74, 304)
-Control-points 2: (67, 269)
-Control-points 3: (65, 267)
-Control-points 4: (83, 190)
-Control-points 5: (99, 167)
-Control-points 6: (167, 103)
-Control-points 7: (203, 109)
-Control-points 8: (245, 83)
-Control-points 9: (280, 93)
-Control-points 10: (325, 86)
+Control-points 1: (76, 141)
+Control-points 2: (91, 166)
+Control-points 3: (131, 147)
+Control-points 4: (157, 193)
+Control-points 5: (201, 193)
+Control-points 6: (202, 194)
+Control-points 7: (250, 163)
+Control-points 8: (256, 167)
+Control-points 9: (257, 168)
+Control-points 10: (355, 166)
+Control-points 11: (356, 170)

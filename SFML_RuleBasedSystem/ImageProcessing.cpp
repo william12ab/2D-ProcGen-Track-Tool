@@ -92,13 +92,6 @@ void ImageProcessing::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int g
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::Green;
 			}
-			if (grid[(i * grid_size) + j] > 0)								//pathway
-			{
-				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-				vertexarray[i * grid_size + j].color = sf::Color::Blue;
-			}
-
-
 		}
 	}
 }
@@ -603,10 +596,7 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, i
 				noise_output.setPixel(j, i, sf::Color{ co , co , co,a });
 				final_i.setPixel(j, i, sf::Color{ final_c,final_c,final_c ,final_a });
 				track_output.setPixel(j, i, sf::Color{ vertexarray[i * grid_size + j].color.r,vertexarray[i * grid_size + j].color.g,vertexarray[i * grid_size + j].color.b });
-
 			}
-
-
 		});
 	noise_output.saveToFile("noise_layer.png");
 	voronoi_output.saveToFile("voronoi_layer.png");
@@ -707,12 +697,26 @@ void ImageProcessing::SaveUpScaledImage(int grid_sizez, sf::VertexArray& vertexa
 }
 
 
+void ImageProcessing::CreateImage(sf::VertexArray& vertexarray, int grid_size)
+{
+	parallel_for(0, grid_size, [&](int i)
+		{
+			for (int j = 0; j < grid_size; j++)
+			{
+				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+				vertexarray[i * grid_size + j].color = sf::Color{0,0,0,0};
+			}
+		});
+}
+
 void ImageProcessing::DrawWidthTrack(sf::VertexArray& vertexarray, int grid_size, const std::vector<sf::Vector2i>& track_)
 {
+
 	for (int i = 0; i < track_.size(); i++)
 	{
 		auto x =track_[i].x;
 		auto y = track_[i].y;
+		vertexarray[y * grid_size + x].position = sf::Vector2f(x, y);
 		vertexarray[y*grid_size+x].color = sf::Color::White;
 	}
 }
