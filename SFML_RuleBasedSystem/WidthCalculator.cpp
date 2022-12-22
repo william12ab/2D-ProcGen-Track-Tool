@@ -124,8 +124,7 @@ float WidthCalculator::FindT(const sf::Vector2i& p1, const sf::Vector2i& p2, con
 		t = c2;
 		if (t < 0.0f)
 		{
-			int gggg = 1;				//forgot what this is - fuck
-			//throw;
+			t *= -1;
 		}
 	}
 	else if (a.y == 0 || b.y == 0)
@@ -161,7 +160,14 @@ void WidthCalculator::TrackTValues(const std::vector<sf::Vector2i>& track_points
 		}
 		else
 		{
-			t_values.push_back(FindT(current_cp, control_points[iter], i));					//pushes back t value
+			if (current_cp==control_points[control_points.size()-1])					//this fixes the problem with the catmulrom spline - the bit added onto the end of the catmulrom spline.
+			{
+				t_values.push_back(0.4);
+			}
+			else
+			{
+				t_values.push_back(FindT(current_cp, control_points[iter], i));					//pushes back t value
+			}
 		}
 		temp_count++;
 	}
@@ -256,18 +262,32 @@ void WidthCalculator::FindRelatedHeight(int* const& noise_grid, const int& grid_
 	//for all track points.
 	for (const sf::Vector2i& i : track_points)
 	{
-		if (i == control_points[iter])						//if is currenctly over a control point
+		if (iter > control_points.size() - 1)					//fix for the catmul rom splie - read comment on t-values for why,
 		{
-			current_cp = i;
-			iter++;								//use iter and iter-1 to get the direction
+			max_width_directions.emplace_back(0, 0);
 		}
-		int x = i.x;
-		int y = i.y;
-		FindMaxWidth(max_width_right, x, y, iter, noise_grid, grid_size, layers_, i, 1);
-		x = i.x;
-		y = i.y;
-		FindMaxWidth(max_width_left, x, y, iter, noise_grid, grid_size, layers_, i, -1);
-		max_width_directions.emplace_back(max_width_left, max_width_right);
+		else
+		{
+			if (i == control_points[iter])						//if is currenctly over a control point
+			{
+				current_cp = i;
+				iter++;								//use iter and iter-1 to get the direction
+			}
+			if (iter > control_points.size() - 1)					//fix for the catmul rom splie - read comment on t-values for why,
+			{
+				max_width_directions.emplace_back(0, 0);
+			}
+			else
+			{
+				int x = i.x;
+				int y = i.y;
+				FindMaxWidth(max_width_right, x, y, iter, noise_grid, grid_size, layers_, i, 1);
+				x = i.x;
+				y = i.y;
+				FindMaxWidth(max_width_left, x, y, iter, noise_grid, grid_size, layers_, i, -1);
+				max_width_directions.emplace_back(max_width_left, max_width_right);
+			}
+		}
 	}
 }
 
@@ -368,8 +388,6 @@ void WidthCalculator::DefaultWidth(const sf::Vector2i& track_point, const int& s
 	CalculateWidth(track_point, size_, count_);					//choses width for left and right
 	std::vector<sf::Vector2i> temp_vec;
 	WidthDirectionDecider(count_c_p, track_point, temp_vec);			//applies this to the correct places
-
-
 	std::cout << "Current Width: " << width_m.w_left<<" "<< width_m.w_right<<"\n";
 
 	auto iterator_ = new_track.begin();
@@ -610,7 +628,7 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 	int iter_control_points = 0;									//iterator for the control points
 	auto next_control_point = sf::Vector2i(0, 0);
 	auto current_control_point = points_pos[iter_points];
-	auto count = 0;													//iterator in form of int rather than vector obj - used for accessing elements of vectors
+	auto count = 0;													//iterator in form of int rather than vector obj - used for accessing elements of vectors for track points
 
 	for (const sf::Vector2i& i : track_points)
 	{
@@ -622,21 +640,30 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 		}
 		
 		CheckTValues(count);
-		if (i == control_points[iter_control_points])			//finds what point the trackpoint is on
+		if (iter_control_points < control_points.size())						//check for catmul rom issue - read t-value comment
 		{
-			CheckPoints(cp_inc_, iter_control_points, 30);
-			if (iter_control_points < (control_points.size()-2))
+			if (i == control_points[iter_control_points])			//finds what point the trackpoint is on
 			{
-				CheckAngle(angles_[iter_control_points]);
+				if (iter_control_points < lengths_.size())
+				{
+					CheckPoints(cp_inc_, iter_control_points, 30);
+				}
+				if (iter_control_points < (control_points.size() - 2))
+				{
+					CheckAngle(angles_[iter_control_points]);
+				}
+				current_control_point = i;
+				iter_control_points++;
+				if (iter_control_points < control_points.size())
+				{
+					next_control_point = control_points[iter_control_points];
+				}
 			}
-			current_control_point = i;
-			iter_control_points++;
-			if (iter_control_points < control_points.size())
+			if (iter_control_points < control_points.size())						//check for catmul rom issue - read t-value comment
 			{
-				next_control_point = control_points[iter_control_points];
+				DefaultWidth(i, track_points.size(), count, iter_control_points);
 			}
 		}
-		DefaultWidth( i, track_points.size(), count, iter_control_points);
 		count++;
 	}
 }
