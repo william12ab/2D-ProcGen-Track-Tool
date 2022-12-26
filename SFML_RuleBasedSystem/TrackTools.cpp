@@ -6,10 +6,10 @@ void TrackTools::ResetVars(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, sf::Verte
 {
 	n_height_map.clear();
 	voronoi_d.clear();
-	height_map.clear();
+	//height_map.clear();
 	v_d_p.SetFaile(false);
 	s_p_p.SetFailed(false);
-	height_map.resize((v_d_p.GetGridSize() * v_d_p.GetGridSize()));
+	//height_map.resize((v_d_p.GetGridSize() * v_d_p.GetGridSize()));
 	n_height_map.resize((v_d_p.GetGridSize() * v_d_p.GetGridSize()));
 	voronoi_d.resize((v_d_p.GetGridSize() * v_d_p.GetGridSize()));
 }

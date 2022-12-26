@@ -61,8 +61,8 @@ void Init(sf::RenderWindow &window)
 	radius_cutoff = 115;
 	peaks_to_count_ = 1;
 	do_testing_ = true;
-	step_curve=0.01;
-	alpha_cm_ = 0.5;
+	step_curve=0.01f;
+	alpha_cm_ = 0.5f;
 }
 
 int main()
