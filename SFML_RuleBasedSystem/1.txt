@@ -1,47 +1,59 @@
-total length: 313
-number of turns: 9
-number of segments: 10
-shortest distance(euclidean distance): 159
+total length: 343
+number of turns: 8
+number of segments: 9
+shortest distance(euclidean distance): 72
 
-length 1: 29
-length 2: 44
-length 3: 52
-length 4: 44
-length 5: 1
-length 6: 57
-length 7: 7
-length 8: 1
-length 9: 98
-length 10: 4
+length 1: 27
+length 2: 23
+length 3: 71
+length 4: 58
+length 5: 4
+length 6: 54
+length 7: 58
+length 8: 43
+length 9: 53
 
-angle 1: 95
-angle 2: 265
-angle 3: 119
-angle 4: 225
-angle 5: 102
-angle 6: 246
-angle 7: 191
-angle 8: 133
-angle 9: 257
+angle 1: 236
+angle 2: 155
+angle 3: 243
+angle 4: 200
+angle 5: 139
+angle 6: 141
+angle 7: 250
+angle 8: 204
+angle 9: 236
+angle 10: 155
+angle 11: 243
+angle 12: 200
+angle 13: 139
+angle 14: 141
+angle 15: 250
+angle 16: 204
 
-angles for turn 1: 85
-angles for turn 2: 85
-angles for turn 3: 61
-angles for turn 4: 45
-angles for turn 5: 78
-angles for turn 6: 66
-angles for turn 7: 11
-angles for turn 8: 47
-angles for turn 9: 77
+angles for turn 1: 56
+angles for turn 2: 25
+angles for turn 3: 63
+angles for turn 4: 20
+angles for turn 5: 41
+angles for turn 6: 39
+angles for turn 7: 70
+angles for turn 8: 24
+angles for turn 9: 56
+angles for turn 10: 25
+angles for turn 11: 63
+angles for turn 12: 20
+angles for turn 13: 41
+angles for turn 14: 39
+angles for turn 15: 70
+angles for turn 16: 24
 
-Control-points 1: (76, 141)
-Control-points 2: (91, 166)
-Control-points 3: (131, 147)
-Control-points 4: (157, 193)
-Control-points 5: (201, 193)
-Control-points 6: (202, 194)
-Control-points 7: (250, 163)
-Control-points 8: (256, 167)
-Control-points 9: (257, 168)
-Control-points 10: (355, 166)
-Control-points 11: (356, 170)
+Control-points 1: (18, 71)
+Control-points 2: (9, 97)
+Control-points 3: (32, 91)
+Control-points 4: (87, 46)
+Control-points 5: (140, 70)
+Control-points 6: (143, 73)
+Control-points 7: (197, 77)
+Control-points 8: (245, 44)
+Control-points 9: (280, 69)
+Control-points 10: (307, 115)

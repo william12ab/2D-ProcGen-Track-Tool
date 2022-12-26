@@ -78,12 +78,6 @@ int main()
 	sf::View view_;
 	view_.reset(sf::FloatRect(0.f, 0.f, (float)window.getSize().x, (float)window.getSize().y));
 	//objs for main
-	//VoronoiDiagram* v_d_p = new VoronoiDiagram();
-	//ShortestPath* s_p_p = new ShortestPath();
-	//DeCastelJau* d_c = new DeCastelJau();
-	//ImageProcessing* i_p_p = new ImageProcessing();
-	//TrackTools* t_t_p = new TrackTools();
-	//CatmullRomSpline* c_r_s = new CatmullRomSpline();
 	
 	VoronoiDiagram v_d;
 	ShortestPath s_p;
@@ -320,13 +314,11 @@ int main()
 					if (!v_d.GetStopH())
 					{
 						v_d.DirectionDecider(radius_cutoff, layers_, i, i_p.GetNoiseMap(), v_d.GetHighPoint(), true);		//finds point on circumference 
-						//i += 2;
 						i++;
 					}
 					if (!v_d.GetStopL())
 					{
 						v_d.DirectionDecider(80, layers_, i + 1, i_p.GetNoiseMap(), v_d.GetLowPoint(), false);		//finds point on circumference 
-						//i += 2;		//because the iterator changes above 
 						i++;
 					}
 				}

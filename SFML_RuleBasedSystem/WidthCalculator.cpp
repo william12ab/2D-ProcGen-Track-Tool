@@ -32,8 +32,14 @@ int WidthCalculator::DistanceSqrt(int x, int y, int x2, int y2)
 
 void WidthCalculator::Modi(const int& sign)					//so theres 4 checks to perform. so 1/4 =.25. so at each part add .25. could make this rand(between 0 and .25)
 {
-	width_m.modi_left += sign*0.25;
-	width_m.modi_right += sign*0.25f;
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::default_random_engine generator(seed);
+	std::uniform_real_distribution<float> distribution(0.0f, 0.25f);	
+
+	float rand_amount = distribution(generator);
+	
+	width_m.modi_left += sign* rand_amount;
+	width_m.modi_right += sign* rand_amount;
 }
 
 
@@ -384,7 +390,6 @@ void WidthCalculator::CheckAngle(const int &angle_)
 
 void WidthCalculator::DefaultWidth(const sf::Vector2i& track_point, const int& size_, const int& count_, const int& count_c_p)
 {
-	
 	CalculateWidth(track_point, size_, count_);					//choses width for left and right
 	std::vector<sf::Vector2i> temp_vec;
 	WidthDirectionDecider(count_c_p, track_point, temp_vec);			//applies this to the correct places
@@ -567,7 +572,7 @@ void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&
 		width_m.modi_right = -1;
 	}
 
-	if (width_m.modi_left<0)
+	if (width_m.modi_left<0)		//changes the width vlaues
 	{
 		NegativeCheck(width_m.modi_left, p_, width_m.w_left);
 	}
@@ -575,7 +580,8 @@ void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&
 	{
 		PositiveCheck(width_m.modi_left, p_, width_m.w_left);
 	}
-
+	percent = distribution(generator);
+	p_ = (float)percent / 100;
 	if (width_m.modi_right < 0)
 	{
 		NegativeCheck(width_m.modi_right, p_, width_m.w_right);
@@ -585,7 +591,7 @@ void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&
 		PositiveCheck(width_m.modi_right, p_, width_m.w_right);
 	}
 
-	if (width_m.w_left > 3)
+	if (width_m.w_left > 3)	//caps the width
 	{
 		width_m.w_left = 3;
 		if (width_m.w_left > max_width_directions[count_].x)
