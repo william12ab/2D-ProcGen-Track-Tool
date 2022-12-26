@@ -134,3 +134,20 @@ void TrackTools::TerrainLoop(VoronoiDiagram &v_d_p,ShortestPath &s_p_p, sf::Vert
 		CreateTrack(v_d_p, s_p_p);
 	} while (v_d_p.GetFailed() || s_p_p.GetFailed());
 }
+
+
+void TrackTools::WidthSettings(WidthCalculator& w_c, ShortestPath& s_p, VoronoiDiagram& v_d, ImageProcessing& i_p, sf::VertexArray& voronoi_d, const int &layers_, std::vector<sf::Vector2i> &track_)
+{
+	w_c.Clear();
+	s_p.SegmentAngles();
+	w_c.FindMinMax(layers_, i_p.GetNoiseMap(), v_d.GetGridSize());															//min max of image
+	w_c.FindTrackMinMax(track_, v_d.GetGridSize(), layers_, i_p.GetNoiseMap());								//min max of track
+	w_c.TrackTValues(track_, s_p.GetControlPoints());																					//give t value of lerp
+	w_c.FindInclinePoints(s_p.GetControlPoints(), v_d.GetGridSize(), layers_, w_c.GetCPIncline(), i_p.GetNoiseMap());		//for the control points
+	w_c.FindInclinePoints(v_d.GetPointPos(), v_d.GetGridSize(), layers_, w_c.GetPointIncline(), i_p.GetNoiseMap());		//for the points
+	w_c.FindDirectionBetweenCP(s_p.GetControlPoints());
+	w_c.FindRelatedHeight(i_p.GetNoiseMap(), v_d.GetGridSize(), layers_, track_, s_p.GetControlPoints());
+	w_c.FindWidth(track_, s_p.GetControlPoints(), v_d.GetPointPos(), s_p.GetLengths(), s_p.GetAngles());
+	i_p.CreateImage(voronoi_d, v_d.GetGridSize());
+	i_p.DrawWidthTrack(voronoi_d, v_d.GetGridSize(), w_c.GetNewTrack());
+}

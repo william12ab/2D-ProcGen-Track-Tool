@@ -2,6 +2,8 @@
 #include "VoronoiDiagram.h"
 #include "ShortestPath.h"
 #include "ImageProcessing.h"
+#include "WidthCalculator.h"
+#include "CatmullRomSpline.h"
 
 class TrackTools
 {
@@ -18,6 +20,8 @@ public:
 	void GenerateTerrainMethod(VoronoiDiagram &v_d_p, sf::VertexArray& vertex_array, ImageProcessing &i_p_p, int number_, int track_track_);
 
 	void TerrainLoop(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map, ImageProcessing &i_p_p, int number_, int track_type_);
+
+	void WidthSettings(WidthCalculator& w_c, ShortestPath & s_p, VoronoiDiagram&v_d, ImageProcessing&i_p, sf::VertexArray&voronoi_d,const int& layers_, std::vector<sf::Vector2i>& track_);
 
 private:
 };

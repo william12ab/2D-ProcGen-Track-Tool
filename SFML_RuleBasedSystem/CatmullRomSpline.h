@@ -16,7 +16,7 @@ public:
 
 	//getters
 	float GetStepSize() { return alpha_; }
-	std::vector<sf::Vector2i> GetCurve() { return new_track; }
+	std::vector<sf::Vector2i> &GetCurve() { return new_track; }
 	void DrawControlPoints(std::vector<sf::Vector2i> control_points, int grid_size, sf::VertexArray& vertexarray);
 	void FixControlPoints(std::vector<sf::Vector2i> & const control_points, int it_, sf::Vector2i co);
 	void ResetArray(sf::VertexArray& vertexarray, int grid_size);

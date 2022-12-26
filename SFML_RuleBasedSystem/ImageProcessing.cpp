@@ -250,10 +250,6 @@ void ImageProcessing::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int o
 		for (size_t j = 0; j < grid_size; j++)
 		{
 			float new_value_ = (((heightmap_fbm_[(i * grid_size) + j] - min_) * new_range_) / old_range_) + 0;	//gets the oldd value and turns it into a value between the new range
-
-
-
-
 			int co = int(new_value_ * 255);						//geets as rgb value
 
 			if (co > 255)
@@ -279,7 +275,6 @@ void ImageProcessing::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int o
 			{
 				new_max_ = new_value_;
 			}
-
 		}
 	}
 }

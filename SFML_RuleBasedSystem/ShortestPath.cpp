@@ -578,6 +578,8 @@ void ShortestPath::OrderControlPoints()
 
 void ShortestPath::SegmentAngles()
 {
+	angles_.clear();
+	new_angles_.clear();
 	//theta  = inverse tan((m2-m1)/(1+m2*m1)) where m1=(y2-y1)/(x2-x1), m2=(y4-y3)/(x4-x3) where x2,y2==x3,y3
 	//for each turn?
 	int line_iterator = 0;
@@ -626,13 +628,13 @@ void ShortestPath::SegmentAngles()
 			{
 				m1 = (y2 - y1) / (x2 - x1);								//or calculat normally		
 				m2 = (y4 - y3) / (x4 - x3);
-
-
 			}
 			float angle = atanf((m1 - m2) / (1 + (m2 * m1)));			//angle in rads
 
 			angle = angle * (180.0 / 3.141592653589793238463);			//angle as degrees because its easier to understand
 			angles_.push_back(180.0f - angle);								//have to find the angle at this point instead
+
+			//finding angle in better terms				
 			float new_angle = 360 - angles_.back();
 			float final_angle = new_angle - 180;
 			if (final_angle < 0)

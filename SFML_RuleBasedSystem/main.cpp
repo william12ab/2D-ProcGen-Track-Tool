@@ -343,21 +343,15 @@ int main()
 				i_p.WriteToFile(v_d.GetGridSize(), voronoi_d, layers_);
 				s_p.WriteToFile();
 			}
-			if (ImGui::Button("test"))
+			if (ImGui::Button("Create width-Curved"))
 			{
 				//curved code
-				w_c.Clear();
-				s_p.SegmentAngles();
-				w_c.FindMinMax(layers_, i_p.GetNoiseMap(), v_d.GetGridSize());															//min max of image
-				w_c.FindTrackMinMax(c_r.GetCurve(), v_d.GetGridSize(), layers_, i_p.GetNoiseMap());								//min max of track
-				w_c.TrackTValues(c_r.GetCurve(), s_p.GetControlPoints());																					//give t value of lerp
-				w_c.FindInclinePoints(s_p.GetControlPoints(), v_d.GetGridSize(), layers_, w_c.GetCPIncline(), i_p.GetNoiseMap());		//for the control points
-				w_c.FindInclinePoints(v_d.GetPointPos(), v_d.GetGridSize(), layers_, w_c.GetPointIncline(), i_p.GetNoiseMap());		//for the points
-				w_c.FindDirectionBetweenCP(s_p.GetControlPoints());
-				w_c.FindRelatedHeight(i_p.GetNoiseMap(), v_d.GetGridSize(), layers_, c_r.GetCurve(), s_p.GetControlPoints());
-				w_c.FindWidth(c_r.GetCurve(), s_p.GetControlPoints(), v_d.GetPointPos(), s_p.GetLengths(), s_p.GetAngles());
-				i_p.CreateImage(voronoi_d, v_d.GetGridSize());
-				i_p.DrawWidthTrack(voronoi_d, v_d.GetGridSize(), w_c.GetNewTrack());
+				t_t.WidthSettings(w_c,s_p,v_d,i_p,voronoi_d,layers_,c_r.GetCurve());
+			}
+			if (ImGui::Button("Create width-non curve"))
+			{
+				//curved code
+				t_t.WidthSettings(w_c, s_p, v_d, i_p, voronoi_d, layers_, s_p.GetTrackPoints());
 			}
 		}
 		ImGui::Text("\n");
