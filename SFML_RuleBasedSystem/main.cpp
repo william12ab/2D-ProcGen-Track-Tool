@@ -343,10 +343,23 @@ int main()
 				i_p.WriteToFile(v_d.GetGridSize(), voronoi_d, layers_);
 				s_p.WriteToFile();
 			}
+			
+		}
+		ImGui::Text("\n");
+		if (ImGui::CollapsingHeader("Width Options"))
+		{
+			if (ImGui::CollapsingHeader("Options"))
+			{
+				ImGui::Checkbox("Curved?", &curved_);
+				ImGui::Checkbox("Length?", &curved_);
+				ImGui::Checkbox("T-Values?", &curved_);
+				ImGui::Checkbox("Angles?", &curved_);
+				ImGui::Checkbox("Inclination Between C.P(s)?", &curved_);
+			}
 			if (ImGui::Button("Create width-Curved"))
 			{
 				//curved code
-				t_t.WidthSettings(w_c,s_p,v_d,i_p,voronoi_d,layers_,c_r.GetCurve());
+				t_t.WidthSettings(w_c, s_p, v_d, i_p, voronoi_d, layers_, c_r.GetCurve());
 			}
 			if (ImGui::Button("Create width-non curve"))
 			{

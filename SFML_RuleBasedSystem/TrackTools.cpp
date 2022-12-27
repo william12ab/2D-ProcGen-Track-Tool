@@ -151,3 +151,14 @@ void TrackTools::WidthSettings(WidthCalculator& w_c, ShortestPath& s_p, VoronoiD
 	i_p.CreateImage(voronoi_d, v_d.GetGridSize());
 	i_p.DrawWidthTrack(voronoi_d, v_d.GetGridSize(), w_c.GetNewTrack());
 }
+
+void TrackTools::WidthOnlyTValue(WidthCalculator& w_c, ShortestPath& s_p, VoronoiDiagram& v_d, ImageProcessing& i_p, sf::VertexArray& voronoi_d, std::vector<sf::Vector2i>& track_)
+{
+	w_c.Clear();
+	s_p.SegmentAngles();
+	w_c.TrackTValues(track_, s_p.GetControlPoints());					
+	w_c.FindDirectionBetweenCP(s_p.GetControlPoints());//give t value of lerp
+	w_c.FindWidth(track_, s_p.GetControlPoints(), v_d.GetPointPos(), s_p.GetLengths(), s_p.GetAngles());
+	i_p.CreateImage(voronoi_d, v_d.GetGridSize());
+	i_p.DrawWidthTrack(voronoi_d, v_d.GetGridSize(), w_c.GetNewTrack());
+}
