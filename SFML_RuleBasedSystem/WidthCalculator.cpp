@@ -21,6 +21,14 @@ WidthCalculator::WidthCalculator()
 	average_length = 0;
 	max_width_right = 0;
 	max_width_left = 0;
+
+	bool_obj.is_angles_ = true;
+	bool_obj.is_curved_ = true;
+	bool_obj.is_global_ = true;
+	bool_obj.is_incline_ = true;
+	bool_obj.is_length_ = true;
+	bool_obj.is_related_width = true;
+	bool_obj.is_t_values_ = true;
 }
 
 int WidthCalculator::DistanceSqrt(int x, int y, int x2, int y2)

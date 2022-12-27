@@ -350,11 +350,13 @@ int main()
 		{
 			if (ImGui::CollapsingHeader("Options"))
 			{
-				ImGui::Checkbox("Curved?", &curved_);
-				ImGui::Checkbox("Length?", &curved_);
-				ImGui::Checkbox("T-Values?", &curved_);
-				ImGui::Checkbox("Angles?", &curved_);
-				ImGui::Checkbox("Inclination Between C.P(s)?", &curved_);
+				ImGui::Checkbox("Curved?", &w_c.GetBoolCurved());
+				ImGui::Checkbox("Length?", &w_c.GetBoolLength());
+				ImGui::Checkbox("T-Values?", &w_c.GetBoolTValues());
+				ImGui::Checkbox("Angles?", &w_c.GetBoolAngles());
+				ImGui::Checkbox("Inclination Between C.P(s)?", &w_c.GetBoolIncline());
+				ImGui::Checkbox("Related Width?", &w_c.GetBoolRelatedWidth());
+				ImGui::Checkbox("Global Values?", &w_c.GetBoolGblobal());
 			}
 			if (ImGui::Button("Create width-Curved"))
 			{

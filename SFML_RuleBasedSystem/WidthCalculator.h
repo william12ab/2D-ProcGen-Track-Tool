@@ -28,6 +28,14 @@ public:
 	std::vector<int>& GetPointIncline() { return point_inc_; }
 	std::vector<sf::Vector2i>& GetNewTrack() { return new_track; }
 
+	bool& GetBoolAngles() { return bool_obj.is_angles_; }
+	bool& GetBoolCurved() { return bool_obj.is_curved_; }
+	bool& GetBoolGblobal() { return bool_obj.is_global_; }
+	bool& GetBoolIncline() { return bool_obj.is_incline_; }
+	bool& GetBoolLength() { return bool_obj.is_length_; }
+	bool& GetBoolRelatedWidth() { return bool_obj.is_related_width; }
+	bool& GetBoolTValues() { return bool_obj.is_t_values_; }
+
 	//modifier for left and right - adds up to total 1(or-1) which is used in positive/negative check func
 	void Modi(const int& sign);
 
@@ -75,6 +83,7 @@ public:
 	//checks if below min width and stuff like that
 	void BoundsCheck();
 	
+	
 private:
 	int track_max;
 	int image_max;
@@ -106,5 +115,17 @@ private:
 		int default_width;		//default width
 		int track_surface;		//surface 
 	}width_m;
+
+	struct bool_options
+	{
+		bool is_curved_;
+		bool is_length_;
+		bool is_t_values_;
+		bool is_angles_;
+		bool is_incline_;
+		bool is_related_width;
+		bool is_global_;
+	}bool_obj;
+	
 };
 
