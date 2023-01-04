@@ -678,23 +678,34 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 	{
 		width_m.modi_left = 0.0f;
 		width_m.modi_right = 0.0f;
-		if (iter_control_points< lengths_.size())
+		if (bool_obj.is_length_)
 		{
-			CheckLength(lengths_, iter_control_points);
+			if (iter_control_points < lengths_.size())
+			{
+				CheckLength(lengths_, iter_control_points);
+			}
 		}
-		
-		CheckTValues(count);
+		if (bool_obj.is_t_values_)
+		{
+			CheckTValues(count);
+		}
 		if (iter_control_points < control_points.size())						//check for catmul rom issue - read t-value comment
 		{
 			if (i == control_points[iter_control_points])			//finds what point the trackpoint is on
 			{
-				if (iter_control_points < lengths_.size())
+				if (bool_obj.is_incline_)
 				{
-					CheckPoints(cp_inc_, iter_control_points, 30);
+					if (iter_control_points < control_points.size()-1)
+					{
+						CheckPoints(cp_inc_, iter_control_points, 30);
+					}
 				}
-				if (iter_control_points < (control_points.size() - 2))
+				if (bool_obj.is_angles_)
 				{
-					CheckAngle(angles_[iter_control_points]);
+					if (iter_control_points < (control_points.size() - 2))
+					{
+						CheckAngle(angles_[iter_control_points]);
+					}
 				}
 				current_control_point = i;
 				iter_control_points++;

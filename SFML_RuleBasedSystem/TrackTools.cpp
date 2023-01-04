@@ -168,9 +168,3 @@ void TrackTools::WidthSettings(WidthCalculator& w_c, ShortestPath& s_p, VoronoiD
 	i_p.CreateImage(voronoi_d, v_d.GetGridSize());
 	i_p.DrawWidthTrack(voronoi_d, v_d.GetGridSize(), w_c.GetNewTrack());
 }
-
-//in here have the conditions for the bools. 
-//then in find width have the bools again and one general one that changes the amount added to modi
-//so if just one thing then it becomes add "0-1"
-//or two add "0 0.5"
-//etc 
