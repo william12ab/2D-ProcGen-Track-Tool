@@ -22,7 +22,7 @@ public:
 	//finds the height to the side of the current point on the track
 	void FindRelatedHeight(int* const& noise_grid, const int&grid_size, const int&layers_, const std::vector<sf::Vector2i> &track_points, const std::vector<sf::Vector2i>& control_points);
 	void FindMaxWidth(int& max_width_d, int& x, int& y, const int& iter, int* const& noise_grid, const int& grid_size, const int& layers_, const sf::Vector2i& i, const int& mody);
-
+	void SetModi();
 
 	std::vector<int>& GetCPIncline() { return cp_inc_; }
 	std::vector<int>& GetPointIncline() { return point_inc_; }
@@ -127,5 +127,6 @@ private:
 		bool is_global_;
 	}bool_obj;
 	
+	float modi_value;
 };
 

@@ -29,6 +29,7 @@ WidthCalculator::WidthCalculator()
 	bool_obj.is_length_ = true;
 	bool_obj.is_related_width = true;
 	bool_obj.is_t_values_ = true;
+	modi_value = 0.0f;
 }
 
 int WidthCalculator::DistanceSqrt(int x, int y, int x2, int y2)
@@ -42,7 +43,7 @@ void WidthCalculator::Modi(const int& sign)					//so theres 4 checks to perform.
 {
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::default_random_engine generator(seed);
-	std::uniform_real_distribution<float> distribution(0.0f, 0.25f);	
+	std::uniform_real_distribution<float> distribution(0.0f, modi_value);
 
 	float rand_amount = distribution(generator);
 	
@@ -50,6 +51,23 @@ void WidthCalculator::Modi(const int& sign)					//so theres 4 checks to perform.
 	width_m.modi_right += sign* rand_amount;
 }
 
+void WidthCalculator::SetModi()
+{
+	int c = 0;
+	if (bool_obj.is_angles_)	{
+		c++;
+	}
+	if (bool_obj.is_incline_){
+		c++;
+	}
+	if (bool_obj.is_length_){
+		c++;
+	}
+	if (bool_obj.is_t_values_){
+		c++;
+	}
+	modi_value = float(1)/(float)c;
+}
 
 void WidthCalculator::Clear()
 {
@@ -328,71 +346,83 @@ void WidthCalculator::CompareHeights(const int& max_, const int& min_)
 
 void WidthCalculator::CheckPoints(const std::vector<int>& inc_, const int&iter, const int&height_diff)
 {
-	if (inc_[iter] > height_diff)
-	{//high incline
-		Modi(-1);
-	}
-	else
-	{//low incline
-		Modi(1);
+	if (bool_obj.is_incline_)
+	{
+		if (inc_[iter] > height_diff)
+		{//high incline
+			Modi(-1);
+		}
+		else
+		{//low incline
+			Modi(1);
+		}
 	}
 }
 
 void WidthCalculator::CheckLength(const std::vector<int>& lengths_, const int &it)
 {
-	if (lengths_[it]>= average_length+(average_length/4))		//high length
+	if (bool_obj.is_length_)
 	{
-		Modi(1);
-	}
-	else if (lengths_[it] <= average_length - (average_length / 4))		//low length
-	{
-		Modi(-1);
-	}
-	else                     //avr length
-	{
-		//do nothing. . . 
+		if (lengths_[it] >= average_length + (average_length / 4))		//high length
+		{
+			Modi(1);
+		}
+		else if (lengths_[it] <= average_length - (average_length / 4))		//low length
+		{
+			Modi(-1);
+		}
+		else                     //avr length
+		{
+			//do nothing. . . 
+		}
 	}
 }
 
 
 void WidthCalculator::CheckTValues(const int& i)
 {
-	if (t_values[i]>=0.0 && t_values[i]<=0.14)
+	if (bool_obj.is_t_values_)
 	{
-		//exit
-		Modi(1);
+		if (t_values[i] >= 0.0 && t_values[i] <= 0.14)
+		{
+			//exit
+			Modi(1);
+		}
+		else if (t_values[i] >= 0.9 && t_values[i] <= 0.97)
+		{
+			//entry
+			Modi(-1);
+		}
+		else if (t_values[i] >= 0.98)
+		{
+			//apex
+			Modi(-1);
+		}
+		else if (t_values[i] > 0.38 && t_values[i] < 0.62)
+		{
+			//middle
+			Modi(1);
+		}
+		//on no event... width stays the same.
 	}
-	else if (t_values[i] >= 0.9 && t_values[i] <= 0.97)
-	{
-		//entry
-		Modi(-1);
-	}
-	else if (t_values[i] >= 0.98)
-	{
-		//apex
-		Modi(-1);
-	}
-	else if (t_values[i]>0.38 &&t_values[i]<0.62)
-	{
-		//middle
-		Modi(1);
-	}
-	//on no event... width stays the same.
 }
 
 void WidthCalculator::CheckAngle(const int &angle_)
 {
-	//closer to 0 = easier
-	//closer to 90 =harder
-	auto a = angle_ * 90;
-	a /= 100;							//gives %age
-	if (a<50)
+	if (bool_obj.is_angles_)
 	{
-		Modi(1);
-	}
-	else
-	{
-		Modi(-1);
+		//closer to 0 = easier
+		//closer to 90 =harder
+		auto a = angle_ * 90;
+		a /= 100;							//gives %age
+		if (a < 50)
+		{
+			Modi(1);
+		}
+		else
+		{
+			Modi(-1);
+		}
 	}
 }
 
@@ -704,7 +734,10 @@ void WidthCalculator::FindWidth(const std::vector<sf::Vector2i>& track_points, c
 	{
 	case 1:						//dirt		//not fixed
 		width_m.default_width = 1;
-		CompareHeights(track_max,track_min);
+		if (bool_obj.is_global_)
+		{
+			CompareHeights(track_max, track_min);
+		}
 		TrackLoop(track_points,control_points, points_pos,lengths_, angles_);
 		break;
 	case 0:						//tarmac		//fixed width unless constraint
