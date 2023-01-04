@@ -18,6 +18,8 @@ public:
 	void ChangePoint(const int &grid_size, int* grid, int point, int new_point);																//changes the point passed in
 	void PrintOutStartEnd(const int &grid_size,int* const& grid);																					//prints out the points in the track, useful for debugging
 
+	void ReOrderArrays();
+
 	//getters
 	bool bGetFoundEnd() { return found_end; }								
 	int GetCountHolder() { return count_holder_; }
@@ -53,7 +55,7 @@ public:
 	void SetNESW(const int &grid_size, std::vector<int> &occ);
 	void EraseVector(std::vector<int> &occ, int &unique);
 
-	void FindCompassPoss(int compass, int* grid, int grid_size, int &how_many, int &track_d, int x, int y);
+	void FindCompassPoss(const int& compass, int* grid, const int& grid_size, int& how_many, int& track_d, const int& x, const int& y, std::vector<sf::Vector2i>& vec_temp);
 	
 private:
 	bool found_end;				//start as false;

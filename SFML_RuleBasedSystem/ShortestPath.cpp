@@ -418,7 +418,7 @@ void ShortestPath::EraseVector(std::vector<int>& occ, int& unique)
 	unique = std::unique(occ.begin(), occ.end()) - occ.begin();
 }
 
-void ShortestPath::FindCompassPoss(int compass, int* grid, int grid_size, int& how_many, int& track_d, int x, int y)
+void ShortestPath::FindCompassPoss(const int& compass, int* grid, const int &grid_size, int& how_many, int& track_d, const int& x, const int& y, std::vector<sf::Vector2i>& vec_temp)
 {
 	if (compass == count_holder_)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 	{
@@ -426,7 +426,7 @@ void ShortestPath::FindCompassPoss(int compass, int* grid, int grid_size, int& h
 		x_holder_ += x;
 		count_holder_ -= 1;
 		grid[(y_holder_ * grid_size) + x_holder_] = -12303;
-		track_points.push_back(sf::Vector2i(x_holder_, y_holder_));
+		vec_temp.emplace_back(sf::Vector2i(x_holder_, y_holder_));
 		how_many++;
 		track_d++;
 	}
@@ -437,6 +437,7 @@ void ShortestPath::FindCompassPoss(int compass, int* grid, int grid_size, int& h
 void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
 {
 	std::vector<sf::Vector2i> temp_vec_c_p;
+	std::vector<sf::Vector2i> temp_vec_t_p;
 	bool found_start = false;
 	first_position.x = x_holder_;
 	first_position.y = y_holder_;
@@ -451,7 +452,7 @@ void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
 			{
 				if (unique_count_occuarances > 4)					//test code
 				{
-					int ur = 23;
+					int ur = 23;		//test
 				}
 				old_occurances.clear();										//clear old ones
 				SetNESW(grid_size, old_occurances);
@@ -465,14 +466,14 @@ void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
 			int& southW = grid[((y_holder_ + 1) * grid_size) + (x_holder_ - 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
 			int& west = grid[(y_holder_ * grid_size) + (x_holder_ - 1)];	//west
 
-			FindCompassPoss(north, grid, grid_size, how_many, total_track_distance, 0, -1);
-			FindCompassPoss(northE, grid, grid_size, how_many, total_track_distance, 1, -1);	//x and then y
-			FindCompassPoss(east, grid, grid_size, how_many, total_track_distance, 1, 0);	//x and then y
-			FindCompassPoss(south, grid, grid_size, how_many, total_track_distance, 0, 1);	//x and then y
-			FindCompassPoss(southE, grid, grid_size, how_many, total_track_distance, 1, 1);	//x and then y
-			FindCompassPoss(southW, grid, grid_size, how_many, total_track_distance, -1, 1);	//x and then y
-			FindCompassPoss(west, grid, grid_size, how_many, total_track_distance, -1, 0);	//x and then y
-			FindCompassPoss(northW, grid, grid_size, how_many, total_track_distance, -1, -1);	//x and then y
+			FindCompassPoss(north, grid, grid_size, how_many, total_track_distance, 0, -1,temp_vec_t_p);
+			FindCompassPoss(northE, grid, grid_size, how_many, total_track_distance, 1, -1, temp_vec_t_p);	//x and then y
+			FindCompassPoss(east, grid, grid_size, how_many, total_track_distance, 1, 0, temp_vec_t_p);	//x and then y
+			FindCompassPoss(south, grid, grid_size, how_many, total_track_distance, 0, 1, temp_vec_t_p);	//x and then y
+			FindCompassPoss(southE, grid, grid_size, how_many, total_track_distance, 1, 1, temp_vec_t_p);	//x and then y
+			FindCompassPoss(southW, grid, grid_size, how_many, total_track_distance, -1, 1, temp_vec_t_p);	//x and then y
+			FindCompassPoss(west, grid, grid_size, how_many, total_track_distance, -1, 0, temp_vec_t_p);	//x and then y
+			FindCompassPoss(northW, grid, grid_size, how_many, total_track_distance, -1, -1, temp_vec_t_p);	//x and then y
 
 			if (y_holder_ == 0 || x_holder_ == 0)
 			{
@@ -528,7 +529,7 @@ void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
 			line_positions.emplace_back(first_position.x, first_position.y);					//final segment coords
 			line_positions.emplace_back(x_holder_, y_holder_);									//last coord
 			temp_vec_c_p.emplace_back(x_holder_, y_holder_);						//last c.p
-			track_points.push_back(sf::Vector2i(x_holder_, y_holder_));
+			temp_vec_t_p.push_back(sf::Vector2i(x_holder_, y_holder_));
 			number_of_segments = segment_lengths_.size();
 			found_start = true;
 			end_ = true;
@@ -536,14 +537,23 @@ void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
 	}
 
 	//re orderers the vector to follow thje correct order - also fixes issue with multiple points.
+
 	std::reverse(temp_vec_c_p.begin(), temp_vec_c_p.end());
-	std::reverse(line_positions.begin(), line_positions.end());
-	std::reverse(segment_lengths_.begin(), segment_lengths_.end());
-	std::reverse(track_points.begin(), track_points.end());
 	for (int i = 0; i < temp_vec_c_p.size(); i++)
 	{
 		control_points.emplace_back(temp_vec_c_p[i]);
 	}
+	std::reverse(temp_vec_t_p.begin(), temp_vec_t_p.end());
+	for (int i = 0; i < temp_vec_t_p.size(); i++)
+	{
+		track_points.emplace_back(temp_vec_t_p[i]);
+	}
+}
+
+void ShortestPath::ReOrderArrays()
+{
+	std::reverse(line_positions.begin(), line_positions.end());
+	std::reverse(segment_lengths_.begin(), segment_lengths_.end());
 }
 
 void ShortestPath::SortControlPoints()

@@ -95,6 +95,7 @@ void TrackTools::CreateTrack(VoronoiDiagram &v_d_p, ShortestPath &s_p_p)
 			s_p_p.CleanGrid(v_d_p.GetGridSize(), v_d_p.GetGrid());
 		}
 	}
+	s_p_p.ReOrderArrays();
 }
 void TrackTools::Generate(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map, ImageProcessing &i_p_p, int times_, int displacement_, int number_, bool full_random_, int track_type_)
 {
