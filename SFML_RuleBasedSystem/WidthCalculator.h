@@ -35,6 +35,7 @@ public:
 	bool& GetBoolLength() { return bool_obj.is_length_; }
 	bool& GetBoolRelatedWidth() { return bool_obj.is_related_width; }
 	bool& GetBoolTValues() { return bool_obj.is_t_values_; }
+	bool& GetBoolRand() { return bool_obj.is_rand_; }
 
 	//modifier for left and right - adds up to total 1(or-1) which is used in positive/negative check func
 	void Modi(const int& sign);
@@ -125,6 +126,7 @@ private:
 		bool is_incline_;
 		bool is_related_width;
 		bool is_global_;
+		bool is_rand_;
 	}bool_obj;
 	
 	float modi_value;

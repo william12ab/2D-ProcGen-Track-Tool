@@ -357,16 +357,19 @@ int main()
 				ImGui::Checkbox("Inclination Between C.P(s)?", &w_c.GetBoolIncline());
 				ImGui::Checkbox("Related Width?", &w_c.GetBoolRelatedWidth());
 				ImGui::Checkbox("Global Values?", &w_c.GetBoolGblobal());
+				ImGui::Checkbox("Random Modi?", &w_c.GetBoolRand());
 			}
-			if (ImGui::Button("Create width-Curved"))
+			if (ImGui::Button("Create width"))
 			{
 				//curved code
-				t_t.WidthSettings(w_c, s_p, v_d, i_p, voronoi_d, layers_, c_r.GetCurve());
-			}
-			if (ImGui::Button("Create width-non curve"))
-			{
-				//curved code
-				t_t.WidthSettings(w_c, s_p, v_d, i_p, voronoi_d, layers_, s_p.GetTrackPoints());
+				if (w_c.GetBoolCurved())
+				{
+					t_t.WidthSettings(w_c, s_p, v_d, i_p, voronoi_d, layers_, c_r.GetCurve());
+				}
+				else
+				{
+					t_t.WidthSettings(w_c, s_p, v_d, i_p, voronoi_d, layers_, s_p.GetTrackPoints());
+				}
 			}
 		}
 		ImGui::Text("\n");

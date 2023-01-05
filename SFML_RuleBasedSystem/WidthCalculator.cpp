@@ -45,7 +45,16 @@ void WidthCalculator::Modi(const int& sign)					//so theres 4 checks to perform.
 	std::default_random_engine generator(seed);
 	std::uniform_real_distribution<float> distribution(0.0f, modi_value);
 
-	float rand_amount = distribution(generator);
+	float rand_amount;
+	if (bool_obj.is_rand_)
+	{
+		rand_amount = distribution(generator);//
+	}
+	else
+	{
+		rand_amount = modi_value;
+	}
+	
 	
 	width_m.modi_left += sign* rand_amount;
 	width_m.modi_right += sign* rand_amount;
