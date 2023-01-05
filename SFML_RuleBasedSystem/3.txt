@@ -1,59 +1,51 @@
-total length: 348
-number of turns: 12
-number of segments: 13
-shortest distance(euclidean distance): 104
+total length: 458
+number of turns: 10
+number of segments: 11
+shortest distance(euclidean distance): 320
 
-length 1: 1
-length 2: 8
-length 3: 69
-length 4: 45
-length 5: 1
-length 6: 34
-length 7: 26
-length 8: 57
-length 9: 1
-length 10: 5
-length 11: 77
-length 12: 34
-length 13: 31
+length 1: 30
+length 2: 25
+length 3: 91
+length 4: 50
+length 5: 9
+length 6: 83
+length 7: 52
+length 8: 31
+length 9: 22
+length 10: 64
+length 11: 37
 
-angle 1: 243
-angle 2: 91
-angle 3: 241
-angle 4: 188
-angle 5: 119
-angle 6: 227
-angle 7: 158
-angle 8: 213
-angle 9: 104
-angle 10: 154
-angle 11: 157
-angle 12: 120
+angle 1: 238
+angle 2: 215
+angle 3: 153
+angle 4: 233
+angle 5: 138
+angle 6: 119
+angle 7: 184
+angle 8: 148
+angle 9: 250
+angle 10: 261
 
-angles for turn 1: 63
-angles for turn 2: 89
-angles for turn 3: 61
-angles for turn 4: 8
-angles for turn 5: 61
-angles for turn 6: 47
-angles for turn 7: 22
-angles for turn 8: 33
-angles for turn 9: 76
-angles for turn 10: 26
-angles for turn 11: 23
-angles for turn 12: 60
+angles for turn 1: 58
+angles for turn 2: 35
+angles for turn 3: 27
+angles for turn 4: 53
+angles for turn 5: 42
+angles for turn 6: 61
+angles for turn 7: 4
+angles for turn 8: 32
+angles for turn 9: 70
+angles for turn 10: 81
 
-Control-points 1: (53, 90)
-Control-points 2: (53, 91)
-Control-points 3: (57, 99)
-Control-points 4: (120, 69)
-Control-points 5: (157, 96)
-Control-points 6: (158, 97)
-Control-points 7: (191, 88)
-Control-points 8: (213, 102)
-Control-points 9: (269, 113)
-Control-points 10: (270, 114)
-Control-points 11: (275, 111)
-Control-points 12: (318, 47)
-Control-points 13: (325, 13)
-Control-points 14: (348, 34)
+Control-points 1: (71, 312)
+Control-points 2: (67, 282)
+Control-points 3: (87, 266)
+Control-points 4: (178, 261)
+Control-points 5: (222, 236)
+Control-points 6: (231, 240)
+Control-points 7: (311, 215)
+Control-points 8: (322, 164)
+Control-points 9: (331, 134)
+Control-points 10: (325, 112)
+Control-points 11: (378, 75)
+Control-points 12: (352, 48)

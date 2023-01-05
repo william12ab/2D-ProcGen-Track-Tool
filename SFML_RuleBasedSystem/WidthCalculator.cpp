@@ -23,12 +23,13 @@ WidthCalculator::WidthCalculator()
 	max_width_left = 0;
 
 	bool_obj.is_angles_ = true;
-	bool_obj.is_curved_ = true;
+	bool_obj.is_curved_ = false;
 	bool_obj.is_global_ = true;
 	bool_obj.is_incline_ = true;
 	bool_obj.is_length_ = true;
 	bool_obj.is_related_width = true;
 	bool_obj.is_t_values_ = true;
+	bool_obj.is_rand_= true;
 	modi_value = 0.0f;
 }
 
@@ -48,7 +49,7 @@ void WidthCalculator::Modi(const int& sign)					//so theres 4 checks to perform.
 	float rand_amount;
 	if (bool_obj.is_rand_)
 	{
-		rand_amount = distribution(generator);//
+		rand_amount = distribution(generator);
 	}
 	else
 	{
@@ -683,18 +684,20 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 	auto current_control_point = points_pos[iter_points];
 	auto count = 0;													//iterator in form of int rather than vector obj - used for accessing elements of vectors for track points
 
+	int length_iter = 0;
+
 	for (const sf::Vector2i& i : track_points)
 	{
 		width_m.modi_left = 0.0f;
 		width_m.modi_right = 0.0f;
 		if (bool_obj.is_length_)
 		{
-			if (iter_control_points < lengths_.size())
+			if (iter_control_points < lengths_.size())		//length
 			{
-				CheckLength(lengths_, iter_control_points);
+				CheckLength(lengths_, length_iter);
 			}
 		}
-		if (bool_obj.is_t_values_)
+		if (bool_obj.is_t_values_)		//t-values
 		{
 			CheckTValues(count);
 		}
@@ -706,26 +709,28 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 				{
 					if (iter_control_points < control_points.size()-1)
 					{
-						CheckPoints(cp_inc_, iter_control_points, 30);
+						CheckPoints(cp_inc_, iter_control_points, 30);			//incline between control points
 					}
 				}
 				if (bool_obj.is_angles_)
 				{
 					if (iter_control_points < (control_points.size() - 2))
 					{
-						CheckAngle(angles_[iter_control_points]);
+						CheckAngle(angles_[iter_control_points]);				//angle between control points
 					}
 				}
 				current_control_point = i;
 				iter_control_points++;
-				if (iter_control_points < control_points.size())
-				{
+				if (i!=control_points[0]){		
+					length_iter++;							//so dont change on the first control point. first c.p is the first point in track.
+				}
+				if (iter_control_points < control_points.size()){
 					next_control_point = control_points[iter_control_points];
 				}
 			}
 			if (iter_control_points < control_points.size())						//check for catmul rom issue - read t-value comment
 			{
-				DefaultWidth(i, track_points.size(), count, iter_control_points);
+				DefaultWidth(i, track_points.size(), count, iter_control_points);		//calcs the width
 			}
 		}
 		count++;
