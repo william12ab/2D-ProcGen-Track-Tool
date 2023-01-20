@@ -32,6 +32,7 @@ WidthCalculator::WidthCalculator()
 	bool_obj.is_rand_= true;
 	bool_obj.is_influenced_t = true;
 	modi_value = 0.0f;
+	bool_obj.max_width_val = 3;
 }
 
 int WidthCalculator::DistanceSqrt(int x, int y, int x2, int y2)
@@ -284,7 +285,7 @@ void WidthCalculator::FindMaxWidth(int& max_width_d,int &x, int &y, const int&it
 	{
 		x += (mody*normalised_opposite_direction[iter - 1].x) * adder;									//CHECK THIS VALUE THE *10 PART
 		y += (mody * normalised_opposite_direction[iter - 1].y) * adder;
-		if (x>100||x<-100 ||y>100||y<-100)
+		if (x>10000||x<-10000 ||y>10000 ||y<-10000)
 		{
 			x = 0; y = 0;		//fixes o.o.b error
 		}
@@ -652,20 +653,22 @@ void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&
 		PositiveCheck(width_m.modi_right, p_, width_m.w_right);
 	}
 
-	if (width_m.w_left > 3)	//caps the width
-	{
-		width_m.w_left = 3;
-		if (width_m.w_left > max_width_directions[count_].x)
-		{
+	if (width_m.w_left > bool_obj.max_width_val|| width_m.w_left>max_width_directions[count_].x){//caps the width
+		if (width_m.w_left > max_width_directions[count_].x){
 			width_m.w_left = max_width_directions[count_].x;
 		}
+		if (width_m.w_left > bool_obj.max_width_val) {
+			width_m.w_left = bool_obj.max_width_val;
+		}
 	}
-	if (width_m.w_right > 3)
+	if (width_m.w_right > bool_obj.max_width_val|| width_m.w_right>max_width_directions[count_].y)
 	{
-		width_m.w_right = 3;
 		if (width_m.w_right > max_width_directions[count_].y)
 		{
 			width_m.w_right = max_width_directions[count_].y;
+		}
+		if (width_m.w_right > bool_obj.max_width_val) {
+			width_m.w_right = bool_obj.max_width_val;
 		}
 	}
 }
@@ -703,10 +706,8 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 	{
 		width_m.modi_left = 0.0f;
 		width_m.modi_right = 0.0f;
-		if (bool_obj.is_length_)
-		{
-			if (iter_control_points < lengths_.size())		//length
-			{
+		if (bool_obj.is_length_){
+			if (iter_control_points < lengths_.size()){		//length
 				CheckLength(lengths_, length_iter);
 			}
 		}
@@ -714,27 +715,19 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 		{
 			CheckTValues(count);
 		}
-		if (iter_control_points < control_points.size())						//check for catmul rom issue - read t-value comment
-		{
-			if (i == control_points[iter_control_points])			//finds what point the trackpoint is on
-			{
-				if (bool_obj.is_incline_)
-				{
-					if (iter_control_points < control_points.size()-1)
-					{
+		if (iter_control_points < control_points.size()){	//check for catmul rom issue - read t-value comment
+			if (i == control_points[iter_control_points]) { 			//finds what point the trackpoint is on
+				if (bool_obj.is_incline_){
+					if (iter_control_points < control_points.size()-1){
 						CheckPoints(cp_inc_, iter_control_points, 30);			//incline between control points
 					}
 				}
-				if (bool_obj.is_angles_)
-				{
-					if (iter_control_points < (control_points.size() - 2))
-					{
-						if (control_points[0]==i)
-						{
+				if (bool_obj.is_angles_){
+					if (iter_control_points < (control_points.size() - 2)){
+						if (control_points[0]==i){
 							//skip
 						}
-						else
-						{
+						else{
 							CheckAngle(angles_[iter_control_points-1]);				//angle between control points
 						}
 					}

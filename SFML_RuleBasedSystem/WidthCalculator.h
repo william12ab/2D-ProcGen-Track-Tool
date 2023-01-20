@@ -37,12 +37,14 @@ public:
 	bool& GetBoolTValues() { return bool_obj.is_t_values_; }
 	bool& GetBoolRand() { return bool_obj.is_rand_; }
 	bool& GetBoolInfluenceT() { return bool_obj.is_influenced_t; }
+	int& GetMaxWidth() { return bool_obj.max_width_val; }
 
 	//modifier for left and right - adds up to total 1(or-1) which is used in positive/negative check func
 	void Modi(const int& sign);
 
 	//sets the track surface
 	void SetTrackSurface(int t) { width_m.track_surface = t; }
+	void SetMaxWidth(int w) { bool_obj.max_width_val = w; }
 
 	//compares the min and max of the track/terrain
 	void CompareHeights(const int&max_,const int&min_);
@@ -129,6 +131,7 @@ private:
 		bool is_global_;
 		bool is_rand_;
 		bool is_influenced_t;
+		int max_width_val;
 	}bool_obj;
 	
 	float modi_value;
