@@ -358,6 +358,7 @@ int main()
 				ImGui::Checkbox("Related Width?", &w_c.GetBoolRelatedWidth());
 				ImGui::Checkbox("Global Values?", &w_c.GetBoolGblobal());
 				ImGui::Checkbox("Random Modi?", &w_c.GetBoolRand());
+				ImGui::Checkbox("Influenced T?", &w_c.GetBoolInfluenceT());
 			}
 			if (ImGui::Button("Create width"))
 			{
