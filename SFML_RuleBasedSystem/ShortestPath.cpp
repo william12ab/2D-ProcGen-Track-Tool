@@ -599,59 +599,56 @@ void ShortestPath::SegmentAngles()
 		float m2 = 0;				//gradient
 		float y1, y2, y3, y4;
 		float x1, x2, x3, x4;
-	//	if (segment_lengths_[i] > 5)
-		//{
-			y1 = line_positions[line_iterator].y;
-			y2 = line_positions[line_iterator + 1].y;
-			y3 = y2;
-			y4 = line_positions[line_iterator + 3].y;
-			x1 = line_positions[line_iterator].x;
-			x2 = line_positions[line_iterator + 1].x;
-			x3 = x2;
-			x4 = line_positions[line_iterator + 3].x;
+		y1 = line_positions[line_iterator].y;
+		y2 = line_positions[line_iterator + 1].y;
+		y3 = y2;
+		y4 = line_positions[line_iterator + 3].y;
+		x1 = line_positions[line_iterator].x;
+		x2 = line_positions[line_iterator + 1].x;
+		x3 = x2;
+		x4 = line_positions[line_iterator + 3].x;
 
-			if ((y2 - y1) == 0 || (x2 - x1) == 0)								//if the result of y2-1 or x2-x1 is going to be 0 - set the gradient(m1) to 0 because you cant divide by 0
-			{
-				m1 = 0;
-				if ((y4 - y3) == 0 || (x4 - x3) == 0)					//check if m2 is going to be 0 and set to 0
-				{
-					m2 = 0;
-				}
-				else
-				{
-					m2 = (y4 - y3) / (x4 - x3);							//or just calculate the m normally
-				}
-			}
-			else if ((y4 - y3) == 0 || (x4 - x3) == 0)					//same here
+		
+		if ((y2 - y1) == 0 || (x2 - x1) == 0)								//if the result of y2-1 or x2-x1 is going to be 0 - set the gradient(m1) to 0 because you cant divide by 0
+		{
+			m1 = 0;
+			if ((y4 - y3) == 0 || (x4 - x3) == 0)					//check if m2 is going to be 0 and set to 0
 			{
 				m2 = 0;
-				if ((y2 - y1) == 0 || (x2 - x1) == 0)
-				{
-					m1 = 0;
-				}
-				else
-				{
-					m1 = (y2 - y1) / (x2 - x1);
-				}
 			}
 			else
 			{
-				m1 = (y2 - y1) / (x2 - x1);								//or calculat normally		
-				m2 = (y4 - y3) / (x4 - x3);
+				m2 = (y4 - y3) / (x4 - x3);							//or just calculate the m normally
 			}
-			float angle = atanf((m1 - m2) / (1 + (m2 * m1)));			//angle in rads
-
-			angle = angle * (180.0 / 3.141592653589793238463);			//angle as degrees because its easier to understand
-			angles_.push_back(180.0f - angle);								//have to find the angle at this point instead
-
-			//finding angle in better terms				
-			float new_angle = 360 - angles_.back();
-			float final_angle = new_angle - 180;
-			if (final_angle < 0)
+		}
+		else if ((y4 - y3) == 0 || (x4 - x3) == 0)					//same here
+		{
+			m2 = 0;
+			if ((y2 - y1) == 0 || (x2 - x1) == 0)
 			{
-				final_angle *= -1;
+				m1 = 0;
 			}
-			new_angles_.push_back(final_angle);
+			else
+			{
+				m1 = (y2 - y1) / (x2 - x1);
+			}
+		}
+		else
+		{
+			m1 = (y2 - y1) / (x2 - x1);								//or calculat normally		
+			m2 = (y4 - y3) / (x4 - x3);
+		}
+		float angle = atanf((m1 - m2) / (1 + (m2 * m1)));			//angle in rads
+		angle = angle * (180.0 / 3.141592653589793238463);			//angle as degrees because its easier to understand
+		angles_.push_back(180.0f - angle);								//have to find the angle at this point instead
+					//finding angle in better terms				
+		float new_angle = 360 - angles_.back();
+		float final_angle = new_angle - 180;
+		if (final_angle < 0)
+		{
+			final_angle *= -1;
+		}
+		new_angles_.push_back(final_angle);
 		line_iterator += 2;			//go to next set of lines
 	}
 }
