@@ -30,6 +30,7 @@ WidthCalculator::WidthCalculator()
 	bool_obj.is_related_width = true;
 	bool_obj.is_t_values_ = true;
 	bool_obj.is_rand_= true;
+	bool_obj.is_influenced_t = true;
 	modi_value = 0.0f;
 }
 
@@ -393,7 +394,7 @@ void WidthCalculator::CheckTValues(const int& i)
 {
 	if (bool_obj.is_t_values_)
 	{
-		if (t_values[i] >= 0.0 && t_values[i] <= 0.14)
+		if (t_values[i] >= 0.0 && t_values[i] <= 0.06)
 		{
 			//exit
 			Modi(1);
@@ -408,10 +409,17 @@ void WidthCalculator::CheckTValues(const int& i)
 			//apex
 			Modi(-1);
 		}
-		else if (t_values[i] > 0.38 && t_values[i] < 0.62)
+		else if (t_values[i] > 0.44 && t_values[i] < 0.56)
 		{
 			//middle
 			Modi(1);
+		}
+		else
+		{
+			if (!bool_obj.is_influenced_t)
+			{
+				Modi(-1);
+			}
 		}
 		//on no event... width stays the same.
 	}
@@ -739,8 +747,8 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 
 void WidthCalculator::FindWidth(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos, const std::vector<int>& lengths_, const std::vector<int> angles_)
 {
-	width_m.w_left = 1.0;
-	width_m.w_right = 1.0;
+	width_m.w_left = 0.0;
+	width_m.w_right = 0.0;
 	width_m.modi_left = 0.0f;
 	width_m.modi_right = 0.0f;
 	width_m.min_width = 0.0f;
