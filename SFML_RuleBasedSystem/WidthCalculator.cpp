@@ -272,6 +272,7 @@ void WidthCalculator::FindDirectionBetweenCP(const std::vector<sf::Vector2i>& co
 		{
 			dir_norm_opp_ = sf::Vector2f(0,1);
 		}
+		
 		normalised_opposite_direction.push_back(dir_norm_opp_);
 		normailised_direction_.push_back(dir_norm_);
 	}
@@ -283,6 +284,10 @@ void WidthCalculator::FindMaxWidth(int& max_width_d,int &x, int &y, const int&it
 	{
 		x += (mody*normalised_opposite_direction[iter - 1].x) * adder;									//CHECK THIS VALUE THE *10 PART
 		y += (mody * normalised_opposite_direction[iter - 1].y) * adder;
+		if (x>100||x<-100 ||y>100||y<-100)
+		{
+			x = 0; y = 0;		//fixes o.o.b error
+		}
 		int height_this_way = noise_grid[i.y * grid_size + i.x] / layers_ - noise_grid[y * grid_size + x] / layers_;
 		if (height_this_way < 0)
 		{
