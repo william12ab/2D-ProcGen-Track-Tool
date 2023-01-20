@@ -30,10 +30,8 @@ public:
 
 	bool& GetBoolAngles() { return bool_obj.is_angles_; }
 	bool& GetBoolCurved() { return bool_obj.is_curved_; }
-	bool& GetBoolGblobal() { return bool_obj.is_global_; }
 	bool& GetBoolIncline() { return bool_obj.is_incline_; }
 	bool& GetBoolLength() { return bool_obj.is_length_; }
-	bool& GetBoolRelatedWidth() { return bool_obj.is_related_width; }
 	bool& GetBoolTValues() { return bool_obj.is_t_values_; }
 	bool& GetBoolRand() { return bool_obj.is_rand_; }
 	bool& GetBoolInfluenceT() { return bool_obj.is_influenced_t; }
@@ -76,6 +74,8 @@ public:
 	void WidthDirectionDecider(int count, const sf::Vector2i& track_point, std::vector<sf::Vector2i>& temp_vec);
 	//actually gives new width
 	void WidthLoop(const sf::Vector2i& track_point, std::vector<sf::Vector2i>& temp_vec, const int& x_, const int& y_, const int& x_r, const int& y_r);
+
+	void CheckHeight(int* const& noise_grid, const int& grid_size, const sf::Vector2i point_, const int& avr);
 
 	//calculates width and has checkers for bounds
 	void CalculateWidth(const sf::Vector2i& track_point, const int& size_, const int& count_);
@@ -127,8 +127,6 @@ private:
 		bool is_t_values_;
 		bool is_angles_;
 		bool is_incline_;
-		bool is_related_width;
-		bool is_global_;
 		bool is_rand_;
 		bool is_influenced_t;
 		int max_width_val;

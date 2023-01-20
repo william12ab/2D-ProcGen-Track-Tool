@@ -355,8 +355,6 @@ int main()
 				ImGui::Checkbox("T-Values?", &w_c.GetBoolTValues());
 				ImGui::Checkbox("Angles?", &w_c.GetBoolAngles());
 				ImGui::Checkbox("Inclination Between C.P(s)?", &w_c.GetBoolIncline());
-				//ImGui::Checkbox("Related Width?", &w_c.GetBoolRelatedWidth());
-				ImGui::Checkbox("Global Values? unused", &w_c.GetBoolGblobal());
 				ImGui::Checkbox("Random Modi?", &w_c.GetBoolRand());
 				ImGui::Checkbox("Influenced T?", &w_c.GetBoolInfluenceT());
 				int w = w_c.GetMaxWidth();

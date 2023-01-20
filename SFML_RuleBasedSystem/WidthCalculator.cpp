@@ -24,10 +24,8 @@ WidthCalculator::WidthCalculator()
 
 	bool_obj.is_angles_ = true;
 	bool_obj.is_curved_ = false;
-	bool_obj.is_global_ = true;
 	bool_obj.is_incline_ = true;
 	bool_obj.is_length_ = true;
-	bool_obj.is_related_width = true;
 	bool_obj.is_t_values_ = true;
 	bool_obj.is_rand_= true;
 	bool_obj.is_influenced_t = true;
@@ -66,7 +64,7 @@ void WidthCalculator::Modi(const int& sign)					//so theres 4 checks to perform.
 void WidthCalculator::SetModi()
 {
 	int c = 0;
-	if (bool_obj.is_angles_)	{
+	if (bool_obj.is_angles_){
 		c++;
 	}
 	if (bool_obj.is_incline_){
@@ -217,7 +215,6 @@ void WidthCalculator::TrackTValues(const std::vector<sf::Vector2i>& track_points
 	}
 }
 
-
 void WidthCalculator::FindInclinePoints(const std::vector<sf::Vector2i>& vector_, const int& grid_size, const int& layers_, std::vector<int>& results_, int* const& noise_grid)
 {
 	int difference = 0;
@@ -238,7 +235,6 @@ void WidthCalculator::FindInclinePoints(const std::vector<sf::Vector2i>& vector_
 		results_.push_back(difference);
 	}
 }
-
 
 //gets the normalised direction vector between two control points.
 void WidthCalculator::FindDirectionBetweenCP(const std::vector<sf::Vector2i>& control_points)
@@ -315,8 +311,7 @@ void WidthCalculator::FindRelatedHeight(int* const& noise_grid, const int& grid_
 		{
 			max_width_directions.emplace_back(0, 0);
 		}
-		else
-		{
+		else{
 			if (i == control_points[iter])						//if is currenctly over a control point
 			{
 				current_cp = i;
@@ -326,8 +321,7 @@ void WidthCalculator::FindRelatedHeight(int* const& noise_grid, const int& grid_
 			{
 				max_width_directions.emplace_back(0, 0);
 			}
-			else
-			{
+			else{
 				int x = i.x;
 				int y = i.y;
 				FindMaxWidth(max_width_right, x, y, iter, noise_grid, grid_size, layers_, i, 1);
@@ -363,14 +357,11 @@ void WidthCalculator::CompareHeights(const int& max_, const int& min_)
 
 void WidthCalculator::CheckPoints(const std::vector<int>& inc_, const int&iter, const int&height_diff)
 {
-	if (bool_obj.is_incline_)
-	{
-		if (inc_[iter] > height_diff)
-		{//high incline
+	if (bool_obj.is_incline_){
+		if (inc_[iter] > height_diff){//high incline
 			Modi(-1);
 		}
-		else
-		{//low incline
+		else{//low incline
 			Modi(1);
 		}
 	}
@@ -394,7 +385,6 @@ void WidthCalculator::CheckLength(const std::vector<int>& lengths_, const int &i
 		}
 	}
 }
-
 
 void WidthCalculator::CheckTValues(const int& i)
 {
@@ -598,13 +588,13 @@ void WidthCalculator::BoundsCheck()
 
 void WidthCalculator::WidthLoop(const sf::Vector2i&track_point, std::vector<sf::Vector2i>&temp_vec, const int& x_l, const int& y_l, const int& x_r, const int&y_r)
 {
-	for (int i = 1; i <= width_m.w_left; i++)
+	for (int i = 1; i <= width_m.w_left+(width_m.default_width/2); i++)
 	{
 		std::vector<sf::Vector2i> temp_temp_vec;
 		temp_temp_vec = { sf::Vector2i(track_point.x + x_l*i,track_point.y ),sf::Vector2i(track_point.x, track_point.y + y_l*i) };
 		temp_vec.insert(temp_vec.begin(), temp_temp_vec.begin(), temp_temp_vec.end());
 	}
-	for (int i = 1; i <= width_m.w_right; i++)
+	for (int i = 1; i <= width_m.w_right + (width_m.default_width / 2); i++)
 	{
 		std::vector<sf::Vector2i> temp_temp_vec;
 		temp_temp_vec = { sf::Vector2i(track_point.x + x_r*i,track_point.y), sf::Vector2i(track_point.x, track_point.y + y_r*i) };
@@ -623,36 +613,29 @@ void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&
 
 	int percent = distribution(generator);
 	float p_ = (float)percent / 100;
-	if ( width_m.modi_left>=1.0f  && width_m.modi_right >= 1.0f)
-	{
+	if ( width_m.modi_left>=1.0f  && width_m.modi_right >= 1.0f){
 		width_m.modi_left = 1;
 		width_m.modi_right = 1;
 	}
-	else if (width_m.modi_left <= -1.0f && width_m.modi_right <= -1.0f)
-	{
+	else if (width_m.modi_left <= -1.0f && width_m.modi_right <= -1.0f){
 		width_m.modi_left = -1;
 		width_m.modi_right = -1;
 	}
 
-	if (width_m.modi_left<0)		//changes the width vlaues
-	{
-		NegativeCheck(width_m.modi_left, p_, width_m.w_left);
+	if (width_m.modi_left<0){//changes the width vlaues
+		NegativeCheck(width_m.modi_left, p_, width_m.w_left);//if decreasing or increasing
 	}
-	else
-	{
+	else{
 		PositiveCheck(width_m.modi_left, p_, width_m.w_left);
 	}
 	percent = distribution(generator);
 	p_ = (float)percent / 100;
-	if (width_m.modi_right < 0)
-	{
+	if (width_m.modi_right < 0){
 		NegativeCheck(width_m.modi_right, p_, width_m.w_right);
 	}
-	else
-	{
+	else{
 		PositiveCheck(width_m.modi_right, p_, width_m.w_right);
 	}
-
 	if (width_m.w_left > bool_obj.max_width_val|| width_m.w_left>max_width_directions[count_].x){//caps the width
 		if (width_m.w_left > max_width_directions[count_].x){
 			width_m.w_left = max_width_directions[count_].x;
@@ -661,10 +644,8 @@ void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&
 			width_m.w_left = bool_obj.max_width_val;
 		}
 	}
-	if (width_m.w_right > bool_obj.max_width_val|| width_m.w_right>max_width_directions[count_].y)
-	{
-		if (width_m.w_right > max_width_directions[count_].y)
-		{
+	if (width_m.w_right > bool_obj.max_width_val|| width_m.w_right>max_width_directions[count_].y){
+		if (width_m.w_right > max_width_directions[count_].y){
 			width_m.w_right = max_width_directions[count_].y;
 		}
 		if (width_m.w_right > bool_obj.max_width_val) {
@@ -689,6 +670,14 @@ void WidthCalculator::NegativeCheck(const float & dir_, const float& p_, int &wi
 	}
 }
 
+void WidthCalculator::CheckHeight(int* const& noise_grid, const int& grid_size, const sf::Vector2i point_, const int&avr)
+{
+	if (noise_grid[point_.y * grid_size + point_.x]>avr)
+	{
+		//high height;
+	}
+}
+
 void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos, const std::vector<int>& lengths_, const std::vector<int> angles_)
 {
 	int iter_points=1;												//iterator for the points - keeps track of what point youre on ( a point is the number of points connecting the vd - not the control points, or track_points)
@@ -701,18 +690,17 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 	auto count = 0;													//iterator in form of int rather than vector obj - used for accessing elements of vectors for track points
 
 	int length_iter = 0;
-
+	int avr = track_max + track_min / 2;
 	for (const sf::Vector2i& i : track_points)
 	{
 		width_m.modi_left = 0.0f;
 		width_m.modi_right = 0.0f;
 		if (bool_obj.is_length_){
-			if (iter_control_points < lengths_.size()){		//length
+			if (iter_control_points < lengths_.size()){//length
 				CheckLength(lengths_, length_iter);
 			}
 		}
-		if (bool_obj.is_t_values_)		//t-values
-		{
+		if (bool_obj.is_t_values_){//t-values
 			CheckTValues(count);
 		}
 		if (iter_control_points < control_points.size()){	//check for catmul rom issue - read t-value comment
@@ -772,10 +760,7 @@ void WidthCalculator::FindWidth(const std::vector<sf::Vector2i>& track_points, c
 	{
 	case 1:						//dirt		//not fixed
 		width_m.default_width = 1;
-		if (bool_obj.is_global_)
-		{
-			CompareHeights(track_max, track_min);
-		}
+		CompareHeights(track_max, track_min);
 		TrackLoop(track_points,control_points, points_pos,lengths_, angles_);
 		break;
 	case 0:						//tarmac		//fixed width unless constraint

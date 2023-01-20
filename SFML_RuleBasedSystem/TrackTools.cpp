@@ -145,11 +145,8 @@ void TrackTools::WidthSettings(WidthCalculator& w_c, ShortestPath& s_p, VoronoiD
 	{
 		s_p.SegmentAngles();
 	}
-	if (w_c.GetBoolGblobal())
-	{
-		w_c.FindMinMax(layers_, i_p.GetNoiseMap(), v_d.GetGridSize());															//min max of image
-		w_c.FindTrackMinMax(track_, v_d.GetGridSize(), layers_, i_p.GetNoiseMap());								//min max of track
-	}
+	w_c.FindMinMax(layers_, i_p.GetNoiseMap(), v_d.GetGridSize());															//min max of image
+	w_c.FindTrackMinMax(track_, v_d.GetGridSize(), layers_, i_p.GetNoiseMap());								//min max of track
 	if (w_c.GetBoolTValues())
 	{
 		w_c.TrackTValues(track_, s_p.GetControlPoints());																					//give t value of lerp
