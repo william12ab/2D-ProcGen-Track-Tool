@@ -54,8 +54,6 @@ void WidthCalculator::Modi(const int& sign)					//so theres 4 checks to perform.
 	else{
 		rand_amount = modi_value;
 	}
-	
-	
 	width_m.modi_left += sign* rand_amount;
 	width_m.modi_right += sign* rand_amount;
 }
@@ -76,6 +74,7 @@ void WidthCalculator::SetModi()
 		c++;
 	}
 	modi_value = float(1)/(float)c;
+	modi_value /= 2;
 }
 
 void WidthCalculator::Clear()
