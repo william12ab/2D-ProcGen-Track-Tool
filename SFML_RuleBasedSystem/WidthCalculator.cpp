@@ -443,7 +443,7 @@ void WidthCalculator::CheckAngle(const int &angle_)
 	}
 }
 
-void WidthCalculator::DefaultWidth(const sf::Vector2i& track_point, const int& size_, int& count_, const int& count_c_p)
+void WidthCalculator::DefaultWidth(const sf::Vector2i& track_point, const int& size_, const int& count_, const int& count_c_p)
 {
 	CalculateWidth(track_point, size_, count_);					//choses width for left and right
 	std::vector<sf::Vector2i> temp_vec;
@@ -605,7 +605,7 @@ void WidthCalculator::WidthLoop(const sf::Vector2i&track_point, std::vector<sf::
 	}
 }
 
-void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&size_,int&count_)
+void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&size_,const int&count_)
 {
 	//first check within min max bounds of modi
 	//then bounds of width
@@ -639,21 +639,21 @@ void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&
 	else{
 		PositiveCheck(width_m.modi_right, p_, width_m.w_right);
 	}
-
+	int c = count_;
 	if (bool_obj.is_flat_){
-		count_ = 0;
+		c= 0;
 	}
-	if (width_m.w_left > bool_obj.max_width_val|| width_m.w_left>max_width_directions[count_].x){//caps the width
-		if (width_m.w_left > max_width_directions[count_].x){
-			width_m.w_left = max_width_directions[count_].x;
+	if (width_m.w_left > bool_obj.max_width_val|| width_m.w_left>max_width_directions[c].x){//caps the width
+		if (width_m.w_left > max_width_directions[c].x){
+			width_m.w_left = max_width_directions[c].x;
 		}
 		if (width_m.w_left > bool_obj.max_width_val) {
 			width_m.w_left = bool_obj.max_width_val;
 		}
 	}
-	if (width_m.w_right > bool_obj.max_width_val|| width_m.w_right>max_width_directions[count_].y){
-		if (width_m.w_right > max_width_directions[count_].y){
-			width_m.w_right = max_width_directions[count_].y;
+	if (width_m.w_right > bool_obj.max_width_val|| width_m.w_right>max_width_directions[c].y){
+		if (width_m.w_right > max_width_directions[c].y){
+			width_m.w_right = max_width_directions[c].y;
 		}
 		if (width_m.w_right > bool_obj.max_width_val) {
 			width_m.w_right = bool_obj.max_width_val;
@@ -701,7 +701,7 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 	auto count = 0;													//iterator in form of int rather than vector obj - used for accessing elements of vectors for track points
 
 	int length_iter = 0;
-	int avr = (track_max + track_min) / 2;
+	
 	for (const sf::Vector2i& i : track_points)
 	{
 		width_m.modi_left = 0.0f;
@@ -742,6 +742,7 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 			}
 			if (iter_control_points < control_points.size()){
 				if (bool_obj.is_global_){
+					int avr = (track_max + track_min) / 2;	
 					CheckHeight(noise_grid, grid_size, i, avr);
 				}		
 				DefaultWidth(i, track_points.size(), count, iter_control_points);		//calcs the width

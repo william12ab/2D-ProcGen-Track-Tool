@@ -69,7 +69,7 @@ public:
 	void CheckHeight(int* const& noise_grid, const int& grid_size, const sf::Vector2i point_, const int& avr);
 
 	//function for calculating width
-	void DefaultWidth(const sf::Vector2i& track_point, const int& size_, int& count_, const int&count_c_p);		//used right now
+	void DefaultWidth(const sf::Vector2i& track_point, const int& size_, const int& count_, const int&count_c_p);		//used right now
 	//unused
 	void DefaultPlus(const sf::Vector2i& track_point, const int& size_, const int& count_);			//un-used
 	
@@ -80,7 +80,7 @@ public:
 
 
 	//calculates width and has checkers for bounds
-	void CalculateWidth(const sf::Vector2i& track_point, const int& size_, int& count_);
+	void CalculateWidth(const sf::Vector2i& track_point, const int& size_, const int& count_);
 
 	//loop for if decreasing or increasing
 	void PositiveCheck(const float& dir_, const float&p_, int &width_);
