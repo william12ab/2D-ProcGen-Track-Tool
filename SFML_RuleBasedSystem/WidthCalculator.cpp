@@ -388,13 +388,15 @@ void WidthCalculator::CheckTValues(const int& i)
 {
 	if (bool_obj.is_t_values_){
 		if (bool_obj.is_flat_){
-			if (t_values[i] >= 0.0f && t_values[i] <= 0.5f) {
+			if (t_values[i] >= 0.0f && t_values[i] <= 0.25f) {
 				//exit
 				Modi(1);
 			}
-			else if (t_values[i] >= 0.51f && t_values[i] <= 1.f) {
+			else if (t_values[i] >= 0.75f && t_values[i] <= 1.f) {
 				//entry
 				Modi(-1);
+			}
+			else{//do.nothing 
 			}
 		}
 		else {
