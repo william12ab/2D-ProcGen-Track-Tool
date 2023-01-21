@@ -158,7 +158,7 @@ void TrackTools::WidthSettings(WidthCalculator& w_c, ShortestPath& s_p, VoronoiD
 	}
 	w_c.FindRelatedHeight(i_p.GetNoiseMap(), v_d.GetGridSize(), layers_, track_, s_p.GetControlPoints());
 	w_c.SetModi();
-	w_c.FindWidth(track_, s_p.GetControlPoints(), v_d.GetPointPos(), s_p.GetLengths(), s_p.GetAngles());
+	w_c.FindWidth(track_, s_p.GetControlPoints(), v_d.GetPointPos(), s_p.GetLengths(), s_p.GetAngles(),i_p.GetNoiseMap(), v_d.GetGridSize());
 	i_p.CreateImage(voronoi_d, v_d.GetGridSize());
 	i_p.DrawWidthTrack(voronoi_d, v_d.GetGridSize(), w_c.GetNewTrack());
 }
