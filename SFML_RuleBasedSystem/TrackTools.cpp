@@ -141,22 +141,25 @@ void TrackTools::WidthSettings(WidthCalculator& w_c, ShortestPath& s_p, VoronoiD
 	w_c.Clear();
 	w_c.FindDirectionBetweenCP(s_p.GetControlPoints());
 
-	if (w_c.GetBoolAngles())
-	{
+	if (w_c.GetBoolAngles()){
 		s_p.SegmentAngles();
 	}
 	w_c.FindMinMax(layers_, i_p.GetNoiseMap(), v_d.GetGridSize());															//min max of image
 	w_c.FindTrackMinMax(track_, v_d.GetGridSize(), layers_, i_p.GetNoiseMap());								//min max of track
-	if (w_c.GetBoolTValues())
-	{
+	if (w_c.GetBoolTValues()){
 		w_c.TrackTValues(track_, s_p.GetControlPoints());																					//give t value of lerp
 	}
-	if (w_c.GetBoolIncline())
-	{
+	if (w_c.GetBoolIncline()){
 		w_c.FindInclinePoints(s_p.GetControlPoints(), v_d.GetGridSize(), layers_, w_c.GetCPIncline(), i_p.GetNoiseMap());		//for the control points
 		w_c.FindInclinePoints(v_d.GetPointPos(), v_d.GetGridSize(), layers_, w_c.GetPointIncline(), i_p.GetNoiseMap());		//for the points
 	}
-	w_c.FindRelatedHeight(i_p.GetNoiseMap(), v_d.GetGridSize(), layers_, track_, s_p.GetControlPoints());
+	if (w_c.GetBoolFlat()){
+		//do nothing
+	}
+	else{
+		w_c.FindRelatedHeight(i_p.GetNoiseMap(), v_d.GetGridSize(), layers_, track_, s_p.GetControlPoints());
+	}
+	
 	w_c.SetModi();
 	w_c.FindWidth(track_, s_p.GetControlPoints(), v_d.GetPointPos(), s_p.GetLengths(), s_p.GetAngles(),i_p.GetNoiseMap(), v_d.GetGridSize());
 	i_p.CreateImage(voronoi_d, v_d.GetGridSize());

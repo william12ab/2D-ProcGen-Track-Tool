@@ -387,36 +387,40 @@ void WidthCalculator::CheckLength(const std::vector<int>& lengths_, const int &i
 
 void WidthCalculator::CheckTValues(const int& i)
 {
-	if (bool_obj.is_t_values_)
-	{
-		if (t_values[i] >= 0.0 && t_values[i] <= 0.06)
-		{
-			//exit
-			Modi(1);
-		}
-		else if (t_values[i] >= 0.9 && t_values[i] <= 0.97)
-		{
-			//entry
-			Modi(-1);
-		}
-		else if (t_values[i] >= 0.98)
-		{
-			//apex
-			Modi(-1);
-		}
-		else if (t_values[i] > 0.44 && t_values[i] < 0.56)
-		{
-			//middle
-			Modi(1);
-		}
-		else
-		{
-			if (!bool_obj.is_influenced_t)
-			{
+	if (bool_obj.is_t_values_){
+		if (bool_obj.is_flat_){
+			if (t_values[i] >= 0.0f && t_values[i] <= 0.5f) {
+				//exit
+				Modi(1);
+			}
+			else if (t_values[i] >= 0.51f && t_values[i] <= 1.f) {
+				//entry
 				Modi(-1);
 			}
 		}
-		//on no event... width stays the same.
+		else {
+			if (t_values[i] >= 0.0 && t_values[i] <= 0.06) {
+				//exit
+				Modi(1);
+			}
+			else if (t_values[i] >= 0.9 && t_values[i] <= 0.97) {
+				//entry
+				Modi(-1);
+			}
+			else if (t_values[i] >= 0.98) {
+				//apex
+				Modi(-1);
+			}
+			else if (t_values[i] > 0.44 && t_values[i] < 0.56) {
+				//middle
+				Modi(1);
+			}
+			else {
+				if (!bool_obj.is_influenced_t) {
+					Modi(-1);
+				}
+			}
+		}
 	}
 }
 
@@ -439,7 +443,7 @@ void WidthCalculator::CheckAngle(const int &angle_)
 	}
 }
 
-void WidthCalculator::DefaultWidth(const sf::Vector2i& track_point, const int& size_, const int& count_, const int& count_c_p)
+void WidthCalculator::DefaultWidth(const sf::Vector2i& track_point, const int& size_, int& count_, const int& count_c_p)
 {
 	CalculateWidth(track_point, size_, count_);					//choses width for left and right
 	std::vector<sf::Vector2i> temp_vec;
@@ -601,7 +605,7 @@ void WidthCalculator::WidthLoop(const sf::Vector2i&track_point, std::vector<sf::
 	}
 }
 
-void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&size_, const int&count_)
+void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&size_,int&count_)
 {
 	//first check within min max bounds of modi
 	//then bounds of width
@@ -634,6 +638,10 @@ void WidthCalculator::CalculateWidth(const sf::Vector2i& track_point, const int&
 	}
 	else{
 		PositiveCheck(width_m.modi_right, p_, width_m.w_right);
+	}
+
+	if (bool_obj.is_flat_){
+		count_ = 0;
 	}
 	if (width_m.w_left > bool_obj.max_width_val|| width_m.w_left>max_width_directions[count_].x){//caps the width
 		if (width_m.w_left > max_width_directions[count_].x){
@@ -732,12 +740,10 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 					next_control_point = control_points[iter_control_points];
 				}
 			}
-			if (iter_control_points < control_points.size())						//check for catmul rom issue - read t-value comment
-			{
+			if (iter_control_points < control_points.size()){
 				if (bool_obj.is_global_){
 					CheckHeight(noise_grid, grid_size, i, avr);
-				}
-				
+				}		
 				DefaultWidth(i, track_points.size(), count, iter_control_points);		//calcs the width
 			}
 		}
@@ -753,8 +759,13 @@ void WidthCalculator::FindWidth(const std::vector<sf::Vector2i>& track_points, c
 	width_m.modi_right = 0.0f;
 	width_m.min_width = 0.0f;
 
-	width_m.track_surface = 1;
-
+	if (bool_obj.is_flat_){
+		width_m.track_surface = 2;
+		max_width_directions.push_back(sf::Vector2i(100, 100));
+	}
+	else{
+		width_m.track_surface = 1;
+	}
 	auto sum_=0;
 	for (size_t i = 0; i < lengths_.size(); i++)
 	{
@@ -776,5 +787,16 @@ void WidthCalculator::FindWidth(const std::vector<sf::Vector2i>& track_points, c
 		width_m.default_width = 2;
 		CompareHeights(track_max, track_min);
 		break;
+	case 2://flat
+		width_m.default_width = 1;
+		bool_obj.is_incline_ = false;
+		bool_obj.is_global_ = false;
+		SetModi();
+		TrackLoop(track_points, control_points, points_pos, lengths_, angles_, noise_grid, grid_size);
+		// FLAT SURFACE
+		/*
+		t-values: go for all ranges
+		include length and angle
+		*/
 	}
 }

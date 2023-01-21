@@ -350,6 +350,7 @@ int main()
 		{
 			if (ImGui::CollapsingHeader("Options"))
 			{
+				ImGui::Checkbox("Flat?", &w_c.GetBoolFlat());
 				ImGui::Checkbox("Curved?", &w_c.GetBoolCurved());
 				ImGui::Checkbox("Length?", &w_c.GetBoolLength());
 				ImGui::Checkbox("T-Values?", &w_c.GetBoolTValues());

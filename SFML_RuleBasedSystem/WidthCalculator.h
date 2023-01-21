@@ -37,6 +37,7 @@ public:
 	bool& GetBoolInfluenceT() { return bool_obj.is_influenced_t; }
 	int& GetMaxWidth() { return bool_obj.max_width_val; }
 	bool& GetGlobal() { return bool_obj.is_global_; }
+	bool& GetBoolFlat() { return bool_obj.is_flat_; }
 
 	//modifier for left and right - adds up to total 1(or-1) which is used in positive/negative check func
 	void Modi(const int& sign);
@@ -56,7 +57,6 @@ public:
 
 	//performs all the chances to add up the modi and then calcs the width
 	void TrackLoop(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos,const std::vector<int>& lengths_, const std::vector<int> angles_, int* const& noise_grid, const int& grid_size);
-
 	//checks the incline of the points/control points
 	void CheckPoints(const std::vector<int>& inc_, const int& iter, const int& height_diff);
 	//checks length of current segment
@@ -69,7 +69,7 @@ public:
 	void CheckHeight(int* const& noise_grid, const int& grid_size, const sf::Vector2i point_, const int& avr);
 
 	//function for calculating width
-	void DefaultWidth(const sf::Vector2i& track_point, const int& size_, const int& count_, const int&count_c_p);		//used right now
+	void DefaultWidth(const sf::Vector2i& track_point, const int& size_, int& count_, const int&count_c_p);		//used right now
 	//unused
 	void DefaultPlus(const sf::Vector2i& track_point, const int& size_, const int& count_);			//un-used
 	
@@ -80,7 +80,7 @@ public:
 
 
 	//calculates width and has checkers for bounds
-	void CalculateWidth(const sf::Vector2i& track_point, const int& size_, const int& count_);
+	void CalculateWidth(const sf::Vector2i& track_point, const int& size_, int& count_);
 
 	//loop for if decreasing or increasing
 	void PositiveCheck(const float& dir_, const float&p_, int &width_);
@@ -133,6 +133,7 @@ private:
 		bool is_influenced_t;
 		int max_width_val;
 		bool is_global_;
+		bool is_flat_;
 	}bool_obj;
 	
 	float modi_value;
