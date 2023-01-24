@@ -74,7 +74,6 @@ void WidthCalculator::SetModi()
 		c++;
 	}
 	modi_value = float(1)/(float)c;
-	modi_value /= 2;
 }
 
 void WidthCalculator::Clear()
