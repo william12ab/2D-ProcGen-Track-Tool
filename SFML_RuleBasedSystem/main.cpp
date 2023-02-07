@@ -343,6 +343,10 @@ int main()
 				i_p.WriteToFile(v_d.GetGridSize(), voronoi_d, layers_);
 				s_p.WriteToFile();
 			}
+			if (ImGui::Button("Write Track Points"))
+			{
+				s_p.WriteTrackPoints();
+			}
 			
 		}
 		ImGui::Text("\n");
@@ -379,6 +383,7 @@ int main()
 		ImGui::Text("\n");
 		ImGui::Text("\n");
 		ImGui::Text("\n");
+		
 
 		if (ImGui::CollapsingHeader("Keyboard Controls"))
 		{

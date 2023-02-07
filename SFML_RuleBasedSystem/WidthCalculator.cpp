@@ -378,7 +378,7 @@ void WidthCalculator::CheckLength(const std::vector<int>& lengths_, const int &i
 		}
 		else                     //avr length
 		{
-			//do nothing. . . 
+			//do nothing. . . 		
 		}
 	}
 }
