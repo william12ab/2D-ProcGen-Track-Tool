@@ -48,7 +48,7 @@ public:
 	int DistanceSqrt(int x, int y, int x2, int y2);
 	void SegmentAngles();
 	void WriteToFile();
-	void WriteTrackPoints();
+	void WriteTrackPoints(std::vector<sf::Vector2i>& track_);
 
 
 	void OrderControlPoints();

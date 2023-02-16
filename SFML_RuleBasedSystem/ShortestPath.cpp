@@ -653,15 +653,21 @@ void ShortestPath::SegmentAngles()
 	}
 }
 
-void ShortestPath::WriteTrackPoints()
+void ShortestPath::WriteTrackPoints(std::vector<sf::Vector2i>&track_)
 {
 	std::ofstream results_;
 	char const* c = "track_points.txt";
 	results_.open(c);
 
-	for (size_t i = 0; i < track_points.size(); i++)
-	{
-		results_ << track_points[i].x << " " << track_points[i].y<<"\n";
+	if (track_.size()>5){
+		for (size_t i = 0; i < track_.size(); i++){
+			results_ << track_[i].x << " " << track_[i].y << "\n";
+		}
+	}
+	else{
+		for (size_t i = 0; i < track_points.size(); i++) {
+			results_ << track_points[i].x << " " << track_points[i].y << "\n";
+		}
 	}
 	results_.close();
 }
