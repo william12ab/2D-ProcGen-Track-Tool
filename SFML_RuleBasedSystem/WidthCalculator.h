@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <SFML/System/Vector2.hpp>
+#include <algorithm>
 
 class WidthCalculator
 {
@@ -89,6 +90,9 @@ public:
 	//checks if below min width and stuff like that
 	void BoundsCheck();
 	
+
+	void RemoveDups();
+
 	
 private:
 	int track_max;

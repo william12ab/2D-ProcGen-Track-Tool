@@ -3,6 +3,7 @@
 #include <random>
 #include <iomanip>
 #include <chrono>
+#include <unordered_set>
 std::vector<int>WidthCalculator::point_inc_(1);
 std::vector<int>WidthCalculator::cp_inc_(1);
 std::vector<sf::Vector2f>WidthCalculator::normalised_opposite_direction(1);
@@ -800,4 +801,20 @@ void WidthCalculator::FindWidth(const std::vector<sf::Vector2i>& track_points, c
 		include length and angle
 		*/
 	}
+	std::cout << "length: " << new_track.size() << "\n";
+	RemoveDups();
+	std::cout << "new length: " << new_track.size() << "\n";
+}
+
+
+void WidthCalculator::RemoveDups()
+{
+	auto end = new_track.end();
+	for (auto it = new_track.begin(); it != end; ++it) {
+		end = std::remove(it + 1, end, *it);
+	}
+
+	new_track.erase(end, new_track.end());
+
+
 }

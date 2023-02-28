@@ -1,47 +1,55 @@
-total length: 298
-number of turns: 9
-number of segments: 10
-shortest distance(euclidean distance): 29
+total length: 476
+number of turns: 11
+number of segments: 12
+shortest distance(euclidean distance): 163
 
-length 1: 51
-length 2: 22
-length 3: 44
-length 4: 41
-length 5: 2
-length 6: 1
-length 7: 2
-length 8: 61
-length 9: 73
-length 10: 49
+length 1: 115
+length 2: 17
+length 3: 9
+length 4: 1
+length 5: 73
+length 6: 45
+length 7: 1
+length 8: 102
+length 9: 5
+length 10: 3
+length 11: 103
+length 12: 46
 
-angle 1: 233
-angle 2: 164
-angle 3: 156
-angle 4: 206
-angle 5: 180
-angle 6: 135
-angle 7: 161
-angle 8: 153
-angle 9: 259
+angle 1: 166
+angle 2: 213
+angle 3: 184
+angle 4: 133
+angle 5: 200
+angle 6: 205
+angle 7: 95
+angle 8: 160
+angle 9: 220
+angle 10: 117
+angle 11: 132
 
-angles for turn 1: 53
-angles for turn 2: 16
-angles for turn 3: 24
-angles for turn 4: 26
-angles for turn 5: 0
-angles for turn 6: 45
-angles for turn 7: 19
-angles for turn 8: 27
-angles for turn 9: 79
+angles for turn 1: 14
+angles for turn 2: 33
+angles for turn 3: 4
+angles for turn 4: 47
+angles for turn 5: 20
+angles for turn 6: 25
+angles for turn 7: 85
+angles for turn 8: 20
+angles for turn 9: 40
+angles for turn 10: 63
+angles for turn 11: 48
 
-Control-points 1: (5, 29)
-Control-points 2: (56, 33)
-Control-points 3: (68, 52)
-Control-points 4: (101, 82)
-Control-points 5: (140, 95)
-Control-points 6: (142, 97)
-Control-points 7: (143, 98)
-Control-points 8: (145, 98)
-Control-points 9: (203, 79)
-Control-points 10: (255, 27)
-Control-points 11: (296, 55)
+Control-points 1: (7, 164)
+Control-points 2: (115, 204)
+Control-points 3: (132, 206)
+Control-points 4: (139, 212)
+Control-points 5: (140, 213)
+Control-points 6: (213, 211)
+Control-points 7: (256, 226)
+Control-points 8: (257, 227)
+Control-points 9: (336, 161)
+Control-points 10: (339, 156)
+Control-points 11: (342, 155)
+Control-points 12: (358, 53)
+Control-points 13: (387, 89)
