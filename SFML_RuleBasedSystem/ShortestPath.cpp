@@ -653,11 +653,18 @@ void ShortestPath::SegmentAngles()
 	}
 }
 
-void ShortestPath::WriteTrackPoints(std::vector<sf::Vector2i>&track_)
+void ShortestPath::WriteTrackPoints(std::vector<sf::Vector2i>&track_, const bool& is_curved_, const bool& is_width_)
 {
 	std::ofstream results_;
 	char const* c = "track_points.txt";
 	results_.open(c);
+
+	if (is_curved_||is_width_){
+		results_ << "t.p\n";
+	}
+	else{
+		results_ << "c.p\n";
+	}
 
 	if (track_.size()>5){
 		for (size_t i = 0; i < control_points.size(); i++){

@@ -352,10 +352,10 @@ int main()
 				s_p.WriteToFile();
 			}
 			if (ImGui::Button("Write Track Points")){
-				s_p.WriteTrackPoints(w_c.GetNewTrack());
+				s_p.WriteTrackPoints(w_c.GetNewTrack(),is_curved_,is_widthed_);
 			}
 			if (ImGui::Button("Write Curve Points")){
-				s_p.WriteTrackPoints(c_r.GetCurve());
+				s_p.WriteTrackPoints(c_r.GetCurve(), is_curved_, is_widthed_);
 			}
 			
 		}
