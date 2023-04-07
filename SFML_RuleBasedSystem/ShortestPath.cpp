@@ -660,11 +660,19 @@ void ShortestPath::WriteTrackPoints(std::vector<sf::Vector2i>&track_)
 	results_.open(c);
 
 	if (track_.size()>5){
+		for (size_t i = 0; i < control_points.size(); i++){
+			results_ << control_points[i].x << " " << control_points[i].y << "\n";
+		}
+		results_ << "end\n";
 		for (size_t i = 0; i < track_.size(); i++){
 			results_ << track_[i].x << " " << track_[i].y << "\n";
 		}
 	}
 	else{
+		for (size_t i = 0; i < control_points.size(); i++) {
+			results_ << control_points[i].x << " " << control_points[i].y << "\n";
+		}
+		results_ << "end\n";
 		for (size_t i = 0; i < track_points.size(); i++) {
 			results_ << track_points[i].x << " " << track_points[i].y << "\n";
 		}

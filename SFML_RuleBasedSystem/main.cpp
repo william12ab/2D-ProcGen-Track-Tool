@@ -63,6 +63,9 @@ void Init(sf::RenderWindow &window)
 	do_testing_ = true;
 	step_curve=0.01f;
 	alpha_cm_ = 0.5f;
+
+	is_curved_ = false;
+	is_widthed_ = false;
 }
 
 int main()
@@ -260,6 +263,7 @@ int main()
 				c_r.CreateCurve(v_d.GetGridSize(), voronoi_d, s_p.GetControlPoints(), looped);
 				c_r.RemoveDuplicates();
 				i_p.DrawWidthTrack(voronoi_d, v_d.GetGridSize(), c_r.GetCurve());
+				is_curved_ = true;
 			}
 			if (ImGui::Button("Draw Control Points"))
 			{
@@ -305,6 +309,8 @@ int main()
 		{
 			if (ImGui::Button("Renerate (Noise Method)"))
 			{
+				is_curved_ = false;
+				is_widthed_ = false;
 				ClearConsoleWin();
 				v_d.vector_all(peaks_to_count_*2);
 				int i = 0;
@@ -328,6 +334,8 @@ int main()
 			}
 			if (ImGui::Button("Regenerate"))
 			{
+				is_curved_ = false;
+				is_widthed_ = false;
 				ClearConsoleWin();
 				t_t.ClearStructs(v_d, voronoi_d, n_height_map, height_map, i_p, track_type_, resolution_, sites_, points_);
 				t_t.Generate(v_d, s_p, voronoi_d, height_map, n_height_map, i_p, times_, displacement_, number_, full_random_, track_type_);
@@ -345,6 +353,9 @@ int main()
 			}
 			if (ImGui::Button("Write Track Points")){
 				s_p.WriteTrackPoints(w_c.GetNewTrack());
+			}
+			if (ImGui::Button("Write Curve Points")){
+				s_p.WriteTrackPoints(c_r.GetCurve());
 			}
 			
 		}
@@ -368,6 +379,7 @@ int main()
 			}
 			if (ImGui::Button("Create width"))
 			{
+				is_widthed_ = true;
 				//curved code
 				if (w_c.GetBoolCurved())
 				{

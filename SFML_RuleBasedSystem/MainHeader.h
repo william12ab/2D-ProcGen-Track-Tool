@@ -45,6 +45,10 @@ int times_;					//how many times to repeat the dispacement
 int displacement_;
 
 
+bool is_curved_;
+bool is_widthed_;
+
+
 int radius_cutoff;
 int peaks_to_count_;
 bool do_testing_;
@@ -52,11 +56,3 @@ bool do_testing_;
 float image_scale;
 float step_curve;
 float alpha_cm_;
-//time code
-
-//the_clock::time_point startTime = the_clock::now();
-	//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(),0, v_d_p->GetGridSize());
-	//the_clock::time_point endTime = the_clock::now();
-	//auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-	//std::cout << "time(v d): " << time_taken; std::cout << std::endl;
-	//
