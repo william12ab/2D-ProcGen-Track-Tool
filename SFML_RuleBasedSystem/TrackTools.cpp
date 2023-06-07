@@ -36,15 +36,12 @@ void TrackTools::ClearStructs(VoronoiDiagram &v_d_p, sf::VertexArray& voronoi_d,
 	distance_map.resize((v_d_p.GetGridSize() * v_d_p.GetGridSize()));
 }
 
-void TrackTools::CreateVoronoi(VoronoiDiagram &v_d_p, sf::VertexArray& height_map,ImageProcessing&i_p_p, int times_, int displacement_, int number_, bool full_random_, int track_type_)
-{
+void TrackTools::CreateVoronoi(VoronoiDiagram &v_d_p, sf::VertexArray& height_map,ImageProcessing&i_p_p, int times_, int displacement_, int number_, bool full_random_, int track_type_){
 	//bool choosing what distribution to use
-	if (full_random_)
-	{
+	if (full_random_){
 		v_d_p.RandomPlaceSites();
 	}
-	else
-	{
+	else{
 		v_d_p.EqaullyDispursSites(times_, displacement_);
 	}
 
@@ -97,12 +94,9 @@ void TrackTools::CreateTrack(VoronoiDiagram &v_d_p, ShortestPath &s_p_p)
 	}
 	s_p_p.ReOrderArrays();
 }
-void TrackTools::Generate(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map, ImageProcessing &i_p_p, int times_, int displacement_, int number_, bool full_random_, int track_type_)
-{
-	do
-	{
-		if (v_d_p.GetFailed() || s_p_p.GetFailed())		//clears the diagram and resets the fail condition
-		{
+void TrackTools::Generate(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map, ImageProcessing &i_p_p, int times_, int displacement_, int number_, bool full_random_, int track_type_){
+	do{
+		if (v_d_p.GetFailed() || s_p_p.GetFailed()){//clears the diagram and resets the fail condition
 			ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
 		}
 		CreateVoronoi(v_d_p, height_map,i_p_p,times_,displacement_,number_,full_random_,track_type_);
@@ -162,4 +156,55 @@ void TrackTools::WidthSettings(WidthCalculator& w_c, ShortestPath& s_p, VoronoiD
 	w_c.FindWidth(track_, s_p.GetControlPoints(), v_d.GetPointPos(), s_p.GetLengths(), s_p.GetAngles(),i_p.GetNoiseMap(), v_d.GetGridSize());
 	i_p.CreateImage(voronoi_d, v_d.GetGridSize());
 	i_p.DrawWidthTrack(voronoi_d, v_d.GetGridSize(), w_c.GetNewTrack());
+}
+void TrackTools::RangesDecider(const int& chunk_iter, int& x_min, int& x_max, int& y_min, int& y_max,const int& grid_size) {
+	switch (chunk_iter){
+	case 0:
+		x_min = 0;
+		x_max = grid_size;
+		y_min = 0;
+		y_max = grid_size;
+		break;
+	case 1:
+		x_min = grid_size;
+		x_max= grid_size * 2;
+		break;
+	case 2:
+		x_min = 0;
+		x_max = grid_size;
+		y_min = grid_size;
+		y_max = grid_size * 2;
+		break;
+	case 3:
+		x_min = grid_size;
+		x_max = grid_size * 2;
+		y_min = grid_size;
+		y_max = grid_size * 2;
+		break;
+	}
+}
+
+void TrackTools::HeightLoop(const int& chunk_iter,bool & is_curved_, bool &is_widthed_,VoronoiDiagram& v_d, const int& peaks_to_count_,const int& layers_, ImageProcessing& i_p,const int&radius_cutoff,const int& number_, const int& track_type_, ShortestPath& s_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map, const int& grid_size) {
+	is_curved_ = false;
+	is_widthed_ = false;
+	ranges init;
+	RangesDecider(chunk_iter, init.x_min, init.x_max, init.y_min, init.y_max, grid_size);
+	
+
+	v_d.vector_all(peaks_to_count_ * 2);
+	int i = 0;
+	while (!v_d.GetStopH() || !v_d.GetStopL()) {//these are for stopping if track is below or above point
+		v_d.FindMax(layers_, i_p.GetNoiseMap(),init);
+		if (!v_d.GetStopH()) {//finds the highest point in the terrain
+			v_d.DirectionDecider(radius_cutoff, layers_, i, i_p.GetNoiseMap(), v_d.GetHighPoint(), true, init);		//finds point on circumference 
+			i++;
+		}
+		if (!v_d.GetStopL()) {
+			v_d.DirectionDecider(80, layers_, i + 1, i_p.GetNoiseMap(), v_d.GetLowPoint(), false, init);		//finds point on circumference 
+			i++;
+		}
+	}
+	TerrainLoop(v_d, s_p, voronoi_d, height_map, n_height_map, i_p, number_, track_type_);
+	v_d.SetStopL(false);
+	v_d.SetStopH(false);
 }

@@ -4,11 +4,13 @@
 #include "ImageProcessing.h"
 #include "WidthCalculator.h"
 #include "CatmullRomSpline.h"
-
+#include "StructRanges.h"
 class TrackTools
 {
 public:
 	TrackTools();
+
+	void SetChunk(bool f) { is_chunk = f; }
 
 	void ResetVars(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map);				//resets the vars
 	void SetVars(VoronoiDiagram &v_d_p, ImageProcessing &i_p_p, int track_type_, int resolution_, int sites_, int points_);											//sets the vars used
@@ -22,6 +24,12 @@ public:
 	void TerrainLoop(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map, ImageProcessing &i_p_p, int number_, int track_type_);
 
 	void WidthSettings(WidthCalculator& w_c, ShortestPath & s_p, VoronoiDiagram&v_d, ImageProcessing&i_p, sf::VertexArray&voronoi_d,const int& layers_, std::vector<sf::Vector2i>& track_);
+
+	void HeightLoop(const int& chunk_iter,bool& is_curved_, bool& is_widthed_, VoronoiDiagram& v_d, const int& peaks_to_count_, const int& layers_, ImageProcessing& i_p, const int& radius_cutoff, const int& number_, const int& track_type_, ShortestPath& s_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map, const int& grid_size);
+
+	void RangesDecider(const int& chunk_iter, int&x_min, int&x_max, int&y_min, int&y_max, const int& grid_size);
 private:
+
+	bool is_chunk;
 };
 

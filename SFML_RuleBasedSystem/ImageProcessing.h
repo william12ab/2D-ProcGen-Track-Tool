@@ -19,7 +19,7 @@ public:
 
 	//Getters
 	float* GetHeightVal() { return heightmap_; }
-	int* GetNoiseMap() const { return noise_heightmap_; }
+	int* GetNoiseMap() const { return noise_maps_vector[0]; }
 	bool GetIsChunking() { return is_chunking_; }
 
 	//Drawing functions
@@ -46,7 +46,7 @@ public:
 	//
 
 	//saving functions
-	void CreateFinalHM(int grid_size, sf::VertexArray& vertexarray, int layers_);								//creates final heightmap
+	void CreateFinalHM(int grid_size, sf::VertexArray& vertexarray, int layers_, const int& chunk_index_);								//creates final heightmap
 	void WriteToFile(int grid_size, sf::VertexArray& vertexarray, int layers_);									//saves to file
 	void SaveUpScale(int grid_sizez, float scale);																//saves a upscaled image- first version
 	void SaveUpScaledImage(int grid_sizez, sf::VertexArray& vertexarray, float scale);							//saves an upscaled image

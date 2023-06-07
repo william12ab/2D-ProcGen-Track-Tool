@@ -220,33 +220,28 @@ int main()
 					}
 				}
 			}
-			if (ImGui::Button("Create FBM Image"))
-			{
+			if (ImGui::Button("Create FBM Image")){
 				t_t.ClearStructs(v_d, voronoi_d, *noise_maps[0], height_map, i_p, track_type_, resolution_, sites_, points_);
 				i_p.DrawFBM(*noise_maps[0], v_d.GetGridSize(), octaves_, frequency_);
 			}
 		}
 		ImGui::Text("\n");
-		if (ImGui::CollapsingHeader("Curve Variables"))
-		{
+		if (ImGui::CollapsingHeader("Curve Variables")){
 			ImGui::SliderFloat("Definition of Curve:", &step_curve, 0, 1);
 			d_c.SetStepSize(step_curve);
 			ImGui::Text("Keep alpha at 0 or 0.5");
 			ImGui::SliderFloat("Aplha for CatmullRom:", &alpha_cm_, 0, 1);
 			c_r.SetStepSize(alpha_cm_);
 			ImGui::Text("\n");
-			if (ImGui::CollapsingHeader("Change ControlPoints"))
-			{
+			if (ImGui::CollapsingHeader("Change ControlPoints")){
 				auto temp_ = s_p.GetControlPoints();
 				auto size_ = s_p.GetControlPoints().size();
 				std::vector<int> x_, y_;
-				for (int i = 0; i < size_; i++)
-				{
+				for (int i = 0; i < size_; i++){
 					x_.push_back(temp_[i].x);
 					y_.push_back(temp_[i].y);
 				}
-				for (int i = 0; i < size_; i++)
-				{
+				for (int i = 0; i < size_; i++){
 					int x_y[2] = { x_[i],y_[i] };
 					std::string s_x = "x: " + std::to_string(i) + " y: " + std::to_string(i);
 					const char* l_x = s_x.c_str();
@@ -325,49 +320,32 @@ int main()
 			}
 		}
 		ImGui::Text("\n");
-		if (ImGui::CollapsingHeader("Generate Options"))
-		{
-			if (ImGui::Button("Renerate (Noise Method)"))
-			{
-				is_curved_ = false;
-				is_widthed_ = false;
+		if (ImGui::CollapsingHeader("Generate Options")){
+			if (ImGui::Button("Renerate (Noise Method)")){
 				ClearConsoleWin();
-				v_d.vector_all(peaks_to_count_*2);
-				int i = 0;
-				while (!v_d.GetStopH() || !v_d.GetStopL())
-				{
-					v_d.FindMax(layers_, i_p.GetNoiseMap());								//finds the highest point in the terrain
-					if (!v_d.GetStopH())
-					{
-						v_d.DirectionDecider(radius_cutoff, layers_, i, i_p.GetNoiseMap(), v_d.GetHighPoint(), true);		//finds point on circumference 
-						i++;
-					}
-					if (!v_d.GetStopL())
-					{
-						v_d.DirectionDecider(80, layers_, i + 1, i_p.GetNoiseMap(), v_d.GetLowPoint(), false);		//finds point on circumference 
-						i++;
-					}
+				if (!is_chunking_){
+					t_t.HeightLoop(0,is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, voronoi_d, height_map, *noise_maps[0], v_d.GetGridSize());
 				}
-				t_t.TerrainLoop(v_d, s_p,voronoi_d,height_map, *noise_maps[0],i_p,number_,track_type_);
-				v_d.SetStopL(false);
-				v_d.SetStopH(false);
+				else {
+					t_t.SetChunk(i_p.GetIsChunking());
+					for (int i = 0; i < 4; i++){
+						t_t.HeightLoop(i,is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, voronoi_d, height_map, *noise_maps[i], v_d.GetGridSize());
+					}	
+				}
 			}
-			if (ImGui::Button("Regenerate"))
-			{
+			if (ImGui::Button("Regenerate")){
 				is_curved_ = false;
 				is_widthed_ = false;
 				ClearConsoleWin();
 				t_t.ClearStructs(v_d, voronoi_d, *noise_maps[0], height_map, i_p, track_type_, resolution_, sites_, points_);
 				t_t.Generate(v_d, s_p, voronoi_d, height_map, *noise_maps[0], i_p, times_, displacement_, number_, full_random_, track_type_);
 			}
-			if (ImGui::Button("Create Final Heightmap"))
-			{
-				i_p.CreateFinalHM(v_d.GetGridSize(), final_map, layers_);
+			if (ImGui::Button("Create Final Heightmap")){
+				i_p.CreateFinalHM(v_d.GetGridSize(), final_map, layers_,0);
 			}
-			if (ImGui::Button("Write to file"))
-			{
+			if (ImGui::Button("Write to file")){
 				final_map.resize(v_d.GetGridSize() * v_d.GetGridSize());
-				i_p.CreateFinalHM(v_d.GetGridSize(), final_map, layers_);
+				i_p.CreateFinalHM(v_d.GetGridSize(), final_map, layers_,0);
 				i_p.WriteToFile(v_d.GetGridSize(), voronoi_d, layers_);
 				s_p.WriteToFile();
 			}

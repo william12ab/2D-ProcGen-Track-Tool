@@ -4,6 +4,7 @@
 #include "SimplexNoise.h"
 #include <iostream>
 #include <vector>
+#include "StructRanges.h"
 class VoronoiDiagram
 {
 public:
@@ -53,11 +54,11 @@ public:
 	//
 	
 	//these functions should go in another class
-	void DirectionDecider(const int &radius_cutoff_,const int &layers_,const int &index_v, int* const& noise_h_m, const sf::Vector2i& high_or_low, bool b_what_p);
+	void DirectionDecider(const int &radius_cutoff_,const int &layers_,const int &index_v, int* const& noise_h_m, const sf::Vector2i& high_or_low, bool b_what_p, const ranges& init);
 	void FindCircumPoint(int x_value_, int y_value_, int signal_, const int radius_cutoff_, const int layers_, int modifier_, int place, int* const& noise_h_m, sf::Vector2i&circum_point_, const sf::Vector2i& high_or_low, bool b_what_p);
 	void radiiDecider(const int &index_v, const sf::Vector2i& high_or_low);
 	void ResetVars();
-	void FindMax(const int &layers_,int* const &noise_grid);			//finds high point in terrain
+	void FindMax(const int &layers_,int* const &noise_grid, const ranges&init);			//finds high point in terrain
 	void SetHighPoint(const int &layers_, int* const &noise_grid, sf::Vector2i& high_point_v_, int& high_point_,const int &i,const int &j, int& min_height, sf::Vector2i &low_point_v_);
 	void vector_all(int size); //resets vectors for terrain.
 	void SetDirectionXY(int &signal, int &x, int &y, int a, int b, int c);
@@ -103,6 +104,7 @@ private:
 		sf::Vector2i point=sf::Vector2i(0,0);
 		int r_length=0;
 	}peak_;
+
 
 	int high_point;			//used			stores value of highest point. eg: say it was 200m in real values
 	sf::Vector2i high_point_v;		//used		coords of highpoint

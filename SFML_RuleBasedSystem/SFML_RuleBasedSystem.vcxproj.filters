@@ -125,5 +125,8 @@
     <ClInclude Include="WidthCalculator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StructRanges.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -450,18 +450,15 @@ void ImageProcessing::ResizeGrid(int grid_size, float scale,int *grid)
 //
 
 //saving functions
-void ImageProcessing::CreateFinalHM(int grid_size, sf::VertexArray& vertexarray, int layers_)
-{
+void ImageProcessing::CreateFinalHM(int grid_size, sf::VertexArray& vertexarray, int layers_, const int& chunk_index_){
 	//y=i, x=j
-	for (int i = 0; i < grid_size; i++)
-	{
-		for (int j = 0; j < grid_size; j++)
-		{
+	for (int i = 0; i < grid_size; i++){
+		for (int j = 0; j < grid_size; j++){
 			int i_alpha_two = alpha_channel_[i * grid_size + j];				//int version of alpha
 			float i_alpha_percent = (float)i_alpha_two / 255.0f;				//alpha as value between 0.0 to 1.0
 
 			int i_c_one = int(heightmap_[i * grid_size + j]);					//int value of c
-			int i_c_two = (noise_heightmap_[i * grid_size + j] / layers_);					//int value of co
+			int i_c_two = (noise_maps_vector[chunk_index_][i * grid_size + j] / layers_);					//int value of co
 
 			float i_c_t_a = (float)i_c_two / 255.0f;							//decimal value of co
 			float is = (float)i_c_one / 255.0f;									//decimal value of c

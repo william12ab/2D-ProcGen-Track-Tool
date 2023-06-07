@@ -118,6 +118,7 @@
     <ClInclude Include="MainHeader.h" />
     <ClInclude Include="ShortestPath.h" />
     <ClInclude Include="SimplexNoise.h" />
+    <ClInclude Include="StructRanges.h" />
     <ClInclude Include="TrackTools.h" />
     <ClInclude Include="VoronoiDiagram.h" />
     <ClInclude Include="WidthCalculator.h" />
