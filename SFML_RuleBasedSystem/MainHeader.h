@@ -24,6 +24,7 @@ int track_type_;	//track type
 bool render_height_map_;
 bool n_render_height_map_;
 bool f_render_height_map_;
+bool is_chunking_;
 
 void SetRenderHeightMap(bool f) { render_height_map_ = f; }
 void SetRenderNoiseMap(bool f) { n_render_height_map_ = f; }

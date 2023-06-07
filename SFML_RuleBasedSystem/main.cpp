@@ -33,8 +33,7 @@ void ClearConsoleWin() {
 	SetConsoleCursorPosition(console, tl);
 }
 
-void Init(sf::RenderWindow &window)
-{
+void Init(sf::RenderWindow &window){
 	font.loadFromFile("DefaultAriel.ttf");
 	//text setting
 	SettingText();
@@ -66,6 +65,7 @@ void Init(sf::RenderWindow &window)
 
 	is_curved_ = false;
 	is_widthed_ = false;
+	is_chunking_=false;
 }
 
 int main()
@@ -99,11 +99,20 @@ int main()
 	//sets up the vertex array and the data structures for voronoi diagram
 	sf::VertexArray voronoi_d(sf::Points, (v_d.GetGridSize() * v_d.GetGridSize()));
 	sf::VertexArray height_map(sf::Points, (v_d.GetGridSize() * v_d.GetGridSize()));
-	sf::VertexArray n_height_map(sf::Points, (v_d.GetGridSize() * v_d.GetGridSize()));
+	sf::VertexArray n_height_map_chunk_0(sf::Points, (v_d.GetGridSize() * v_d.GetGridSize()));
+	sf::VertexArray n_height_map_chunk_1(sf::Points, (v_d.GetGridSize() * v_d.GetGridSize()));
+	sf::VertexArray n_height_map_chunk_2(sf::Points, (v_d.GetGridSize() * v_d.GetGridSize()));
+	sf::VertexArray n_height_map_chunk_3(sf::Points, (v_d.GetGridSize() * v_d.GetGridSize()));
 	sf::VertexArray final_map(sf::Points, (v_d.GetGridSize() * v_d.GetGridSize()));
+	std::vector<sf::VertexArray*>noise_maps;
+	noise_maps.push_back(&n_height_map_chunk_0);
+	noise_maps.push_back(&n_height_map_chunk_1);
+	noise_maps.push_back(&n_height_map_chunk_2);
+	noise_maps.push_back(&n_height_map_chunk_3);
 	//
 	//creates a track initially 
-	t_t.Generate(v_d, s_p, voronoi_d, height_map, n_height_map, i_p, times_, displacement_, number_, full_random_, track_type_);
+	
+	t_t.Generate(v_d, s_p, voronoi_d, height_map, *noise_maps[0], i_p, times_, displacement_, number_, full_random_, track_type_);
 	
 	//
 	// While the window is open, update	
@@ -178,6 +187,7 @@ int main()
 		ImGui::Text("\n");
 		if (ImGui::CollapsingHeader("Heightmap Variables"))
 		{
+			ImGui::Checkbox("chunking?", &is_chunking_);
 			ImGui::SliderInt("Size of cell outlines", &number_, 0, 100);
 			ImGui::Text("lower = large outlines");
 			ImGui::Text("higher = less effect");
@@ -191,20 +201,30 @@ int main()
 			ImGui::SliderFloat("Frequency:,", &frequency_, 0.0, 1.0f);
 			if (ImGui::Button("Change alpha"))
 			{
-				i_p.ChangeAlpha(n_height_map, v_d.GetGridSize(), alpha_);
+				i_p.ChangeAlpha(*noise_maps[0], v_d.GetGridSize(), alpha_);
 			}
-			if (ImGui::Button("Create Noise Image"))
-			{
-				t_t.ClearStructs(v_d, voronoi_d, n_height_map, height_map, i_p,track_type_,resolution_,sites_,points_);
-				i_p.DrawNoise(n_height_map, v_d.GetGridSize(), layers_, frequency_);
-			}
+			if (ImGui::Button("Create Noise Image")){
+				if (!is_chunking_){
+					t_t.ClearStructs(v_d, voronoi_d, *noise_maps[0], height_map, i_p, track_type_, resolution_, sites_, points_);
+					i_p.DrawNoise(*noise_maps[0], v_d.GetGridSize(), layers_, frequency_, 0);
+				}
+				else {
+					t_t.ClearStructs(v_d, voronoi_d, *noise_maps[0], height_map, i_p, track_type_, resolution_, sites_, points_);
+					for (int i = 1; i < 4; i++){
+						noise_maps[i]->clear();
+						noise_maps[i]->resize(resolution_ * resolution_);
+					}
 
+					for (int i = 0; i < 4; i++){
+						i_p.DrawNoise(*noise_maps[i], v_d.GetGridSize(), layers_, frequency_, i);
+					}
+				}
+			}
 			if (ImGui::Button("Create FBM Image"))
 			{
-				t_t.ClearStructs(v_d, voronoi_d, n_height_map, height_map, i_p, track_type_, resolution_, sites_, points_);
-				i_p.DrawFBM(n_height_map, v_d.GetGridSize(), octaves_, frequency_);
+				t_t.ClearStructs(v_d, voronoi_d, *noise_maps[0], height_map, i_p, track_type_, resolution_, sites_, points_);
+				i_p.DrawFBM(*noise_maps[0], v_d.GetGridSize(), octaves_, frequency_);
 			}
-
 		}
 		ImGui::Text("\n");
 		if (ImGui::CollapsingHeader("Curve Variables"))
@@ -328,7 +348,7 @@ int main()
 						i++;
 					}
 				}
-				t_t.TerrainLoop(v_d, s_p,voronoi_d,height_map,n_height_map,i_p,number_,track_type_);
+				t_t.TerrainLoop(v_d, s_p,voronoi_d,height_map, *noise_maps[0],i_p,number_,track_type_);
 				v_d.SetStopL(false);
 				v_d.SetStopH(false);
 			}
@@ -337,8 +357,8 @@ int main()
 				is_curved_ = false;
 				is_widthed_ = false;
 				ClearConsoleWin();
-				t_t.ClearStructs(v_d, voronoi_d, n_height_map, height_map, i_p, track_type_, resolution_, sites_, points_);
-				t_t.Generate(v_d, s_p, voronoi_d, height_map, n_height_map, i_p, times_, displacement_, number_, full_random_, track_type_);
+				t_t.ClearStructs(v_d, voronoi_d, *noise_maps[0], height_map, i_p, track_type_, resolution_, sites_, points_);
+				t_t.Generate(v_d, s_p, voronoi_d, height_map, *noise_maps[0], i_p, times_, displacement_, number_, full_random_, track_type_);
 			}
 			if (ImGui::Button("Create Final Heightmap"))
 			{
@@ -357,7 +377,6 @@ int main()
 			if (ImGui::Button("Write Curve Points")){
 				s_p.WriteTrackPoints(c_r.GetCurve(), is_curved_, is_widthed_);
 			}
-			
 		}
 		ImGui::Text("\n");
 		if (ImGui::CollapsingHeader("Width Options"))
@@ -394,8 +413,6 @@ int main()
 		ImGui::Text("\n");
 		ImGui::Text("\n");
 		ImGui::Text("\n");
-		
-
 		if (ImGui::CollapsingHeader("Keyboard Controls"))
 		{
 			ImGui::TextWrapped("Press A to display diagram");
@@ -430,13 +447,19 @@ int main()
 		input_manager.Zoom();
 		//render
 		window.clear();
-		if (render_height_map_)
-		{
+		if (render_height_map_){
 			window.draw(height_map);
 		}
-		if (n_render_height_map_)
-		{
-			window.draw(n_height_map);
+		if (n_render_height_map_){
+			if (!is_chunking_){
+				window.draw(*noise_maps[0]);
+			}
+			else {
+				for (int i = 0; i < 4; i++){
+					window.draw(*noise_maps[i]);
+				}
+			}
+			
 		}
 		if (f_render_height_map_)
 		{

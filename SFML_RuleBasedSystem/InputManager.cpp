@@ -109,38 +109,3 @@ void InputManager::HandleInput(VoronoiDiagram &v_d_p,sf::VertexArray& vertexarra
 		input->setKeyUp(sf::Keyboard::F3);
 	}
 }
-
-
-//
-//if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-//{
-//	v_d_p->DrawFullVoronoiDiagram(voronoi_d, v_d_p->GetGridSize());
-//}
-//if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-//{
-//	render_height_map_ = true;
-//}
-//if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-//{
-//	render_height_map_ = false;
-//}
-//if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
-//{
-//	n_render_height_map_ = true;
-//}
-//if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-//{
-//	n_render_height_map_ = false;
-//}
-//if (sf::Keyboard::isKeyPressed(sf::Keyboard::F))
-//{
-//	v_d_p->DrawVoronoiDiagram(voronoi_d, v_d_p->GetGridSize(), v_d_p->GetNumberOfSites());
-//}
-//if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
-//{
-//	f_render_height_map_ = true;
-//}
-//if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
-//{
-//	f_render_height_map_ = false;
-//}
