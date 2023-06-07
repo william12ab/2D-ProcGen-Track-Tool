@@ -65,7 +65,7 @@ void Init(sf::RenderWindow &window){
 
 	is_curved_ = false;
 	is_widthed_ = false;
-	is_chunking_=false;
+	is_chunking_ = false;
 }
 
 int main()
@@ -89,7 +89,7 @@ int main()
 	TrackTools t_t;
 	CatmullRomSpline c_r;
 	WidthCalculator w_c;
-	
+	i_p.SetIsChunking(false);
 
 	InputManager input_manager(&input,&view_,&window);
 	//
@@ -185,9 +185,9 @@ int main()
 			ImGui::Text("0 = triangular\n1 = point to point\n2 = loop");
 		}
 		ImGui::Text("\n");
-		if (ImGui::CollapsingHeader("Heightmap Variables"))
-		{
+		if (ImGui::CollapsingHeader("Heightmap Variables")){
 			ImGui::Checkbox("chunking?", &is_chunking_);
+			i_p.SetIsChunking(is_chunking_);
 			ImGui::SliderInt("Size of cell outlines", &number_, 0, 100);
 			ImGui::Text("lower = large outlines");
 			ImGui::Text("higher = less effect");
@@ -204,7 +204,7 @@ int main()
 				i_p.ChangeAlpha(*noise_maps[0], v_d.GetGridSize(), alpha_);
 			}
 			if (ImGui::Button("Create Noise Image")){
-				if (!is_chunking_){
+				if (!i_p.GetIsChunking()){
 					t_t.ClearStructs(v_d, voronoi_d, *noise_maps[0], height_map, i_p, track_type_, resolution_, sites_, points_);
 					i_p.DrawNoise(*noise_maps[0], v_d.GetGridSize(), layers_, frequency_, 0);
 				}
@@ -235,7 +235,7 @@ int main()
 			ImGui::SliderFloat("Aplha for CatmullRom:", &alpha_cm_, 0, 1);
 			c_r.SetStepSize(alpha_cm_);
 			ImGui::Text("\n");
-			if (ImGui::CollapsingHeader("	Change ControlPoints"))
+			if (ImGui::CollapsingHeader("Change ControlPoints"))
 			{
 				auto temp_ = s_p.GetControlPoints();
 				auto size_ = s_p.GetControlPoints().size();
@@ -451,7 +451,7 @@ int main()
 			window.draw(height_map);
 		}
 		if (n_render_height_map_){
-			if (!is_chunking_){
+			if (!i_p.GetIsChunking()){
 				window.draw(*noise_maps[0]);
 			}
 			else {

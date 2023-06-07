@@ -15,10 +15,12 @@ public:
 	//setters
 	void SetF(float f) { pFrequency = f; }
 	void SetH(float h) { pHeightRange = h; }
+	void SetIsChunking(bool f) { is_chunking_ = f; }
 
 	//Getters
 	float* GetHeightVal() { return heightmap_; }
 	int* GetNoiseMap() const { return noise_heightmap_; }
+	bool GetIsChunking() { return is_chunking_; }
 
 	//Drawing functions
 	void DrawCurve(sf::VertexArray& vertexarray, int grid_size, int num_sites,int *grid);						//draws the curve to the vertex array		NOT USED
@@ -57,10 +59,16 @@ private:
 
 	float* heightmap_;
 	int* noise_heightmap_;
+	int* noise_heightmap_1;
+	int* noise_heightmap_2;
+	int* noise_heightmap_3;
+	std::vector<int*> noise_maps_vector;
 	int* alpha_channel_;
 	float* heightmap_fbm_;
 
 	float pFrequency = 1.0f;	//simplex noise frequency
 	float pHeightRange = 1.0f;
+
+	bool is_chunking_;
 };
 
