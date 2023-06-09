@@ -19,7 +19,7 @@ public:
 
 	//Getters
 	float* GetHeightVal() { return heightmap_; }
-	int* GetNoiseMap() const { return noise_maps_vector[0]; }
+	int* GetNoiseMap(const int&index_) const { return noise_maps_vector[index_]; }
 	bool GetIsChunking() { return is_chunking_; }
 
 	//Drawing functions

@@ -13,7 +13,7 @@ public:
 	InputManager(Input*in, sf::View* view, sf::RenderWindow* hwnd );
 	~InputManager();
 
-	void HandleInput(VoronoiDiagram &v_d_p, sf::VertexArray& vertexarray,bool &r_h_m,bool &r_n_h_m,bool &r_f_h_m, ImageProcessing &i_p_p, ShortestPath& s_p);
+	void HandleInput(bool &r_h_m,bool &r_n_h_m,bool &r_f_h_m, ImageProcessing &i_p_p, ShortestPath& s_p, bool &r_t, bool &r_d);
 
 	void Zoom();
 private:

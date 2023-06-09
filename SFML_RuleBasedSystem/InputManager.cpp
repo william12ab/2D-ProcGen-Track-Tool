@@ -47,11 +47,12 @@ void InputManager::Zoom()
 	}
 }
 
-void InputManager::HandleInput(VoronoiDiagram &v_d_p,sf::VertexArray& vertexarray, bool &r_h_m, bool &r_n_h_m, bool &r_f_h_m, ImageProcessing& i_p_p, ShortestPath&s_p)
+void InputManager::HandleInput(bool &r_h_m, bool &r_n_h_m, bool &r_f_h_m, ImageProcessing& i_p_p, ShortestPath&s_p, bool& r_t, bool& r_d)
 {
 	if (input->isKeyDown(sf::Keyboard::Keyboard::A))
 	{
-		i_p_p.DrawFullVoronoiDiagram(vertexarray, v_d_p.GetGridSize(),v_d_p.GetGrid());
+		r_d = true;
+		r_t = false;
 		input->setKeyUp(sf::Keyboard::A);
 	}
 	if (input->isKeyDown(sf::Keyboard::S))
@@ -70,11 +71,10 @@ void InputManager::HandleInput(VoronoiDiagram &v_d_p,sf::VertexArray& vertexarra
 	{
 		r_n_h_m = false;
 	}
-	if (input->isKeyDown(sf::Keyboard::F))
-	{
-		i_p_p.DrawTrack(vertexarray, v_d_p.GetGridSize(),v_d_p.GetNumberOfSites(),v_d_p.GetGrid());
+	if (input->isKeyDown(sf::Keyboard::F)){
+		r_d = false;
+		r_t = true;
 		input->setKeyUp(sf::Keyboard::F);
-
 	}
 	if (input->isKeyDown(sf::Keyboard::Z))
 	{

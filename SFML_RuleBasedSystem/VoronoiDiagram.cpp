@@ -403,17 +403,14 @@ void VoronoiDiagram::SetPoint(int type)
 	}
 }
 
-void VoronoiDiagram::SetHighPoint(const int &layers_, int* const& noise_grid, sf::Vector2i& high_point_v_, int& high_point_,const int &i,const int &j, int &min_height, sf::Vector2i &low_point_v_)
-{
+void VoronoiDiagram::SetHighPoint(const int &layers_, int* const& noise_grid, sf::Vector2i& high_point_v_, int& high_point_,const int &i,const int &j, int &min_height, sf::Vector2i &low_point_v_){
 	int temp_height = noise_grid[(i * grid_size_x) + j] / layers_;
-	if (temp_height > high_point_)
-	{
+	if (temp_height > high_point_){
 		high_point_ = temp_height;
 		high_point_v_.x = j;
 		high_point_v_.y = i;
 	}
-	if (temp_height< min_height)
-	{
+	if (temp_height< min_height){
 		min_height = temp_height;
 		low_point_v_.x = j;
 		low_point_v_.y = i;
@@ -553,55 +550,43 @@ void VoronoiDiagram::FindCircumPoint(int x_value_, int y_value_, int signal_,con
 	int x = high_or_low.x;
 	int iterator_ = 0;
 	found_raidus = false;
-	do
-	{
+	do{
 		//travelled the length of the radius then set found etc
-		if ((y + y_value_) >= 0 && (x+x_value_) >= 0 && (y + y_value_) <= grid_size_x && (x + x_value_) <= grid_size_x)
-		{
-			switch (b_what_p)
-			{
+		if ((y + y_value_) >= 0 && (x+x_value_) >= 0 && (y + y_value_) <= grid_size_x && (x + x_value_) <= grid_size_x){
+			switch (b_what_p){
 			case true:
-				if ((noise_h_m[((y + y_value_) * grid_size_x) + (x + x_value_)] / layers_) <= (radius_cutoff_))				//set the circumferences because you have reached a point on the circumference
-				{
-					if ((y+y_value_) >= 0 && (x+x_value_) >= 0 && (y + y_value_) <= grid_size_x && (x+x_value_) <= grid_size_x)
-					{
+				if ((noise_h_m[((y + y_value_) * grid_size_x) + (x + x_value_)] / layers_) <= (radius_cutoff_)){//set the circumferences because you have reached a point on the circumference
+					if ((y+y_value_) >= 0 && (x+x_value_) >= 0 && (y + y_value_) <= grid_size_x && (x+x_value_) <= grid_size_x){
 						x += x_value_, y += y_value_;
 						SetCircumPoint(circum_point_, x, y, iterator_, place);
 					}
-					else
-					{
+					else{
 						SetCircumPoint(circum_point_, x, y, 50, place);
 						std::cout << "		Else Statement.\n";
 					}
 				}
-				else
-				{
+				else{
 					SwitchPoint(iterator_, y, x, signal_, modifier_);
 				}
 				break;
 			case false:
-				if ((noise_h_m[((y + y_value_) * grid_size_x) + (x + x_value_)] / layers_) >= (radius_cutoff_))
-				{
-					if ((y + y_value_) >= 0 && (x + x_value_) >= 0 && (y + y_value_) <= grid_size_x && (x + x_value_) <= grid_size_x)
-					{
+				if ((noise_h_m[((y + y_value_) * grid_size_x) + (x + x_value_)] / layers_) >= (radius_cutoff_)){
+					if ((y + y_value_) >= 0 && (x + x_value_) >= 0 && (y + y_value_) <= grid_size_x && (x + x_value_) <= grid_size_x){
 						x += x_value_, y += y_value_;
 						SetCircumPoint(circum_point_, x, y, iterator_, place);
 					}
-					else
-					{
+					else{
 						SetCircumPoint(circum_point_, x, y, 50, place);
 						std::cout << "		Else Statement.\n";
 					}
 				}
-				else
-				{
+				else{
 					SwitchPoint(iterator_, y, x, signal_, modifier_);
 				}
 				break;
 			}
 		}
-		else
-		{
+		else{
 			SetCircumPoint(circum_point_, x, y, 70, place);						//if out of bounds (greater than resolution or less than resolution) then tell yourself that and set a fake radius.
 			std::cout << "		Point too far.\n";
 		}

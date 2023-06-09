@@ -47,6 +47,7 @@ void Init(sf::RenderWindow &window){
 	track_type_ = 1;  //1=p2p,0=loop
 	render_height_map_ = false;
 	n_render_height_map_ = false;
+	is_render_track = false;
 	number_ = 35;
 	div_ = 2.0f;
 	height_ = 1.0f;
@@ -68,8 +69,7 @@ void Init(sf::RenderWindow &window){
 	is_chunking_ = false;
 }
 
-int main()
-{
+int main(){
 	Input input;
 	sf::Clock clock;
 	sf::Clock deltaClock;
@@ -117,15 +117,13 @@ int main()
 	//
 	// While the window is open, update	
 
-	while (window.isOpen())
-	{
+	while (window.isOpen()){
 		// Parse events
 		sf::Event sf_event;
 		while (window.pollEvent(sf_event)) {
 			// Close the window when the close button is pressed
 			ImGui::SFML::ProcessEvent(sf_event);
-			switch (sf_event.type)
-			{
+			switch (sf_event.type){
 			case sf::Event::Closed:
 				window.close();
 				break;
@@ -145,24 +143,20 @@ int main()
 				input.setMousePosition(sf_event.mouseMove.x, sf_event.mouseMove.y);
 				break;
 			case sf::Event::MouseButtonPressed:
-				if (sf_event.mouseButton.button == sf::Mouse::Left)
-				{
+				if (sf_event.mouseButton.button == sf::Mouse::Left){
 					//update input class
 					input.setMouseLDown(true);
 				}
-				else if (sf_event.mouseButton.button == sf::Mouse::Right)
-				{
+				else if (sf_event.mouseButton.button == sf::Mouse::Right){
 					input.setMouseRDown(true);
 				}
 				break;
 			case sf::Event::MouseButtonReleased:
-				if (sf_event.mouseButton.button == sf::Mouse::Left)
-				{
+				if (sf_event.mouseButton.button == sf::Mouse::Left){
 					//update input class
 					input.setMouseLDown(false);
 				}
-				else if (sf_event.mouseButton.button == sf::Mouse::Right)
-				{
+				else if (sf_event.mouseButton.button == sf::Mouse::Right){
 					input.setMouseRDown(false);
 				}
 				break;
@@ -173,8 +167,7 @@ int main()
 		
 		ImGui::Begin("Options");
 		ImGui::Text("\n");
-		if (ImGui::CollapsingHeader("Track Variables"))
-		{
+		if (ImGui::CollapsingHeader("Track Variables")){
 			ImGui::SliderInt("Resolution", &resolution_, 100, 800);
 			ImGui::SliderInt("Sites", &sites_, 5, 100);
 			ImGui::SliderInt("Iterations of Displacement", &times_, 1, 32);
@@ -421,10 +414,16 @@ int main()
 		}
 		ImGui::End();
 		//used to display the whole voronoi diagram
-		input_manager.HandleInput(v_d, voronoi_d, render_height_map_, n_render_height_map_, f_render_height_map_,i_p,s_p);
+		input_manager.HandleInput(render_height_map_, n_render_height_map_, f_render_height_map_,i_p,s_p, is_render_track,is_render_diagram);
 		input_manager.Zoom();
 		//render
 		window.clear();
+		if (is_render_diagram){
+			i_p.DrawFullVoronoiDiagram(voronoi_d, v_d.GetGridSize(), v_d.GetGrid());
+		}
+		if (is_render_track){
+			i_p.DrawTrack(voronoi_d, v_d.GetGridSize(), v_d.GetNumberOfSites(), v_d.GetGrid());
+		}
 		if (render_height_map_){
 			window.draw(height_map);
 		}
@@ -437,7 +436,6 @@ int main()
 					window.draw(*noise_maps[i]);
 				}
 			}
-			
 		}
 		if (f_render_height_map_)
 		{

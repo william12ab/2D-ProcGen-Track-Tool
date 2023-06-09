@@ -41,7 +41,8 @@ public:
 
 	std::vector<sf::Vector2i> GetPointPos() { return point_pos; }
 	//
-
+	void EmptyCircles() { if (circles_.size() > 0){ circles_.empty();} }
+	
 	//setters
 	void SetNumberOfSites(int p) { num_of_sites = p; }					//sets the number of sites
 	void SetGridSize(int p) { grid_size_x=p; }							//sets the x and y of the grid
@@ -87,7 +88,7 @@ private:
 	int grid_size_x;							//size in the x axis of the diagram
 	int* sites_v_1;								//stores the sites in dynamic array
 	int* grid_v_1;								//stores the grid in dynamic array
-	int* grid_distance;
+	int* grid_distance;							//stores the distance map of the voronoi diagram
 
 	static std::vector<sf::Vector2i> point_pos;
 
@@ -119,7 +120,7 @@ private:
 
 
 	int max_value_height;			//for chekcing if all points of interest have been found.
-	bool stop_high_;						//for returning if all points have been found
+	bool stop_high_;				//for returning if all points have been found
 	bool stop_low_;
 };
 

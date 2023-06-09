@@ -115,12 +115,9 @@ void TrackTools::GenerateTerrainMethod(VoronoiDiagram &v_d_p, sf::VertexArray& v
 	v_d_p.SetPoint(track_track_);
 }
 
-void TrackTools::TerrainLoop(VoronoiDiagram &v_d_p,ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray&height_map, sf::VertexArray&n_height_map,ImageProcessing&i_p_p, int number_, int track_type_)
-{
-	do
-	{
-		if (v_d_p.GetFailed() || s_p_p.GetFailed())		//clears the diagram and resets the fail condition
-		{
+void TrackTools::TerrainLoop(VoronoiDiagram &v_d_p,ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray&height_map, sf::VertexArray&n_height_map,ImageProcessing&i_p_p, int number_, int track_type_){
+	do{
+		if (v_d_p.GetFailed() || s_p_p.GetFailed()){//clears the diagram and resets the fail condition
 			ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
 		}
 		GenerateTerrainMethod(v_d_p, height_map, i_p_p, number_, track_type_);
@@ -136,24 +133,24 @@ void TrackTools::WidthSettings(WidthCalculator& w_c, ShortestPath& s_p, VoronoiD
 	if (w_c.GetBoolAngles()){
 		s_p.SegmentAngles();
 	}
-	w_c.FindMinMax(layers_, i_p.GetNoiseMap(), v_d.GetGridSize());															//min max of image
-	w_c.FindTrackMinMax(track_, v_d.GetGridSize(), layers_, i_p.GetNoiseMap());								//min max of track
+	w_c.FindMinMax(layers_, i_p.GetNoiseMap(0), v_d.GetGridSize());															//min max of image
+	w_c.FindTrackMinMax(track_, v_d.GetGridSize(), layers_, i_p.GetNoiseMap(0));								//min max of track
 	if (w_c.GetBoolTValues()){
 		w_c.TrackTValues(track_, s_p.GetControlPoints());																					//give t value of lerp
 	}
 	if (w_c.GetBoolIncline()){
-		w_c.FindInclinePoints(s_p.GetControlPoints(), v_d.GetGridSize(), layers_, w_c.GetCPIncline(), i_p.GetNoiseMap());		//for the control points
-		w_c.FindInclinePoints(v_d.GetPointPos(), v_d.GetGridSize(), layers_, w_c.GetPointIncline(), i_p.GetNoiseMap());		//for the points
+		w_c.FindInclinePoints(s_p.GetControlPoints(), v_d.GetGridSize(), layers_, w_c.GetCPIncline(), i_p.GetNoiseMap(0));		//for the control points
+		w_c.FindInclinePoints(v_d.GetPointPos(), v_d.GetGridSize(), layers_, w_c.GetPointIncline(), i_p.GetNoiseMap(0));		//for the points
 	}
 	if (w_c.GetBoolFlat()){
 		//do nothing
 	}
 	else{
-		w_c.FindRelatedHeight(i_p.GetNoiseMap(), v_d.GetGridSize(), layers_, track_, s_p.GetControlPoints());
+		w_c.FindRelatedHeight(i_p.GetNoiseMap(0), v_d.GetGridSize(), layers_, track_, s_p.GetControlPoints());
 	}
 	
 	w_c.SetModi();
-	w_c.FindWidth(track_, s_p.GetControlPoints(), v_d.GetPointPos(), s_p.GetLengths(), s_p.GetAngles(),i_p.GetNoiseMap(), v_d.GetGridSize());
+	w_c.FindWidth(track_, s_p.GetControlPoints(), v_d.GetPointPos(), s_p.GetLengths(), s_p.GetAngles(),i_p.GetNoiseMap(0), v_d.GetGridSize());
 	i_p.CreateImage(voronoi_d, v_d.GetGridSize());
 	i_p.DrawWidthTrack(voronoi_d, v_d.GetGridSize(), w_c.GetNewTrack());
 }
@@ -166,20 +163,22 @@ void TrackTools::RangesDecider(const int& chunk_iter, int& x_min, int& x_max, in
 		y_max = grid_size;
 		break;
 	case 1:
-		x_min = grid_size;
-		x_max= grid_size * 2;
+		x_min = 0;
+		x_max = grid_size;
+		y_min = 0;
+		y_max = grid_size;
 		break;
 	case 2:
 		x_min = 0;
 		x_max = grid_size;
-		y_min = grid_size;
-		y_max = grid_size * 2;
+		y_min = 0;
+		y_max = grid_size;
 		break;
 	case 3:
-		x_min = grid_size;
-		x_max = grid_size * 2;
-		y_min = grid_size;
-		y_max = grid_size * 2;
+		x_min = 0;
+		x_max = grid_size;
+		y_min = 0;
+		y_max = grid_size;
 		break;
 	}
 }
@@ -189,18 +188,18 @@ void TrackTools::HeightLoop(const int& chunk_iter,bool & is_curved_, bool &is_wi
 	is_widthed_ = false;
 	ranges init;
 	RangesDecider(chunk_iter, init.x_min, init.x_max, init.y_min, init.y_max, grid_size);
-	
 
+	v_d.EmptyCircles();
 	v_d.vector_all(peaks_to_count_ * 2);
 	int i = 0;
 	while (!v_d.GetStopH() || !v_d.GetStopL()) {//these are for stopping if track is below or above point
-		v_d.FindMax(layers_, i_p.GetNoiseMap(),init);
+		v_d.FindMax(layers_, i_p.GetNoiseMap(chunk_iter),init);
 		if (!v_d.GetStopH()) {//finds the highest point in the terrain
-			v_d.DirectionDecider(radius_cutoff, layers_, i, i_p.GetNoiseMap(), v_d.GetHighPoint(), true, init);		//finds point on circumference 
+			v_d.DirectionDecider(radius_cutoff, layers_, i, i_p.GetNoiseMap(chunk_iter), v_d.GetHighPoint(), true, init);		//finds point on circumference 
 			i++;
 		}
 		if (!v_d.GetStopL()) {
-			v_d.DirectionDecider(80, layers_, i + 1, i_p.GetNoiseMap(), v_d.GetLowPoint(), false, init);		//finds point on circumference 
+			v_d.DirectionDecider(80, layers_, i + 1, i_p.GetNoiseMap(chunk_iter), v_d.GetLowPoint(), false, init);		//finds point on circumference 
 			i++;
 		}
 	}
