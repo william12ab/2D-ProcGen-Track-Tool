@@ -25,9 +25,9 @@ public:
 	int GetRadius() { return radius_length; }
 	bool GetFailed() { return failed_; }						
 
-	int* GetGrid() { return grid_v_1; }
+	int* GetGrid(const int& index) { return grid_vector[index]; }
 	int* GetSites() { return sites_v_1; }
-	int* GetGridDistance() { return grid_distance; }
+	int* GetGridDistance(const int& index) { return distance_grid_vector[index]; }
 
 	int GetNumberOfSites() { return num_of_sites; }						//returns the number of sites
 	int GetGridSize() { return grid_size_x; };							//returns the size of the grid
@@ -79,6 +79,8 @@ public:
 	void PlacePoint(int x,int y, int i, bool&found_);
 	void ThreePoints(const float values_[12]);
 	void SetPoint(int type);				//Sets the point(s) for the distance.
+	void ResetSitesForChunking(const int& num_of_sites_param);
+	void InsertChunks();
 private:
 	SimplexNoise perlin_;
 
@@ -88,7 +90,16 @@ private:
 	int grid_size_x;							//size in the x axis of the diagram
 	int* sites_v_1;								//stores the sites in dynamic array
 	int* grid_v_1;								//stores the grid in dynamic array
+	int* grid_chunk_1;
+	int* grid_chunk_2;
+	int* grid_chunk_3;
 	int* grid_distance;							//stores the distance map of the voronoi diagram
+	int* grid_distance_c_1;
+	int* grid_distance_c_2;
+	int* grid_distance_c_3;
+	std::vector<int*> grid_vector;
+	std::vector<int*> distance_grid_vector;
+
 
 	static std::vector<sf::Vector2i> point_pos;
 

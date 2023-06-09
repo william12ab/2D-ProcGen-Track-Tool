@@ -21,8 +21,14 @@ VoronoiDiagram::VoronoiDiagram()
 	num_of_points = 0;
 	num_of_sites = 0;
 	grid_v_1 = nullptr;
+	grid_chunk_1= nullptr;
+	grid_chunk_2 = nullptr;
+	grid_chunk_3 = nullptr;
 	sites_v_1 = nullptr;
 	grid_distance = nullptr;
+	grid_distance_c_1 = nullptr;
+	grid_distance_c_2 = nullptr;
+	grid_distance_c_3 = nullptr;
 	failed_ = false;
 	srand(static_cast <unsigned> (time(0)));
 	max_distance_ = 0;
@@ -40,19 +46,36 @@ VoronoiDiagram::VoronoiDiagram()
 	point_pos.clear();
 }
 
-VoronoiDiagram::~VoronoiDiagram()
-{
+VoronoiDiagram::~VoronoiDiagram(){
 	delete[] grid_v_1;
-	delete[] sites_v_1;				
+	delete[] grid_chunk_1;
+	delete[] grid_chunk_2;
+	delete[] grid_chunk_3;
 	delete[] grid_distance;
+	delete[] grid_distance_c_1;
+	delete[] grid_distance_c_2;
+	delete[] grid_distance_c_3;
+	delete[] sites_v_1;
+}
+void VoronoiDiagram::ResetSitesForChunking(const int& num_of_sites_param) {
+	delete[] sites_v_1;
+	sites_v_1 = new int[num_of_sites_param * 2];
 }
 
 void VoronoiDiagram::InitVector(const int& grid_size, const int& num_points, const int& num_sites)
 {
 	grid_size_x = grid_size;
 	grid_v_1 = new int[grid_size_x * grid_size_x];
+	grid_chunk_1= new int[grid_size_x * grid_size_x];
+	grid_chunk_2 = new int[grid_size_x * grid_size_x];
+	grid_chunk_3 = new int[grid_size_x * grid_size_x];
 	grid_distance = new int[grid_size_x * grid_size_x];
+	grid_distance_c_1 = new int[grid_size_x * grid_size_x];
+	grid_distance_c_2 = new int[grid_size_x * grid_size_x];
+	grid_distance_c_3 = new int[grid_size_x * grid_size_x];
 	sites_v_1 = new int[num_sites * 2];
+	InsertChunks();
+
 }
 
 void VoronoiDiagram::ResizeGrid(float scale)
@@ -61,10 +84,10 @@ void VoronoiDiagram::ResizeGrid(float scale)
 	int* temp_arr = new int[new_size * new_size];
 
 	//resizing grid
-	std::copy(grid_v_1, grid_v_1 + (grid_size_x * grid_size_x), temp_arr + 0);
+	std::copy(grid_vector[0], grid_vector[0] + (grid_size_x * grid_size_x), temp_arr + 0);
 	grid_size_x = new_size;
-	delete[] grid_v_1;
-	grid_v_1 = temp_arr;
+	delete[] grid_vector[0];
+	grid_vector[0] = temp_arr;
 }
 
 void VoronoiDiagram::UpScaleGrid(int grid_size, float scale)
@@ -80,7 +103,7 @@ void VoronoiDiagram::UpScaleGrid(int grid_size, float scale)
 
 				int x_dash = j * new_size / grid_size;
 				int y_dash = i * new_size / grid_size;
-				new_arr[x_dash * new_size + y_dash] = grid_v_1[i * grid_size + j];
+				new_arr[x_dash * new_size + y_dash] = grid_vector[0][i * grid_size + j];
 
 			}
 		});
@@ -94,7 +117,7 @@ void VoronoiDiagram::UpScaleGrid(int grid_size, float scale)
 				{
 					int d = 2;
 				}
-				int c = grid_v_1[i / (int)scale * grid_size + j / (int)scale];
+				int c = grid_vector[0][i / (int)scale * grid_size + j / (int)scale];
 				for (int g = 0; g < scale; g++)
 				{
 					new_arr[(i * new_size) + (j + g)] = c;
@@ -108,10 +131,9 @@ void VoronoiDiagram::UpScaleGrid(int grid_size, float scale)
 	{
 		parallel_for(0, new_size, [&](int j)
 			{
-				int c = grid_v_1[i / (int)scale * grid_size + j / (int)scale];
+				int c = grid_vector[0][i / (int)scale * grid_size + j / (int)scale];
 				for (int g = 0; g < scale; g++)
 				{
-
 					new_arr[(i + g) * new_size + j] = c;
 				}
 			});
@@ -124,8 +146,7 @@ void VoronoiDiagram::UpScaleGrid(int grid_size, float scale)
 		{
 			for (int j = 0; j < (new_size); j++)										//x
 			{
-				grid_v_1[i * new_size + j] = new_arr[i * new_size + j];
-
+				grid_vector[0][i * new_size + j] = new_arr[i * new_size + j];
 			}
 		});
 }
@@ -241,13 +262,13 @@ void VoronoiDiagram::DiagramAMP(){
 				}
 				//so if this point has a distance which all points do
 				if (ind > -1){
-					int s = grid_v_1[(j * grid_size_x) + i];
+					int s = grid_vector[0][(j * grid_size_x) + i];
 					int p = incr[ind];
-					grid_v_1[(j * grid_size_x) + i] = incr[ind];
+					grid_vector[0][(j * grid_size_x) + i] = incr[ind];
 					if (dist > max_distance_){
 						max_distance_ = dist;
 					}
-					grid_distance[(j * grid_size_x) + i] = dist;
+					distance_grid_vector[0][(j * grid_size_x) + i] = dist;
 				}
 			}
 		});
@@ -268,14 +289,14 @@ void VoronoiDiagram::SetEdges()
 		{
 			if (i + 1 < grid_size_x && j + 1 < grid_size_x)		//if in the bounds
 			{
-				if (grid_v_1[(j * grid_size_x) + i] != grid_v_1[(j * grid_size_x) + (i + 1)])		//if the current pos and pos 1 to the left are not the same
+				if (grid_vector[0][(j * grid_size_x) + i] != grid_vector[0][(j * grid_size_x) + (i + 1)])		//if the current pos and pos 1 to the left are not the same
 				{
-					grid_v_1[(j * grid_size_x) + i] = 0;			//set to path way
+					grid_vector[0][(j * grid_size_x) + i] = 0;			//set to path way
 					//here you could find what the sites bordering are
 				}
-				else if (grid_v_1[(j * grid_size_x) + i] != grid_v_1[((j + 1) * grid_size_x) + i])
+				else if (grid_vector[0][(j * grid_size_x) + i] != grid_vector[0][((j + 1) * grid_size_x) + i])
 				{
-					grid_v_1[(j * grid_size_x) + i] = 0;
+					grid_vector[0][(j * grid_size_x) + i] = 0;
 				}
 			}
 		}
@@ -292,10 +313,10 @@ void VoronoiDiagram::SetPointModi(int& x, int&x_2, int& y, int&y_2, const float 
 
 void VoronoiDiagram::PlacePoint(int x, int y, int i, bool& found_)
 {
-	if (grid_v_1[(y * grid_size_x) + x] == 0)
+	if (grid_vector[0][(y * grid_size_x) + x] == 0)
 	{
 		found_ = true;
-		grid_v_1[(y * grid_size_x) + x] = 2000 + i;
+		grid_vector[0][(y * grid_size_x) + x] = 2000 + i;
 		point_pos.push_back(sf::Vector2i(x, y));
 	}
 }
@@ -631,6 +652,16 @@ void VoronoiDiagram::vector_all(int size){
 	circum_points.resize(2);
 }
 
+void VoronoiDiagram::InsertChunks() {
+	distance_grid_vector.push_back(grid_distance);
+	distance_grid_vector.push_back(grid_distance_c_1);
+	distance_grid_vector.push_back(grid_distance_c_2);
+	distance_grid_vector.push_back(grid_distance_c_3);
+	grid_vector.push_back(grid_v_1);
+	grid_vector.push_back(grid_chunk_1);
+	grid_vector.push_back(grid_chunk_2);
+	grid_vector.push_back(grid_chunk_3);
+}
 
 void VoronoiDiagram::TerrainSites()
 {

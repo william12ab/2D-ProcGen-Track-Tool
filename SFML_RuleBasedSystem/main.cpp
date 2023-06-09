@@ -333,11 +333,11 @@ int main(){
 		if (ImGui::CollapsingHeader("Generate Options")){
 			if (ImGui::Button("Renerate (Noise Method)")){
 				ClearConsoleWin();
+				t_t.SetChunk(i_p.GetIsChunking());
 				if (!is_chunking_){
 					t_t.HeightLoop(0,is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *voronoi_diagrams[0], *distance_maps[0], *noise_maps[0], v_d.GetGridSize());
 				}
 				else {
-					t_t.SetChunk(i_p.GetIsChunking());
 					for (int i = 0; i < 4; i++){
 						t_t.HeightLoop(i,is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *voronoi_diagrams[i], *distance_maps[i], *noise_maps[i], v_d.GetGridSize());
 					}	
@@ -346,6 +346,7 @@ int main(){
 			if (ImGui::Button("Regenerate")){
 				is_curved_ = false;
 				is_widthed_ = false;
+				t_t.SetChunk(i_p.GetIsChunking());
 				ClearConsoleWin();
 				t_t.ClearStructs(v_d, *voronoi_diagrams[0], *noise_maps[0], *distance_maps[0], i_p, track_type_, resolution_, sites_, points_);
 				t_t.Generate(v_d, s_p, *voronoi_diagrams[0], *distance_maps[0], *noise_maps[0], i_p, times_, displacement_, number_, full_random_, track_type_);
@@ -436,10 +437,10 @@ int main(){
 		//render
 		window.clear();
 		if (is_render_diagram){
-			i_p.DrawFullVoronoiDiagram(*voronoi_diagrams[0], v_d.GetGridSize(), v_d.GetGrid());
+			i_p.DrawFullVoronoiDiagram(*voronoi_diagrams[0], v_d.GetGridSize(), v_d.GetGrid(0));
 		}
 		if (is_render_track){
-			i_p.DrawTrack(*voronoi_diagrams[0], v_d.GetGridSize(), v_d.GetNumberOfSites(), v_d.GetGrid());
+			i_p.DrawTrack(*voronoi_diagrams[0], v_d.GetGridSize(), v_d.GetNumberOfSites(), v_d.GetGrid(0));
 		}
 		if (render_height_map_){
 			window.draw(*distance_maps[0]);
