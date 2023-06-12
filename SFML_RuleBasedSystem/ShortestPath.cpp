@@ -20,31 +20,36 @@ ShortestPath::ShortestPath()
 	do_testing_ = true;
 }
 
+void ShortestPath::SetForChunk() {
+	found_end = false;				//start as false;
+	count_holder_ = 0;
+	it = 0;
+	end_ = 0;					//start as false;
+	x_holder_ = 0, y_holder_ = 0;
+	failed_ = false;
+	total_track_distance = 0;
+	number_of_turns = 0;
+	do_testing_ = true;
+}
+
 //i =z/y, j=x
 //if a position isnt = to zero or 700 then set it to -2 which signals a blocked path
 //else set to -1 which is a possible path
-void ShortestPath::Initgrid(const int &grid_size, int* grid, const int &num_points)
-{
+void ShortestPath::Initgrid(const int& grid_size, int* grid, const int& num_points) {
 	int start = -3;
 	number_of_turns = 0;
-
 	total_track_distance = 0;
-
-	if (!old_num.empty())
-	{
+	if (!old_num.empty()) {
 		old_num.clear();
 	}
-	if (!occurances.empty())
-	{
+	if (!occurances.empty()) {
 		occurances.clear();
 	}
-	if (!old_occurances.empty())
-	{
+	if (!old_occurances.empty()) {
 		old_occurances.clear();
 	}
 	unique_count_old_occuarances = 0;
 	unique_count_occuarances = 0;
-
 	track_points.clear();
 	it = 0;
 	x_holder_ = 0;
@@ -59,53 +64,42 @@ void ShortestPath::Initgrid(const int &grid_size, int* grid, const int &num_poin
 	south_e_site = 0;
 	south_w_site = 0;
 	segment_lengths_.clear();
-	first_position.x= 0;
+	first_position.x = 0;
 	first_position.y = 0;
 	line_positions.clear();
 	control_points.clear();
 	angles_.clear();
 	new_angles_.clear();
 	int size_ = num_points - 1;
-	for (int i = 0; i < grid_size; i++)
-	{
-				for (int j = 0; j < grid_size; j++)
-				{
-					if (grid[(i * grid_size) + j] == 0)
-					{
-						if (do_testing_)
-						{
-							old_num.push_back(grid[(i * grid_size) + j]);
-						}
-						grid[(i * grid_size) + j] = -1;			//possible path
-					}
-					if (grid[(i * grid_size) + j] == 2000)
-					{
-						if (do_testing_)
-						{
-							old_num.push_back(grid[(i * grid_size) + j]);
-						}
-						grid[(i * grid_size) + j] = 0;								//first position
-					}
-					for (int p = 0; p < (size_); p++)
-					{
-						if (grid[(i * grid_size) + j] == 2001 + p)
-						{
-							if (do_testing_)
-							{
-								old_num.push_back(grid[(i * grid_size) + j]);
-							}
-							grid[(i * grid_size) + j] = start - p;				//every other position
-						}
-					}
-					if (grid[(i * grid_size) + j] > 0)
-					{
-						if (do_testing_)
-						{
-							old_num.push_back(grid[(i * grid_size) + j]);
-						}
-						grid[(i * grid_size) + j] = -2;										//non positions
-					}
+	for (int i = 0; i < grid_size; i++) {
+		for (int j = 0; j < grid_size; j++) {
+			if (grid[(i * grid_size) + j] == 0){
+				if (do_testing_){
+					old_num.push_back(grid[(i * grid_size) + j]);
 				}
+				grid[(i * grid_size) + j] = -1;			//possible path
+			}
+			if (grid[(i * grid_size) + j] == 2000){
+				if (do_testing_){
+					old_num.push_back(grid[(i * grid_size) + j]);
+				}
+				grid[(i * grid_size) + j] = 0;								//first position
+			}
+			for (int p = 0; p < (size_); p++){
+				if (grid[(i * grid_size) + j] == 2001 + p){
+					if (do_testing_){
+						old_num.push_back(grid[(i * grid_size) + j]);
+					}
+					grid[(i * grid_size) + j] = start - p;				//every other position
+				}
+			}
+			if (grid[(i * grid_size) + j] > 0){
+				if (do_testing_){
+					old_num.push_back(grid[(i * grid_size) + j]);
+				}
+				grid[(i * grid_size) + j] = -2;										//non positions
+			}
+		}
 	}
 }
 
@@ -114,33 +108,25 @@ void ShortestPath::Initgrid(const int &grid_size, int* grid, const int &num_poin
 //fills the data structure with numbers that equal a distance from the starting point, increasing in distance apart.
 //runs until the end position has been found or if it cant find the end position, run a number of times then exit the loop
 //stores the end position for reference in phasse 2
-void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int start_p, int end_p)
-{
+void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int start_p, int end_p){
 	it = 0;
 	x_holder_ = 0;
 	y_holder_ = 0;
 	end_ = false;
 	count_holder_ = 0;
 	found_end = false;
-	while (!found_end)
-	{
+	while (!found_end){
 		bool found_empty = false;
-		for (int y = 0; y < grid_size && !found_end; y++)
-		{
-			for (int x = 0; x < grid_size; x++)
-			{
-				if (grid[(y * grid_size) + x] == it)
-				{
-					if (y > 0)
-					{
+		for (int y = 0; y < grid_size && !found_end; y++){
+			for (int x = 0; x < grid_size; x++){
+				if (grid[(y * grid_size) + x] == it){
+					if (y > 0){
 						int& north = grid[((y - 1) * grid_size) + x];
-						if (north == -1)
-						{
+						if (north == -1){
 							grid[((y - 1) * grid_size) + x] = it + 1;
 							found_empty = true;
 						}
-						else if (north == end_n)
-						{
+						else if (north == end_n){
 							found_end = true;
 							count_holder_ = it;
 							x_holder_ = x;
@@ -150,17 +136,14 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 					}
 
 					//checks the nortth east cell
-					if (y > 0 && x < grid_size - 1)
-					{
+					if (y > 0 && x < grid_size - 1){
 						int& north = grid[((y - 1) * grid_size) + (x + 1)];
-						if (north == -1)
-						{
+						if (north == -1){
 							grid[((y - 1) * grid_size) + (x + 1)] = it + 1;
 							//north = it + 1;
 							found_empty = true;
 						}
-						else if (north == end_n)
-						{
+						else if (north == end_n){
 							found_end = true;
 							count_holder_ = it;
 							x_holder_ = x + 1;
@@ -170,17 +153,14 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 					}
 
 					//checks the "east" wall
-					if (x < grid_size - 1)
-					{
+					if (x < grid_size - 1){
 						int& east = grid[(y * grid_size) + (x + 1)];
-						if (east == -1)
-						{
+						if (east == -1){
 							grid[(y * grid_size) + (x + 1)] = it + 1;
 							//east = it + 1;
 							found_empty = true;
 						}
-						else if (east == end_n)
-						{
+						else if (east == end_n){
 							found_end = true;
 							count_holder_ = it;
 							x_holder_ = x + 1;
@@ -190,17 +170,14 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 					}
 
 					//check the "south" cell, 
-					if (y < grid_size - 1)
-					{
+					if (y < grid_size - 1){
 						int& south = grid[((y + 1) * grid_size) + x];	//creating reference to the point, used for direction
-						if (south == -1)
-						{
+						if (south == -1){
 							grid[((y + 1) * grid_size) + x] = it + 1;
 							//south = it + 1;			//
 							found_empty = true;
 						}
-						else if (south == end_n)
-						{
+						else if (south == end_n){
 							found_end = true;		//if the east cell is -3 then this is the end cell. set the bool to true, exiits loop
 							count_holder_ = it;		//holds the it value at -3
 							y_holder_ = y + 1;
@@ -210,17 +187,14 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 					}
 
 					//checks the soth east cell
-					if (y < grid_size - 1 && x < grid_size - 1)
-					{
+					if (y < grid_size - 1 && x < grid_size - 1){
 						int& south = grid[((y + 1) * grid_size) + (x + 1)];	//creating reference to the point, used for direction
-						if (south == -1)
-						{
+						if (south == -1){
 							grid[((y + 1) * grid_size) + (x + 1)] = it + 1;
 							//south = it + 1;			//
 							found_empty = true;
 						}
-						else if (south == end_n)
-						{
+						else if (south == end_n){
 							found_end = true;		//if the east cell is -3 then this is the end cell. set the bool to true, exiits loop
 							count_holder_ = it;		//holds the it value at -3
 							y_holder_ = y + 1;
@@ -230,17 +204,14 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 					}
 
 					//checks the south west
-					if (y < grid_size - 1 && x > 0)
-					{
+					if (y < grid_size - 1 && x > 0){
 						int& south = grid[((y + 1) * grid_size) + (x - 1)];	//creating reference to the point, used for direction
-						if (south == -1)
-						{
+						if (south == -1){
 							grid[((y + 1) * grid_size) + (x - 1)] = it + 1;
 							//south = it + 1;			//
 							found_empty = true;
 						}
-						else if (south == end_n)
-						{
+						else if (south == end_n){
 							found_end = true;		//if the east cell is -3 then this is the end cell. set the bool to true, exiits loop
 							count_holder_ = it;		//holds the it value at -3
 							y_holder_ = y + 1;
@@ -249,17 +220,14 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 						}
 					}
 					//checks "west" wall
-					if (x > 0)
-					{
+					if (x > 0){
 						int& west = grid[(y * grid_size) + (x - 1)];
-						if (west == -1)
-						{
+						if (west == -1){
 							grid[(y * grid_size) + (x - 1)] = it + 1;
 							//west = it + 1;
 							found_empty = true;
 						}
-						else if (west == end_n)
-						{
+						else if (west == end_n){
 							found_end = true;
 							count_holder_ = it;
 							x_holder_ = x - 1;
@@ -270,17 +238,14 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 					//checks the "north" cell
 
 					//checks the nortth west cell
-					if (y > 0 && x > 0)
-					{
+					if (y > 0 && x > 0){
 						int& north = grid[((y - 1) * grid_size) + (x - 1)];
-						if (north == -1)
-						{
+						if (north == -1){
 							grid[((y - 1) * grid_size) + (x - 1)] = it + 1;
 							//north = it + 1;
 							found_empty = true;
 						}
-						else if (north == end_n)
-						{
+						else if (north == end_n){
 							found_end = true;
 							count_holder_ = it;
 							x_holder_ = x - 1;
@@ -293,8 +258,7 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 		}
 
 		//just in case it cant find the end position and needs to break out of the loop so that it doesnt get stuck in it
-		if (it > 1000)
-		{
+		if (it > 1000){
 			std::cout << "hit the break in phase 1\n";
 			failed_ = true;
 			break;
@@ -304,7 +268,7 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 }
 
 //passes in the current point, finds it and then changes it to the new number
-void ShortestPath::ChangePoint(const int &grid_size, int* grid, int point, int new_point)
+void ShortestPath::ChangePoint(const int& grid_size, int* grid, int point, int new_point)
 {
 	if (!failed_)
 	{
@@ -343,14 +307,14 @@ void ShortestPath::PrintOutStartEnd(const int& grid_size, int* const& grid)
 			{
 				end_p.x = j;
 				end_p.y = i;
-				std::cout << "third x " << j << " y " << i; 
-				std::cout << std::endl;				
+				std::cout << "third x " << j << " y " << i;
+				std::cout << std::endl;
 			}
 			if (grid[(i * grid_size) + j] == -5)
 			{
 				std::cout << "fourth x " << j << " y " << i;
 				std::cout << std::endl;
-			}	
+			}
 			if (grid[(i * grid_size) + j] == -6)
 			{
 				std::cout << "fith x " << j << " y " << i;
@@ -361,7 +325,7 @@ void ShortestPath::PrintOutStartEnd(const int& grid_size, int* const& grid)
 }
 
 //removes all numbers found by the initial phase, so that the method can run again and be used to find another path
-void ShortestPath::CleanGrid(const int &grid_size, int* grid)
+void ShortestPath::CleanGrid(const int& grid_size, int* grid)
 {
 	for (int i = 0; i < grid_size; i++)
 	{
@@ -383,7 +347,7 @@ int ShortestPath::DistanceSqrt(int x, int y, int x2, int y2)
 }
 
 
-void ShortestPath::SetNESW(const int &grid_size, std::vector<int>& occ)
+void ShortestPath::SetNESW(const int& grid_size, std::vector<int>& occ)
 {
 	north_site = old_num[((y_holder_ - 1) * grid_size) + (x_holder_)];
 	north_e_site = old_num[((y_holder_ - 1) * grid_size) + (x_holder_ + 1)];
@@ -418,7 +382,7 @@ void ShortestPath::EraseVector(std::vector<int>& occ, int& unique)
 	unique = std::unique(occ.begin(), occ.end()) - occ.begin();
 }
 
-void ShortestPath::FindCompassPoss(const int& compass, int* grid, const int &grid_size, int& how_many, int& track_d, const int& x, const int& y, std::vector<sf::Vector2i>& vec_temp)
+void ShortestPath::FindCompassPoss(const int& compass, int* grid, const int& grid_size, int& how_many, int& track_d, const int& x, const int& y, std::vector<sf::Vector2i>& vec_temp)
 {
 	if (compass == count_holder_)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 	{
@@ -434,8 +398,7 @@ void ShortestPath::FindCompassPoss(const int& compass, int* grid, const int &gri
 
 //same here remove the north and all that
 //from phase one you use the x and y holder vars and count holder and end
-void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
-{
+void ShortestPath::PhaseTwo(const int& grid_size, int* grid, int end_n){
 	std::vector<sf::Vector2i> temp_vec_c_p;
 	std::vector<sf::Vector2i> temp_vec_t_p;
 	bool found_start = false;
@@ -443,13 +406,10 @@ void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
 	first_position.y = y_holder_;
 	temp_vec_c_p.emplace_back(first_position.x, first_position.y);
 
-	while (!found_start && !end_)
-	{
+	while (!found_start && !end_){
 		int how_many = 0;						//checks for error
-		if (count_holder_ != 0)				//only run if track successfully made
-		{
-			if (unique_count_occuarances != 3 && unique_count_occuarances != 1 && unique_count_occuarances != 4)		//so if the previous position is not 1 or 3 then find new but if not dont. 
-			{
+		if (count_holder_ != 0){			//only run if track successfully made
+			if (unique_count_occuarances != 3 && unique_count_occuarances != 1 && unique_count_occuarances != 4){		//so if the previous position is not 1 or 3 then find new but if not dont. 
 				if (unique_count_occuarances > 4)					//test code
 				{
 					int ur = 23;		//test
@@ -466,7 +426,7 @@ void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
 			int& southW = grid[((y_holder_ + 1) * grid_size) + (x_holder_ - 1)];		//setting a reference that is used which holds the north position in the gridArray which will incriment if the value is equal to the value in the countHolder var, the current path of the route.
 			int& west = grid[(y_holder_ * grid_size) + (x_holder_ - 1)];	//west
 
-			FindCompassPoss(north, grid, grid_size, how_many, total_track_distance, 0, -1,temp_vec_t_p);
+			FindCompassPoss(north, grid, grid_size, how_many, total_track_distance, 0, -1, temp_vec_t_p);
 			FindCompassPoss(northE, grid, grid_size, how_many, total_track_distance, 1, -1, temp_vec_t_p);	//x and then y
 			FindCompassPoss(east, grid, grid_size, how_many, total_track_distance, 1, 0, temp_vec_t_p);	//x and then y
 			FindCompassPoss(south, grid, grid_size, how_many, total_track_distance, 0, 1, temp_vec_t_p);	//x and then y
@@ -475,8 +435,7 @@ void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
 			FindCompassPoss(west, grid, grid_size, how_many, total_track_distance, -1, 0, temp_vec_t_p);	//x and then y
 			FindCompassPoss(northW, grid, grid_size, how_many, total_track_distance, -1, -1, temp_vec_t_p);	//x and then y
 
-			if (y_holder_ == 0 || x_holder_ == 0)
-			{
+			if (y_holder_ == 0 || x_holder_ == 0){
 				failed_ = true;
 				break;
 			}
@@ -486,14 +445,12 @@ void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
 			EraseVector(old_occurances, unique_count_old_occuarances);
 			EraseVector(occurances, unique_count_occuarances);
 			//test code
-			if (unique_count_old_occuarances > 4 || unique_count_occuarances > 4)
-			{
+			if (unique_count_old_occuarances > 4 || unique_count_occuarances > 4){
 				int hee = 23;
 			}
 
 			//if all of them are == to 2 then check for corner 
-			if (unique_count_occuarances == 2 && unique_count_old_occuarances == 2)
-			{
+			if (unique_count_occuarances == 2 && unique_count_old_occuarances == 2){
 				//find the min and max values to see if there is a difference in either one which signals a change in the sites bordering the location
 				auto it = minmax_element(std::begin(occurances), std::end(occurances));
 				auto it_old = minmax_element(std::begin(old_occurances), std::end(old_occurances));
@@ -506,25 +463,21 @@ void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
 					line_positions.emplace_back(x_holder_, y_holder_);															//pushes second position
 					temp_vec_c_p.emplace_back(x_holder_, y_holder_);															//current c.p
 					first_position.x = x_holder_;
-					first_position.y= y_holder_;
+					first_position.y = y_holder_;
 				}
 				old_occurances.clear();										//clear the vectors so that when it comes to checking a new poosition theres nothjing there
 				occurances.clear();
 			}
-			else
-			{
+			else{
 				occurances.clear();						//only clear the new positions sites not the old if there are not 2 sites in it - you want to preserve the old position because this is where a change begins	
 			}
-
-			if (how_many == 0)
-			{
+			if (how_many == 0){
 				break;
 				std::cout << "hit how many phase 2\n";
 			}
 		}
 
-		if (count_holder_ <= end_n)
-		{
+		if (count_holder_ <= end_n){
 			segment_lengths_.push_back(DistanceSqrt(x_holder_, y_holder_, first_position.x, first_position.y));			//finds the length of the final segment 
 			line_positions.emplace_back(first_position.x, first_position.y);					//final segment coords
 			line_positions.emplace_back(x_holder_, y_holder_);									//last coord
@@ -550,8 +503,7 @@ void ShortestPath::PhaseTwo(const int &grid_size, int* grid,int end_n)
 	}
 }
 
-void ShortestPath::ReOrderArrays()
-{
+void ShortestPath::ReOrderArrays() {
 	std::reverse(line_positions.begin(), line_positions.end());
 	std::reverse(segment_lengths_.begin(), segment_lengths_.end());
 }
@@ -608,7 +560,7 @@ void ShortestPath::SegmentAngles()
 		x3 = x2;
 		x4 = line_positions[line_iterator + 3].x;
 
-		
+
 		if ((y2 - y1) == 0 || (x2 - x1) == 0)								//if the result of y2-1 or x2-x1 is going to be 0 - set the gradient(m1) to 0 because you cant divide by 0
 		{
 			m1 = 0;
@@ -653,29 +605,29 @@ void ShortestPath::SegmentAngles()
 	}
 }
 
-void ShortestPath::WriteTrackPoints(std::vector<sf::Vector2i>&track_, const bool& is_curved_, const bool& is_width_)
+void ShortestPath::WriteTrackPoints(std::vector<sf::Vector2i>& track_, const bool& is_curved_, const bool& is_width_)
 {
 	std::ofstream results_;
 	char const* c = "track_points.txt";
 	results_.open(c);
 
-	if (is_curved_||is_width_){
+	if (is_curved_ || is_width_) {
 		results_ << "t.p\n";
 	}
-	else{
+	else {
 		results_ << "c.p\n";
 	}
 
-	if (track_.size()>5){
-		for (size_t i = 0; i < control_points.size(); i++){
+	if (track_.size() > 5) {
+		for (size_t i = 0; i < control_points.size(); i++) {
 			results_ << control_points[i].x << " " << control_points[i].y << "\n";
 		}
 		results_ << "end\n";
-		for (size_t i = 0; i < track_.size(); i++){
+		for (size_t i = 0; i < track_.size(); i++) {
 			results_ << track_[i].x << " " << track_[i].y << "\n";
 		}
 	}
-	else{
+	else {
 		for (size_t i = 0; i < control_points.size(); i++) {
 			results_ << control_points[i].x << " " << control_points[i].y << "\n";
 		}
@@ -723,7 +675,7 @@ void ShortestPath::WriteToFile()
 	results_ << "\n";
 	for (int i = 0; i < control_points.size(); i++)
 	{
-		results_ << "Control-points " << i + 1 << ": (" << control_points[i].x << ", " << control_points[i].y<<")\n";
+		results_ << "Control-points " << i + 1 << ": (" << control_points[i].x << ", " << control_points[i].y << ")\n";
 	}
 	results_.close();
 }

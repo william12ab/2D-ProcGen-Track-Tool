@@ -3,7 +3,7 @@
 #include <SFML/Graphics/Image.hpp>
 using namespace concurrency;
 
-ImageProcessing::ImageProcessing(){
+ImageProcessing::ImageProcessing() {
 	heightmap_ = nullptr;
 	heightmap_fbm_ = nullptr;
 	noise_heightmap_ = nullptr;
@@ -24,7 +24,7 @@ ImageProcessing::~ImageProcessing()
 	delete[]heightmap_fbm_;
 }
 
-void ImageProcessing::InitStructures(int grid_size){
+void ImageProcessing::InitStructures(int grid_size) {
 	heightmap_ = new float[grid_size * grid_size];
 	heightmap_fbm_ = new float[grid_size * grid_size];
 	noise_heightmap_ = new int[grid_size * grid_size];
@@ -39,10 +39,10 @@ void ImageProcessing::InitStructures(int grid_size){
 	noise_maps_vector.push_back(noise_heightmap_3);
 }
 
-void ImageProcessing::DrawCurve(sf::VertexArray& vertexarray, int grid_size, int num_sites,int *grid){
-	for (int i = 0; i < grid_size; i++){
-		for (int j = 0; j < grid_size; j++){
-			switch (grid[(i * grid_size) + j]){
+void ImageProcessing::DrawCurve(sf::VertexArray& vertexarray, int grid_size, int num_sites, int* grid) {
+	for (int i = 0; i < grid_size; i++) {
+		for (int j = 0; j < grid_size; j++) {
+			switch (grid[(i * grid_size) + j]) {
 			case -5:
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::White;
@@ -56,104 +56,119 @@ void ImageProcessing::DrawCurve(sf::VertexArray& vertexarray, int grid_size, int
 	}
 }
 
-void ImageProcessing::DrawTrack(sf::VertexArray& vertexarray, int grid_size, int num_sites,int *grid){
-	parallel_for(0, grid_size, [&](int i){
-			for (int j = 0; j < grid_size; j++){
-				switch (grid[(i * grid_size) + j]){
-				case -12303:
-					vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-					vertexarray[i * grid_size + j].color = sf::Color::White;
-					break;
-				case -1234:
-					vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-					vertexarray[i * grid_size + j].color = sf::Color::White;
-					break;
-				case 0:
-					vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-					vertexarray[i * grid_size + j].color = sf::Color::White;
-					break;
-				case -3:
-					vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-					vertexarray[i * grid_size + j].color = sf::Color::White;
-					break;
-				default:
-					vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-					vertexarray[i * grid_size + j].color = sf::Color{ 0,0,0,0 };
-					break;
-				}
+void ImageProcessing::DrawTrack(sf::VertexArray& vertexarray, int grid_size, int num_sites, int* grid, const int&chunk_index, const ranges& limits_) {
+	int x_index = 0;
+	int y_index = 0;
+	for(int i = limits_.y_min; i < limits_.y_max; i++) {
+		for (int j = limits_.x_min; j < limits_.x_max; j++) {
+			switch (grid[(y_index * grid_size) + x_index]) {
+			case -12303:
+				vertexarray[y_index * grid_size + x_index].position = sf::Vector2f(j, i);
+				vertexarray[y_index * grid_size + x_index].color = sf::Color::White;
+				break;
+			case -1234:
+				vertexarray[y_index * grid_size + x_index].position = sf::Vector2f(j, i);
+				vertexarray[y_index * grid_size + x_index].color = sf::Color::White;
+				break;
+			case 0:
+				vertexarray[y_index * grid_size + x_index].position = sf::Vector2f(j, i);
+				vertexarray[y_index * grid_size + x_index].color = sf::Color::White;
+				break;
+			case -3:
+				vertexarray[y_index * grid_size + x_index].position = sf::Vector2f(j, i);
+				vertexarray[y_index * grid_size + x_index].color = sf::Color::White;
+				break;
+			default:
+				vertexarray[y_index * grid_size + x_index].position = sf::Vector2f(j, i);
+				vertexarray[y_index * grid_size + x_index].color = sf::Color{ 0,0,0,0 };
+				break;
 			}
-		});
-}
-void ImageProcessing::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size,int*grid){
-	for (int i = 0; i < grid_size; i++){
-		for (int j = 0; j < grid_size; j++){
-			if (grid[(i * grid_size) + j] == -1){							//diagram
-				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-				vertexarray[i * grid_size + j].color = sf::Color::Green;
-			}
+			x_index += 1;
 		}
+		y_index += 1;
+		x_index = 0;
+		}
+}
+void ImageProcessing::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size, int* grid, const int& chunk_index, const ranges& limits_) {
+	int index_x = 0;
+	int index_y = 0;
+	for (int i = limits_.y_min; i < limits_.y_max; i++) {
+		index_x = 0;
+		for (int j = limits_.x_min; j < limits_.x_max; j++) {
+			if (grid[(index_y * grid_size) + index_x] == -1) {							//diagram
+				vertexarray[index_y * grid_size + index_x].position = sf::Vector2f(j, i);
+				vertexarray[index_y * grid_size + index_x].color = sf::Color::Green;
+			}
+			index_x += 1;
+		}
+		index_y += 1;
 	}
 }
-void ImageProcessing::DrawVoronoiNoise(sf::VertexArray& vertextarray, const int &grid_size, const int &num_sites, const int &num_, int* const &grid_distance){
+void ImageProcessing::DrawVoronoiNoise(sf::VertexArray& vertextarray, const int& grid_size, const int& num_sites, const int& num_, int* const& grid_distance, const int& chunk_index, const ranges& init) {
 	int max_d_ = 0;
-	parallel_for(0, grid_size, [&](int i){
-			for (int j = 0; j < grid_size; j++){
-				float s = float((float)1 / (float)num_sites);							//gets the thing as a percentage
-						//for example 1/100 = 0.01
-				int d = grid_distance[(i * grid_size) + j] / (float)num_;			//the distance divided by a number, so makes the distance smaller or bigger
-						//for example could be 1000/25 = 40
-						//so distance is higher with less sites, distance lower with more sites, so with higher sites you need lower num_
+	int index_x = 0;
+	int index_y = 0;
+	for (int i = init.y_min; i < init.y_max; i++) {
+		index_x = 0;
+		for (int j = init.x_min; j < init.x_max; j++) {
+			float s = float((float)1 / (float)num_sites);							//gets the thing as a percentage
+					//for example 1/100 = 0.01
+			int d = grid_distance[(index_y * grid_size) + index_x] / (float)num_;			//the distance divided by a number, so makes the distance smaller or bigger
+					//for example could be 1000/25 = 40
+					//so distance is higher with less sites, distance lower with more sites, so with higher sites you need lower num_
 
-				int n = s * 255;										//percentage * 255
-						//this is the percentage of the colour
-				if (grid_distance[(i * grid_size) + j] > max_d_){
-					max_d_ = grid_distance[(i * grid_size) + j];
-				}
-				int r = d;
-				//so the further away the distance is higher r
-				if (r > 255){
-					r = 255;				//keeps the values within range
-				}
-				sf::Uint8 c = 255 - r;
-				float h_c = int(255 - r);
-				//so end color, closer to the site you are - brighter, further away - darker
-				c /= 2;						//makes the colour smaller
-				h_c /= 2;
-				heightmap_[i * grid_size + j] = h_c;
-
-				vertextarray[i * grid_size + j].position = sf::Vector2f(j, i);
-				vertextarray[i * grid_size + j].color = sf::Color{ c , c , c };
+			int n = s * 255;										//percentage * 255
+					//this is the percentage of the colour
+			if (grid_distance[(index_y * grid_size) + index_x] > max_d_) {
+				max_d_ = grid_distance[(index_y * grid_size) + index_x];
 			}
-		});
+			int r = d;
+			//so the further away the distance is higher r
+			if (r > 255) {
+				r = 255;				//keeps the values within range
+			}
+			sf::Uint8 c = 255 - r;
+			float h_c = int(255 - r);
+			//so end color, closer to the site you are - brighter, further away - darker
+			c /= 2;						//makes the colour smaller
+			h_c /= 2;
+			heightmap_[i * grid_size + j] = h_c;
+
+			vertextarray[index_y * grid_size + index_x].position = sf::Vector2f(j, i);
+			vertextarray[index_y * grid_size + index_x].color = sf::Color{ c , c , c };
+			index_x += 1;
+		}
+		index_y += 1;
+	}
 }
-void ImageProcessing::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_, const float &frequency, const int& chunk_){
+void ImageProcessing::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_, const float& frequency, const int& chunk_) {
 	int start_x = 0;
 	int end_x = grid_size;
 	int start_y = 0;
 	int end_y = grid_size;
-	switch (chunk_){
+	switch (chunk_) {
 	case 0:
 		break;
 	case 1:
 		start_x = grid_size;
-		end_x = grid_size*2;
+		end_x = grid_size * 2;
 		break;
 	case 2:
 		start_x = 0;
 		end_x = grid_size;
 		start_y = grid_size;
-		end_y = grid_size*2;
+		end_y = grid_size * 2;
 		break;
 	case 3:
 		start_x = grid_size;
-		end_x = grid_size*2;
+		end_x = grid_size * 2;
 		start_y = grid_size;
-		end_y = grid_size*2;
+		end_y = grid_size * 2;
 		break;
 	}
-	
-	for (size_t i = 0; i < grid_size; i++){
-		for (size_t j = 0; j < grid_size; j++){
+
+	for (size_t i = 0; i < grid_size; i++) {
+		for (size_t j = 0; j < grid_size; j++) {
 			noise_maps_vector[chunk_][(i * grid_size) + j] = 0;
 		}
 	}
@@ -170,12 +185,12 @@ void ImageProcessing::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int
 	float old_range_ = (1 - (-1));
 	float new_range_ = (1 - 0);
 
-	int x_iter=0,y_iter=0;
-	for (int a = 0; a < layers_; a++){
+	int x_iter = 0, y_iter = 0;
+	for (int a = 0; a < layers_; a++) {
 		float r3 = frequency;
-		for (int i = start_y; i < end_y; i++){
+		for (int i = start_y; i < end_y; i++) {
 			x_iter = 0;
-			for (int j = start_x; j < end_x; j++){
+			for (int j = start_x; j < end_x; j++) {
 				float height = (float)perlin_.noise(j, i, (r3 * scale)) * pHeightRange;
 				float new_value_ = (((height - (-1)) * new_range_) / old_range_) + 0;
 				height = 0.5f * (height + 1.0f);				//keeps the value between 0-1 instead of the -1 to 1 range it is in initially
@@ -187,10 +202,10 @@ void ImageProcessing::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int
 
 				vertexarray[y_iter * grid_size + x_iter].position = sf::Vector2f(j, i);
 				vertexarray[y_iter * grid_size + x_iter].color = sf::Color{ c , c , c };
-				if (new_value_ < min_){
+				if (new_value_ < min_) {
 					min_ = new_value_;
 				}
-				if (new_value_ > max_){
+				if (new_value_ > max_) {
 					max_ = new_value_;
 				}
 				x_iter += 1;
@@ -199,9 +214,9 @@ void ImageProcessing::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int
 		}
 	}
 }
-void ImageProcessing::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int octaves_, const float &frequency){
-	for (size_t i = 0; i < grid_size; i++){
-		for (size_t j = 0; j < grid_size; j++){
+void ImageProcessing::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int octaves_, const float& frequency) {
+	for (size_t i = 0; i < grid_size; i++) {
+		for (size_t j = 0; j < grid_size; j++) {
 			heightmap_fbm_[(i * grid_size) + j] = 0;
 		}
 	}
@@ -212,21 +227,21 @@ void ImageProcessing::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int o
 	float min_ = INT_MAX;
 	float max_ = 0.0f;
 	float new_range_ = (1 - 0);
-	for (int i = 0; i < grid_size; i++){
-		for (int j = 0; j < grid_size; j++){
+	for (int i = 0; i < grid_size; i++) {
+		for (int j = 0; j < grid_size; j++) {
 			float a = 3.0f;						//controls the height.
 			float mul = scale * 1.0f;
 			float height = 0.0f;
-			for (int o = 0; o < octaves_; o++){
+			for (int o = 0; o < octaves_; o++) {
 				height += (perlin_.noise(i * mul, j * mul, frequency)) * a;
 				a *= 0.5f;
 				mul *= 2.0f;
 			}
 			heightmap_fbm_[(i * grid_size) + j] = height;
-			if (height < min_){					//gets the max and min values that the algo produces, so that they can then be changed to the range between 0 and 1 which can then be used to get a colour value
+			if (height < min_) {					//gets the max and min values that the algo produces, so that they can then be changed to the range between 0 and 1 which can then be used to get a colour value
 				min_ = height;
 			}
-			if (height > max_){
+			if (height > max_) {
 				max_ = height;
 			}
 		}
@@ -235,14 +250,14 @@ void ImageProcessing::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int o
 	float new_min_ = INT_MAX;
 	float new_max_ = 0;
 	float old_range_ = (max_ - min_);										//gets the range of the old values
-	for (size_t i = 0; i < grid_size; i++){
-		for (size_t j = 0; j < grid_size; j++){
+	for (size_t i = 0; i < grid_size; i++) {
+		for (size_t j = 0; j < grid_size; j++) {
 			float new_value_ = (((heightmap_fbm_[(i * grid_size) + j] - min_) * new_range_) / old_range_) + 0;	//gets the oldd value and turns it into a value between the new range
 			int co = int(new_value_ * 255);						//geets as rgb value
-			if (co > 255){
+			if (co > 255) {
 				co = 255;
 			}
-			if (co < 0)	{
+			if (co < 0) {
 				co = 0;									//a problem currently exists where there is a region escaping the limits iof the colour which tells me that the range is somehow wrong.
 			}
 			noise_heightmap_[(i * grid_size) + j] = co;				//sets the colour value to the heightmap
@@ -251,10 +266,10 @@ void ImageProcessing::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int o
 
 			vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 			vertexarray[i * grid_size + j].color = sf::Color{ c , c , c };
-			if (new_value_ < new_min_){	//gets the new max and min for debugging purposes 
+			if (new_value_ < new_min_) {	//gets the new max and min for debugging purposes 
 				new_min_ = new_value_;
 			}
-			if (new_value_ > new_max_){
+			if (new_value_ > new_max_) {
 				new_max_ = new_value_;
 			}
 		}
@@ -263,9 +278,9 @@ void ImageProcessing::DrawFBM(sf::VertexArray& vertexarray, int grid_size, int o
 //
 
 //image modifiers
-void ImageProcessing::ChangeAlpha(sf::VertexArray& vertexarray, int grid_size, int alpha_){
-	for (int i = 0; i < grid_size; i++){
-		for (int j = 0; j < grid_size; j++){
+void ImageProcessing::ChangeAlpha(sf::VertexArray& vertexarray, int grid_size, int alpha_) {
+	for (int i = 0; i < grid_size; i++) {
+		for (int j = 0; j < grid_size; j++) {
 			//stores alpha if changed and applies to exisiting image
 			alpha_channel_[(i * grid_size) + j] = alpha_;
 			sf::Uint8 c = alpha_;
@@ -273,7 +288,7 @@ void ImageProcessing::ChangeAlpha(sf::VertexArray& vertexarray, int grid_size, i
 		}
 	}
 }
-sf::Color ImageProcessing::AverageColour(sf::Color a, sf::Color b){
+sf::Color ImageProcessing::AverageColour(sf::Color a, sf::Color b) {
 	sf::Color avr;
 	avr.r = ((a.r + b.r) / (sf::Uint8)2);
 	avr.g = avr.r;
@@ -309,7 +324,7 @@ void ImageProcessing::ResizeImage(int grid_size, float scale)
 	}
 	scaled_image.saveToFile("test.png");
 }
-void ImageProcessing::UpScaleGrid(int grid_size, float scale,int *grid, VoronoiDiagram &v_d_p)
+void ImageProcessing::UpScaleGrid(int grid_size, float scale, int* grid, VoronoiDiagram& v_d_p)
 {
 	int new_size = grid_size * scale;
 	int* new_arr = new int[new_size * new_size];
@@ -360,7 +375,7 @@ void ImageProcessing::UpScaleGrid(int grid_size, float scale,int *grid, VoronoiD
 	}
 
 	//re sizing the grid
-	v_d_p.ResizeGrid( scale);
+	v_d_p.ResizeGrid(scale);
 
 	parallel_for(0, new_size, [&](int i)
 		{
@@ -435,13 +450,13 @@ void ImageProcessing::UpScaleVertexArray(int grid_size, float scale, sf::VertexA
 			}
 		});
 }
-void ImageProcessing::ResizeGrid(int grid_size, float scale,int *grid)
+void ImageProcessing::ResizeGrid(int grid_size, float scale, int* grid)
 {
 	size_t new_size = grid_size * scale;
 	int* new_arr = new int[new_size * new_size];
 
 	//resizing grid
-	std::copy(grid, grid + (grid_size* grid_size), new_arr + 0);
+	std::copy(grid, grid + (grid_size * grid_size), new_arr + 0);
 	grid_size = new_size;
 	delete[] grid;
 	grid = new_arr;
@@ -450,10 +465,10 @@ void ImageProcessing::ResizeGrid(int grid_size, float scale,int *grid)
 //
 
 //saving functions
-void ImageProcessing::CreateFinalHM(int grid_size, sf::VertexArray& vertexarray, int layers_, const int& chunk_index_){
+void ImageProcessing::CreateFinalHM(int grid_size, sf::VertexArray& vertexarray, int layers_, const int& chunk_index_) {
 	//y=i, x=j
-	for (int i = 0; i < grid_size; i++){
-		for (int j = 0; j < grid_size; j++){
+	for (int i = 0; i < grid_size; i++) {
+		for (int j = 0; j < grid_size; j++) {
 			int i_alpha_two = alpha_channel_[i * grid_size + j];				//int version of alpha
 			float i_alpha_percent = (float)i_alpha_two / 255.0f;				//alpha as value between 0.0 to 1.0
 
@@ -492,7 +507,7 @@ void ImageProcessing::CreateFinalHM(int grid_size, sf::VertexArray& vertexarray,
 	}
 }
 
-void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, int layers_){
+void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, int layers_) {
 	const int dimensions_ = grid_size;
 	sf::Image voronoi_output;
 	sf::Image noise_output;
@@ -506,11 +521,11 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, i
 	noise_output_vector.push_back(noise_output_3);
 	sf::Image final_i;
 	sf::Image track_output;
-	if (!is_chunking_){
-		noise_output_vector[0].create(grid_size,grid_size);
+	if (!is_chunking_) {
+		noise_output_vector[0].create(grid_size, grid_size);
 	}
 	else {
-		for (int i = 0; i < 4; i++){
+		for (int i = 0; i < 4; i++) {
 			noise_output_vector[i].create(grid_size, grid_size);
 		}
 	}
@@ -519,95 +534,95 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, i
 	track_output.create(grid_size, grid_size);
 
 
-	parallel_for(0, dimensions_, [&](int i){
-			for (int j = 0; j < dimensions_; j++){
-				sf::Uint8 c = int(heightmap_[i * grid_size + j]);					//the voronoidiagram colour
-				sf::Uint8 co,co_1,co_2,co_3;
-				std::vector<sf::Uint8> noise_color;
-				noise_color.push_back(co);
-				noise_color.push_back(co_1);
-				noise_color.push_back(co_2);
-				noise_color.push_back(co_3);
-				if (!is_chunking_){
-					noise_color[0] = (noise_maps_vector[0][i * grid_size + j] / layers_);					//noise colour
-				}
-				else {
-					for (int iterator_chunk = 0; iterator_chunk < 4; iterator_chunk++){
-						noise_color[iterator_chunk] = (noise_maps_vector[iterator_chunk][i * grid_size + j] / layers_);					//noise colour
-					}
-				}
-				sf::Uint8 a = alpha_channel_[i * grid_size + j];					//alpha colour value of noise
-
-				int i_alpha_two = alpha_channel_[i * grid_size + j];				//int version of alpha
-				float i_alpha_percent = (float)i_alpha_two / 255.0f;				//alpha as value between 0.0 to 1.0
-				int i_c_one = int(heightmap_[i * grid_size + j]);					//int value of c
-				int i_c_two = (noise_maps_vector[0][i * grid_size + j] / layers_);					//int value of co
-
-
-				float i_c_t_a = (float)i_c_two / 255.0f;							//decimal value of co
-				float is = (float)i_c_one / 255.0f;									//decimal value of c
-
-				float alpha_percent_ = i_alpha_percent + 1.0f * (1.0f - i_alpha_percent);							//alpha_f = alpha_a + alpha_b(1-alpha_a)	(as a decimal value)
-				float final_color_p = (i_c_t_a * i_alpha_percent + is * 1.0f * (1.0f - i_alpha_percent)) / alpha_percent_;		//final_c = (colour_a*alpha_a + colour_b*alpha_b(1-alpha_a))/alpha_final		as a percent
-				//
-
-				if (final_color_p < 0.0f)
-				{
-					final_color_p = 0.0;
-					//just to check if its out of bounds
-					//happens for some reason when j=0 to 512 and i = 512
-					//becuase of error in voronoi
-					//fix it
-				}
-				if (final_color_p > 1.0f)
-				{
-					int a = 1;
-					final_color_p = 1.0;
-				}
-
-				//this is the premultiplied
-				float i_c_f_t = i_c_t_a + is * (1.0f - i_alpha_percent);
-				if (i_c_f_t > 1.0f)
-				{
-					i_c_f_t = 1.0f;
-				}
-
-				int premultiplied_version_colour = i_c_f_t * 255;
-				int premultiplied_version_alpha = 255 * alpha_percent_;
-
-				int f_c = 255 * final_color_p;											//need to multiply it by 255 to get as rgb value out of 255 instead of decimal
-				int f_a = 255 * alpha_percent_;
-
-				sf::Uint8 final_c = f_c;
-				sf::Uint8 final_a = f_a;
-
-
-				//setting the pixels of the output images
-				voronoi_output.setPixel(j, i, sf::Color{ c , c , c });
-				if (!is_chunking_){
-					noise_output_vector[0].setPixel(j, i, sf::Color{ noise_color[0] , noise_color[0] , noise_color[0],a });
-				}
-				else {
-					for (int chunk_it = 0; chunk_it < 4; chunk_it++){
-						noise_output_vector[chunk_it].setPixel(j, i, sf::Color{ noise_color[chunk_it] , noise_color[chunk_it] , noise_color[chunk_it],a });
-					}
-				}
-				final_i.setPixel(j, i, sf::Color{ final_c,final_c,final_c ,final_a });
-				track_output.setPixel(j, i, sf::Color{ vertexarray[i * grid_size + j].color.r,vertexarray[i * grid_size + j].color.g,vertexarray[i * grid_size + j].color.b });
+	parallel_for(0, dimensions_, [&](int i) {
+		for (int j = 0; j < dimensions_; j++) {
+			sf::Uint8 c = int(heightmap_[i * grid_size + j]);					//the voronoidiagram colour
+			sf::Uint8 co, co_1, co_2, co_3;
+			std::vector<sf::Uint8> noise_color;
+			noise_color.push_back(co);
+			noise_color.push_back(co_1);
+			noise_color.push_back(co_2);
+			noise_color.push_back(co_3);
+			if (!is_chunking_) {
+				noise_color[0] = (noise_maps_vector[0][i * grid_size + j] / layers_);					//noise colour
 			}
+			else {
+				for (int iterator_chunk = 0; iterator_chunk < 4; iterator_chunk++) {
+					noise_color[iterator_chunk] = (noise_maps_vector[iterator_chunk][i * grid_size + j] / layers_);					//noise colour
+				}
+			}
+			sf::Uint8 a = alpha_channel_[i * grid_size + j];					//alpha colour value of noise
+
+			int i_alpha_two = alpha_channel_[i * grid_size + j];				//int version of alpha
+			float i_alpha_percent = (float)i_alpha_two / 255.0f;				//alpha as value between 0.0 to 1.0
+			int i_c_one = int(heightmap_[i * grid_size + j]);					//int value of c
+			int i_c_two = (noise_maps_vector[0][i * grid_size + j] / layers_);					//int value of co
+
+
+			float i_c_t_a = (float)i_c_two / 255.0f;							//decimal value of co
+			float is = (float)i_c_one / 255.0f;									//decimal value of c
+
+			float alpha_percent_ = i_alpha_percent + 1.0f * (1.0f - i_alpha_percent);							//alpha_f = alpha_a + alpha_b(1-alpha_a)	(as a decimal value)
+			float final_color_p = (i_c_t_a * i_alpha_percent + is * 1.0f * (1.0f - i_alpha_percent)) / alpha_percent_;		//final_c = (colour_a*alpha_a + colour_b*alpha_b(1-alpha_a))/alpha_final		as a percent
+			//
+
+			if (final_color_p < 0.0f)
+			{
+				final_color_p = 0.0;
+				//just to check if its out of bounds
+				//happens for some reason when j=0 to 512 and i = 512
+				//becuase of error in voronoi
+				//fix it
+			}
+			if (final_color_p > 1.0f)
+			{
+				int a = 1;
+				final_color_p = 1.0;
+			}
+
+			//this is the premultiplied
+			float i_c_f_t = i_c_t_a + is * (1.0f - i_alpha_percent);
+			if (i_c_f_t > 1.0f)
+			{
+				i_c_f_t = 1.0f;
+			}
+
+			int premultiplied_version_colour = i_c_f_t * 255;
+			int premultiplied_version_alpha = 255 * alpha_percent_;
+
+			int f_c = 255 * final_color_p;											//need to multiply it by 255 to get as rgb value out of 255 instead of decimal
+			int f_a = 255 * alpha_percent_;
+
+			sf::Uint8 final_c = f_c;
+			sf::Uint8 final_a = f_a;
+
+
+			//setting the pixels of the output images
+			voronoi_output.setPixel(j, i, sf::Color{ c , c , c });
+			if (!is_chunking_) {
+				noise_output_vector[0].setPixel(j, i, sf::Color{ noise_color[0] , noise_color[0] , noise_color[0],a });
+			}
+			else {
+				for (int chunk_it = 0; chunk_it < 4; chunk_it++) {
+					noise_output_vector[chunk_it].setPixel(j, i, sf::Color{ noise_color[chunk_it] , noise_color[chunk_it] , noise_color[chunk_it],a });
+				}
+			}
+			final_i.setPixel(j, i, sf::Color{ final_c,final_c,final_c ,final_a });
+			track_output.setPixel(j, i, sf::Color{ vertexarray[i * grid_size + j].color.r,vertexarray[i * grid_size + j].color.g,vertexarray[i * grid_size + j].color.b });
+		}
 		});
-	if (!is_chunking_){
+	if (!is_chunking_) {
 		noise_output_vector[0].saveToFile("0noise_layer.png");
 	}
 	else {
-		for (int c_i = 0; c_i < 4; c_i++){
+		for (int c_i = 0; c_i < 4; c_i++) {
 			std::string s = std::to_string(c_i);
 			char const* c = "noise_layer.png";
 			s += c;
 			noise_output_vector[c_i].saveToFile(s);
 		}
 	}
-	
+
 	voronoi_output.saveToFile("voronoi_layer.png");
 	final_i.saveToFile("final.png");
 	track_output.saveToFile("track_image.png");
@@ -722,9 +737,9 @@ void ImageProcessing::DrawWidthTrack(sf::VertexArray& vertexarray, int grid_size
 {
 	for (int i = 0; i < track_.size(); i++)
 	{
-		auto x =track_[i].x;
+		auto x = track_[i].x;
 		auto y = track_[i].y;
 		vertexarray[y * grid_size + x].position = sf::Vector2f(x, y);
-		vertexarray[y*grid_size+x].color = sf::Color::White;
+		vertexarray[y * grid_size + x].color = sf::Color::White;
 	}
 }

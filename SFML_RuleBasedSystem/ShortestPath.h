@@ -19,7 +19,7 @@ public:
 	void PrintOutStartEnd(const int &grid_size,int* const& grid);																					//prints out the points in the track, useful for debugging
 
 	void ReOrderArrays();
-
+	void SetForChunk();
 	//getters
 	bool bGetFoundEnd() { return found_end; }								
 	int GetCountHolder() { return count_holder_; }

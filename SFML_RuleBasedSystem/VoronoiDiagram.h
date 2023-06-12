@@ -16,10 +16,12 @@ public:
 	void TerrainSites();					//site placement for terrain 
 
 	int DistanceSqrt(int x, int y, int x2, int y2);						//the distance formula
-	void SetEdges();										//sets the edges of voronoi diagram, so it is just the edges in the vector
+	void SetEdges(const int& chunk_index);										//sets the edges of voronoi diagram, so it is just the edges in the vector
 	void InitVector(const int &grid_size, const int &num_points, const int &num_sites);		//inits the vector to correct size;
-	void DiagramAMP();						//creates the vd using parallel for
+	void DiagramAMP(const int& chunk_index);						//creates the vd using parallel for
 
+	//clear for chunk
+	void SetForChunks();
 
 	//getters		
 	int GetRadius() { return radius_length; }
@@ -41,8 +43,7 @@ public:
 
 	std::vector<sf::Vector2i> GetPointPos() { return point_pos; }
 	//
-	void EmptyCircles() { if (circles_.size() > 0){ circles_.empty();} }
-	
+	void EmptyCircles() { if (circles_.size() > 0){ circles_.clear();} }
 	//setters
 	void SetNumberOfSites(int p) { num_of_sites = p; }					//sets the number of sites
 	void SetGridSize(int p) { grid_size_x=p; }							//sets the x and y of the grid
@@ -76,9 +77,9 @@ public:
 
 	//for setting points
 	void SetPointModi(int& x, int& x_2, int& y, int& y_2, const float &x_v_1, const float &x_v_2, const float &y_v_1, const float &y_v_2);
-	void PlacePoint(int x,int y, int i, bool&found_);
-	void ThreePoints(const float values_[12]);
-	void SetPoint(int type);				//Sets the point(s) for the distance.
+	void PlacePoint(int x,int y, int i, bool&found_, const int & chunk_index);
+	void ThreePoints(const float values_[12], const int& chunk_index);
+	void SetPoint(int type, const int & chunk_index);				//Sets the point(s) for the distance.
 	void ResetSitesForChunking(const int& num_of_sites_param);
 	void InsertChunks();
 private:

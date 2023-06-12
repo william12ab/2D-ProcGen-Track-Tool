@@ -342,6 +342,7 @@ int main(){
 						t_t.HeightLoop(i,is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *voronoi_diagrams[i], *distance_maps[i], *noise_maps[i], v_d.GetGridSize());
 					}	
 				}
+				int s = 2;
 			}
 			if (ImGui::Button("Regenerate")){
 				is_curved_ = false;
@@ -437,13 +438,42 @@ int main(){
 		//render
 		window.clear();
 		if (is_render_diagram){
-			i_p.DrawFullVoronoiDiagram(*voronoi_diagrams[0], v_d.GetGridSize(), v_d.GetGrid(0));
+			if (i_p.GetIsChunking()){
+				for (int i = 0; i < 4; i++){
+					ranges limits_;
+					t_t.RangesDecider(i, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
+					i_p.DrawFullVoronoiDiagram(*voronoi_diagrams[i], v_d.GetGridSize(), v_d.GetGrid(i),i,limits_);
+				}
+			}
+			else {
+				ranges limits_;
+				t_t.RangesDecider(0, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
+				i_p.DrawFullVoronoiDiagram(*voronoi_diagrams[0], v_d.GetGridSize(), v_d.GetGrid(0),0,limits_);
+			}
 		}
 		if (is_render_track){
-			i_p.DrawTrack(*voronoi_diagrams[0], v_d.GetGridSize(), v_d.GetNumberOfSites(), v_d.GetGrid(0));
+			if (i_p.GetIsChunking()) {
+				for (int i = 0; i < 4; i++) {
+					ranges limits_;
+					t_t.RangesDecider(i, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max,v_d.GetGridSize());
+					i_p.DrawTrack(*voronoi_diagrams[i], v_d.GetGridSize(), v_d.GetNumberOfSites(), v_d.GetGrid(i),i, limits_);
+				}
+			}
+			else {
+				ranges limits_;
+				t_t.RangesDecider(0, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
+				i_p.DrawTrack(*voronoi_diagrams[0], v_d.GetGridSize(), v_d.GetNumberOfSites(), v_d.GetGrid(0),0, limits_);
+			}
 		}
 		if (render_height_map_){
-			window.draw(*distance_maps[0]);
+			if (i_p.GetIsChunking()) {
+				for (int i = 0; i < 4; i++) {
+					window.draw(*distance_maps[i]);
+				}
+			}
+			else {
+				window.draw(*distance_maps[0]);
+			}
 		}
 		if (n_render_height_map_){
 			if (!i_p.GetIsChunking()){
@@ -455,11 +485,18 @@ int main(){
 				}
 			}
 		}
-		if (f_render_height_map_)
-		{
+		if (f_render_height_map_){
 			window.draw(final_map);
 		}
-		window.draw(*voronoi_diagrams[0]);
+		if (i_p.GetIsChunking()){
+			for (int i = 0; i < 4; i++){
+				window.draw(*voronoi_diagrams[i]);
+			}
+		}
+		else {
+			window.draw(*voronoi_diagrams[0]);
+		}
+		
 		window.draw(title_name_);
 		ImGui::SFML::Render(window);
 		window.setView(window.getDefaultView());

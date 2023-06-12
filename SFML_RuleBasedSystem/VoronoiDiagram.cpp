@@ -11,11 +11,7 @@ using std::chrono::milliseconds;
 using the_clock = std::chrono::steady_clock;
 std::vector<VoronoiDiagram::peaks_> VoronoiDiagram::circles_(1);
 std::vector<sf::Vector2i> VoronoiDiagram::point_pos(1);
-
-
-
-VoronoiDiagram::VoronoiDiagram()
-{
+VoronoiDiagram::VoronoiDiagram(){
 	type = 1;
 	grid_size_x = 0;
 	num_of_points = 0;
@@ -75,7 +71,23 @@ void VoronoiDiagram::InitVector(const int& grid_size, const int& num_points, con
 	grid_distance_c_3 = new int[grid_size_x * grid_size_x];
 	sites_v_1 = new int[num_sites * 2];
 	InsertChunks();
+	peak_.point = sf::Vector2i(0,0);
+	peak_.r_length = 0;
+}
 
+void VoronoiDiagram::SetForChunks() {
+	max_distance_ = 0;
+	site_iterator = 0;
+	high_point = 0;
+	high_point_v = sf::Vector2i(0, 0);
+	low_point_v = sf::Vector2i(0, 0);
+	found_raidus = false;
+	radius_length = 0;
+	circum_points.resize(2);
+	stop_high_ = false;
+	stop_low_ = false;
+	max_value_height = -1000000;
+	point_pos.clear();
 }
 
 void VoronoiDiagram::ResizeGrid(float scale)
@@ -240,7 +252,7 @@ int VoronoiDiagram::DistanceSqrt(int x, int y, int x2, int y2)
 //each element is a sites "colour" 
 //the distance is found at each site in comparison to the index of the loop in x and y direction.
 //relative to the distance the cell is found of the diagram.
-void VoronoiDiagram::DiagramAMP(){
+void VoronoiDiagram::DiagramAMP(const int& chunk_index){
 	max_distance_ = 0;
 	int* incr;
 	incr = new int[num_of_sites];
@@ -262,13 +274,13 @@ void VoronoiDiagram::DiagramAMP(){
 				}
 				//so if this point has a distance which all points do
 				if (ind > -1){
-					int s = grid_vector[0][(j * grid_size_x) + i];
+					int s = grid_vector[chunk_index][(j * grid_size_x) + i];
 					int p = incr[ind];
-					grid_vector[0][(j * grid_size_x) + i] = incr[ind];
+					grid_vector[chunk_index][(j * grid_size_x) + i] = incr[ind];
 					if (dist > max_distance_){
 						max_distance_ = dist;
 					}
-					distance_grid_vector[0][(j * grid_size_x) + i] = dist;
+					distance_grid_vector[chunk_index][(j * grid_size_x) + i] = dist;
 				}
 			}
 		});
@@ -281,7 +293,7 @@ void VoronoiDiagram::DiagramAMP(){
 //j =y/z, i=x
 //at this stage: all positions are equal to a number representing a site
 //so if theres 25 sites, each position will be 1-25 
-void VoronoiDiagram::SetEdges()
+void VoronoiDiagram::SetEdges(const int& chunk_index)
 {
 	for (int j = 0; j < grid_size_x; j++)
 	{
@@ -289,14 +301,14 @@ void VoronoiDiagram::SetEdges()
 		{
 			if (i + 1 < grid_size_x && j + 1 < grid_size_x)		//if in the bounds
 			{
-				if (grid_vector[0][(j * grid_size_x) + i] != grid_vector[0][(j * grid_size_x) + (i + 1)])		//if the current pos and pos 1 to the left are not the same
+				if (grid_vector[chunk_index][(j * grid_size_x) + i] != grid_vector[chunk_index][(j * grid_size_x) + (i + 1)])		//if the current pos and pos 1 to the left are not the same
 				{
-					grid_vector[0][(j * grid_size_x) + i] = 0;			//set to path way
+					grid_vector[chunk_index][(j * grid_size_x) + i] = 0;			//set to path way
 					//here you could find what the sites bordering are
 				}
-				else if (grid_vector[0][(j * grid_size_x) + i] != grid_vector[0][((j + 1) * grid_size_x) + i])
+				else if (grid_vector[chunk_index][(j * grid_size_x) + i] != grid_vector[chunk_index][((j + 1) * grid_size_x) + i])
 				{
-					grid_vector[0][(j * grid_size_x) + i] = 0;
+					grid_vector[chunk_index][(j * grid_size_x) + i] = 0;
 				}
 			}
 		}
@@ -311,17 +323,15 @@ void VoronoiDiagram::SetPointModi(int& x, int&x_2, int& y, int&y_2, const float 
 	y_2 = (grid_size_x * y_v_2);
 }
 
-void VoronoiDiagram::PlacePoint(int x, int y, int i, bool& found_)
-{
-	if (grid_vector[0][(y * grid_size_x) + x] == 0)
-	{
+void VoronoiDiagram::PlacePoint(int x, int y, int i, bool& found_, const int& chunk_index){
+	if (grid_vector[chunk_index][(y * grid_size_x) + x] == 0){
 		found_ = true;
-		grid_vector[0][(y * grid_size_x) + x] = 2000 + i;
+		grid_vector[chunk_index][(y * grid_size_x) + x] = 2000 + i;
 		point_pos.push_back(sf::Vector2i(x, y));
 	}
 }
 
-void VoronoiDiagram::ThreePoints(const float values_[12])
+void VoronoiDiagram::ThreePoints(const float values_[12], const int& chunk_index)
 {
 	int x_pos_one;
 	int x_pos_two;
@@ -336,7 +346,7 @@ void VoronoiDiagram::ThreePoints(const float values_[12])
 		{
 			int x = rand() % x_pos_one + x_pos_two;
 			int y = rand() % y_pos_one + y_pos_two;
-			PlacePoint(x, y, i, found);
+			PlacePoint(x, y, i, found, chunk_index);
 			counter++;
 			if (counter > 200)
 			{
@@ -365,46 +375,38 @@ void VoronoiDiagram::ThreePoints(const float values_[12])
 //loop over num of points
 //point 1
 //
-void VoronoiDiagram::SetPoint(int type)
-{
+void VoronoiDiagram::SetPoint(int type, const int& chunk_index){
 	point_pos.clear();
 	//zero is iother, 1 is p2p,2 loop
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::default_random_engine generator(seed);
 	std::uniform_int_distribution<int> distribution((grid_size_x / 16), (int)(grid_size_x / 1.1));
-	switch (type)
-	{
-	case 0:
-	{
+	switch (type){
+	case 0:{
 		float arr[12] = { 0.3f,0.05f,0.2f,0.75f, 0.2f,0.45f,0.4f,0.05f, 0.2f,0.75f,0.2f,0.75f };
-		ThreePoints(arr);
+		ThreePoints(arr, chunk_index);
 	}
 	break;
-	case 1:
-	{
+	case 1:{
 		int iter = grid_size_x / num_of_points;
 		iter -= (iter) / 2;
 		int start = 1;
 		int position = 0;
-		for (int i = 0; i < num_of_points; i++)
-		{
+		for (int i = 0; i < num_of_points; i++){
 			bool found = false;
-			if (start + iter > grid_size_x)
-			{
+			if (start + iter > grid_size_x){
 				int difference_ = (start + iter) - grid_size_x;
 				start -= difference_;
 			}
 			int counter = 0;
 
-			while (!found)
-			{
+			while (!found){
 				counter++;
 				//so first is between 0 and grid_size/numpoints, second is iter and iter+iter, etc
 				int x = rand() % iter + start;
 				int y = distribution(generator);
-				PlacePoint(x, y, i, found);
-				if (counter > 200)
-				{
+				PlacePoint(x, y, i, found, chunk_index);
+				if (counter > 200){
 					failed_ = true;
 					break;
 					std::cout << "didnt set a point\n";
@@ -415,10 +417,9 @@ void VoronoiDiagram::SetPoint(int type)
 		}
 	}
 	break;
-	case 2:
-	{
+	case 2:{
 		float arr[12] = { 0.05f,0.15f,0.2f,0.4f, 0.2f,0.4f,0.15f,0.15f, 0.05f,0.80f,0.2f,0.4f };
-		ThreePoints(arr);
+		ThreePoints(arr, chunk_index);
 	}
 	break;
 	}

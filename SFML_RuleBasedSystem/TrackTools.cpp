@@ -46,50 +46,46 @@ void TrackTools::CreateVoronoi(VoronoiDiagram &v_d_p, sf::VertexArray& height_ma
 	}
 
 	//creates vd diagram, creates distance map, sets only edges in vertexarray, sets points of track. in that order.
-	v_d_p.DiagramAMP();
-	i_p_p.DrawVoronoiNoise(height_map, v_d_p.GetGridSize(), v_d_p.GetNumberOfSites(), number_, v_d_p.GetGridDistance(0));
-	v_d_p.SetEdges();
-	v_d_p.SetPoint(track_type_);
+	v_d_p.DiagramAMP(0);
+	ranges default_r;
+	RangesDecider(0, default_r.x_min, default_r.x_max, default_r.y_min, default_r.y_max,v_d_p.GetGridSize());
+	i_p_p.DrawVoronoiNoise(height_map, v_d_p.GetGridSize(), v_d_p.GetNumberOfSites(), number_, v_d_p.GetGridDistance(0),0,default_r);
+	v_d_p.SetEdges(0);
+	v_d_p.SetPoint(track_type_,0);
 }
 
-void TrackTools::CreateTrack(VoronoiDiagram &v_d_p, ShortestPath &s_p_p)
-{
+void TrackTools::CreateTrack(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, const int& chunk_index){
 	//init grid should be fine, no need to change.
-	s_p_p.Initgrid(v_d_p.GetGridSize(), v_d_p.GetGrid(0), v_d_p.GetNumberOfPoints());
+	s_p_p.Initgrid(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), v_d_p.GetNumberOfPoints());
 	//pass in the start and end to both these functions
 	int start = -4;
-	s_p_p.PrintOutStartEnd(v_d_p.GetGridSize(), v_d_p.GetGrid(0));
+	s_p_p.PrintOutStartEnd(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index));
 	//if type 2, then need to loop over number of points differently and check when the index is = 1 so that the starting point can be changed to the end
-	if (v_d_p.GetType() == 2)
-	{
-		for (int i = 0; i < (v_d_p.GetNumberOfPoints()); i++)
-		{
-			s_p_p.PhaseOne(v_d_p.GetGridSize(), v_d_p.GetGrid(0), -3,0, v_d_p.GetGridSize());
-			s_p_p.PhaseTwo(v_d_p.GetGridSize(), v_d_p.GetGrid(0), 0);
+	if (v_d_p.GetType() == 2){
+		for (int i = 0; i < (v_d_p.GetNumberOfPoints()); i++){
+			s_p_p.PhaseOne(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), -3,0, v_d_p.GetGridSize());
+			s_p_p.PhaseTwo(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), 0);
 			//changes start point first then the end point to start point, and second end point to 1st end point
 			//so p0=p-1, p1=0,p2=1
-			if (i == 1)
-			{
-				s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(0), -1234, -5);
+			if (i == 1){
+				s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), -1234, -5);
 			}
-			s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(0), 0, -1234);
-			s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(0), -3, 0);
-			s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(0), start - i, -3);
-			s_p_p.CleanGrid(v_d_p.GetGridSize(), v_d_p.GetGrid(0));
+			s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), 0, -1234);
+			s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), -3, 0);
+			s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), start - i, -3);
+			s_p_p.CleanGrid(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index));
 		}
 	}
-	else
-	{
-		for (int i = 0; i < (v_d_p.GetNumberOfPoints() - 1) && !s_p_p.GetFailed(); i++)
-		{
-			s_p_p.PhaseOne(v_d_p.GetGridSize(), v_d_p.GetGrid(0), -3, 0, v_d_p.GetGridSize());
-			s_p_p.PhaseTwo(v_d_p.GetGridSize(), v_d_p.GetGrid(0), 0);
+	else{
+		for (int i = 0; i < (v_d_p.GetNumberOfPoints() - 1) && !s_p_p.GetFailed(); i++){
+			s_p_p.PhaseOne(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), -3, 0, v_d_p.GetGridSize());
+			s_p_p.PhaseTwo(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), 0);
 			//changes start point first then the end point to start point, and second end point to 1st end point
 			//so p0=p-1, p1=0,p2=1
-			s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(0), 0, -1234);
-			s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(0), -3, 0);
-			s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(0), start - i, -3);
-			s_p_p.CleanGrid(v_d_p.GetGridSize(), v_d_p.GetGrid(0));
+			s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), 0, -1234);
+			s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), -3, 0);
+			s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), start - i, -3);
+			s_p_p.CleanGrid(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index));
 		}
 	}
 	s_p_p.ReOrderArrays();
@@ -100,28 +96,32 @@ void TrackTools::Generate(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, sf::Vertex
 			ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
 		}
 		CreateVoronoi(v_d_p, height_map,i_p_p,times_,displacement_,number_,full_random_,track_type_);
-		CreateTrack(v_d_p, s_p_p);
+		CreateTrack(v_d_p, s_p_p,0);
 	} while (v_d_p.GetFailed() || s_p_p.GetFailed());
-	i_p_p.DrawTrack(voronoi_d, v_d_p.GetGridSize(), v_d_p.GetNumberOfSites(), v_d_p.GetGrid(0));
+	ranges init;
+	RangesDecider(0, init.x_min, init.x_max, init.y_min, init.y_max, v_d_p.GetGridSize());
+
+	i_p_p.DrawTrack(voronoi_d, v_d_p.GetGridSize(), v_d_p.GetNumberOfSites(), v_d_p.GetGrid(0),0, init);
 	s_p_p.SortControlPoints();
 }
 
-void TrackTools::GenerateTerrainMethod(VoronoiDiagram &v_d_p, sf::VertexArray& vertex_array, ImageProcessing &i_p_p, int number_, int track_track_)
-{
+void TrackTools::GenerateTerrainMethod(VoronoiDiagram &v_d_p, sf::VertexArray& vertex_array, ImageProcessing &i_p_p, int number_, int track_track_, const int& chunk_index){
+	ranges init;
 	v_d_p.TerrainSites();							//this takes no time
-	v_d_p.DiagramAMP();
-	i_p_p.DrawVoronoiNoise(vertex_array, v_d_p.GetGridSize(), v_d_p.GetNumberOfSites(), number_, v_d_p.GetGridDistance(0));
-	v_d_p.SetEdges();
-	v_d_p.SetPoint(track_track_);
+	v_d_p.DiagramAMP(chunk_index);
+	RangesDecider(chunk_index, init.x_min, init.x_max, init.y_min, init.y_max, v_d_p.GetGridSize());
+	i_p_p.DrawVoronoiNoise(vertex_array, v_d_p.GetGridSize(), v_d_p.GetNumberOfSites(), number_, v_d_p.GetGridDistance(chunk_index),chunk_index,init);
+	v_d_p.SetEdges(chunk_index);
+	v_d_p.SetPoint(track_track_,chunk_index);
 }
 
-void TrackTools::TerrainLoop(VoronoiDiagram &v_d_p,ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray&height_map, sf::VertexArray&n_height_map,ImageProcessing&i_p_p, int number_, int track_type_){
+void TrackTools::TerrainLoop(VoronoiDiagram &v_d_p,ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray&height_map, sf::VertexArray&n_height_map,ImageProcessing&i_p_p, int number_, int track_type_, const int& index_){
 	do{
 		if (v_d_p.GetFailed() || s_p_p.GetFailed()){//clears the diagram and resets the fail condition
 			ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
 		}
-		GenerateTerrainMethod(v_d_p, height_map, i_p_p, number_, track_type_);
-		CreateTrack(v_d_p, s_p_p);
+		GenerateTerrainMethod(v_d_p, height_map, i_p_p, number_, track_type_, index_);
+		CreateTrack(v_d_p, s_p_p,index_);
 	} while (v_d_p.GetFailed() || s_p_p.GetFailed());
 }
 
@@ -163,22 +163,22 @@ void TrackTools::RangesDecider(const int& chunk_iter, int& x_min, int& x_max, in
 		y_max = grid_size;
 		break;
 	case 1:
-		x_min = 0;
-		x_max = grid_size;
+		x_min = grid_size;
+		x_max = grid_size*2;
 		y_min = 0;
 		y_max = grid_size;
 		break;
 	case 2:
 		x_min = 0;
 		x_max = grid_size;
-		y_min = 0;
-		y_max = grid_size;
+		y_min = grid_size;
+		y_max = grid_size*2;
 		break;
 	case 3:
-		x_min = 0;
-		x_max = grid_size;
-		y_min = 0;
-		y_max = grid_size;
+		x_min = grid_size;
+		x_max = grid_size*2;
+		y_min = grid_size;
+		y_max = grid_size*2;
 		break;
 	}
 }
@@ -187,9 +187,11 @@ void TrackTools::HeightLoop(const int& chunk_iter,bool & is_curved_, bool &is_wi
 	is_curved_ = false;
 	is_widthed_ = false;
 	ranges init;
-	RangesDecider(chunk_iter, init.x_min, init.x_max, init.y_min, init.y_max, grid_size);
+	RangesDecider(0, init.x_min, init.x_max, init.y_min, init.y_max, grid_size);
 	if (is_chunk){
 		v_d.ResetSitesForChunking(v_d.GetNumberOfSites());
+		v_d.SetForChunks();
+		s_p.SetForChunk();
 	}
 
 	v_d.EmptyCircles();
@@ -206,7 +208,7 @@ void TrackTools::HeightLoop(const int& chunk_iter,bool & is_curved_, bool &is_wi
 			i++;
 		}
 	}
-	TerrainLoop(v_d, s_p, voronoi_d, height_map, n_height_map, i_p, number_, track_type_);
+	TerrainLoop(v_d, s_p, voronoi_d, height_map, n_height_map, i_p, number_, track_type_, chunk_iter);//passes in the vector of vertex array for diagram, distancemap,heightmap, and index
 	v_d.SetStopL(false);
 	v_d.SetStopH(false);
 }
