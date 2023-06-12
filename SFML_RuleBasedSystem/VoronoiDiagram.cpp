@@ -493,8 +493,7 @@ void VoronoiDiagram::FindMax(const int &layers_, int* const &noise_grid, const r
 	ArePointsFound(high_point,min_height);
 }
 
-void VoronoiDiagram::SetDirectionXY(int& signal, int& x, int& y, int a,int b, int c)
-{
+void VoronoiDiagram::SetDirectionXY(int& signal, int& x, int& y, int a,int b, int c){
 	signal = a;
 	x = b;
 	y = c;
@@ -506,26 +505,22 @@ void VoronoiDiagram::DirectionDecider(const int& radius_cutoff_, const int& laye
 	//then mark that as the direction to go in 
 	int signal, x_pos, y_pos;
 //	std::cout << "		HIGHEST point(peak): " << high_or_low.x << " " << high_or_low.y << "\n\n";
-	if (high_or_low.x <= (grid_size_x / 2) && high_or_low.y <= (grid_size_x / 2))
-	{
+	if (high_or_low.x <= (grid_size_x / 2) && high_or_low.y <= (grid_size_x / 2)){
 		//square 1 in diagram(top left) - going south east
 		SetDirectionXY(signal, x_pos, y_pos, 1, 1, 1);
 		std::cout << "se\n";
 	}
-	else if (high_or_low.x >= (grid_size_x / 2) && high_or_low.x <= (grid_size_x) && high_or_low.y <= (grid_size_x / 2))
-	{
+	else if (high_or_low.x >= (grid_size_x / 2) && high_or_low.x <= (grid_size_x) && high_or_low.y <= (grid_size_x / 2)){
 		//square 2 in diagram(top right) - going south west 
 		SetDirectionXY(signal, x_pos, y_pos, 2, -1, 1);
 		std::cout << "sw\n";
 	}
-	else if (high_or_low.x >= (grid_size_x / 2) && high_or_low.x <= (grid_size_x) && high_or_low.y >= (grid_size_x / 2) && high_or_low.y <= grid_size_x)
-	{
+	else if (high_or_low.x >= (grid_size_x / 2) && high_or_low.x <= (grid_size_x) && high_or_low.y >= (grid_size_x / 2) && high_or_low.y <= grid_size_x){
 		//square 4 in diagram(bottom right) - going north west
 		SetDirectionXY(signal, x_pos, y_pos, 4, -1, -1);
 		std::cout << "nw\n";
 	}
-	else if (high_or_low.x <= (grid_size_x / 2) && high_or_low.y >= (grid_size_x / 2) && high_or_low.y<= grid_size_x)
-	{
+	else if (high_or_low.x <= (grid_size_x / 2) && high_or_low.y >= (grid_size_x / 2) && high_or_low.y<= grid_size_x){
 		//square 3 in diagram(bottom left) - going north east
 		SetDirectionXY(signal, x_pos, y_pos, 3, 1, -1);
 		std::cout << "ne\n";
@@ -664,8 +659,7 @@ void VoronoiDiagram::InsertChunks() {
 	grid_vector.push_back(grid_chunk_3);
 }
 
-void VoronoiDiagram::TerrainSites()
-{
+void VoronoiDiagram::TerrainSites(){
 	//loop over number of sites for x and y 
 	//generate random point for site and loop over this generation until it is not within the circle
 
@@ -677,43 +671,35 @@ void VoronoiDiagram::TerrainSites()
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::default_random_engine generator(seed);
 	std::uniform_int_distribution<int> distribution(0, grid_size_x);
-	for (int i = 0; i < (num_of_sites * 2); i++)
-	{
+	for (int i = 0; i < (num_of_sites * 2); i++){
 		bool found = false;
-		while (!found)
-		{
+		while (!found){
 			bool false_in_first_cirlce = false;
 			sites_v_1[i] = distribution(generator);
 			i++;
 			sites_v_1[i] = distribution(generator);
-			for (int c = 0; c < circles_.size(); c++)
-			{
+			for (int c = 0; c < circles_.size(); c++){
 				int r = pow(circles_[c].r_length, 2);						//radius squared
 				int a = pow((sites_v_1[i - 1] - circles_[c].point.x), 2);				//x part squared
 				int b = pow((sites_v_1[i] - circles_[c].point.y), 2);					//y part squared
-				if (a + b < r || a + b == r)				//the circle formula - checking whether the point exist in the circle and if it does then set the iterator back to what it was and go again
-				{
+				if (a + b < r || a + b == r){				//the circle formula - checking whether the point exist in the circle and if it does then set the iterator back to what it was and go again
 					found = false;
 					false_in_first_cirlce = true;			//so if this is true then when it comes to circle(n+1) the found wont trigger
 				}
-				else
-				{
-					if (!false_in_first_cirlce)
-					{
+				else{
+					if (!false_in_first_cirlce){
 						found = true;		//point is not in the circle so exit loop and create new site
 					}
 				}
 			}
-			if (false_in_first_cirlce)
-			{
+			if (false_in_first_cirlce){
 				i--;
 			}
 		}
 	}
 
 	int iterator_ = 0;
-	for (int i = 0; i < circles_.size(); i++)
-	{
+	for (int i = 0; i < circles_.size(); i++){
 		sites_v_1[iterator_] = circles_[i].point.x;				//setting the first sites the the centre point of the circles
 		iterator_++;
 		sites_v_1[iterator_] = circles_[i].point.y;

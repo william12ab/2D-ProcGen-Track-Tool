@@ -128,6 +128,8 @@ private:
 	std::vector<sf::Vector2i> circum_points;		//keeps track of the poiints on the circumference
 	static std::vector<peaks_>circles_;
 	
+	std::vector<std::vector<peaks_>>all_circles_vector;
+
 	bool do_testing_;
 
 

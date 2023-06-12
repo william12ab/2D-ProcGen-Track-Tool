@@ -211,4 +211,5 @@ void TrackTools::HeightLoop(const int& chunk_iter,bool & is_curved_, bool &is_wi
 	TerrainLoop(v_d, s_p, voronoi_d, height_map, n_height_map, i_p, number_, track_type_, chunk_iter);//passes in the vector of vertex array for diagram, distancemap,heightmap, and index
 	v_d.SetStopL(false);
 	v_d.SetStopH(false);
+	//above is for default as is
 }
