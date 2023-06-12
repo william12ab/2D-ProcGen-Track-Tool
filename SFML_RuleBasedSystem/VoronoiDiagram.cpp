@@ -11,6 +11,7 @@ using std::chrono::milliseconds;
 using the_clock = std::chrono::steady_clock;
 std::vector<VoronoiDiagram::peaks_> VoronoiDiagram::circles_(1);
 std::vector<sf::Vector2i> VoronoiDiagram::point_pos(1);
+std::vector<VoronoiDiagram::peaks_> VoronoiDiagram::all_circles_vector(1);
 VoronoiDiagram::VoronoiDiagram(){
 	type = 1;
 	grid_size_x = 0;
@@ -253,18 +254,29 @@ int VoronoiDiagram::DistanceSqrt(int x, int y, int x2, int y2)
 //the distance is found at each site in comparison to the index of the loop in x and y direction.
 //relative to the distance the cell is found of the diagram.
 void VoronoiDiagram::DiagramAMP(const int& chunk_index){
+	int local_num_sites = num_of_sites;
+	int local_grid_size = grid_size_x;
+	if (local_is_chunking){
+		delete[] grid_vector[0];
+		delete[] distance_grid_vector[0];
+		grid_vector[0]= new int[(grid_size_x*2) * (grid_size_x*2)];
+		distance_grid_vector[0] = new int[(grid_size_x * 2) * (grid_size_x * 2)];
+		local_num_sites = num_of_sites * 4;
+		local_grid_size = grid_size_x * 2;
+	}
+
 	max_distance_ = 0;
 	int* incr;
-	incr = new int[num_of_sites];
-	for (int i = 0; i < num_of_sites; i++){
+	incr = new int[local_num_sites];
+	for (int i = 0; i < local_num_sites; i++){
 		incr[i] = i + 1;
 	}
-	parallel_for(0, grid_size_x, [&](int j){
-			for (int i = 0; i < grid_size_x; i++){
+	parallel_for(0, local_grid_size, [&](int j){
+			for (int i = 0; i < local_grid_size; i++){
 				int ind = -1, dist = INT_MAX;
 				int s = 0;
 				int d = 0;
-				for (int p = 0; p < num_of_sites; p++){
+				for (int p = 0; p < local_num_sites; p++){
 					d = DistanceSqrt(sites_v_1[s], sites_v_1[s + 1], i, j);
 					s += 2;
 					if (d < dist){
@@ -274,13 +286,13 @@ void VoronoiDiagram::DiagramAMP(const int& chunk_index){
 				}
 				//so if this point has a distance which all points do
 				if (ind > -1){
-					int s = grid_vector[chunk_index][(j * grid_size_x) + i];
+					int s = grid_vector[chunk_index][(j * local_grid_size) + i];
 					int p = incr[ind];
-					grid_vector[chunk_index][(j * grid_size_x) + i] = incr[ind];
+					grid_vector[chunk_index][(j * local_grid_size) + i] = incr[ind];
 					if (dist > max_distance_){
 						max_distance_ = dist;
 					}
-					distance_grid_vector[chunk_index][(j * grid_size_x) + i] = dist;
+					distance_grid_vector[chunk_index][(j * local_grid_size) + i] = dist;
 				}
 			}
 		});
@@ -667,11 +679,21 @@ void VoronoiDiagram::TerrainSites(){
 	//create a random coordinate
 	//check if that coordinate is within ANY circle or ON ANY circle
 	//if true then discard point and create new point UNTIL point is NOT in circle
+	int loc_num_sites=num_of_sites*2;
+	int loc_grid_size = grid_size_x;
+	auto temp_circl = circles_;
+	if (local_is_chunking){
+		delete[] sites_v_1;
+		loc_num_sites = (num_of_sites* 2)*4;//param the 25 
+		sites_v_1 = new int[loc_num_sites];
+		loc_grid_size * 2;
+		temp_circl = all_circles_vector;
+	}
 
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::default_random_engine generator(seed);
-	std::uniform_int_distribution<int> distribution(0, grid_size_x);
-	for (int i = 0; i < (num_of_sites * 2); i++){
+	std::uniform_int_distribution<int> distribution(0, loc_grid_size);
+	for (int i = 0; i < (loc_num_sites); i++){
 		bool found = false;
 		while (!found){
 			bool false_in_first_cirlce = false;
@@ -707,7 +729,6 @@ void VoronoiDiagram::TerrainSites(){
 		std::cout << "Centre " << i << " (" << circles_[i].point.x << ", " << circles_[i].point.y << ") Radius: " << circles_[i].r_length << "\n";
 	}
 }
-
 void VoronoiDiagram::ResetVars()
 {
 	high_point = 0;
@@ -719,4 +740,17 @@ void VoronoiDiagram::ResetVars()
 	radius_length = 0;
 	circles_.clear();
 	temp_rad.clear();
+	all_circles_vector.clear();
+}
+
+void VoronoiDiagram::AddingCirclesToContainer(const ranges& init) {
+	int x_addition = 0; int y_addition;
+	x_addition = init.x_min;
+	y_addition = init.y_min;
+	for (int i = 0; i < circles_.size(); i++){
+		circles_[i].point.x += x_addition;
+		circles_[i].point.y += y_addition;
+		
+		all_circles_vector.push_back(circles_[i]);
+	}	
 }

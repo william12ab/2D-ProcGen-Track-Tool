@@ -20,8 +20,7 @@ public:
 	void InitVector(const int &grid_size, const int &num_points, const int &num_sites);		//inits the vector to correct size;
 	void DiagramAMP(const int& chunk_index);						//creates the vd using parallel for
 
-	//clear for chunk
-	void SetForChunks();
+
 
 	//getters		
 	int GetRadius() { return radius_length; }
@@ -70,6 +69,15 @@ public:
 	void ArePointsFound(const int& high_point,const int& low_point);
 	//
 
+	//for chunking
+	void AddingCirclesToContainer(const ranges&init);
+	void ResetSitesForChunking(const int& num_of_sites_param);
+	void InsertChunks();
+	void SetForChunks();
+	void SetIsChunking(bool f) { local_is_chunking = f; }
+	bool GetIsChunking(){return local_is_chunking;}
+	
+	//
 	//this annoying is here
 	void ResizeGrid(float scale);																//resizes the grid
 	void UpScaleGrid(int grid_size, float scale);																//upscales the grid
@@ -80,8 +88,6 @@ public:
 	void PlacePoint(int x,int y, int i, bool&found_, const int & chunk_index);
 	void ThreePoints(const float values_[12], const int& chunk_index);
 	void SetPoint(int type, const int & chunk_index);				//Sets the point(s) for the distance.
-	void ResetSitesForChunking(const int& num_of_sites_param);
-	void InsertChunks();
 private:
 	SimplexNoise perlin_;
 
@@ -128,7 +134,7 @@ private:
 	std::vector<sf::Vector2i> circum_points;		//keeps track of the poiints on the circumference
 	static std::vector<peaks_>circles_;
 	
-	std::vector<std::vector<peaks_>>all_circles_vector;
+	static std::vector<peaks_>all_circles_vector;
 
 	bool do_testing_;
 
@@ -136,5 +142,7 @@ private:
 	int max_value_height;			//for chekcing if all points of interest have been found.
 	bool stop_high_;				//for returning if all points have been found
 	bool stop_low_;
+
+	bool local_is_chunking;
 };
 
