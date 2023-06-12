@@ -31,5 +31,7 @@ public:
 private:
 
 	bool is_chunk;
+
+	bool is_done_setup;
 };
 

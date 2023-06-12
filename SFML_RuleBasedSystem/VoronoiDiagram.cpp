@@ -257,10 +257,6 @@ void VoronoiDiagram::DiagramAMP(const int& chunk_index){
 	int local_num_sites = num_of_sites;
 	int local_grid_size = grid_size_x;
 	if (local_is_chunking){
-		delete[] grid_vector[0];
-		delete[] distance_grid_vector[0];
-		grid_vector[0]= new int[(grid_size_x*2) * (grid_size_x*2)];
-		distance_grid_vector[0] = new int[(grid_size_x * 2) * (grid_size_x * 2)];
 		local_num_sites = num_of_sites * 4;
 		local_grid_size = grid_size_x * 2;
 	}
@@ -271,31 +267,59 @@ void VoronoiDiagram::DiagramAMP(const int& chunk_index){
 	for (int i = 0; i < local_num_sites; i++){
 		incr[i] = i + 1;
 	}
-	parallel_for(0, local_grid_size, [&](int j){
-			for (int i = 0; i < local_grid_size; i++){
-				int ind = -1, dist = INT_MAX;
-				int s = 0;
-				int d = 0;
-				for (int p = 0; p < local_num_sites; p++){
-					d = DistanceSqrt(sites_v_1[s], sites_v_1[s + 1], i, j);
-					s += 2;
-					if (d < dist){
-						dist = d;
-						ind = p;
-					}
-				}
-				//so if this point has a distance which all points do
-				if (ind > -1){
-					int s = grid_vector[chunk_index][(j * local_grid_size) + i];
-					int p = incr[ind];
-					grid_vector[chunk_index][(j * local_grid_size) + i] = incr[ind];
-					if (dist > max_distance_){
-						max_distance_ = dist;
-					}
-					distance_grid_vector[chunk_index][(j * local_grid_size) + i] = dist;
+	//parallel_for(0, local_grid_size, [&](int j){
+	for (int j = 0; j < local_grid_size; j++) {
+		for (int i = 0; i < local_grid_size; i++) {
+			int ind = -1, dist = INT_MAX;
+			int s = 0;
+			int d = 0;
+			for (int p = 0; p < local_num_sites; p++) {
+				d = DistanceSqrt(sites_v_1[s], sites_v_1[s + 1], i, j);
+				s += 2;
+				if (d < dist) {
+					dist = d;
+					ind = p;
 				}
 			}
-		});
+			//so if this point has a distance which all points do
+			if (ind > -1) {
+				//grid_vector[chunk_index][(j * local_grid_size) + i] = incr[ind];
+				if (dist > max_distance_) {
+					max_distance_ = dist;
+				}
+				//distance_grid_vector[chunk_index][(j * local_grid_size) + i] = dist;
+
+				if (local_is_chunking) {
+					if (i < 400 && j < 400) {
+						//in [0]
+						grid_vector[0][(j * grid_size_x) + i] = incr[ind];
+						distance_grid_vector[0][(j * grid_size_x) + i] = dist;
+					}
+					else if (i >= 400 && j < 400) {
+						//in [1]
+						grid_vector[1][(j * grid_size_x) + (i - 400)] = incr[ind];
+						distance_grid_vector[1][(j * grid_size_x) + (i - 400)] = dist;
+					}
+					else if (i < 400 && j >= 400) {
+						//in [2]
+						grid_vector[2][((j - 400) * grid_size_x) + i] = incr[ind];
+						distance_grid_vector[2][((j - 400) * grid_size_x) + i] = dist;
+					}
+					else if (i >= 400 && j >= 400) {
+						//in [3]
+						grid_vector[3][((j - 400) * grid_size_x) + (i - 400)] = incr[ind];
+						distance_grid_vector[3][((j - 400) * grid_size_x) + (i - 400)] = dist;
+					}
+				}
+				else {
+					grid_vector[chunk_index][(j * grid_size_x) + i] = incr[ind];
+					distance_grid_vector[chunk_index][(j * grid_size_x) + i] = dist;
+				}
+
+			}
+		}
+		//});
+	}
 	delete[] incr;
 }
 

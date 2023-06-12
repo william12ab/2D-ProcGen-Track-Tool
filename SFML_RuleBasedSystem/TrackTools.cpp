@@ -1,7 +1,8 @@
 #include "TrackTools.h"
-TrackTools::TrackTools()
-{
+TrackTools::TrackTools(){
+	is_done_setup = false;
 }
+
 void TrackTools::ResetVars(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map)
 {
 	n_height_map.clear();
@@ -107,12 +108,15 @@ void TrackTools::Generate(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, sf::Vertex
 
 void TrackTools::GenerateTerrainMethod(VoronoiDiagram &v_d_p, sf::VertexArray& vertex_array, ImageProcessing &i_p_p, int number_, int track_track_, const int& chunk_index){
 	ranges init;
-	v_d_p.TerrainSites();							//this takes no time
-	v_d_p.DiagramAMP(chunk_index);
+	if (!is_done_setup){
+		v_d_p.TerrainSites();							//this takes no time
+		v_d_p.DiagramAMP(chunk_index);
+	}
+	is_done_setup = true;
 	RangesDecider(chunk_index, init.x_min, init.x_max, init.y_min, init.y_max, v_d_p.GetGridSize());
-	i_p_p.DrawVoronoiNoise(vertex_array, v_d_p.GetGridSize(), v_d_p.GetNumberOfSites(), number_, v_d_p.GetGridDistance(chunk_index),chunk_index,init);
+	i_p_p.DrawVoronoiNoise(vertex_array, v_d_p.GetGridSize(), v_d_p.GetNumberOfSites(), number_, v_d_p.GetGridDistance(chunk_index), chunk_index, init);
 	v_d_p.SetEdges(chunk_index);
-	v_d_p.SetPoint(track_track_,chunk_index);
+	v_d_p.SetPoint(track_track_, chunk_index);
 }
 
 void TrackTools::TerrainLoop(VoronoiDiagram &v_d_p,ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray&height_map, sf::VertexArray&n_height_map,ImageProcessing&i_p_p, int number_, int track_type_, const int& index_){
@@ -121,7 +125,7 @@ void TrackTools::TerrainLoop(VoronoiDiagram &v_d_p,ShortestPath &s_p_p, sf::Vert
 			ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
 		}
 		GenerateTerrainMethod(v_d_p, height_map, i_p_p, number_, track_type_, index_);
-		CreateTrack(v_d_p, s_p_p,index_);
+		CreateTrack(v_d_p, s_p_p, index_);
 	} while (v_d_p.GetFailed() || s_p_p.GetFailed());
 }
 
@@ -185,33 +189,35 @@ void TrackTools::RangesDecider(const int& chunk_iter, int& x_min, int& x_max, in
 
 void TrackTools::HeightLoop(const int& chunk_iter,bool & is_curved_, bool &is_widthed_,VoronoiDiagram& v_d, const int& peaks_to_count_,const int& layers_, ImageProcessing& i_p,const int&radius_cutoff,const int& number_, const int& track_type_, ShortestPath& s_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map, const int& grid_size) {
 	v_d.SetIsChunking(true);
-	for (int chunk_index_loc = 0; chunk_index_loc < 4; chunk_index_loc++) {
-		is_curved_ = false;
-		is_widthed_ = false;
-		ranges init;
-		RangesDecider(0, init.x_min, init.x_max, init.y_min, init.y_max, grid_size);
-		if (is_chunk) {
-			v_d.ResetSitesForChunking(v_d.GetNumberOfSites());
-			v_d.SetForChunks();
-			s_p.SetForChunk();
-		}
+	if (!is_done_setup) {
+		for (int chunk_index_loc = 0; chunk_index_loc < 4; chunk_index_loc++) {
+			is_curved_ = false;
+			is_widthed_ = false;
+			ranges init;
+			RangesDecider(0, init.x_min, init.x_max, init.y_min, init.y_max, grid_size);
+			if (is_chunk) {
+				v_d.ResetSitesForChunking(v_d.GetNumberOfSites());
+				v_d.SetForChunks();
+				s_p.SetForChunk();
+			}
 
-		v_d.EmptyCircles();
-		v_d.vector_all(peaks_to_count_ * 2);
-		int i = 0;
-		while (!v_d.GetStopH() || !v_d.GetStopL()) {//these are for stopping if track is below or above point
-			v_d.FindMax(layers_, i_p.GetNoiseMap(chunk_index_loc), init);
-			if (!v_d.GetStopH()) {//finds the highest point in the terrain
-				v_d.DirectionDecider(radius_cutoff, layers_, i, i_p.GetNoiseMap(chunk_index_loc), v_d.GetHighPoint(), true, init);		//finds point on circumference 
-				i++;
+			v_d.EmptyCircles();
+			v_d.vector_all(peaks_to_count_ * 2);
+			int i = 0;
+			while (!v_d.GetStopH() || !v_d.GetStopL()) {//these are for stopping if track is below or above point
+				v_d.FindMax(layers_, i_p.GetNoiseMap(chunk_index_loc), init);
+				if (!v_d.GetStopH()) {//finds the highest point in the terrain
+					v_d.DirectionDecider(radius_cutoff, layers_, i, i_p.GetNoiseMap(chunk_index_loc), v_d.GetHighPoint(), true, init);		//finds point on circumference 
+					i++;
+				}
+				if (!v_d.GetStopL()) {
+					v_d.DirectionDecider(80, layers_, i + 1, i_p.GetNoiseMap(chunk_index_loc), v_d.GetLowPoint(), false, init);		//finds point on circumference 
+					i++;
+				}
 			}
-			if (!v_d.GetStopL()) {
-				v_d.DirectionDecider(80, layers_, i + 1, i_p.GetNoiseMap(chunk_index_loc), v_d.GetLowPoint(), false, init);		//finds point on circumference 
-				i++;
-			}
+			RangesDecider(chunk_index_loc, init.x_min, init.x_max, init.y_min, init.y_max, grid_size);//used for adding on 
+			v_d.AddingCirclesToContainer(init);
 		}
-		RangesDecider(chunk_index_loc, init.x_min, init.x_max, init.y_min, init.y_max, grid_size);//used for adding on 
-		v_d.AddingCirclesToContainer(init);
 	}
 	TerrainLoop(v_d, s_p, voronoi_d, height_map, n_height_map, i_p, number_, track_type_, chunk_iter);//passes in the vector of vertex array for diagram, distancemap,heightmap, and index
 	v_d.SetStopL(false);
@@ -219,33 +225,33 @@ void TrackTools::HeightLoop(const int& chunk_iter,bool & is_curved_, bool &is_wi
 	
 	
 	//
-	is_curved_ = false;
-	is_widthed_ = false;
-	ranges init;
-	RangesDecider(0, init.x_min, init.x_max, init.y_min, init.y_max, grid_size);
-	if (is_chunk){
-		v_d.ResetSitesForChunking(v_d.GetNumberOfSites());
-		v_d.SetForChunks();
-		s_p.SetForChunk();
-	}
+	//is_curved_ = false;
+	//is_widthed_ = false;
+	//ranges init;
+	//RangesDecider(0, init.x_min, init.x_max, init.y_min, init.y_max, grid_size);
+	//if (is_chunk){
+	//	v_d.ResetSitesForChunking(v_d.GetNumberOfSites());
+	//	v_d.SetForChunks();
+	//	s_p.SetForChunk();
+	//}
 
-	v_d.EmptyCircles();
-	v_d.vector_all(peaks_to_count_ * 2);
-	int i = 0;
-	while (!v_d.GetStopH() || !v_d.GetStopL()) {//these are for stopping if track is below or above point
-		v_d.FindMax(layers_, i_p.GetNoiseMap(chunk_iter),init);
-		if (!v_d.GetStopH()) {//finds the highest point in the terrain
-			v_d.DirectionDecider(radius_cutoff, layers_, i, i_p.GetNoiseMap(chunk_iter), v_d.GetHighPoint(), true, init);		//finds point on circumference 
-			i++;
-		}
-		if (!v_d.GetStopL()) {
-			v_d.DirectionDecider(80, layers_, i + 1, i_p.GetNoiseMap(chunk_iter), v_d.GetLowPoint(), false, init);		//finds point on circumference 
-			i++;
-		}
-	}
-	TerrainLoop(v_d, s_p, voronoi_d, height_map, n_height_map, i_p, number_, track_type_, chunk_iter);//passes in the vector of vertex array for diagram, distancemap,heightmap, and index
-	v_d.SetStopL(false);
-	v_d.SetStopH(false);
+	//v_d.EmptyCircles();
+	//v_d.vector_all(peaks_to_count_ * 2);
+	//int i = 0;
+	//while (!v_d.GetStopH() || !v_d.GetStopL()) {//these are for stopping if track is below or above point
+	//	v_d.FindMax(layers_, i_p.GetNoiseMap(chunk_iter),init);
+	//	if (!v_d.GetStopH()) {//finds the highest point in the terrain
+	//		v_d.DirectionDecider(radius_cutoff, layers_, i, i_p.GetNoiseMap(chunk_iter), v_d.GetHighPoint(), true, init);		//finds point on circumference 
+	//		i++;
+	//	}
+	//	if (!v_d.GetStopL()) {
+	//		v_d.DirectionDecider(80, layers_, i + 1, i_p.GetNoiseMap(chunk_iter), v_d.GetLowPoint(), false, init);		//finds point on circumference 
+	//		i++;
+	//	}
+	//}
+	//TerrainLoop(v_d, s_p, voronoi_d, height_map, n_height_map, i_p, number_, track_type_, chunk_iter);//passes in the vector of vertex array for diagram, distancemap,heightmap, and index
+	//v_d.SetStopL(false);
+	//v_d.SetStopH(false);
 	//above is for default as is
 
 
