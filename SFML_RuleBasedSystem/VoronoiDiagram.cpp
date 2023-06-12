@@ -724,10 +724,10 @@ void VoronoiDiagram::TerrainSites(){
 			sites_v_1[i] = distribution(generator);
 			i++;
 			sites_v_1[i] = distribution(generator);
-			for (int c = 0; c < circles_.size(); c++){
-				int r = pow(circles_[c].r_length, 2);						//radius squared
-				int a = pow((sites_v_1[i - 1] - circles_[c].point.x), 2);				//x part squared
-				int b = pow((sites_v_1[i] - circles_[c].point.y), 2);					//y part squared
+			for (int c = 0; c < temp_circl.size(); c++){
+				int r = pow(temp_circl[c].r_length, 2);						//radius squared
+				int a = pow((sites_v_1[i - 1] - temp_circl[c].point.x), 2);				//x part squared
+				int b = pow((sites_v_1[i] - temp_circl[c].point.y), 2);					//y part squared
 				if (a + b < r || a + b == r){				//the circle formula - checking whether the point exist in the circle and if it does then set the iterator back to what it was and go again
 					found = false;
 					false_in_first_cirlce = true;			//so if this is true then when it comes to circle(n+1) the found wont trigger
@@ -746,11 +746,11 @@ void VoronoiDiagram::TerrainSites(){
 
 	int iterator_ = 0;
 	for (int i = 0; i < circles_.size(); i++){
-		sites_v_1[iterator_] = circles_[i].point.x;				//setting the first sites the the centre point of the circles
+		sites_v_1[iterator_] = temp_circl[i].point.x;				//setting the first sites the the centre point of the circles
 		iterator_++;
-		sites_v_1[iterator_] = circles_[i].point.y;
+		sites_v_1[iterator_] = temp_circl[i].point.y;
 		iterator_++;
-		std::cout << "Centre " << i << " (" << circles_[i].point.x << ", " << circles_[i].point.y << ") Radius: " << circles_[i].r_length << "\n";
+		std::cout << "Centre " << i << " (" << temp_circl[i].point.x << ", " << temp_circl[i].point.y << ") Radius: " << temp_circl[i].r_length << "\n";
 	}
 }
 void VoronoiDiagram::ResetVars()
