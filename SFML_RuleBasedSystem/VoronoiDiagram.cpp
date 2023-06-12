@@ -387,6 +387,7 @@ void VoronoiDiagram::ThreePoints(const float values_[12], const int& chunk_index
 			if (counter > 200)
 			{
 				failed_= true;
+				found = true;
 				break;
 				std::cout << "didnt set a point\n";
 			}
@@ -444,6 +445,7 @@ void VoronoiDiagram::SetPoint(int type, const int& chunk_index){
 				PlacePoint(x, y, i, found, chunk_index);
 				if (counter > 200){
 					failed_ = true;
+
 					break;
 					std::cout << "didnt set a point\n";
 				}
@@ -710,7 +712,7 @@ void VoronoiDiagram::TerrainSites(){
 		delete[] sites_v_1;
 		loc_num_sites = (num_of_sites* 2)*4;//param the 25 
 		sites_v_1 = new int[loc_num_sites];
-		loc_grid_size * 2;
+		loc_grid_size *= 2;
 		temp_circl = all_circles_vector;
 	}
 
@@ -744,8 +746,14 @@ void VoronoiDiagram::TerrainSites(){
 		}
 	}
 
+	for (int i = 0; i < loc_num_sites; i++){
+		std::cout << "Site x: " << sites_v_1[i]<<" ";
+		i++;
+		std::cout << "Site y: " << sites_v_1[i] << "\n";
+	}
+
 	int iterator_ = 0;
-	for (int i = 0; i < circles_.size(); i++){
+	for (int i = 0; i < temp_circl.size(); i++){
 		sites_v_1[iterator_] = temp_circl[i].point.x;				//setting the first sites the the centre point of the circles
 		iterator_++;
 		sites_v_1[iterator_] = temp_circl[i].point.y;
