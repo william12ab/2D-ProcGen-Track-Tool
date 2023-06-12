@@ -5,6 +5,9 @@ using namespace concurrency;
 
 ImageProcessing::ImageProcessing() {
 	heightmap_ = nullptr;
+	heightmap_1 = nullptr;
+	heightmap_2 = nullptr;
+	heightmap_3 = nullptr;
 	heightmap_fbm_ = nullptr;
 	noise_heightmap_ = nullptr;
 	noise_heightmap_1 = nullptr;
@@ -13,9 +16,11 @@ ImageProcessing::ImageProcessing() {
 	alpha_channel_ = nullptr;
 }
 
-ImageProcessing::~ImageProcessing()
-{
+ImageProcessing::~ImageProcessing(){
 	delete[] heightmap_;
+	delete[] heightmap_1;
+	delete[] heightmap_2;
+	delete[] heightmap_3;
 	delete[] noise_heightmap_;
 	delete[] noise_heightmap_1;
 	delete[] noise_heightmap_2;
@@ -26,6 +31,9 @@ ImageProcessing::~ImageProcessing()
 
 void ImageProcessing::InitStructures(int grid_size) {
 	heightmap_ = new float[grid_size * grid_size];
+	heightmap_1 = new float[grid_size * grid_size];
+	heightmap_2 = new float[grid_size * grid_size];
+	heightmap_3 = new float[grid_size * grid_size];
 	heightmap_fbm_ = new float[grid_size * grid_size];
 	noise_heightmap_ = new int[grid_size * grid_size];
 	noise_heightmap_1 = new int[grid_size * grid_size];
@@ -37,6 +45,10 @@ void ImageProcessing::InitStructures(int grid_size) {
 	noise_maps_vector.push_back(noise_heightmap_1);
 	noise_maps_vector.push_back(noise_heightmap_2);
 	noise_maps_vector.push_back(noise_heightmap_3);
+	distance_heightmaps_vector.push_back(heightmap_);
+	distance_heightmaps_vector.push_back(heightmap_1);
+	distance_heightmaps_vector.push_back(heightmap_2);
+	distance_heightmaps_vector.push_back(heightmap_3);
 }
 
 void ImageProcessing::DrawCurve(sf::VertexArray& vertexarray, int grid_size, int num_sites, int* grid) {
@@ -132,7 +144,7 @@ void ImageProcessing::DrawVoronoiNoise(sf::VertexArray& vertextarray, const int&
 			//so end color, closer to the site you are - brighter, further away - darker
 			c /= 2;						//makes the colour smaller
 			h_c /= 2;
-			heightmap_[i * grid_size + j] = h_c;
+			distance_heightmaps_vector[chunk_index][index_y * grid_size + index_x] = h_c;
 
 			vertextarray[index_y * grid_size + index_x].position = sf::Vector2f(j, i);
 			vertextarray[index_y * grid_size + index_x].color = sf::Color{ c , c , c };
@@ -472,7 +484,7 @@ void ImageProcessing::CreateFinalHM(int grid_size, sf::VertexArray& vertexarray,
 			int i_alpha_two = alpha_channel_[i * grid_size + j];				//int version of alpha
 			float i_alpha_percent = (float)i_alpha_two / 255.0f;				//alpha as value between 0.0 to 1.0
 
-			int i_c_one = int(heightmap_[i * grid_size + j]);					//int value of c
+			int i_c_one = int(distance_heightmaps_vector[chunk_index_][i * grid_size + j]);					//int value of c
 			int i_c_two = (noise_maps_vector[chunk_index_][i * grid_size + j] / layers_);					//int value of co
 
 			float i_c_t_a = (float)i_c_two / 255.0f;							//decimal value of co
@@ -510,11 +522,19 @@ void ImageProcessing::CreateFinalHM(int grid_size, sf::VertexArray& vertexarray,
 void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, int layers_) {
 	const int dimensions_ = grid_size;
 	sf::Image voronoi_output;
+	sf::Image voronoi_output1;
+	sf::Image voronoi_output2;
+	sf::Image voronoi_output3;
 	sf::Image noise_output;
 	sf::Image noise_output_1;
 	sf::Image noise_output_2;
 	sf::Image noise_output_3;
 	std::vector<sf::Image> noise_output_vector;
+	std::vector<sf::Image> voronoi_output_vector;
+	voronoi_output_vector.push_back(voronoi_output3);
+	voronoi_output_vector.push_back(voronoi_output1);
+	voronoi_output_vector.push_back(voronoi_output2);
+	voronoi_output_vector.push_back(voronoi_output3);
 	noise_output_vector.push_back(noise_output);
 	noise_output_vector.push_back(noise_output_1);
 	noise_output_vector.push_back(noise_output_2);
@@ -523,9 +543,11 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, i
 	sf::Image track_output;
 	if (!is_chunking_) {
 		noise_output_vector[0].create(grid_size, grid_size);
+		voronoi_output_vector[0].create(grid_size, grid_size);
 	}
 	else {
 		for (int i = 0; i < 4; i++) {
+			voronoi_output_vector[i].create(grid_size, grid_size);
 			noise_output_vector[i].create(grid_size, grid_size);
 		}
 	}
@@ -534,28 +556,36 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, i
 	track_output.create(grid_size, grid_size);
 
 
-	parallel_for(0, dimensions_, [&](int i) {
+	//parallel_for(0, dimensions_, [&](int i) {
+	for (int i = 0; i < dimensions_; i++) {
 		for (int j = 0; j < dimensions_; j++) {
-			sf::Uint8 c = int(heightmap_[i * grid_size + j]);					//the voronoidiagram colour
 			sf::Uint8 co, co_1, co_2, co_3;
+			sf::Uint8 c, c1, c2, c3;
 			std::vector<sf::Uint8> noise_color;
+			std::vector<sf::Uint8> distance_heightmap_color;
+			distance_heightmap_color.push_back(c);
+			distance_heightmap_color.push_back(c1);
+			distance_heightmap_color.push_back(c2);
+			distance_heightmap_color.push_back(c3);
 			noise_color.push_back(co);
 			noise_color.push_back(co_1);
 			noise_color.push_back(co_2);
 			noise_color.push_back(co_3);
 			if (!is_chunking_) {
 				noise_color[0] = (noise_maps_vector[0][i * grid_size + j] / layers_);					//noise colour
+				distance_heightmap_color[0] = int(distance_heightmaps_vector[0][i * grid_size + j]);					//the voronoidiagram colour
 			}
 			else {
 				for (int iterator_chunk = 0; iterator_chunk < 4; iterator_chunk++) {
 					noise_color[iterator_chunk] = (noise_maps_vector[iterator_chunk][i * grid_size + j] / layers_);					//noise colour
+					distance_heightmap_color[iterator_chunk] = int(distance_heightmaps_vector[iterator_chunk][i * grid_size + j]);					//the voronoidiagram colour
 				}
 			}
 			sf::Uint8 a = alpha_channel_[i * grid_size + j];					//alpha colour value of noise
 
 			int i_alpha_two = alpha_channel_[i * grid_size + j];				//int version of alpha
 			float i_alpha_percent = (float)i_alpha_two / 255.0f;				//alpha as value between 0.0 to 1.0
-			int i_c_one = int(heightmap_[i * grid_size + j]);					//int value of c
+			int i_c_one = int(distance_heightmaps_vector[0][i * grid_size + j]);					//int value of c
 			int i_c_two = (noise_maps_vector[0][i * grid_size + j] / layers_);					//int value of co
 
 
@@ -566,24 +596,20 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, i
 			float final_color_p = (i_c_t_a * i_alpha_percent + is * 1.0f * (1.0f - i_alpha_percent)) / alpha_percent_;		//final_c = (colour_a*alpha_a + colour_b*alpha_b(1-alpha_a))/alpha_final		as a percent
 			//
 
-			if (final_color_p < 0.0f)
-			{
+			if (final_color_p < 0.0f) {
 				final_color_p = 0.0;
 				//just to check if its out of bounds
 				//happens for some reason when j=0 to 512 and i = 512
 				//becuase of error in voronoi
 				//fix it
 			}
-			if (final_color_p > 1.0f)
-			{
-				int a = 1;
+			if (final_color_p > 1.0f) {
 				final_color_p = 1.0;
 			}
 
 			//this is the premultiplied
 			float i_c_f_t = i_c_t_a + is * (1.0f - i_alpha_percent);
-			if (i_c_f_t > 1.0f)
-			{
+			if (i_c_f_t > 1.0f) {
 				i_c_f_t = 1.0f;
 			}
 
@@ -598,21 +624,24 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, i
 
 
 			//setting the pixels of the output images
-			voronoi_output.setPixel(j, i, sf::Color{ c , c , c });
 			if (!is_chunking_) {
 				noise_output_vector[0].setPixel(j, i, sf::Color{ noise_color[0] , noise_color[0] , noise_color[0],a });
+				voronoi_output_vector[0].setPixel(j, i, sf::Color{ distance_heightmap_color[0] , distance_heightmap_color[0] , distance_heightmap_color[0] });
 			}
 			else {
 				for (int chunk_it = 0; chunk_it < 4; chunk_it++) {
 					noise_output_vector[chunk_it].setPixel(j, i, sf::Color{ noise_color[chunk_it] , noise_color[chunk_it] , noise_color[chunk_it],a });
+					voronoi_output_vector[chunk_it].setPixel(j, i, sf::Color{ distance_heightmap_color[chunk_it] , distance_heightmap_color[chunk_it] , distance_heightmap_color[chunk_it] });
 				}
 			}
 			final_i.setPixel(j, i, sf::Color{ final_c,final_c,final_c ,final_a });
 			track_output.setPixel(j, i, sf::Color{ vertexarray[i * grid_size + j].color.r,vertexarray[i * grid_size + j].color.g,vertexarray[i * grid_size + j].color.b });
 		}
-		});
+		//});
+	}
 	if (!is_chunking_) {
 		noise_output_vector[0].saveToFile("0noise_layer.png");
+		voronoi_output_vector[0].saveToFile("0voronoi_layer.png");
 	}
 	else {
 		for (int c_i = 0; c_i < 4; c_i++) {
@@ -620,10 +649,14 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, i
 			char const* c = "noise_layer.png";
 			s += c;
 			noise_output_vector[c_i].saveToFile(s);
+			s = std::to_string(c_i);
+			c = "voronoi_layer.png";
+			s += c;
+			voronoi_output_vector[c_i].saveToFile(s);
 		}
 	}
 
-	voronoi_output.saveToFile("voronoi_layer.png");
+	//voronoi_output.saveToFile("voronoi_layer.png");
 	final_i.saveToFile("final.png");
 	track_output.saveToFile("track_image.png");
 }

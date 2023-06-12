@@ -19,7 +19,7 @@ public:
 	void SetIsChunking(bool f) { is_chunking_ = f; }
 
 	//Getters
-	float* GetHeightVal() { return heightmap_; }
+	float* GetHeightVal(const int& index_) { return distance_heightmaps_vector[index_]; }
 	int* GetNoiseMap(const int&index_) const { return noise_maps_vector[index_]; }
 	bool GetIsChunking() { return is_chunking_; }
 
@@ -55,12 +55,16 @@ public:
 private:
 	SimplexNoise perlin_;
 
-	float* heightmap_;
-	int* noise_heightmap_;
+	float* heightmap_;//contains the pixels from the distance map- for outputting to file
+	float* heightmap_1;
+	float* heightmap_2;
+	float* heightmap_3;
+	int* noise_heightmap_;//noise pixels for outputting to file
 	int* noise_heightmap_1;
 	int* noise_heightmap_2;
 	int* noise_heightmap_3;
 	std::vector<int*> noise_maps_vector;
+	std::vector<float*> distance_heightmaps_vector;
 	int* alpha_channel_;
 	float* heightmap_fbm_;
 
