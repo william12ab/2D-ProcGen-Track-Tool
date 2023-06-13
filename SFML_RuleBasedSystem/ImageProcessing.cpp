@@ -520,7 +520,7 @@ void ImageProcessing::CreateFinalHM(int grid_size, sf::VertexArray& vertexarray,
 	}
 }
 
-void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, int layers_) {
+void ImageProcessing::WriteToFile(int grid_size, std::vector<sf::VertexArray&> track_vertex_arr, int layers_) {
 	const int dimensions_ = grid_size;
 	sf::Image voronoi_output;
 	sf::Image voronoi_output1;
@@ -563,9 +563,7 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, i
 			track_output_vector[i].create(grid_size, grid_size);
 		}
 	}
-	voronoi_output.create(grid_size, grid_size);
 	final_i.create(grid_size, grid_size);
-	track_output.create(grid_size, grid_size);
 
 
 	//parallel_for(0, dimensions_, [&](int i) {
@@ -647,13 +645,14 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, i
 				}
 			}
 			final_i.setPixel(j, i, sf::Color{ final_c,final_c,final_c ,final_a });
-			track_output.setPixel(j, i, sf::Color{ vertexarray[i * grid_size + j].color.r,vertexarray[i * grid_size + j].color.g,vertexarray[i * grid_size + j].color.b });
+			track_output_vector[0].setPixel(j, i, sf::Color{ track_vertex_arr[0][i * grid_size + j].color.r,track_vertex_arr[0][i * grid_size + j].color.g,track_vertex_arr[0][i * grid_size + j].color.b });
 		}
 		//});
 	}
 	if (!is_chunking_) {
 		noise_output_vector[0].saveToFile("0noise_layer.png");
 		voronoi_output_vector[0].saveToFile("0voronoi_layer.png");
+		track_output_vector[0].saveToFile("0track_image.png");
 	}
 	else {
 		for (int c_i = 0; c_i < 4; c_i++) {
@@ -665,10 +664,14 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, i
 			c = "voronoi_layer.png";
 			s += c;
 			voronoi_output_vector[c_i].saveToFile(s);
+			s = std::to_string(c_i);
+			c = "track_output.png";
+			s += c;
+			track_output_vector[c_i].saveToFile(s);
 		}
 	}
 	final_i.saveToFile("final.png");
-	track_output.saveToFile("track_image.png");
+	
 }
 void ImageProcessing::SaveUpScale(int grid_size, float scale)
 {

@@ -358,7 +358,11 @@ int main(){
 			if (ImGui::Button("Write to file")){
 				final_map.resize(v_d.GetGridSize() * v_d.GetGridSize());
 				i_p.CreateFinalHM(v_d.GetGridSize(), final_map, layers_,0);
-				i_p.WriteToFile(v_d.GetGridSize(), *voronoi_diagrams[0], layers_);
+				std::vector<sf::VertexArray&> addresses;
+				for (auto* pointer : voronoi_diagrams) {
+					addresses.push_back(*pointer);
+				}
+				i_p.WriteToFile(v_d.GetGridSize(), addresses, layers_);
 				s_p.WriteToFile();
 			}
 			if (ImGui::Button("Write Track Points")){
