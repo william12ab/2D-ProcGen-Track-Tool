@@ -84,7 +84,12 @@ void InputManager::HandleInput(bool &r_h_m, bool &r_n_h_m, bool &r_f_h_m, ImageP
 	{
 		r_f_h_m = false;
 	}
-
+	if (input->isKeyDown(sf::Keyboard::G)) {
+		int m_x = input->getMouseX();
+		int m_y = input->getMouseY();
+		std::cout << "x : " << m_x << " y: " << m_y << "\n";
+		input->setKeyUp(sf::Keyboard::G);
+	}
 	if (input->isKeyDown(sf::Keyboard::Escape))
 	{
 		window->close();

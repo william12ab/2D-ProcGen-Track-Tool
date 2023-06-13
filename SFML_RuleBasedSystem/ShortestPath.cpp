@@ -101,7 +101,6 @@ void ShortestPath::Initgrid(const int& grid_size, int* grid, const int& num_poin
 			}
 		}
 	}
-	int trest = 2;
 }
 
 

@@ -106,6 +106,7 @@ void ImageProcessing::DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int g
 	int index_y = 0;
 	for (int i = limits_.y_min; i < limits_.y_max; i++) {
 		index_x = 0;
+	
 		for (int j = limits_.x_min; j < limits_.x_max; j++) {
 			if (grid[(index_y * grid_size) + index_x] == -1) {							//diagram
 				vertexarray[index_y * grid_size + index_x].position = sf::Vector2f(j, i);
@@ -529,8 +530,13 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, i
 	sf::Image noise_output_1;
 	sf::Image noise_output_2;
 	sf::Image noise_output_3;
+	sf::Image track_output;
+	sf::Image track_output1;
+	sf::Image track_output2;
+	sf::Image track_output3;
 	std::vector<sf::Image> noise_output_vector;
 	std::vector<sf::Image> voronoi_output_vector;
+	std::vector<sf::Image> track_output_vector;
 	voronoi_output_vector.push_back(voronoi_output3);
 	voronoi_output_vector.push_back(voronoi_output1);
 	voronoi_output_vector.push_back(voronoi_output2);
@@ -539,16 +545,22 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, i
 	noise_output_vector.push_back(noise_output_1);
 	noise_output_vector.push_back(noise_output_2);
 	noise_output_vector.push_back(noise_output_3);
+	track_output_vector.push_back(track_output);
+	track_output_vector.push_back(track_output1);
+	track_output_vector.push_back(track_output2);
+	track_output_vector.push_back(track_output3);
 	sf::Image final_i;
-	sf::Image track_output;
+	
 	if (!is_chunking_) {
 		noise_output_vector[0].create(grid_size, grid_size);
 		voronoi_output_vector[0].create(grid_size, grid_size);
+		track_output_vector[0].create(grid_size, grid_size);
 	}
 	else {
 		for (int i = 0; i < 4; i++) {
 			voronoi_output_vector[i].create(grid_size, grid_size);
 			noise_output_vector[i].create(grid_size, grid_size);
+			track_output_vector[i].create(grid_size, grid_size);
 		}
 	}
 	voronoi_output.create(grid_size, grid_size);
@@ -655,8 +667,6 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& vertexarray, i
 			voronoi_output_vector[c_i].saveToFile(s);
 		}
 	}
-
-	//voronoi_output.saveToFile("voronoi_layer.png");
 	final_i.saveToFile("final.png");
 	track_output.saveToFile("track_image.png");
 }

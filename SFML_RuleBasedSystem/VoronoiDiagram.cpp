@@ -329,21 +329,18 @@ void VoronoiDiagram::DiagramAMP(const int& chunk_index){
 //j =y/z, i=x
 //at this stage: all positions are equal to a number representing a site
 //so if theres 25 sites, each position will be 1-25 
-void VoronoiDiagram::SetEdges(const int& chunk_index)
-{
-	for (int j = 0; j < grid_size_x; j++)
-	{
-		for (int i = 0; i < grid_size_x; i++)
-		{
-			if (i + 1 < grid_size_x && j + 1 < grid_size_x)		//if in the bounds
-			{
-				if (grid_vector[chunk_index][(j * grid_size_x) + i] != grid_vector[chunk_index][(j * grid_size_x) + (i + 1)])		//if the current pos and pos 1 to the left are not the same
-				{
+void VoronoiDiagram::SetEdges(const int& chunk_index){
+	for (int j = 0; j < grid_size_x; j++){
+		for (int i = 0; i < grid_size_x; i++){
+			if (i + 1 < grid_size_x ){		//if in the bounds
+				if (grid_vector[chunk_index][(j * grid_size_x) + i] != grid_vector[chunk_index][(j * grid_size_x) + (i + 1)]){		//if the current pos and pos 1 to right are not the same
 					grid_vector[chunk_index][(j * grid_size_x) + i] = 0;			//set to path way
 					//here you could find what the sites bordering are
 				}
-				else if (grid_vector[chunk_index][(j * grid_size_x) + i] != grid_vector[chunk_index][((j + 1) * grid_size_x) + i])
-				{
+				
+			}
+			if (j + 1 < grid_size_x) {
+				if (grid_vector[chunk_index][(j * grid_size_x) + i] != grid_vector[chunk_index][((j + 1) * grid_size_x) + i]) {		//if current pos and pos one down are not the same
 					grid_vector[chunk_index][(j * grid_size_x) + i] = 0;
 				}
 			}
