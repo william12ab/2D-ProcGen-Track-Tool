@@ -76,7 +76,7 @@ public:
 	void SetForChunks();
 	void SetIsChunking(bool f) { local_is_chunking = f; }
 	bool GetIsChunking(){return local_is_chunking;}
-	
+	void DivideChunks();
 	//
 	//this annoying is here
 	void ResizeGrid(float scale);																//resizes the grid
@@ -107,6 +107,7 @@ private:
 	std::vector<int*> grid_vector;
 	std::vector<int*> distance_grid_vector;
 
+	int* full_grid_chunking;
 
 	static std::vector<sf::Vector2i> point_pos;
 
