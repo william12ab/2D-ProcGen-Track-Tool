@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include "StructRanges.h"
+#include <random>
 class VoronoiDiagram
 {
 public:
@@ -20,16 +21,12 @@ public:
 	void InitVector(const int &grid_size, const int &num_points, const int &num_sites);		//inits the vector to correct size;
 	void DiagramAMP(const int& chunk_index);						//creates the vd using parallel for
 
-
-
 	//getters		
 	int GetRadius() { return radius_length; }
 	bool GetFailed() { return failed_; }						
-
 	int* GetGrid(const int& index) { return grid_vector[index]; }
 	int* GetSites() { return sites_v_1; }
 	int* GetGridDistance(const int& index) { return distance_grid_vector[index]; }
-
 	int GetNumberOfSites() { return num_of_sites; }						//returns the number of sites
 	int GetGridSize() { return grid_size_x; };							//returns the size of the grid
 	int GetType() { return type; };										//returns the type of track, closed or open
@@ -54,7 +51,7 @@ public:
 	void SetStopL(bool f) { stop_low_ = f; }
 	//
 	
-	//these functions should go in another class
+	//these functions should go in another class, is to do with heightmap information and setting of circles
 	void DirectionDecider(const int &radius_cutoff_,const int &layers_,const int &index_v, int* const& noise_h_m, const sf::Vector2i& high_or_low, bool b_what_p, const ranges& init);
 	void FindCircumPoint(int x_value_, int y_value_, int signal_, const int radius_cutoff_, const int layers_, int modifier_, int place, int* const& noise_h_m, sf::Vector2i&circum_point_, const sf::Vector2i& high_or_low, bool b_what_p);
 	void radiiDecider(const int &index_v, const sf::Vector2i& high_or_low);
@@ -78,16 +75,19 @@ public:
 	bool GetIsChunking(){return local_is_chunking;}
 	void DivideChunks();
 	//
+	//
 	//this annoying is here
 	void ResizeGrid(float scale);																//resizes the grid
 	void UpScaleGrid(int grid_size, float scale);																//upscales the grid
-	
+	//
 
 	//for setting points
 	void SetPointModi(int& x, int& x_2, int& y, int& y_2, const float &x_v_1, const float &x_v_2, const float &y_v_1, const float &y_v_2);
 	void PlacePoint(int x,int y, int i, bool&found_, const int & chunk_index);
 	void ThreePoints(const float values_[12], const int& chunk_index);
 	void SetPoint(int type, const int & chunk_index);				//Sets the point(s) for the distance.
+	void SetPointDefault(const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_, const int& used_if_chunked);
+	void SetPointHeightExtented();
 private:
 	SimplexNoise perlin_;
 

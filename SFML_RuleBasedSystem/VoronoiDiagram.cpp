@@ -4,7 +4,7 @@
 using namespace concurrency;
 
 #include <SFML/Graphics.hpp>
-#include <random>
+
 
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
@@ -443,42 +443,78 @@ void VoronoiDiagram::SetPoint(int type, const int& chunk_index) {
 	}
 		  break;
 	case 1: {
-		int iter = grid_size_x / num_of_points;
-		iter -= (iter) / 2;
-		int start = 1;
-		int position = 0;
-		for (int i = 0; i < num_of_points; i++) {
-			bool found = false;
-			if (start + iter > grid_size_x) {
-				int difference_ = (start + iter) - grid_size_x;
-				start -= difference_;
-			}
-			int counter = 0;
-
-			while (!found) {
-				counter++;
-				//so first is between 0 and grid_size/numpoints, second is iter and iter+iter, etc
-				int x = rand() % iter + start;
-				int y = distribution(generator);
-				PlacePoint(x, y, i, found, chunk_index);
-				if (counter > 200) {
-					failed_ = true;
-					break;
-					std::cout << "didnt set a point\n";
-				}
-			}
-			iter = grid_size_x / num_of_points;
-			start += iter;
-		}
+		SetPointDefault(chunk_index,generator,distribution,0);
 	}
 		  break;
 	case 2: {
 		float arr[12] = { 0.05f,0.15f,0.2f,0.4f, 0.2f,0.4f,0.15f,0.15f, 0.05f,0.80f,0.2f,0.4f };
 		ThreePoints(arr, chunk_index);
-	}
-		  break;
+	}  break;
+	case 3:{
+		SetPointDefault(chunk_index, generator, distribution, 1);
+		bool found_=false;
+		int counter_ = 0;
+		while (!found_) {
+			counter_++;
+			//so first is between 0 and grid_size/numpoints, second is iter and iter+iter, etc
+			int x = grid_size_x-1;
+			int y = distribution(generator);
+			PlacePoint(x, y, 2, found_, chunk_index);//if point generated lies on grid, add to points vector, change grid array to point position, found = true;
+			if (counter_ > 200) {
+				failed_ = true;
+				break;
+				std::cout << "didnt set a point\n";
+			}
+		}
+		break;
+	}	}
+}
+void VoronoiDiagram::SetPointDefault(const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_, const int& used_if_chunked) {
+	int iter = grid_size_x / num_of_points;//200
+	iter -= (iter) / 2;//100
+	int start = 1;
+	int position = 0;
+	for (int i = 0; i < (num_of_points- used_if_chunked); i++) {
+		bool found = false;
+		if (start + iter > grid_size_x) {//iif out of bounds
+			int difference_ = (start + iter) - grid_size_x;
+			start -= difference_;
+		}
+		int counter = 0;
+
+		while (!found) {
+			counter++;
+			//so first is between 0 and grid_size/numpoints, second is iter and iter+iter, etc
+			int x = rand() % iter + start;
+			int y = dist_(gen_);
+			PlacePoint(x, y, i, found, chunk_index);//if point generated lies on grid, add to points vector, change grid array to point position, found = true;
+			if (counter > 200) {
+				failed_ = true;
+				break;
+				std::cout << "didnt set a point\n";
+			}
+		}
+		iter = grid_size_x / num_of_points;//200
+		start += iter;//201
 	}
 }
+void VoronoiDiagram::SetPointHeightExtented() {
+	bool found_ = false;
+	int counter_ = 0;
+	while (!found_) {
+		counter_++;
+		//so first is between 0 and grid_size/numpoints, second is iter and iter+iter, etc
+		int x = grid_size_x - 1;
+		int y = distribution(generator);
+		PlacePoint(x, y, 2, found_, chunk_index);//if point generated lies on grid, add to points vector, change grid array to point position, found = true;
+		if (counter_ > 200) {
+			failed_ = true;
+			break;
+			std::cout << "didnt set a point\n";
+		}
+	}
+}
+
 
 void VoronoiDiagram::SetHighPoint(const int& layers_, int* const& noise_grid, sf::Vector2i& high_point_v_, int& high_point_, const int& i, const int& j, int& min_height, sf::Vector2i& low_point_v_) {
 	int temp_height = noise_grid[(i * grid_size_x) + j] / layers_;
