@@ -87,7 +87,9 @@ public:
 	void ThreePoints(const float values_[12], const int& chunk_index);
 	void SetPoint(int type, const int & chunk_index);				//Sets the point(s) for the distance.
 	void SetPointDefault(const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_, const int& used_if_chunked);
-	void SetPointHeightExtented();
+	void SetPointHeightExtented(const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_);
+	void SetPointOnEdgeHeight(bool& found_, int& counter_, const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_, int&x_pos_changed,int&y_pos_changed);
+	void SetPointInMiddle(bool& found_, int& counter_, int& x_pos_changed, int& y_pos_changed, const int& chunk_index);
 private:
 	SimplexNoise perlin_;
 
@@ -110,6 +112,7 @@ private:
 	int* full_grid_chunking;
 
 	static std::vector<sf::Vector2i> point_pos;
+	sf::Vector2i last_point_pos;
 
 	std::vector<int> temp_rad;
 	int max_distance_;
