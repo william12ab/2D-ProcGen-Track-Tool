@@ -369,8 +369,7 @@ void VoronoiDiagram::SetEdges(const int& chunk_index) {
 	}
 }
 
-void VoronoiDiagram::SetPointModi(int& x, int& x_2, int& y, int& y_2, const float& x_v_1, const float& x_v_2, const float& y_v_1, const float& y_v_2)
-{
+void VoronoiDiagram::SetPointModi(int& x, int& x_2, int& y, int& y_2, const float& x_v_1, const float& x_v_2, const float& y_v_1, const float& y_v_2){
 	x = (grid_size_x * x_v_1);
 	x_2 = (grid_size_x * x_v_2);
 	y = (grid_size_x * y_v_1);
@@ -510,6 +509,7 @@ void VoronoiDiagram::SetPointHeightExtented(const int& chunk_index, std::default
 	}
 	case 2: {
 		point_pos.push_back(sf::Vector2i(last_point_pos.x, 0));
+		grid_vector[chunk_index][(0 * grid_size_x) + last_point_pos.x] = 2000 + 0;
 		SetPointInMiddle(found_, counter_, x, y, chunk_index);
 		found_ = false;
 		SetPointOnEdgeHeight(found_, counter_, chunk_index, gen_, dist_, x, y);
@@ -517,6 +517,7 @@ void VoronoiDiagram::SetPointHeightExtented(const int& chunk_index, std::default
 	}	
 	case 3: {
 		point_pos.push_back(sf::Vector2i(399, last_point_pos.y));
+		grid_vector[chunk_index][(last_point_pos.y * grid_size_x) + 399] = 2000 + 0;
 		SetPointInMiddle(found_, counter_, x, y, chunk_index);
 		found_ = false;
 		SetPointOnEdgeHeight(found_, counter_, chunk_index, gen_, dist_, x, y);
@@ -555,6 +556,7 @@ void VoronoiDiagram::SetPointOnEdgeHeight(bool &found_, int&counter_, const int&
 		PlacePoint(x_pos_changed, y_pos_changed, 2, found_, chunk_index);//if point generated lies on grid, add to points vector, change grid array to point position, found = true;
 		if (counter_ > 200) {
 			failed_ = true;
+			counter_ = 0;
 			break;
 			std::cout << "didnt set a point\n";
 		}
