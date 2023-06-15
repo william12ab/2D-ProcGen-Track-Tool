@@ -369,7 +369,8 @@ void VoronoiDiagram::SetEdges(const int& chunk_index) {
 	}
 }
 
-void VoronoiDiagram::SetPointModi(int& x, int& x_2, int& y, int& y_2, const float& x_v_1, const float& x_v_2, const float& y_v_1, const float& y_v_2){
+void VoronoiDiagram::SetPointModi(int& x, int& x_2, int& y, int& y_2, const float& x_v_1, const float& x_v_2, const float& y_v_1, const float& y_v_2)
+{
 	x = (grid_size_x * x_v_1);
 	x_2 = (grid_size_x * x_v_2);
 	y = (grid_size_x * y_v_1);
@@ -508,16 +509,16 @@ void VoronoiDiagram::SetPointHeightExtented(const int& chunk_index, std::default
 		break;
 	}
 	case 2: {
-		point_pos.push_back(sf::Vector2i(last_point_pos.x, 0));
-		grid_vector[chunk_index][(0 * grid_size_x) + last_point_pos.x] = 2000 + 0;
+		point_pos.push_back(sf::Vector2i(399, last_point_pos.y));
+		grid_vector[chunk_index][(last_point_pos.y * grid_size_x) + 399] = 2000 + 0;
 		SetPointInMiddle(found_, counter_, x, y, chunk_index);
 		found_ = false;
 		SetPointOnEdgeHeight(found_, counter_, chunk_index, gen_, dist_, x, y);
 		break;
 	}	
 	case 3: {
-		point_pos.push_back(sf::Vector2i(399, last_point_pos.y));
-		grid_vector[chunk_index][(last_point_pos.y * grid_size_x) + 399] = 2000 + 0;
+		point_pos.push_back(sf::Vector2i(last_point_pos.x, 0));
+		grid_vector[chunk_index][(0 * grid_size_x) + last_point_pos.x] = 2000 + 0;
 		SetPointInMiddle(found_, counter_, x, y, chunk_index);
 		found_ = false;
 		SetPointOnEdgeHeight(found_, counter_, chunk_index, gen_, dist_, x, y);
@@ -569,7 +570,7 @@ void VoronoiDiagram::SetPointOnEdgeHeight(bool &found_, int&counter_, const int&
 void VoronoiDiagram::SetPointInMiddle(bool& found_, int& counter_, int& x_pos_changed, int& y_pos_changed, const int& chunk_index) {
 	while (!found_) {
 		counter_++;
-		int lims_start=grid_size_x*0.25f; int lims_end=grid_size_x*0.25f;
+		int lims_start=grid_size_x*0.25f; int lims_end=grid_size_x*0.5f;
 		x_pos_changed = rand() % lims_end + lims_start;
 		y_pos_changed = rand() % lims_end + lims_start;//will select a point roughly in the middle between 1/4 and 3/4 of total grid_size, so square that size of orignal square.
 		PlacePoint(x_pos_changed, y_pos_changed, 1, found_, chunk_index);//if point generated lies on grid, add to points vector, change grid array to point position, found = true;
