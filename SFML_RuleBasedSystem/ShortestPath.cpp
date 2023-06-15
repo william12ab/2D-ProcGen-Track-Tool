@@ -347,16 +347,27 @@ int ShortestPath::DistanceSqrt(int x, int y, int x2, int y2)
 }
 
 
-void ShortestPath::SetNESW(const int& grid_size, std::vector<int>& occ)
-{
-	north_site = old_num[((y_holder_ - 1) * grid_size) + (x_holder_)];
-	north_e_site = old_num[((y_holder_ - 1) * grid_size) + (x_holder_ + 1)];
-	north_w_site = old_num[((y_holder_ - 1) * grid_size) + (x_holder_ - 1)];
-	west_site = old_num[(y_holder_ * grid_size) + (x_holder_ - 1)];
-	east_site = old_num[(y_holder_ * grid_size) + (x_holder_ + 1)];
-	south_site = old_num[((y_holder_ + 1) * grid_size) + (x_holder_)];
-	south_e_site = old_num[((y_holder_ + 1) * grid_size) + (x_holder_ + 1)];
-	south_w_site = old_num[((y_holder_ + 1) * grid_size) + (x_holder_ - 1)];
+void ShortestPath::SetNESW(const int& grid_size, std::vector<int>& occ){
+	if (y_holder_-1>=0){
+		north_site = old_num[((y_holder_ - 1) * grid_size) + (x_holder_)];
+		north_e_site = old_num[((y_holder_ - 1) * grid_size) + (x_holder_ + 1)];
+		north_w_site = old_num[((y_holder_ - 1) * grid_size) + (x_holder_ - 1)];
+	}
+	if (x_holder_-1>=0){
+		west_site = old_num[(y_holder_ * grid_size) + (x_holder_ - 1)];
+	}
+	if (x_holder_+1<400){
+		east_site = old_num[(y_holder_ * grid_size) + (x_holder_ + 1)];
+	}
+	if (y_holder_+1<400){
+		south_site = old_num[((y_holder_ + 1) * grid_size) + (x_holder_)];
+		south_e_site = old_num[((y_holder_ + 1) * grid_size) + (x_holder_ + 1)];
+		south_w_site = old_num[((y_holder_ + 1) * grid_size) + (x_holder_ - 1)];
+	}
+	
+	
+	
+	
 
 	occ.push_back(north_site);
 	occ.push_back(north_e_site);
