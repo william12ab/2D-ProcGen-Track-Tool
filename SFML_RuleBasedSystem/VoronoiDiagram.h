@@ -89,7 +89,7 @@ public:
 	void SetPointDefault(const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_, const int& used_if_chunked);
 	void SetPointHeightExtented(const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_);
 	void SetPointOnEdgeHeight(bool& found_, int& counter_, const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_, int& x_pos_changed, int& y_pos_changed);
-	void SetPointInMiddle(bool& found_, int& counter_, int& x_pos_changed, int& y_pos_changed, const int& chunk_index);
+	void SetPointInMiddle(bool& found_, int& counter_, int& x_pos_changed, int& y_pos_changed, const int& chunk_index, std::default_random_engine gen_);
 private:
 	SimplexNoise perlin_;
 
