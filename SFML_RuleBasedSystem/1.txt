@@ -1,58 +1,202 @@
-total length: 399
-number of turns: 11
-number of segments: 13
-shortest distance(euclidean distance): 384
+total length: 740
+number of turns: 47
+number of segments: 49
+shortest distance(euclidean distance): 233
 
-length 1: 7
-length 2: 11
-length 3: 11
-length 4: 61
-length 5: 22
-length 6: 89
-length 7: 16
-length 8: 34
-length 9: 11
-length 10: 11
-length 11: 61
-length 12: 83
-length 13: 17
+length 1: 2
+length 2: 56
+length 3: 20
+length 4: 39
+length 5: 28
+length 6: 13
+length 7: 25
+length 8: 7
+length 9: 25
+length 10: 12
+length 11: 8
+length 12: 14
+length 13: 15
+length 14: 4
+length 15: 18
+length 16: 13
+length 17: 1
+length 18: 18
+length 19: 10
+length 20: 29
+length 21: 3
+length 22: 12
+length 23: 3
+length 24: 2
+length 25: 28
+length 26: 25
+length 27: 39
+length 28: 2
+length 29: 36
+length 30: 10
+length 31: 25
+length 32: 2
+length 33: 35
+length 34: 3
+length 35: 10
+length 36: 24
+length 37: 16
+length 38: 17
+length 39: 30
+length 40: 14
+length 41: 49
+length 42: 3
+length 43: 3
+length 44: 4
+length 45: 8
+length 46: 38
+length 47: 10
+length 48: 10
+length 49: 5
 
-angle 1: 264
-angle 2: 195
-angle 3: 206
-angle 4: 217
-angle 5: 111
-angle 6: 230
-angle 7: 111
-angle 8: 106
-angle 9: 118
-angle 10: 236
-angle 11: 191
+angle 1: 95
+angle 2: 92
+angle 3: 112
+angle 4: 226
+angle 5: 201
+angle 6: 257
+angle 7: 220
+angle 8: 154
+angle 9: 128
+angle 10: 244
+angle 11: 158
+angle 12: 143
+angle 13: 258
+angle 14: 126
+angle 15: 256
+angle 16: 202
+angle 17: 116
+angle 18: 114
+angle 19: 202
+angle 20: 223
+angle 21: 132
+angle 22: 198
+angle 23: 180
+angle 24: 155
+angle 25: 128
+angle 26: 229
+angle 27: 143
+angle 28: 204
+angle 29: 213
+angle 30: 119
+angle 31: 183
+angle 32: 205
+angle 33: 199
+angle 34: 149
+angle 35: 219
+angle 36: 132
+angle 37: 240
+angle 38: 114
+angle 39: 101
+angle 40: 116
+angle 41: 170
+angle 42: 213
+angle 43: 180
+angle 44: 104
+angle 45: 217
+angle 46: 157
+angle 47: 240
 
-angles for turn 1: 84
-angles for turn 2: 15
-angles for turn 3: 26
-angles for turn 4: 37
-angles for turn 5: 69
-angles for turn 6: 50
-angles for turn 7: 69
-angles for turn 8: 74
-angles for turn 9: 62
-angles for turn 10: 56
-angles for turn 11: 11
+angles for turn 1: 85
+angles for turn 2: 88
+angles for turn 3: 68
+angles for turn 4: 46
+angles for turn 5: 21
+angles for turn 6: 77
+angles for turn 7: 40
+angles for turn 8: 26
+angles for turn 9: 52
+angles for turn 10: 64
+angles for turn 11: 22
+angles for turn 12: 37
+angles for turn 13: 78
+angles for turn 14: 54
+angles for turn 15: 76
+angles for turn 16: 22
+angles for turn 17: 64
+angles for turn 18: 66
+angles for turn 19: 22
+angles for turn 20: 43
+angles for turn 21: 48
+angles for turn 22: 18
+angles for turn 23: 0
+angles for turn 24: 25
+angles for turn 25: 52
+angles for turn 26: 49
+angles for turn 27: 37
+angles for turn 28: 24
+angles for turn 29: 33
+angles for turn 30: 61
+angles for turn 31: 3
+angles for turn 32: 25
+angles for turn 33: 19
+angles for turn 34: 31
+angles for turn 35: 39
+angles for turn 36: 48
+angles for turn 37: 60
+angles for turn 38: 66
+angles for turn 39: 79
+angles for turn 40: 64
+angles for turn 41: 10
+angles for turn 42: 33
+angles for turn 43: 0
+angles for turn 44: 76
+angles for turn 45: 37
+angles for turn 46: 23
+angles for turn 47: 60
 
-Control-points 1: (208, 1)
-Control-points 2: (209, 12)
-Control-points 3: (161, 51)
-Control-points 4: (87, 90)
-Control-points 5: (88, 107)
-Control-points 6: (88, 108)
-Control-points 7: (88, 115)
-Control-points 8: (89, 126)
-Control-points 9: (87, 137)
-Control-points 10: (50, 186)
-Control-points 11: (28, 192)
-Control-points 12: (18, 281)
-Control-points 13: (4, 290)
-Control-points 14: (11, 324)
-Control-points 15: (0, 323)
+Control-points 1: (398, 78)
+Control-points 2: (395, 78)
+Control-points 3: (393, 78)
+Control-points 4: (367, 90)
+Control-points 5: (361, 115)
+Control-points 6: (326, 133)
+Control-points 7: (325, 135)
+Control-points 8: (297, 158)
+Control-points 9: (287, 159)
+Control-points 10: (277, 182)
+Control-points 11: (276, 184)
+Control-points 12: (248, 206)
+Control-points 13: (245, 207)
+Control-points 14: (238, 215)
+Control-points 15: (214, 219)
+Control-points 16: (205, 233)
+Control-points 17: (188, 232)
+Control-points 18: (174, 259)
+Control-points 19: (163, 250)
+Control-points 20: (118, 270)
+Control-points 21: (115, 272)
+Control-points 22: (115, 275)
+Control-points 23: (115, 279)
+Control-points 24: (113, 287)
+Control-points 25: (83, 311)
+Control-points 26: (78, 320)
+Control-points 27: (68, 320)
+Control-points 28: (64, 316)
+Control-points 29: (64, 317)
+Control-points 30: (66, 319)
+Control-points 31: (22, 355)
+Control-points 32: (34, 371)
+Control-points 33: (72, 361)
+Control-points 34: (96, 376)
+Control-points 35: (104, 387)
+Control-points 36: (121, 368)
+Control-points 37: (128, 367)
+Control-points 38: (149, 353)
+Control-points 39: (150, 341)
+Control-points 40: (158, 338)
+Control-points 41: (169, 328)
+Control-points 42: (172, 313)
+Control-points 43: (172, 309)
+Control-points 44: (183, 294)
+Control-points 45: (195, 299)
+Control-points 46: (196, 300)
+Control-points 47: (214, 294)
+Control-points 48: (215, 284)
+Control-points 49: (229, 258)
+Control-points 50: (232, 257)
+Control-points 51: (237, 246)
