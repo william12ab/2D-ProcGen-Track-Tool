@@ -543,7 +543,6 @@ void VoronoiDiagram::SetPointOnEdgeHeight(bool &found_, int&counter_, const int&
 			int lim_end = point_pos[point_pos.size() - 1].x;
 			std::uniform_int_distribution<int> dist(lim_end,lim_start );
 			x_pos_changed= dist(gen_);
-			//x_pos_changed = rand() % (grid_size_x- point_pos[point_pos.size() - 1].x -10)+ point_pos[point_pos.size()-1].x;
 			y_pos_changed = grid_size_x - 1;
 			break;
 		}
@@ -574,18 +573,17 @@ void VoronoiDiagram::SetPointOnEdgeHeight(bool &found_, int&counter_, const int&
 void VoronoiDiagram::SetPointInMiddle(bool& found_, int& counter_, int& x_pos_changed, int& y_pos_changed, const int& chunk_index, std::default_random_engine gen_) {
 	while (!found_) {
 		counter_++;
-		int lims_start_y=grid_size_x*0.10f; int lims_end_y=grid_size_x*0.7f;
-		int lims_start_x = grid_size_x * 0.05f; int lims_end_x= grid_size_x * 0.4f;
+		int lims_start_y=grid_size_x*0.04f; int lims_end_y=grid_size_x*0.9f;//16,360
+		int lims_start_x = grid_size_x * 0.05f; int lims_end_x= grid_size_x * 0.5f;//20,200
 
 		std::uniform_int_distribution<int> dist(lims_start_x, lims_end_x);
 		x_pos_changed = dist(gen_);
 		std::uniform_int_distribution<int> disty(lims_start_y, lims_end_y);
 		y_pos_changed = disty(gen_);
 
-		//x_pos_changed = rand() % lims_end_x + lims_start_x;
-		//y_pos_changed = rand() % lims_end_y + lims_start_y;//will select a point roughly in the middle between 1/4 and 3/4 of total grid_size, so square that size of orignal square.
+	
 		PlacePoint(x_pos_changed, y_pos_changed, 1, found_, chunk_index);//if point generated lies on grid, add to points vector, change grid array to point position, found = true;
-		if (counter_ > 500) {
+		if (counter_ > 1750) {
 			failed_ = true;
 			break;
 			std::cout << "didnt set a point\n";
