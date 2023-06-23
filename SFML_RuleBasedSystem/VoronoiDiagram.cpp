@@ -487,13 +487,54 @@ void VoronoiDiagram::SetPointDefault(const int& chunk_index, std::default_random
 		start += iter;//201
 	}
 }
+void VoronoiDiagram::XYPass(const int& chunk_index, int&x_,int&y_, const sf::Vector2i&p_last_point) {
+	switch (chunk_index){
+	case 1: {
+		x_ = 0;
+		y_ = p_last_point.y;
+		break;
+	}
+	case 2: {
+		x_ = 399;
+		y_ = p_last_point.y;
+		break;
+	}
+	case 3: {
+		x_ = p_last_point.x;
+		y_ =0;
+		break;
+	}
+	}
+}
+
+void VoronoiDiagram::CaseFunction(const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_, bool &found_, int& counter_, int&x, int&y) {
+	do {
+		bool is_restarted = false;
+		if (failed_) {
+			failed_ = false;
+			auto temp = point_pos[0];
+			point_pos.clear();
+			point_pos.push_back(temp);
+			is_restarted = true;
+		}
+		if (!is_restarted) {
+			int p_y = 0; int p_x = 0;
+			XYPass(chunk_index, p_x, p_y, last_point_pos);
+			point_pos.push_back(sf::Vector2i(p_x, p_y));
+			grid_vector[chunk_index][(p_y * grid_size_x) + p_x] = 2000 + 0;
+		}
+		SetPointInMiddle(found_, counter_, x, y, chunk_index, gen_);
+		found_ = false;
+		SetPointOnEdgeHeight(found_, counter_, chunk_index, gen_, dist_, x, y);
+	} while (failed_);
+}
+
 void VoronoiDiagram::SetPointHeightExtented(const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_) {
 	bool found_ = false;
 	int counter_ = 0;
 	int x = 0;
 	int y = 0;
-	switch (chunk_index)
-	{
+	switch (chunk_index){
 	case 0: {
 		x = grid_size_x - 1;
 		y = dist_(gen_);
@@ -501,27 +542,44 @@ void VoronoiDiagram::SetPointHeightExtented(const int& chunk_index, std::default
 		break;
 	}
 	case 1: {
-		point_pos.push_back(sf::Vector2i(0,last_point_pos.y));
-		grid_vector[chunk_index][(last_point_pos.y * grid_size_x) + 0] = 2000 + 0;
-		SetPointInMiddle(found_, counter_, x, y, chunk_index,gen_);
-		found_ = false;
-		SetPointOnEdgeHeight(found_, counter_, chunk_index, gen_, dist_, x, y);
+		CaseFunction(chunk_index, gen_, dist_, found_, counter_, x, y);
+		/*do{
+			bool is_restarted = false;
+			if (failed_){
+				failed_ = false;
+				auto temp = point_pos[0];
+				point_pos.clear();
+				point_pos.push_back(temp);
+				is_restarted = true;
+			}
+			if (!is_restarted){
+				point_pos.push_back(sf::Vector2i(0, last_point_pos.y));
+				grid_vector[chunk_index][(last_point_pos.y * grid_size_x) + 0] = 2000 + 0;
+			}
+			SetPointInMiddle(found_, counter_, x, y, chunk_index, gen_);
+			found_ = false;
+			SetPointOnEdgeHeight(found_, counter_, chunk_index, gen_, dist_, x, y);
+		} while (failed_);*/
 		break;
 	}
 	case 2: {
-		point_pos.push_back(sf::Vector2i(399, last_point_pos.y));
+		CaseFunction(chunk_index, gen_, dist_, found_, counter_, x, y);
+
+		/*point_pos.push_back(sf::Vector2i(399, last_point_pos.y));
 		grid_vector[chunk_index][(last_point_pos.y * grid_size_x) + 399] = 2000 + 0;
 		SetPointInMiddle(found_, counter_, x, y, chunk_index, gen_);
 		found_ = false;
-		SetPointOnEdgeHeight(found_, counter_, chunk_index, gen_, dist_, x, y);
+		SetPointOnEdgeHeight(found_, counter_, chunk_index, gen_, dist_, x, y);*/
 		break;
 	}	
 	case 3: {
-		point_pos.push_back(sf::Vector2i(last_point_pos.x, 0));
+		CaseFunction(chunk_index, gen_, dist_, found_, counter_, x, y);
+
+		/*point_pos.push_back(sf::Vector2i(last_point_pos.x, 0));
 		grid_vector[chunk_index][(0 * grid_size_x) + last_point_pos.x] = 2000 + 0;
 		SetPointInMiddle(found_, counter_, x, y, chunk_index, gen_);
 		found_ = false;
-		SetPointOnEdgeHeight(found_, counter_, chunk_index, gen_, dist_, x, y);
+		SetPointOnEdgeHeight(found_, counter_, chunk_index, gen_, dist_, x, y);*/
 		break;
 	}
 	}

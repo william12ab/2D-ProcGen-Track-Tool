@@ -74,6 +74,8 @@ public:
 	void SetIsChunking(bool f) { local_is_chunking = f; }
 	bool GetIsChunking(){return local_is_chunking;}
 	void DivideChunks();
+	void XYPass(const int& chunk_index, int& x_, int& y_, const sf::Vector2i& p_last_point);
+	void CaseFunction( const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_, bool& found_, int& counter_, int& x, int& y);
 	//
 	//
 	//this annoying is here
