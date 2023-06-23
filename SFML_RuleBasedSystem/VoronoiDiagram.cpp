@@ -555,7 +555,7 @@ void VoronoiDiagram::SetPointOnEdgeHeight(bool &found_, int&counter_, const int&
 		}
 		}
 		PlacePoint(x_pos_changed, y_pos_changed, 2, found_, chunk_index);//if point generated lies on grid, add to points vector, change grid array to point position, found = true;
-		if (counter_ > 200) {
+		if (counter_ > 500) {
 			failed_ = true;
 			counter_ = 0;
 			break;
@@ -574,7 +574,7 @@ void VoronoiDiagram::SetPointInMiddle(bool& found_, int& counter_, int& x_pos_ch
 		x_pos_changed = rand() % lims_end + lims_start;
 		y_pos_changed = rand() % lims_end + lims_start;//will select a point roughly in the middle between 1/4 and 3/4 of total grid_size, so square that size of orignal square.
 		PlacePoint(x_pos_changed, y_pos_changed, 1, found_, chunk_index);//if point generated lies on grid, add to points vector, change grid array to point position, found = true;
-		if (counter_ > 200) {
+		if (counter_ > 500) {
 			failed_ = true;
 			break;
 			std::cout << "didnt set a point\n";
