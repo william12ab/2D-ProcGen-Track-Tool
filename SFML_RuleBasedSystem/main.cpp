@@ -345,7 +345,9 @@ int main(){
 								i = 3;	
 							}
 						}
-						t_t.HeightLoop(i,is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *voronoi_diagrams[i], *distance_maps[i], *noise_maps[i], v_d.GetGridSize());
+						if (!done_){
+							t_t.HeightLoop(i, is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *voronoi_diagrams[i], *distance_maps[i], *noise_maps[i], v_d.GetGridSize());
+						}
 						if (i==3){
 							if (!done_){
 								i = 1;

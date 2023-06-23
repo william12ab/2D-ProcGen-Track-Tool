@@ -544,12 +544,12 @@ void VoronoiDiagram::SetPointOnEdgeHeight(bool &found_, int&counter_, const int&
 			break;
 		}
 		case 2: {
-			x_pos_changed = 0;
+			x_pos_changed = dist_(gen_);
 			y_pos_changed = dist_(gen_);
 			break;
 		}
 		case 3: {
-			x_pos_changed = dist_(gen_);
+			x_pos_changed = 0;
 			y_pos_changed = dist_(gen_);
 			break;
 		}
