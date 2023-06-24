@@ -284,11 +284,9 @@ void VoronoiDiagram::DiagramAMP(const int& chunk_index) {
 			}
 			//so if this point has a distance which all points do
 			if (ind > -1) {
-				//grid_vector[chunk_index][(j * local_grid_size) + i] = incr[ind];
 				if (dist > max_distance_) {
 					max_distance_ = dist;
 				}
-				//distance_grid_vector[chunk_index][(j * local_grid_size) + i] = dist;
 
 				if (local_is_chunking) {
 					if (i < 400 && j < 400) {
@@ -543,43 +541,14 @@ void VoronoiDiagram::SetPointHeightExtented(const int& chunk_index, std::default
 	}
 	case 1: {
 		CaseFunction(chunk_index, gen_, dist_, found_, counter_, x, y);
-		/*do{
-			bool is_restarted = false;
-			if (failed_){
-				failed_ = false;
-				auto temp = point_pos[0];
-				point_pos.clear();
-				point_pos.push_back(temp);
-				is_restarted = true;
-			}
-			if (!is_restarted){
-				point_pos.push_back(sf::Vector2i(0, last_point_pos.y));
-				grid_vector[chunk_index][(last_point_pos.y * grid_size_x) + 0] = 2000 + 0;
-			}
-			SetPointInMiddle(found_, counter_, x, y, chunk_index, gen_);
-			found_ = false;
-			SetPointOnEdgeHeight(found_, counter_, chunk_index, gen_, dist_, x, y);
-		} while (failed_);*/
 		break;
 	}
 	case 2: {
 		CaseFunction(chunk_index, gen_, dist_, found_, counter_, x, y);
-
-		/*point_pos.push_back(sf::Vector2i(399, last_point_pos.y));
-		grid_vector[chunk_index][(last_point_pos.y * grid_size_x) + 399] = 2000 + 0;
-		SetPointInMiddle(found_, counter_, x, y, chunk_index, gen_);
-		found_ = false;
-		SetPointOnEdgeHeight(found_, counter_, chunk_index, gen_, dist_, x, y);*/
 		break;
 	}	
 	case 3: {
 		CaseFunction(chunk_index, gen_, dist_, found_, counter_, x, y);
-
-		/*point_pos.push_back(sf::Vector2i(last_point_pos.x, 0));
-		grid_vector[chunk_index][(0 * grid_size_x) + last_point_pos.x] = 2000 + 0;
-		SetPointInMiddle(found_, counter_, x, y, chunk_index, gen_);
-		found_ = false;
-		SetPointOnEdgeHeight(found_, counter_, chunk_index, gen_, dist_, x, y);*/
 		break;
 	}
 	}

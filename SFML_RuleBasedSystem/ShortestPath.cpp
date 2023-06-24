@@ -364,11 +364,6 @@ void ShortestPath::SetNESW(const int& grid_size, std::vector<int>& occ){
 		south_e_site = old_num[((y_holder_ + 1) * grid_size) + (x_holder_ + 1)];
 		south_w_site = old_num[((y_holder_ + 1) * grid_size) + (x_holder_ - 1)];
 	}
-	
-	
-	
-	
-
 	occ.push_back(north_site);
 	occ.push_back(north_e_site);
 	occ.push_back(north_w_site);
@@ -483,8 +478,8 @@ void ShortestPath::PhaseTwo(const int& grid_size, int* grid, int end_n){
 				occurances.clear();						//only clear the new positions sites not the old if there are not 2 sites in it - you want to preserve the old position because this is where a change begins	
 			}
 			if (how_many == 0){
-				break;
 				std::cout << "hit how many phase 2\n";
+				break;
 			}
 		}
 
@@ -691,4 +686,10 @@ void ShortestPath::WriteToFile()
 	results_.close();
 }
 
-
+void ShortestPath::SetOldToNew(int* grid, const int& grid_size) {
+	for (int i = 0; i < grid_size; i++){
+		for (int j = 0; j < grid_size; j++){
+			grid[(i * grid_size) + j] = old_num[(i * grid_size) + j];
+		}
+	}
+}

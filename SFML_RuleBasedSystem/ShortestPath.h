@@ -59,6 +59,8 @@ public:
 
 	void FindCompassPoss(const int& compass, int* grid, const int& grid_size, int& how_many, int& track_d, const int& x, const int& y, std::vector<sf::Vector2i>& vec_temp);
 	
+
+	void SetOldToNew(int* grid, const int& grid_size);
 private:
 	bool found_end;				//start as false;
 	int count_holder_;
