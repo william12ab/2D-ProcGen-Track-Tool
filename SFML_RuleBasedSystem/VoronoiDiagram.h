@@ -36,6 +36,7 @@ public:
 	sf::Vector2i &GetLowPoint() { return low_point_v; }
 	bool GetStopH() const{ return stop_high_; }
 	bool GetStopL() const { return stop_low_; }
+	bool GetFailSP() const { return is_fail_sp; }
 
 	std::vector<sf::Vector2i> GetPointPos() { return point_pos; }
 	//
@@ -49,6 +50,7 @@ public:
 	void SetTesting(bool f) { do_testing_ = f; }
 	void SetStopH(bool f) { stop_high_ = f; }
 	void SetStopL(bool f) { stop_low_ = f; }
+	void SetFailSP(bool f) { is_fail_sp = f; }
 	//
 	
 	//these functions should go in another class, is to do with heightmap information and setting of circles
@@ -76,6 +78,8 @@ public:
 	void DivideChunks();
 	void XYPass(const int& chunk_index, int& x_, int& y_, const sf::Vector2i& p_last_point);
 	void CaseFunction( const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_, bool& found_, int& counter_, int& x, int& y);
+	void SetFirstPoint();
+	void PushFirstPoint(const int& chunk_index);
 	//
 	//
 	//this annoying is here
@@ -150,5 +154,8 @@ private:
 	bool stop_low_;
 
 	bool local_is_chunking;
+
+	sf::Vector2i temp_vec_last_point;
+	bool is_fail_sp;
 };
 

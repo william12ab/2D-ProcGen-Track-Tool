@@ -119,13 +119,21 @@ void TrackTools::GenerateTerrainMethod(VoronoiDiagram &v_d_p, sf::VertexArray& v
 }
 
 void TrackTools::TerrainLoop(VoronoiDiagram &v_d_p,ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray&height_map, sf::VertexArray&n_height_map,ImageProcessing&i_p_p, int number_, int track_type_, const int& index_){
+	bool failed_sp = false;
 	do{
 		if (v_d_p.GetFailed() || s_p_p.GetFailed()){//clears the diagram and resets the fail condition
+			s_p_p.SetFailed(false);
 			s_p_p.SetOldToNew(v_d_p.GetGrid(index_), v_d_p.GetGridSize());
-
-			ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
+			v_d_p.SetFirstPoint();
+			failed_sp = true;
+			v_d_p.SetFailSP(true);
+			v_d_p.SetPoint(3, index_);
+			//ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
+			v_d_p.SetFailSP(false);
 		}
-		GenerateTerrainMethod(v_d_p, height_map, i_p_p, number_, track_type_, index_);
+		if (!failed_sp){
+			GenerateTerrainMethod(v_d_p, height_map, i_p_p, number_, track_type_, index_);
+		}
 		CreateTrack(v_d_p, s_p_p, index_);
 	} while (v_d_p.GetFailed() || s_p_p.GetFailed());
 }

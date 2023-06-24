@@ -41,6 +41,7 @@ VoronoiDiagram::VoronoiDiagram() {
 	stop_low_ = false;
 	max_value_height = -1000000;
 	point_pos.clear();
+	is_fail_sp = false;
 }
 
 VoronoiDiagram::~VoronoiDiagram() {
@@ -505,17 +506,28 @@ void VoronoiDiagram::XYPass(const int& chunk_index, int&x_,int&y_, const sf::Vec
 	}
 }
 
+void VoronoiDiagram::SetFirstPoint() {
+	temp_vec_last_point = point_pos[0];
+}
+void VoronoiDiagram::PushFirstPoint(const int& chunk_index) {
+	point_pos.push_back(temp_vec_last_point);
+	grid_vector[chunk_index][(temp_vec_last_point.y * grid_size_x) + temp_vec_last_point.x] = 2000 + 0;
+}
+
 void VoronoiDiagram::CaseFunction(const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_, bool &found_, int& counter_, int&x, int&y) {
 	do {
 		bool is_restarted = false;
+		if (is_fail_sp){
+			PushFirstPoint(chunk_index);
+		}
 		if (failed_) {
 			failed_ = false;
-			auto temp = point_pos[0];
-			point_pos.clear();
-			point_pos.push_back(temp);
+			temp_vec_last_point = point_pos[0];
+			point_pos.push_back(temp_vec_last_point);
+			grid_vector[chunk_index][(temp_vec_last_point.y * grid_size_x) + temp_vec_last_point.x] = 2000 + 0;
 			is_restarted = true;
 		}
-		if (!is_restarted) {
+		if (!is_restarted&&!is_fail_sp) {
 			int p_y = 0; int p_x = 0;
 			XYPass(chunk_index, p_x, p_y, last_point_pos);
 			point_pos.push_back(sf::Vector2i(p_x, p_y));
