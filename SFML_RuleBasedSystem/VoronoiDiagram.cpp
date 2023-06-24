@@ -523,6 +523,7 @@ void VoronoiDiagram::CaseFunction(const int& chunk_index, std::default_random_en
 		if (failed_) {
 			failed_ = false;
 			temp_vec_last_point = point_pos[0];
+			point_pos.clear();
 			point_pos.push_back(temp_vec_last_point);
 			grid_vector[chunk_index][(temp_vec_last_point.y * grid_size_x) + temp_vec_last_point.x] = 2000 + 0;
 			is_restarted = true;
