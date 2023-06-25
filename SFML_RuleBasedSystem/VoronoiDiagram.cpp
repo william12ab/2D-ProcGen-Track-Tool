@@ -579,7 +579,7 @@ void VoronoiDiagram::SetPointOnEdgeHeight(bool &found_, int&counter_, const int&
 			break;
 		}
 		case 1: {
-			int lim_start = grid_size_x - point_pos[point_pos.size() - 1].x - 10;
+			int lim_start = grid_size_x - 10;
 			int lim_end = point_pos[point_pos.size() - 1].x;
 			std::uniform_int_distribution<int> dist(lim_end,lim_start );
 			x_pos_changed= dist(gen_);

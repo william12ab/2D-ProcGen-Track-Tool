@@ -115,6 +115,7 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 	end_ = false;
 	count_holder_ = 0;
 	found_end = false;
+	int local_counter = 0;
 	while (!found_end){
 		bool found_empty = false;
 		for (int y = 0; y < grid_size && !found_end; y++){
@@ -122,11 +123,12 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 				if (grid[(y * grid_size) + x] == it){
 					if (y > 0){
 						int& north = grid[((y - 1) * grid_size) + x];
-						if (north == -1){
-							grid[((y - 1) * grid_size) + x] = it + 1;
+						if (north == -1){//if is a path
+							grid[((y - 1) * grid_size) + x] = it + 1;//set the distance
 							found_empty = true;
+							local_counter++;
 						}
-						else if (north == end_n){
+						else if (north == end_n){//is end number
 							found_end = true;
 							count_holder_ = it;
 							x_holder_ = x;
@@ -140,8 +142,8 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 						int& north = grid[((y - 1) * grid_size) + (x + 1)];
 						if (north == -1){
 							grid[((y - 1) * grid_size) + (x + 1)] = it + 1;
-							//north = it + 1;
 							found_empty = true;
+							local_counter++;
 						}
 						else if (north == end_n){
 							found_end = true;
@@ -157,7 +159,7 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 						int& east = grid[(y * grid_size) + (x + 1)];
 						if (east == -1){
 							grid[(y * grid_size) + (x + 1)] = it + 1;
-							//east = it + 1;
+							local_counter++;
 							found_empty = true;
 						}
 						else if (east == end_n){
@@ -174,7 +176,7 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 						int& south = grid[((y + 1) * grid_size) + x];	//creating reference to the point, used for direction
 						if (south == -1){
 							grid[((y + 1) * grid_size) + x] = it + 1;
-							//south = it + 1;			//
+							local_counter++;
 							found_empty = true;
 						}
 						else if (south == end_n){
@@ -191,7 +193,7 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 						int& south = grid[((y + 1) * grid_size) + (x + 1)];	//creating reference to the point, used for direction
 						if (south == -1){
 							grid[((y + 1) * grid_size) + (x + 1)] = it + 1;
-							//south = it + 1;			//
+							local_counter++;
 							found_empty = true;
 						}
 						else if (south == end_n){
@@ -208,7 +210,7 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 						int& south = grid[((y + 1) * grid_size) + (x - 1)];	//creating reference to the point, used for direction
 						if (south == -1){
 							grid[((y + 1) * grid_size) + (x - 1)] = it + 1;
-							//south = it + 1;			//
+							local_counter++;
 							found_empty = true;
 						}
 						else if (south == end_n){
@@ -224,7 +226,7 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 						int& west = grid[(y * grid_size) + (x - 1)];
 						if (west == -1){
 							grid[(y * grid_size) + (x - 1)] = it + 1;
-							//west = it + 1;
+							local_counter++;
 							found_empty = true;
 						}
 						else if (west == end_n){
@@ -242,7 +244,7 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 						int& north = grid[((y - 1) * grid_size) + (x - 1)];
 						if (north == -1){
 							grid[((y - 1) * grid_size) + (x - 1)] = it + 1;
-							//north = it + 1;
+							local_counter++;
 							found_empty = true;
 						}
 						else if (north == end_n){
@@ -388,8 +390,7 @@ void ShortestPath::EraseVector(std::vector<int>& occ, int& unique)
 	unique = std::unique(occ.begin(), occ.end()) - occ.begin();
 }
 
-void ShortestPath::FindCompassPoss(const int& compass, int* grid, const int& grid_size, int& how_many, int& track_d, const int& x, const int& y, std::vector<sf::Vector2i>& vec_temp)
-{
+void ShortestPath::FindCompassPoss(const int& compass, int* grid, const int& grid_size, int& how_many, int& track_d, const int& x, const int& y, std::vector<sf::Vector2i>& vec_temp){
 	if (compass == count_holder_)		//incrimenting the coordinate, pushing back into the list to display the path, incrimenting the current route.
 	{
 		y_holder_ += y;
