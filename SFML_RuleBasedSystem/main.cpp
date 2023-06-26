@@ -335,7 +335,7 @@ int main(){
 				ClearConsoleWin();
 				t_t.SetChunk(i_p.GetIsChunking());
 				if (!is_chunking_){
-					t_t.HeightLoop(0,is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *voronoi_diagrams[0], *distance_maps[0], *noise_maps[0], v_d.GetGridSize());
+					t_t.HeightLoop(0,is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *distance_maps[0], v_d.GetGridSize());
 				}
 				else {
 					bool done_ = false;
@@ -345,11 +345,11 @@ int main(){
 								i = 3;	
 							}
 						}
-						t_t.HeightLoop(i, is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *voronoi_diagrams[i], *distance_maps[i], *noise_maps[i], v_d.GetGridSize());
+						t_t.HeightLoop(i, is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p,  *distance_maps[i],  v_d.GetGridSize());
 						if (s_p.GetFailed()){
 							s_p.SetFailed(false);
 							for (int j = 0; j < 4; j++){
-								t_t.ResetVars(v_d, s_p, *voronoi_diagrams[j], *distance_maps[j] ,*noise_maps[j]);
+								t_t.ResetVars(v_d, s_p, *voronoi_diagrams[j], *distance_maps[j]);
 							}
 							done_ = false;
 							i = -1;
@@ -365,7 +365,6 @@ int main(){
 						}
 					}	
 				}
-				int s = 2;
 			}
 			if (ImGui::Button("Regenerate")){
 				is_curved_ = false;

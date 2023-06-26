@@ -3,17 +3,14 @@ TrackTools::TrackTools(){
 	is_done_setup = false;
 }
 
-void TrackTools::ResetVars(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map){
+void TrackTools::ResetVars(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map){
 	is_done_setup = false;
-	//n_height_map.clear();
 	voronoi_d.clear();
 	v_d_p.SetFaile(false);
 	s_p_p.SetFailed(false);
-	//n_height_map.resize((v_d_p.GetGridSize() * v_d_p.GetGridSize()));
 	voronoi_d.resize((v_d_p.GetGridSize() * v_d_p.GetGridSize()));
 }
-void TrackTools::SetVars(VoronoiDiagram &v_d_p, ImageProcessing &i_p_p, int track_type_, int resolution_, int sites_, int points_)
-{
+void TrackTools::SetVars(VoronoiDiagram &v_d_p, ImageProcessing &i_p_p, int track_type_, int resolution_, int sites_, int points_){
 	v_d_p.~VoronoiDiagram();
 	v_d_p.SetType(track_type_);
 	v_d_p.SetGridSize(resolution_);
@@ -92,7 +89,7 @@ void TrackTools::CreateTrack(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, const i
 void TrackTools::Generate(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map, ImageProcessing &i_p_p, int times_, int displacement_, int number_, bool full_random_, int track_type_){
 	do{
 		if (v_d_p.GetFailed() || s_p_p.GetFailed()){//clears the diagram and resets the fail condition
-			ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
+			ResetVars(v_d_p, s_p_p, voronoi_d, height_map);
 		}
 		CreateVoronoi(v_d_p, height_map,i_p_p,times_,displacement_,number_,full_random_,track_type_);
 		CreateTrack(v_d_p, s_p_p,0);
@@ -118,18 +115,10 @@ void TrackTools::GenerateTerrainMethod(VoronoiDiagram &v_d_p, sf::VertexArray& v
 	v_d_p.SetPoint(3, chunk_index);
 }
 
-void TrackTools::TerrainLoop(VoronoiDiagram &v_d_p,ShortestPath &s_p_p, sf::VertexArray& voronoi_d, sf::VertexArray&height_map, sf::VertexArray&n_height_map,ImageProcessing&i_p_p, int number_, int track_type_, const int& index_){
+void TrackTools::TerrainLoop(VoronoiDiagram &v_d_p,ShortestPath &s_p_p, sf::VertexArray&height_map,ImageProcessing&i_p_p, int number_, int track_type_, const int& index_){
 	bool failed_sp = false;
 	do{
 		if (v_d_p.GetFailed() || s_p_p.GetFailed()){//clears the diagram and resets the fail condition
-			//s_p_p.SetFailed(false);
-			//s_p_p.SetOldToNew(v_d_p.GetGrid(index_), v_d_p.GetGridSize());
-			//v_d_p.SetFirstPoint();
-			//failed_sp = true;
-			//v_d_p.SetFailSP(true);
-			//v_d_p.SetPoint(3, index_);
-			//ResetVars(v_d_p, s_p_p, voronoi_d, height_map, n_height_map);
-			//v_d_p.SetFailSP(false);
 			break;
 		}
 		if (!failed_sp){
@@ -197,7 +186,7 @@ void TrackTools::RangesDecider(const int& chunk_iter, int& x_min, int& x_max, in
 	}
 }
 
-void TrackTools::HeightLoop(const int& chunk_iter,bool & is_curved_, bool &is_widthed_,VoronoiDiagram& v_d, const int& peaks_to_count_,const int& layers_, ImageProcessing& i_p,const int&radius_cutoff,const int& number_, const int& track_type_, ShortestPath& s_p, sf::VertexArray& voronoi_d, sf::VertexArray& height_map, sf::VertexArray& n_height_map, const int& grid_size) {
+void TrackTools::HeightLoop(const int& chunk_iter,bool & is_curved_, bool &is_widthed_,VoronoiDiagram& v_d, const int& peaks_to_count_,const int& layers_, ImageProcessing& i_p,const int&radius_cutoff,const int& number_, const int& track_type_, ShortestPath& s_p, sf::VertexArray& height_map, const int& grid_size) {
 	v_d.SetIsChunking(true);//sets boool
 	if (!is_done_setup) {
 		for (int chunk_index_loc = 0; chunk_index_loc < 4; chunk_index_loc++) {
@@ -229,7 +218,7 @@ void TrackTools::HeightLoop(const int& chunk_iter,bool & is_curved_, bool &is_wi
 			v_d.AddingCirclesToContainer(init);//adds circles to overall array
 		}
 	}
-	TerrainLoop(v_d, s_p, voronoi_d, height_map, n_height_map, i_p, number_, track_type_, chunk_iter);//passes in the vector of vertex array for diagram, distancemap,heightmap, and index
+	TerrainLoop(v_d, s_p, height_map, i_p, number_, track_type_, chunk_iter);//passes in the vector of vertex array for diagram, distancemap,heightmap, and index
 	v_d.SetStopL(false);
 	v_d.SetStopH(false);
 }
