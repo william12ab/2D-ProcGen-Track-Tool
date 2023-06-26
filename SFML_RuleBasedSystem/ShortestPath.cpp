@@ -274,8 +274,7 @@ void ShortestPath::ChangePoint(const int& grid_size, int* grid, int point, int n
 {
 	if (!failed_)
 	{
-		for (int i = 0; i < grid_size; i++)
-		{
+		parallel_for(0, grid_size, [&](int i) {
 			for (int j = 0; j < grid_size; j++)
 			{
 				if (grid[(i * grid_size) + j] == point)
@@ -283,15 +282,14 @@ void ShortestPath::ChangePoint(const int& grid_size, int* grid, int point, int n
 					grid[(i * grid_size) + j] = new_point;
 				}
 			}
-		}
+			});
 	}
 
 }
 
 void ShortestPath::PrintOutStartEnd(const int& grid_size, int* const& grid)
 {
-	for (int i = 0; i < grid_size; i++)
-	{
+	parallel_for(0, grid_size, [&](int i) {
 		for (int j = 0; j < grid_size; j++)
 		{
 			if (grid[(i * grid_size) + j] == 0)
@@ -319,26 +317,22 @@ void ShortestPath::PrintOutStartEnd(const int& grid_size, int* const& grid)
 			}
 			if (grid[(i * grid_size) + j] == -6)
 			{
-			//	std::cout << "fith x " << j << " y " << i;
-				//std::cout << std::endl;
+				//	std::cout << "fith x " << j << " y " << i;
+					//std::cout << std::endl;
 			}
 		}
-	}
+		});
 }
 
 //removes all numbers found by the initial phase, so that the method can run again and be used to find another path
-void ShortestPath::CleanGrid(const int& grid_size, int* grid)
-{
-	for (int i = 0; i < grid_size; i++)
-	{
-		for (int j = 0; j < grid_size; j++)
-		{
-			if (grid[(i * grid_size) + j] > 0)
-			{
+void ShortestPath::CleanGrid(const int& grid_size, int* grid){
+	parallel_for(0, grid_size, [&](int i) {
+		for (int j = 0; j < grid_size; j++) {
+			if (grid[(i * grid_size) + j] > 0) {
 				grid[(i * grid_size) + j] = -1;
 			}
 		}
-	}
+		});
 }
 
 int ShortestPath::DistanceSqrt(int x, int y, int x2, int y2)

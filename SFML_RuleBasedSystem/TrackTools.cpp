@@ -1,4 +1,8 @@
 #include "TrackTools.h"
+#include <chrono>
+using std::chrono::duration_cast;
+using std::chrono::milliseconds;
+using the_clock = std::chrono::steady_clock;
 TrackTools::TrackTools(){
 	is_done_setup = false;
 }
@@ -74,14 +78,20 @@ void TrackTools::CreateTrack(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, const i
 	}
 	else{
 		for (int i = 0; i < (v_d_p.GetNumberOfPoints() - 1) && !s_p_p.GetFailed(); i++){
+			the_clock::time_point startTime = the_clock::now();
 			s_p_p.PhaseOne(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), -3, 0, v_d_p.GetGridSize());
+
 			s_p_p.PhaseTwo(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), 0);
+			
 			//changes start point first then the end point to start point, and second end point to 1st end point
 			//so p0=p-1, p1=0,p2=1
 			s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), 0, -1234);
 			s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), -3, 0);
 			s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), start - i, -3);
 			s_p_p.CleanGrid(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index));
+			the_clock::time_point endTime = the_clock::now();
+			auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+			std::cout << "time(phase 1): " << time_taken; std::cout << std::endl;
 		}
 	}
 	s_p_p.ReOrderArrays();
