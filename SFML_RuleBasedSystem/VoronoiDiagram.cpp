@@ -170,7 +170,7 @@ void VoronoiDiagram::RandomPlaceSites() {
 	std::default_random_engine generator(seed);
 	std::uniform_int_distribution<int> distribution(0, grid_size_x);
 	//loop over the number of sites and push back sites
-	for (int i = 0; i < (num_of_sites * 2); i++){
+	for (int i = 0; i < (num_of_sites * 2); i++) {
 		sites_v_1[i] = distribution(generator);
 	}
 }
@@ -240,8 +240,7 @@ void VoronoiDiagram::EqaullyDispursSites(const int& times_, const int& displacem
 	}
 }
 
-int VoronoiDiagram::DistanceSqrt(int x, int y, int x2, int y2)
-{
+int VoronoiDiagram::DistanceSqrt(const int& x, const int& y, const int& x2, const int& y2) {
 	int xd = x2 - x;
 	int yd = y2 - y;
 	return (xd * xd) + (yd * yd);
@@ -255,20 +254,20 @@ int VoronoiDiagram::DistanceSqrt(int x, int y, int x2, int y2)
 void VoronoiDiagram::DiagramAMP(const int& chunk_index) {
 	int local_num_sites = num_of_sites;
 	int local_grid_size = grid_size_x;
+
 	if (local_is_chunking) {
 		local_num_sites = num_of_sites * 4;
 		local_grid_size = grid_size_x * 2;
-		full_grid_chunking = new int[local_grid_size* local_grid_size];
+		full_grid_chunking = new int[local_grid_size * local_grid_size];
 	}
-
 	max_distance_ = 0;
 	int* incr;
 	incr = new int[local_num_sites];
 	for (int i = 0; i < local_num_sites; i++) {
 		incr[i] = i + 1;
 	}
-	parallel_for(0, local_grid_size, [&](int j){
-	//for (int j = 0; j < local_grid_size; j++) {
+	the_clock::time_point startTime = the_clock::now();
+	parallel_for(0, local_grid_size, [&](int j) {
 		for (int i = 0; i < local_grid_size; i++) {
 			int ind = -1, dist = INT_MAX;
 			int s = 0;
@@ -282,44 +281,43 @@ void VoronoiDiagram::DiagramAMP(const int& chunk_index) {
 				}
 			}
 			//so if this point has a distance which all points do
-			if (ind > -1) {
-				if (dist > max_distance_) {
-					max_distance_ = dist;
+			if (dist > max_distance_) {
+				max_distance_ = dist;
+			}
+
+			if (local_is_chunking) {
+				if (i < 400 && j < 400) {
+					//in [0]
+					grid_vector[0][(j * grid_size_x) + i] = incr[ind];
+					distance_grid_vector[0][(j * grid_size_x) + i] = dist;
+				}
+				else if (i >= 400 && j < 400) {
+					//in [1]
+					grid_vector[1][(j * grid_size_x) + (i - 400)] = incr[ind];
+					distance_grid_vector[1][(j * grid_size_x) + (i - 400)] = dist;
+				}
+				else if (i < 400 && j >= 400) {
+					//in [2]
+					grid_vector[2][((j - 400) * grid_size_x) + i] = incr[ind];
+					distance_grid_vector[2][((j - 400) * grid_size_x) + i] = dist;
+				}
+				else if (i >= 400 && j >= 400) {
+					//in [3]
+					grid_vector[3][((j - 400) * grid_size_x) + (i - 400)] = incr[ind];
+					distance_grid_vector[3][((j - 400) * grid_size_x) + (i - 400)] = dist;
 				}
 
-				if (local_is_chunking) {
-					if (i < 400 && j < 400) {
-						//in [0]
-						grid_vector[0][(j * grid_size_x) + i] = incr[ind];
-						distance_grid_vector[0][(j * grid_size_x) + i] = dist;
-					}
-					else if (i >= 400 && j < 400) {
-						//in [1]
-						grid_vector[1][(j * grid_size_x) + (i - 400)] = incr[ind];
-						distance_grid_vector[1][(j * grid_size_x) + (i - 400)] = dist;
-					}
-					else if (i < 400 && j >= 400) {
-						//in [2]
-						grid_vector[2][((j - 400) * grid_size_x) + i] = incr[ind];
-						distance_grid_vector[2][((j - 400) * grid_size_x) + i] = dist;
-					}
-					else if (i >= 400 && j >= 400) {
-						//in [3]
-						grid_vector[3][((j - 400) * grid_size_x) + (i - 400)] = incr[ind];
-						distance_grid_vector[3][((j - 400) * grid_size_x) + (i - 400)] = dist;
-					}
-
-					full_grid_chunking[(j * local_grid_size) + i] = incr[ind];
-				}
-				else {
-					grid_vector[chunk_index][(j * grid_size_x) + i] = incr[ind];
-					distance_grid_vector[chunk_index][(j * grid_size_x) + i] = dist;
-				}
-
+				full_grid_chunking[(j * local_grid_size) + i] = incr[ind];
+			}
+			else {
+				grid_vector[chunk_index][(j * grid_size_x) + i] = incr[ind];
+				distance_grid_vector[chunk_index][(j * grid_size_x) + i] = dist;
 			}
 		}
 		});
-	//}
+	the_clock::time_point endTime = the_clock::now();
+	auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+	std::cout << "time(phase 1): " << time_taken; std::cout << std::endl;
 	delete[] incr;
 }
 
@@ -329,7 +327,7 @@ void VoronoiDiagram::DiagramAMP(const int& chunk_index) {
 //at this stage: all positions are equal to a number representing a site
 //so if theres 25 sites, each position will be 1-25 
 void VoronoiDiagram::SetEdges(const int& chunk_index) {
-	if (local_is_chunking){
+	if (local_is_chunking) {
 		int local_grid_size = grid_size_x * 2;
 		for (int j = 0; j < local_grid_size; j++) {
 			for (int i = 0; i < local_grid_size; i++) {
@@ -399,7 +397,7 @@ void VoronoiDiagram::ThreePoints(const float values_[12], const int& chunk_index
 			int y = rand() % y_pos_one + y_pos_two;
 			PlacePoint(x, y, i, found, chunk_index);
 			counter++;
-			if (counter > 200){
+			if (counter > 200) {
 				failed_ = true;
 				found = true;
 				break;
@@ -439,27 +437,28 @@ void VoronoiDiagram::SetPoint(int type, const int& chunk_index) {
 	}
 		  break;
 	case 1: {
-		SetPointDefault(chunk_index,generator,distribution,0);
+		SetPointDefault(chunk_index, generator, distribution, 0);
 	}
 		  break;
 	case 2: {
 		float arr[12] = { 0.05f,0.15f,0.2f,0.4f, 0.2f,0.4f,0.15f,0.15f, 0.05f,0.80f,0.2f,0.4f };
 		ThreePoints(arr, chunk_index);
 	}  break;
-	case 3:{
-		if (chunk_index==0){
+	case 3: {
+		if (chunk_index == 0) {
 			SetPointDefault(chunk_index, generator, distribution, 1);
 		}
 		SetPointHeightExtented(chunk_index, generator, distribution);
 		break;
-	}	}
+	}
+	}
 }
 void VoronoiDiagram::SetPointDefault(const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_, const int& used_if_chunked) {
 	int iter = grid_size_x / num_of_points;//200
 	iter -= (iter) / 2;//100
 	int start = 1;
 	int position = 0;
-	for (int i = 0; i < (num_of_points- used_if_chunked); i++) {
+	for (int i = 0; i < (num_of_points - used_if_chunked); i++) {
 		bool found = false;
 		if (start + iter > grid_size_x) {//iif out of bounds
 			int difference_ = (start + iter) - grid_size_x;
@@ -483,8 +482,8 @@ void VoronoiDiagram::SetPointDefault(const int& chunk_index, std::default_random
 		start += iter;//201
 	}
 }
-void VoronoiDiagram::XYPass(const int& chunk_index, int&x_,int&y_, const sf::Vector2i&p_last_point) {
-	switch (chunk_index){
+void VoronoiDiagram::XYPass(const int& chunk_index, int& x_, int& y_, const sf::Vector2i& p_last_point) {
+	switch (chunk_index) {
 	case 1: {
 		x_ = 0;
 		y_ = p_last_point.y;
@@ -497,7 +496,7 @@ void VoronoiDiagram::XYPass(const int& chunk_index, int&x_,int&y_, const sf::Vec
 	}
 	case 3: {
 		x_ = p_last_point.x;
-		y_ =0;
+		y_ = 0;
 		break;
 	}
 	}
@@ -511,10 +510,10 @@ void VoronoiDiagram::PushFirstPoint(const int& chunk_index) {
 	grid_vector[chunk_index][(temp_vec_last_point.y * grid_size_x) + temp_vec_last_point.x] = 2000 + 0;
 }
 
-void VoronoiDiagram::CaseFunction(const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_, bool &found_, int& counter_, int&x, int&y) {
+void VoronoiDiagram::CaseFunction(const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_, bool& found_, int& counter_, int& x, int& y) {
 	do {
 		bool is_restarted = false;
-		if (is_fail_sp){
+		if (is_fail_sp) {
 			PushFirstPoint(chunk_index);
 		}
 		if (failed_) {
@@ -525,7 +524,7 @@ void VoronoiDiagram::CaseFunction(const int& chunk_index, std::default_random_en
 			grid_vector[chunk_index][(temp_vec_last_point.y * grid_size_x) + temp_vec_last_point.x] = 2000 + 0;
 			is_restarted = true;
 		}
-		if (!is_restarted&&!is_fail_sp) {
+		if (!is_restarted && !is_fail_sp) {
 			int p_y = 0; int p_x = 0;
 			XYPass(chunk_index, p_x, p_y, last_point_pos);
 			point_pos.push_back(sf::Vector2i(p_x, p_y));
@@ -542,7 +541,7 @@ void VoronoiDiagram::SetPointHeightExtented(const int& chunk_index, std::default
 	int counter_ = 0;
 	int x = 0;
 	int y = 0;
-	switch (chunk_index){
+	switch (chunk_index) {
 	case 0: {
 		x = grid_size_x - 1;
 		y = dist_(gen_);
@@ -556,7 +555,7 @@ void VoronoiDiagram::SetPointHeightExtented(const int& chunk_index, std::default
 	case 2: {
 		CaseFunction(chunk_index, gen_, dist_, found_, counter_, x, y);
 		break;
-	}	
+	}
 	case 3: {
 		CaseFunction(chunk_index, gen_, dist_, found_, counter_, x, y);
 		break;
@@ -564,11 +563,11 @@ void VoronoiDiagram::SetPointHeightExtented(const int& chunk_index, std::default
 	}
 }
 
-void VoronoiDiagram::SetPointOnEdgeHeight(bool &found_, int&counter_, const int&chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_, int& x_pos_changed, int& y_pos_changed) {
+void VoronoiDiagram::SetPointOnEdgeHeight(bool& found_, int& counter_, const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_, int& x_pos_changed, int& y_pos_changed) {
 	while (!found_) {
 		counter_++;
 		//so first is between 0 and grid_size/numpoints, second is iter and iter+iter, etc
-		switch (chunk_index){
+		switch (chunk_index) {
 		case 0: {
 			x_pos_changed = grid_size_x - 1;
 			y_pos_changed = dist_(gen_);
@@ -577,8 +576,8 @@ void VoronoiDiagram::SetPointOnEdgeHeight(bool &found_, int&counter_, const int&
 		case 1: {
 			int lim_start = grid_size_x - 10;
 			int lim_end = point_pos[point_pos.size() - 1].x;
-			std::uniform_int_distribution<int> dist(lim_end,lim_start );
-			x_pos_changed= dist(gen_);
+			std::uniform_int_distribution<int> dist(lim_end, lim_start);
+			x_pos_changed = dist(gen_);
 			y_pos_changed = grid_size_x - 1;
 			break;
 		}
@@ -601,7 +600,7 @@ void VoronoiDiagram::SetPointOnEdgeHeight(bool &found_, int&counter_, const int&
 			std::cout << "didnt set a point\n";
 		}
 	}
-	if (found_){
+	if (found_) {
 		last_point_pos = point_pos[point_pos.size() - 1];
 	}
 }
@@ -609,8 +608,8 @@ void VoronoiDiagram::SetPointOnEdgeHeight(bool &found_, int&counter_, const int&
 void VoronoiDiagram::SetPointInMiddle(bool& found_, int& counter_, int& x_pos_changed, int& y_pos_changed, const int& chunk_index, std::default_random_engine gen_) {
 	while (!found_) {
 		counter_++;
-		int lims_start_y=grid_size_x*0.04f; int lims_end_y=grid_size_x*0.9f;//16,360
-		int lims_start_x = grid_size_x * 0.05f; int lims_end_x= grid_size_x * 0.5f;//20,200
+		int lims_start_y = grid_size_x * 0.04f; int lims_end_y = grid_size_x * 0.9f;//16,360
+		int lims_start_x = grid_size_x * 0.05f; int lims_end_x = grid_size_x * 0.5f;//20,200
 		std::uniform_int_distribution<int> dist(lims_start_x, lims_end_x);
 		x_pos_changed = dist(gen_);
 		std::uniform_int_distribution<int> disty(lims_start_y, lims_end_y);
@@ -727,7 +726,7 @@ void VoronoiDiagram::DirectionDecider(const int& radius_cutoff_, const int& laye
 	radiiDecider(index_v, high_or_low);
 }
 
-void VoronoiDiagram::SetCircumPoint(sf::Vector2i& circum_point_, int x, int y, int iterator_, int place){
+void VoronoiDiagram::SetCircumPoint(sf::Vector2i& circum_point_, int x, int y, int iterator_, int place) {
 	circum_point_ = sf::Vector2i(x, y);
 	found_raidus = true;
 	temp_rad.at(place) = (iterator_);
@@ -836,14 +835,14 @@ void VoronoiDiagram::radiiDecider(const int& index_v, const sf::Vector2i& high_o
 void VoronoiDiagram::vector_all(int size) {
 	circum_points.resize(2);
 }
-void VoronoiDiagram::EmptyCircles() { 
-	if (circles_.size() > 0) { 
+void VoronoiDiagram::EmptyCircles() {
+	if (circles_.size() > 0) {
 		circles_.clear();
-	} 
+	}
 }
 
 void VoronoiDiagram::EmptyAllCircleVec() {
-	if (all_circles_vector.size()>0){
+	if (all_circles_vector.size() > 0) {
 		all_circles_vector.clear();
 	}
 }
@@ -948,8 +947,8 @@ void VoronoiDiagram::AddingCirclesToContainer(const ranges& init) {
 
 void VoronoiDiagram::DivideChunks() {
 	int local_grid_size = grid_size_x * 2;
-	for (size_t j = 0; j < local_grid_size; j++){
-		for (int i = 0; i < local_grid_size; i++){
+	for (size_t j = 0; j < local_grid_size; j++) {
+		for (int i = 0; i < local_grid_size; i++) {
 			if (i < 400 && j < 400) {
 				//in [0]
 				grid_vector[0][(j * grid_size_x) + i] = full_grid_chunking[(j * local_grid_size) + i];

@@ -16,7 +16,7 @@ public:
 	void EqaullyDispursSites(const int &times_, const int &displacement);				//equally places sites
 	void TerrainSites();					//site placement for terrain 
 
-	int DistanceSqrt(int x, int y, int x2, int y2);						//the distance formula
+	int DistanceSqrt(const int& x, const int& y, const int& x2, const int& y2);						//the distance formula
 	void SetEdges(const int& chunk_index);										//sets the edges of voronoi diagram, so it is just the edges in the vector
 	void InitVector(const int &grid_size, const int &num_points, const int &num_sites);		//inits the vector to correct size;
 	void DiagramAMP(const int& chunk_index);						//creates the vd using parallel for
