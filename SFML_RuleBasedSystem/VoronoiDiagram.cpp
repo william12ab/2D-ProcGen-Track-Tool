@@ -846,7 +846,6 @@ void VoronoiDiagram::EmptyAllCircleVec() {
 	if (all_circles_vector.size()>0){
 		all_circles_vector.clear();
 	}
-	std::cout << "done\n";
 }
 
 void VoronoiDiagram::InsertChunks() {

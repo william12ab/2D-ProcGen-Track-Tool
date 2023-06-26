@@ -118,7 +118,7 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 	int local_counter = 0;
 	while (!found_end){
 		bool found_empty = false;
-		for (int y = 0; y < grid_size && !found_end; y++){
+		parallel_for(0, grid_size, [&](int y){
 			for (int x = 0; x < grid_size; x++){
 				if (grid[(y * grid_size) + x] == it){
 					if (y > 0){
@@ -133,7 +133,7 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 							count_holder_ = it;
 							x_holder_ = x;
 							y_holder_ = y - 1;
-							break;
+							//break;
 						}
 					}
 
@@ -257,7 +257,7 @@ void ShortestPath::PhaseOne(const int& grid_size, int* grid, int end_n, int star
 					}
 				}
 			}
-		}
+		});
 
 		//just in case it cant find the end position and needs to break out of the loop so that it doesnt get stuck in it
 		if (it > 1000){
