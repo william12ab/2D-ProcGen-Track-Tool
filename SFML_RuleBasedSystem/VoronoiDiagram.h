@@ -40,7 +40,8 @@ public:
 
 	std::vector<sf::Vector2i> GetPointPos() { return point_pos; }
 	//
-	void EmptyCircles() { if (circles_.size() > 0){ circles_.clear();} }
+	void EmptyCircles();
+	void EmptyAllCircleVec();
 	//setters
 	void SetNumberOfSites(int p) { num_of_sites = p; }					//sets the number of sites
 	void SetGridSize(int p) { grid_size_x=p; }							//sets the x and y of the grid

@@ -170,10 +170,8 @@ void VoronoiDiagram::RandomPlaceSites() {
 	std::default_random_engine generator(seed);
 	std::uniform_int_distribution<int> distribution(0, grid_size_x);
 	//loop over the number of sites and push back sites
-	for (int i = 0; i < (num_of_sites * 2); i++)
-	{
+	for (int i = 0; i < (num_of_sites * 2); i++){
 		sites_v_1[i] = distribution(generator);
-		//sites_v_1[i] = rand() % grid_size;
 	}
 }
 
@@ -269,8 +267,8 @@ void VoronoiDiagram::DiagramAMP(const int& chunk_index) {
 	for (int i = 0; i < local_num_sites; i++) {
 		incr[i] = i + 1;
 	}
-	//parallel_for(0, local_grid_size, [&](int j){
-	for (int j = 0; j < local_grid_size; j++) {
+	parallel_for(0, local_grid_size, [&](int j){
+	//for (int j = 0; j < local_grid_size; j++) {
 		for (int i = 0; i < local_grid_size; i++) {
 			int ind = -1, dist = INT_MAX;
 			int s = 0;
@@ -320,8 +318,8 @@ void VoronoiDiagram::DiagramAMP(const int& chunk_index) {
 
 			}
 		}
-		//});
-	}
+		});
+	//}
 	delete[] incr;
 }
 
@@ -401,8 +399,7 @@ void VoronoiDiagram::ThreePoints(const float values_[12], const int& chunk_index
 			int y = rand() % y_pos_one + y_pos_two;
 			PlacePoint(x, y, i, found, chunk_index);
 			counter++;
-			if (counter > 200)
-			{
+			if (counter > 200){
 				failed_ = true;
 				found = true;
 				break;
@@ -571,8 +568,7 @@ void VoronoiDiagram::SetPointOnEdgeHeight(bool &found_, int&counter_, const int&
 	while (!found_) {
 		counter_++;
 		//so first is between 0 and grid_size/numpoints, second is iter and iter+iter, etc
-		switch (chunk_index)
-		{
+		switch (chunk_index){
 		case 0: {
 			x_pos_changed = grid_size_x - 1;
 			y_pos_changed = dist_(gen_);
@@ -598,7 +594,7 @@ void VoronoiDiagram::SetPointOnEdgeHeight(bool &found_, int&counter_, const int&
 		}
 		}
 		PlacePoint(x_pos_changed, y_pos_changed, 2, found_, chunk_index);//if point generated lies on grid, add to points vector, change grid array to point position, found = true;
-		if (counter_ > 1500) {
+		if (counter_ > 800) {
 			failed_ = true;
 			counter_ = 0;
 			break;
@@ -615,15 +611,12 @@ void VoronoiDiagram::SetPointInMiddle(bool& found_, int& counter_, int& x_pos_ch
 		counter_++;
 		int lims_start_y=grid_size_x*0.04f; int lims_end_y=grid_size_x*0.9f;//16,360
 		int lims_start_x = grid_size_x * 0.05f; int lims_end_x= grid_size_x * 0.5f;//20,200
-
 		std::uniform_int_distribution<int> dist(lims_start_x, lims_end_x);
 		x_pos_changed = dist(gen_);
 		std::uniform_int_distribution<int> disty(lims_start_y, lims_end_y);
 		y_pos_changed = disty(gen_);
-
-	
 		PlacePoint(x_pos_changed, y_pos_changed, 1, found_, chunk_index);//if point generated lies on grid, add to points vector, change grid array to point position, found = true;
-		if (counter_ > 5000) {
+		if (counter_ > 800) {
 			failed_ = true;
 			break;
 			std::cout << "didnt set a point\n";
@@ -714,22 +707,18 @@ void VoronoiDiagram::DirectionDecider(const int& radius_cutoff_, const int& laye
 	if (high_or_low.x <= (grid_size_x / 2) && high_or_low.y <= (grid_size_x / 2)) {
 		//square 1 in diagram(top left) - going south east
 		SetDirectionXY(signal, x_pos, y_pos, 1, 1, 1);
-		std::cout << "se\n";
 	}
 	else if (high_or_low.x >= (grid_size_x / 2) && high_or_low.x <= (grid_size_x) && high_or_low.y <= (grid_size_x / 2)) {
 		//square 2 in diagram(top right) - going south west 
 		SetDirectionXY(signal, x_pos, y_pos, 2, -1, 1);
-		std::cout << "sw\n";
 	}
 	else if (high_or_low.x >= (grid_size_x / 2) && high_or_low.x <= (grid_size_x) && high_or_low.y >= (grid_size_x / 2) && high_or_low.y <= grid_size_x) {
 		//square 4 in diagram(bottom right) - going north west
 		SetDirectionXY(signal, x_pos, y_pos, 4, -1, -1);
-		std::cout << "nw\n";
 	}
 	else if (high_or_low.x <= (grid_size_x / 2) && high_or_low.y >= (grid_size_x / 2) && high_or_low.y <= grid_size_x) {
 		//square 3 in diagram(bottom left) - going north east
 		SetDirectionXY(signal, x_pos, y_pos, 3, 1, -1);
-		std::cout << "ne\n";
 	}
 
 	temp_rad.resize(2);
@@ -738,11 +727,8 @@ void VoronoiDiagram::DirectionDecider(const int& radius_cutoff_, const int& laye
 	radiiDecider(index_v, high_or_low);
 }
 
-void VoronoiDiagram::SetCircumPoint(sf::Vector2i& circum_point_, int x, int y, int iterator_, int place)
-{
+void VoronoiDiagram::SetCircumPoint(sf::Vector2i& circum_point_, int x, int y, int iterator_, int place){
 	circum_point_ = sf::Vector2i(x, y);
-	/*std::cout << "		POINT on circumferenece: " << x << ", " << y << "\n";
-	std::cout << "		RADIUS Length: " << iterator_ << "\n";*/
 	found_raidus = true;
 	temp_rad.at(place) = (iterator_);
 }
@@ -785,7 +771,6 @@ void VoronoiDiagram::FindCircumPoint(int x_value_, int y_value_, int signal_, co
 					}
 					else {
 						SetCircumPoint(circum_point_, x, y, 50, place);
-						std::cout << "		Else Statement.\n";
 					}
 				}
 				else {
@@ -800,7 +785,6 @@ void VoronoiDiagram::FindCircumPoint(int x_value_, int y_value_, int signal_, co
 					}
 					else {
 						SetCircumPoint(circum_point_, x, y, 50, place);
-						std::cout << "		Else Statement.\n";
 					}
 				}
 				else {
@@ -811,7 +795,6 @@ void VoronoiDiagram::FindCircumPoint(int x_value_, int y_value_, int signal_, co
 		}
 		else {
 			SetCircumPoint(circum_point_, x, y, 70, place);						//if out of bounds (greater than resolution or less than resolution) then tell yourself that and set a fake radius.
-			std::cout << "		Point too far.\n";
 		}
 	} while (found_raidus != true && !failed_);
 }
@@ -852,6 +835,18 @@ void VoronoiDiagram::radiiDecider(const int& index_v, const sf::Vector2i& high_o
 }
 void VoronoiDiagram::vector_all(int size) {
 	circum_points.resize(2);
+}
+void VoronoiDiagram::EmptyCircles() { 
+	if (circles_.size() > 0) { 
+		circles_.clear();
+	} 
+}
+
+void VoronoiDiagram::EmptyAllCircleVec() {
+	if (all_circles_vector.size()>0){
+		all_circles_vector.clear();
+	}
+	std::cout << "done\n";
 }
 
 void VoronoiDiagram::InsertChunks() {
@@ -915,9 +910,7 @@ void VoronoiDiagram::TerrainSites() {
 	}
 
 	for (int i = 0; i < loc_num_sites; i++) {
-		std::cout << "Site x: " << sites_v_1[i] << " ";
 		i++;
-		std::cout << "Site y: " << sites_v_1[i] << "\n";
 	}
 
 	int iterator_ = 0;
@@ -926,7 +919,6 @@ void VoronoiDiagram::TerrainSites() {
 		iterator_++;
 		sites_v_1[iterator_] = temp_circl[i].point.y;
 		iterator_++;
-		std::cout << "Centre " << i << " (" << temp_circl[i].point.x << ", " << temp_circl[i].point.y << ") Radius: " << temp_circl[i].r_length << "\n";
 	}
 }
 void VoronoiDiagram::ResetVars()

@@ -348,6 +348,7 @@ int main(){
 						t_t.HeightLoop(i, is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p,  *distance_maps[i],  v_d.GetGridSize());
 						if (s_p.GetFailed()){
 							s_p.SetFailed(false);
+							v_d.EmptyAllCircleVec();
 							for (int j = 0; j < 4; j++){
 								t_t.ResetVars(v_d, s_p, *voronoi_diagrams[j], *distance_maps[j]);
 							}

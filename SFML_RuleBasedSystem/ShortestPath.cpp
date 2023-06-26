@@ -296,31 +296,31 @@ void ShortestPath::PrintOutStartEnd(const int& grid_size, int* const& grid)
 		{
 			if (grid[(i * grid_size) + j] == 0)
 			{
-				std::cout << "first x " << j << " y " << i; std::cout << std::endl;
+				//std::cout << "first x " << j << " y " << i; std::cout << std::endl;
 				start_p.x = j;
 				start_p.y = i;
 			}
 			if (grid[(i * grid_size) + j] == -3)
 			{
-				std::cout << "second x " << j << " y " << i;
-				std::cout << std::endl;
+				//std::cout << "second x " << j << " y " << i;
+				//std::cout << std::endl;
 			}
 			if (grid[(i * grid_size) + j] == -4)
 			{
 				end_p.x = j;
 				end_p.y = i;
-				std::cout << "third x " << j << " y " << i;
-				std::cout << std::endl;
+				//std::cout << "third x " << j << " y " << i;
+				//std::cout << std::endl;
 			}
 			if (grid[(i * grid_size) + j] == -5)
 			{
-				std::cout << "fourth x " << j << " y " << i;
-				std::cout << std::endl;
+				//std::cout << "fourth x " << j << " y " << i;
+				//std::cout << std::endl;
 			}
 			if (grid[(i * grid_size) + j] == -6)
 			{
-				std::cout << "fith x " << j << " y " << i;
-				std::cout << std::endl;
+			//	std::cout << "fith x " << j << " y " << i;
+				//std::cout << std::endl;
 			}
 		}
 	}
@@ -536,10 +536,8 @@ void ShortestPath::ScaleControlPoints(float scale)
 }
 
 
-void ShortestPath::OrderControlPoints()
-{
-	for (int i = 0; i < control_points.size(); i++)
-	{
+void ShortestPath::OrderControlPoints(){
+	for (int i = 0; i < control_points.size(); i++){
 		std::cout << " x " << control_points.at(i).x << " y " << control_points.at(i).y << "\n";
 	}
 
