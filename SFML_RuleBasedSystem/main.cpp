@@ -9,7 +9,7 @@
 #include "Input.h"
 
 using std::chrono::duration_cast;
-using std::chrono::milliseconds; 
+using std::chrono::milliseconds;
 using the_clock = std::chrono::steady_clock;
 
 
@@ -33,7 +33,7 @@ void ClearConsoleWin() {
 	SetConsoleCursorPosition(console, tl);
 }
 
-void Init(sf::RenderWindow &window){
+void Init(sf::RenderWindow& window) {
 	font.loadFromFile("DefaultAriel.ttf");
 	//text setting
 	SettingText();
@@ -61,27 +61,29 @@ void Init(sf::RenderWindow &window){
 	radius_cutoff = 115;
 	peaks_to_count_ = 1;
 	do_testing_ = true;
-	step_curve=0.01f;
+	step_curve = 0.01f;
 	alpha_cm_ = 0.5f;
 
 	is_curved_ = false;
 	is_widthed_ = false;
 	is_chunking_ = false;
+	struct_obj_render.render_diagram = false;
+	struct_obj_render.render_track = false;
 }
 
-int main(){
+int main() {
 	Input input;
 	sf::Clock clock;
 	sf::Clock deltaClock;
 	// Seed the random number generator
 	srand(static_cast <unsigned> (time(0)));
 	// Create the window and UI bar on the right
-	sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "2D Track Generator",sf::Style::Default);
+	sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "2D Track Generator", sf::Style::Default);
 	Init(window);
 	sf::View view_;
 	view_.reset(sf::FloatRect(0.f, 0.f, (float)window.getSize().x, (float)window.getSize().y));
 	//objs for main
-	
+
 	VoronoiDiagram v_d;
 	ShortestPath s_p;
 	DeCastelJau d_c;
@@ -91,7 +93,7 @@ int main(){
 	WidthCalculator w_c;
 	i_p.SetIsChunking(false);
 
-	InputManager input_manager(&input,&view_,&window);
+	InputManager input_manager(&input, &view_, &window);
 	//
 	//
 	t_t.SetVars(v_d, i_p, track_type_, resolution_, sites_, points_);
@@ -128,19 +130,19 @@ int main(){
 	distance_maps.push_back(&height_map_2);
 	distance_maps.push_back(&height_map_3);
 	//creates a track initially 
-	
+
 	t_t.Generate(v_d, s_p, *voronoi_diagrams[0], *distance_maps[0], *noise_maps[0], i_p, times_, displacement_, number_, full_random_, track_type_);
-	
+
 	//
 	// While the window is open, update	
 
-	while (window.isOpen()){
+	while (window.isOpen()) {
 		// Parse events
 		sf::Event sf_event;
 		while (window.pollEvent(sf_event)) {
 			// Close the window when the close button is pressed
 			ImGui::SFML::ProcessEvent(sf_event);
-			switch (sf_event.type){
+			switch (sf_event.type) {
 			case sf::Event::Closed:
 				window.close();
 				break;
@@ -160,20 +162,20 @@ int main(){
 				input.setMousePosition(sf_event.mouseMove.x, sf_event.mouseMove.y);
 				break;
 			case sf::Event::MouseButtonPressed:
-				if (sf_event.mouseButton.button == sf::Mouse::Left){
+				if (sf_event.mouseButton.button == sf::Mouse::Left) {
 					//update input class
 					input.setMouseLDown(true);
 				}
-				else if (sf_event.mouseButton.button == sf::Mouse::Right){
+				else if (sf_event.mouseButton.button == sf::Mouse::Right) {
 					input.setMouseRDown(true);
 				}
 				break;
 			case sf::Event::MouseButtonReleased:
-				if (sf_event.mouseButton.button == sf::Mouse::Left){
+				if (sf_event.mouseButton.button == sf::Mouse::Left) {
 					//update input class
 					input.setMouseLDown(false);
 				}
-				else if (sf_event.mouseButton.button == sf::Mouse::Right){
+				else if (sf_event.mouseButton.button == sf::Mouse::Right) {
 					input.setMouseRDown(false);
 				}
 				break;
@@ -181,10 +183,10 @@ int main(){
 		}
 		window.setView(view_);
 		ImGui::SFML::Update(window, deltaClock.restart());
-		
+
 		ImGui::Begin("Options");
 		ImGui::Text("\n");
-		if (ImGui::CollapsingHeader("Track Variables")){
+		if (ImGui::CollapsingHeader("Track Variables")) {
 			ImGui::SliderInt("Resolution", &resolution_, 100, 800);
 			ImGui::SliderInt("Sites", &sites_, 5, 100);
 			ImGui::SliderInt("Iterations of Displacement", &times_, 1, 32);
@@ -195,13 +197,13 @@ int main(){
 			ImGui::Text("0 = triangular\n1 = point to point\n2 = loop");
 		}
 		ImGui::Text("\n");
-		if (ImGui::CollapsingHeader("Heightmap Variables")){
+		if (ImGui::CollapsingHeader("Heightmap Variables")) {
 			ImGui::Checkbox("chunking?", &is_chunking_);
 			i_p.SetIsChunking(is_chunking_);
 			ImGui::SliderInt("Size of cell outlines", &number_, 0, 100);
 			ImGui::Text("lower = large outlines");
 			ImGui::Text("higher = less effect");
-			ImGui::SliderInt("Number of Layers", &layers_,1, 10);
+			ImGui::SliderInt("Number of Layers", &layers_, 1, 10);
 			ImGui::SliderInt("Alpha", &alpha_, 0, 255);
 			ImGui::SliderInt("Radius Cut-off:", &radius_cutoff, 50, 255);
 			ImGui::Text("lower = larger radius");
@@ -213,45 +215,45 @@ int main(){
 			{
 				i_p.ChangeAlpha(*noise_maps[0], v_d.GetGridSize(), alpha_);
 			}
-			if (ImGui::Button("Create Noise Image")){
-				if (!i_p.GetIsChunking()){
+			if (ImGui::Button("Create Noise Image")) {
+				if (!i_p.GetIsChunking()) {
 					t_t.ClearStructs(v_d, *voronoi_diagrams[0], *noise_maps[0], *distance_maps[0], i_p, track_type_, resolution_, sites_, points_);
 					i_p.DrawNoise(*noise_maps[0], v_d.GetGridSize(), layers_, frequency_, 0);
 				}
 				else {
 					t_t.ClearStructs(v_d, *voronoi_diagrams[0], *noise_maps[0], *distance_maps[0], i_p, track_type_, resolution_, sites_, points_);
-					for (int i = 1; i < 4; i++){
+					for (int i = 1; i < 4; i++) {
 						noise_maps[i]->clear();
 						noise_maps[i]->resize(resolution_ * resolution_);
 					}
 
-					for (int i = 0; i < 4; i++){
+					for (int i = 0; i < 4; i++) {
 						i_p.DrawNoise(*noise_maps[i], v_d.GetGridSize(), layers_, frequency_, i);
 					}
 				}
 			}
-			if (ImGui::Button("Create FBM Image")){
+			if (ImGui::Button("Create FBM Image")) {
 				t_t.ClearStructs(v_d, *voronoi_diagrams[0], *noise_maps[0], *distance_maps[0], i_p, track_type_, resolution_, sites_, points_);
 				i_p.DrawFBM(*noise_maps[0], v_d.GetGridSize(), octaves_, frequency_);
 			}
 		}
 		ImGui::Text("\n");
-		if (ImGui::CollapsingHeader("Curve Variables")){
+		if (ImGui::CollapsingHeader("Curve Variables")) {
 			ImGui::SliderFloat("Definition of Curve:", &step_curve, 0, 1);
 			d_c.SetStepSize(step_curve);
 			ImGui::Text("Keep alpha at 0 or 0.5");
 			ImGui::SliderFloat("Aplha for CatmullRom:", &alpha_cm_, 0, 1);
 			c_r.SetStepSize(alpha_cm_);
 			ImGui::Text("\n");
-			if (ImGui::CollapsingHeader("Change ControlPoints")){
+			if (ImGui::CollapsingHeader("Change ControlPoints")) {
 				auto temp_ = s_p.GetControlPoints();
 				auto size_ = s_p.GetControlPoints().size();
 				std::vector<int> x_, y_;
-				for (int i = 0; i < size_; i++){
+				for (int i = 0; i < size_; i++) {
 					x_.push_back(temp_[i].x);
 					y_.push_back(temp_[i].y);
 				}
-				for (int i = 0; i < size_; i++){
+				for (int i = 0; i < size_; i++) {
 					int x_y[2] = { x_[i],y_[i] };
 					std::string s_x = "x: " + std::to_string(i) + " y: " + std::to_string(i);
 					const char* l_x = s_x.c_str();
@@ -279,7 +281,7 @@ int main(){
 			}
 			if (ImGui::Button("Centripetal CatmullRom"))
 			{
-				i_p.CreateImage(*voronoi_diagrams[0],v_d.GetGridSize());
+				i_p.CreateImage(*voronoi_diagrams[0], v_d.GetGridSize());
 				bool looped = false;
 				if (track_type_ == 2)
 				{
@@ -330,39 +332,39 @@ int main(){
 			}
 		}
 		ImGui::Text("\n");
-		if (ImGui::CollapsingHeader("Generate Options")){
-			if (ImGui::Button("Renerate (Noise Method)")){
+		if (ImGui::CollapsingHeader("Generate Options")) {
+			if (ImGui::Button("Renerate (Noise Method)")) {
 				ClearConsoleWin();
 				t_t.SetChunk(i_p.GetIsChunking());
-				if (!is_chunking_){
-					t_t.HeightLoop(0,is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *distance_maps[0], v_d.GetGridSize());
+				if (!is_chunking_) {
+					t_t.HeightLoop(0, is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *distance_maps[0], v_d.GetGridSize());
 				}
 				else {
 					the_clock::time_point startTime = the_clock::now();
 					bool done_ = false;
-					for (int i = 0; i < 4; i++){
-						if (i==2){
+					for (int i = 0; i < 4; i++) {
+						if (i == 2) {
 							if (!done_) {
-								i = 3;	
+								i = 3;
 							}
 						}
-						t_t.HeightLoop(i, is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p,  *distance_maps[i],  v_d.GetGridSize());
-						if (s_p.GetFailed()){
+						t_t.HeightLoop(i, is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *distance_maps[i], v_d.GetGridSize());
+						if (s_p.GetFailed()) {
 							s_p.SetFailed(false);
 							v_d.EmptyAllCircleVec();
-							for (int j = 0; j < 4; j++){
+							for (int j = 0; j < 4; j++) {
 								t_t.ResetVars(v_d, s_p, *voronoi_diagrams[j], *distance_maps[j]);
 							}
 							done_ = false;
 							i = -1;
 						}
-						if (i==3){
-							if (!done_){
+						if (i == 3) {
+							if (!done_) {
 								i = 1;
 								done_ = true;
 							}
 						}
-						if (i==2){
+						if (i == 2) {
 							i = 3;
 						}
 					}
@@ -371,7 +373,7 @@ int main(){
 					std::cout << "time(phase 1): " << time_taken; std::cout << std::endl;
 				}
 			}
-			if (ImGui::Button("Regenerate")){
+			if (ImGui::Button("Regenerate")) {
 				is_curved_ = false;
 				is_widthed_ = false;
 				t_t.SetChunk(i_p.GetIsChunking());
@@ -379,24 +381,24 @@ int main(){
 				t_t.ClearStructs(v_d, *voronoi_diagrams[0], *noise_maps[0], *distance_maps[0], i_p, track_type_, resolution_, sites_, points_);
 				t_t.Generate(v_d, s_p, *voronoi_diagrams[0], *distance_maps[0], *noise_maps[0], i_p, times_, displacement_, number_, full_random_, track_type_);
 			}
-			if (ImGui::Button("Create Final Heightmap")){
-				i_p.CreateFinalHM(v_d.GetGridSize(), final_map, layers_,0);
+			if (ImGui::Button("Create Final Heightmap")) {
+				i_p.CreateFinalHM(v_d.GetGridSize(), final_map, layers_, 0);
 			}
-			if (ImGui::Button("Write to file")){
+			if (ImGui::Button("Write to file")) {
 				final_map.resize(v_d.GetGridSize() * v_d.GetGridSize());
-				i_p.CreateFinalHM(v_d.GetGridSize(), final_map, layers_,0);
+				i_p.CreateFinalHM(v_d.GetGridSize(), final_map, layers_, 0);
 				std::vector<sf::VertexArray> addresses;
-				
-				for (int i = 0; i < voronoi_diagrams.size();i++) {
+
+				for (int i = 0; i < voronoi_diagrams.size(); i++) {
 					addresses.push_back(*voronoi_diagrams[0]);
 				}
 				i_p.WriteToFile(v_d.GetGridSize(), *voronoi_diagrams[0], *voronoi_diagrams[1], *voronoi_diagrams[2], *voronoi_diagrams[3], layers_);
 				s_p.WriteToFile();
 			}
-			if (ImGui::Button("Write Track Points")){
-				s_p.WriteTrackPoints(w_c.GetNewTrack(),is_curved_,is_widthed_);
+			if (ImGui::Button("Write Track Points")) {
+				s_p.WriteTrackPoints(w_c.GetNewTrack(), is_curved_, is_widthed_);
 			}
-			if (ImGui::Button("Write Curve Points")){
+			if (ImGui::Button("Write Curve Points")) {
 				s_p.WriteTrackPoints(c_r.GetCurve(), is_curved_, is_widthed_);
 			}
 		}
@@ -465,39 +467,51 @@ int main(){
 		}
 		ImGui::End();
 		//used to display the whole voronoi diagram
-		input_manager.HandleInput(render_height_map_, n_render_height_map_, f_render_height_map_,i_p,s_p, is_render_track,is_render_diagram);
+		input_manager.HandleInput(render_height_map_, n_render_height_map_, f_render_height_map_, i_p, s_p, is_render_track, is_render_diagram);
 		input_manager.Zoom();
 		//render
 		window.clear();
-		if (is_render_diagram){
-			if (i_p.GetIsChunking()){
-				for (int i = 0; i < 4; i++){
+		if (is_render_diagram) {
+			if (!struct_obj_render.render_diagram) {
+				if (i_p.GetIsChunking()) {
+					for (int i = 0; i < 4; i++) {
+						ranges limits_;
+						t_t.RangesDecider(i, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
+						i_p.DrawFullVoronoiDiagram(*voronoi_diagrams[i], v_d.GetGridSize(), v_d.GetGrid(i), i, limits_);
+					}
+					struct_obj_render.render_diagram = true;
+					false;
+				}
+				else {
+					struct_obj_render.render_diagram = true;
+					struct_obj_render.render_track = false;
 					ranges limits_;
-					t_t.RangesDecider(i, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
-					i_p.DrawFullVoronoiDiagram(*voronoi_diagrams[i], v_d.GetGridSize(), v_d.GetGrid(i),i,limits_);
+					t_t.RangesDecider(0, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
+					i_p.DrawFullVoronoiDiagram(*voronoi_diagrams[0], v_d.GetGridSize(), v_d.GetGrid(0), 0, limits_);
 				}
 			}
-			else {
-				ranges limits_;
-				t_t.RangesDecider(0, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
-				i_p.DrawFullVoronoiDiagram(*voronoi_diagrams[0], v_d.GetGridSize(), v_d.GetGrid(0),0,limits_);
-			}
 		}
-		if (is_render_track){
-			if (i_p.GetIsChunking()) {
-				for (int i = 0; i < 4; i++) {
+		if (is_render_track) {
+			if (!struct_obj_render.render_track) {
+				if (i_p.GetIsChunking()) {
+					for (int i = 0; i < 4; i++) {
+						ranges limits_;
+						t_t.RangesDecider(i, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
+						i_p.DrawTrack(*voronoi_diagrams[i], v_d.GetGridSize(), v_d.GetNumberOfSites(), v_d.GetGrid(i), i, limits_);
+					}
+					struct_obj_render.render_track = true;
+					struct_obj_render.render_diagram = false;
+				}
+				else {
 					ranges limits_;
-					t_t.RangesDecider(i, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max,v_d.GetGridSize());
-					i_p.DrawTrack(*voronoi_diagrams[i], v_d.GetGridSize(), v_d.GetNumberOfSites(), v_d.GetGrid(i),i, limits_);
+					t_t.RangesDecider(0, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
+					i_p.DrawTrack(*voronoi_diagrams[0], v_d.GetGridSize(), v_d.GetNumberOfSites(), v_d.GetGrid(0), 0, limits_);
+					struct_obj_render.render_track = true;
+					struct_obj_render.render_diagram = false;
 				}
 			}
-			else {
-				ranges limits_;
-				t_t.RangesDecider(0, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
-				i_p.DrawTrack(*voronoi_diagrams[0], v_d.GetGridSize(), v_d.GetNumberOfSites(), v_d.GetGrid(0),0, limits_);
-			}
 		}
-		if (render_height_map_){
+		if (render_height_map_) {
 			if (i_p.GetIsChunking()) {
 				for (int i = 0; i < 4; i++) {
 					window.draw(*distance_maps[i]);
@@ -505,31 +519,30 @@ int main(){
 			}
 			else {
 				window.draw(*distance_maps[0]);
+				std::cout << "ds\n";
 			}
 		}
-		if (n_render_height_map_){
-			if (!i_p.GetIsChunking()){
+		if (n_render_height_map_) {
+			if (!i_p.GetIsChunking()) {
 				window.draw(*noise_maps[0]);
 			}
 			else {
-				for (int i = 0; i < 4; i++){
+				for (int i = 0; i < 4; i++) {
 					window.draw(*noise_maps[i]);
 				}
 			}
 		}
-		if (f_render_height_map_){
+		if (f_render_height_map_) {//full
 			window.draw(final_map);
 		}
-		if (i_p.GetIsChunking()){
-			for (int i = 0; i < 4; i++){
+		if (i_p.GetIsChunking()) {
+			for (int i = 0; i < 4; i++) {
 				window.draw(*voronoi_diagrams[i]);
 			}
 		}
 		else {
 			window.draw(*voronoi_diagrams[0]);
-		}
-		
-		window.draw(title_name_);
+		}		window.draw(title_name_);
 		ImGui::SFML::Render(window);
 		window.setView(window.getDefaultView());
 		window.display();
