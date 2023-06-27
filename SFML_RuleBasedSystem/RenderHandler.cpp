@@ -55,7 +55,6 @@ void RenderHandler::RenderLoop(const bool& is_render_diagram, TrackTools& t_t, V
 		}
 		else {
 			window.draw(*distance_maps[0]);
-			std::cout << "ds\n";
 		}
 	}
 	if (n_render_height_map_) {
