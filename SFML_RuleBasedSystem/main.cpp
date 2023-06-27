@@ -480,6 +480,7 @@ int main() {
 						i_p.DrawFullVoronoiDiagram(*voronoi_diagrams[i], v_d.GetGridSize(), v_d.GetGrid(i), i, limits_);
 					}
 					struct_obj_render.render_diagram = true;
+					struct_obj_render.render_track = false;
 					false;
 				}
 				else {
