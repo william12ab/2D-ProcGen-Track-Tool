@@ -338,6 +338,7 @@ int main(){
 					t_t.HeightLoop(0,is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *distance_maps[0], v_d.GetGridSize());
 				}
 				else {
+					the_clock::time_point startTime = the_clock::now();
 					bool done_ = false;
 					for (int i = 0; i < 4; i++){
 						if (i==2){
@@ -364,7 +365,10 @@ int main(){
 						if (i==2){
 							i = 3;
 						}
-					}	
+					}
+					the_clock::time_point endTime = the_clock::now();
+					auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+					std::cout << "time(phase 1): " << time_taken; std::cout << std::endl;
 				}
 			}
 			if (ImGui::Button("Regenerate")){

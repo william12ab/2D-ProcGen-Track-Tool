@@ -110,7 +110,6 @@ void TrackTools::GenerateTerrainMethod(VoronoiDiagram &v_d_p, sf::VertexArray& v
 	if (!is_done_setup){
 		v_d_p.TerrainSites();							//this takes no time
 		v_d_p.DiagramAMP(chunk_index);
-
 		v_d_p.SetEdges(chunk_index);
 		v_d_p.DivideChunks();
 	}
@@ -204,7 +203,6 @@ void TrackTools::HeightLoop(const int& chunk_iter,bool & is_curved_, bool &is_wi
 				v_d.SetForChunks();//sets vars to default
 				s_p.SetForChunk();
 			}
-
 			v_d.EmptyCircles();
 			v_d.vector_all(peaks_to_count_ * 2);
 			int i = 0;

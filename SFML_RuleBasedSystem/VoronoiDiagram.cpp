@@ -266,16 +266,15 @@ void VoronoiDiagram::DiagramAMP(const int& chunk_index) {
 	for (int i = 0; i < local_num_sites; i++) {
 		incr[i] = i + 1;
 	}
-	the_clock::time_point startTime = the_clock::now();
+
 	parallel_for(0, local_grid_size, [&](int j) {
 		for (int i = 0; i < local_grid_size; i++) {
 			int ind = -1, dist = INT_MAX;
 			int s = 0;
-			int d = 0;
 			for (int p = 0; p < local_num_sites; p++) {
-				d = DistanceSqrt(sites_v_1[s], sites_v_1[s + 1], i, j);
+				const int d = DistanceSqrt(sites_v_1[s], sites_v_1[s + 1], i, j);
 				s += 2;
-				if (d < dist) {
+				if (d < dist) {//finding shortest distance
 					dist = d;
 					ind = p;
 				}
@@ -286,27 +285,22 @@ void VoronoiDiagram::DiagramAMP(const int& chunk_index) {
 			}
 
 			if (local_is_chunking) {
-				if (i < 400 && j < 400) {
-					//in [0]
+				if (i < grid_size_x && j < grid_size_x) {
 					grid_vector[0][(j * grid_size_x) + i] = incr[ind];
 					distance_grid_vector[0][(j * grid_size_x) + i] = dist;
 				}
-				else if (i >= 400 && j < 400) {
-					//in [1]
-					grid_vector[1][(j * grid_size_x) + (i - 400)] = incr[ind];
-					distance_grid_vector[1][(j * grid_size_x) + (i - 400)] = dist;
+				else if (i >= grid_size_x && j < grid_size_x) {
+					grid_vector[1][(j * grid_size_x) + (i - grid_size_x)] = incr[ind];
+					distance_grid_vector[1][(j * grid_size_x) + (i - grid_size_x)] = dist;
 				}
-				else if (i < 400 && j >= 400) {
-					//in [2]
-					grid_vector[2][((j - 400) * grid_size_x) + i] = incr[ind];
-					distance_grid_vector[2][((j - 400) * grid_size_x) + i] = dist;
+				else if (i < grid_size_x && j >= grid_size_x) {
+					grid_vector[2][((j - grid_size_x) * grid_size_x) + i] = incr[ind];
+					distance_grid_vector[2][((j - grid_size_x) * grid_size_x) + i] = dist;
 				}
-				else if (i >= 400 && j >= 400) {
-					//in [3]
-					grid_vector[3][((j - 400) * grid_size_x) + (i - 400)] = incr[ind];
-					distance_grid_vector[3][((j - 400) * grid_size_x) + (i - 400)] = dist;
+				else if (i >= grid_size_x && j >= grid_size_x) {
+					grid_vector[3][((j - grid_size_x) * grid_size_x) + (i - grid_size_x)] = incr[ind];
+					distance_grid_vector[3][((j - grid_size_x) * grid_size_x) + (i - grid_size_x)] = dist;
 				}
-
 				full_grid_chunking[(j * local_grid_size) + i] = incr[ind];
 			}
 			else {
@@ -315,9 +309,6 @@ void VoronoiDiagram::DiagramAMP(const int& chunk_index) {
 			}
 		}
 		});
-	the_clock::time_point endTime = the_clock::now();
-	auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-	std::cout << "time(phase 1): " << time_taken; std::cout << std::endl;
 	delete[] incr;
 }
 
@@ -950,19 +941,15 @@ void VoronoiDiagram::DivideChunks() {
 	for (size_t j = 0; j < local_grid_size; j++) {
 		for (int i = 0; i < local_grid_size; i++) {
 			if (i < 400 && j < 400) {
-				//in [0]
 				grid_vector[0][(j * grid_size_x) + i] = full_grid_chunking[(j * local_grid_size) + i];
 			}
 			else if (i >= 400 && j < 400) {
-				//in [1]
 				grid_vector[1][(j * grid_size_x) + (i - 400)] = full_grid_chunking[(j * local_grid_size) + i];
 			}
 			else if (i < 400 && j >= 400) {
-				//in [2]
 				grid_vector[2][((j - 400) * grid_size_x) + i] = full_grid_chunking[(j * local_grid_size) + i];
 			}
 			else if (i >= 400 && j >= 400) {
-				//in [3]
 				grid_vector[3][((j - 400) * grid_size_x) + (i - 400)] = full_grid_chunking[(j * local_grid_size) + i];
 			}
 		}
