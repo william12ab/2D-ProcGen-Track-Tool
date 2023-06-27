@@ -60,11 +60,11 @@ float image_scale;
 float step_curve;
 float alpha_cm_;
 
-struct render_condition{
+
+struct render_condition {
 	bool render_diagram;
 	bool render_track;
 }struct_obj_render;
-
 
 
 //time code

@@ -1,23 +1,17 @@
 #include "InputManager.h"
 #include <SFML/Window/Keyboard.hpp>
 
-InputManager::InputManager(Input*in, sf::View* view, sf::RenderWindow* hwnd)
-{
+InputManager::InputManager(Input*in, sf::View* view, sf::RenderWindow* hwnd){
 	input = in;
 	view_ = view;
 	window = hwnd;
 }
 
-InputManager::~InputManager() 
-{
-
+InputManager::~InputManager() {
 }
 
-void InputManager::Zoom()
-{
-	
-	if (input->isKeyDown(sf::Keyboard::Dash))
-	{
+void InputManager::Zoom(){
+	if (input->isKeyDown(sf::Keyboard::Dash)){
 		int m_x= input->getMouseX();
 		int m_y = input->getMouseY();
 		view_->setCenter(sf::Vector2f(m_x, m_y));
@@ -43,7 +37,6 @@ void InputManager::Zoom()
 	if (input->isKeyDown(sf::Keyboard::Num9))
 	{
 		view_->reset(sf::FloatRect(0.f, 0.f, (float)1000, (float)800));
-
 	}
 }
 

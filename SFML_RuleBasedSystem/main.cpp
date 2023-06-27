@@ -7,6 +7,7 @@
 #include <chrono>
 #include <random>
 #include "Input.h"
+#include "RenderHandler.h"
 
 using std::chrono::duration_cast;
 using std::chrono::milliseconds;
@@ -91,6 +92,7 @@ int main() {
 	TrackTools t_t;
 	CatmullRomSpline c_r;
 	WidthCalculator w_c;
+	RenderHandler r_w;
 	i_p.SetIsChunking(false);
 
 	InputManager input_manager(&input, &view_, &window);
@@ -471,79 +473,81 @@ int main() {
 		input_manager.Zoom();
 		//render
 		window.clear();
-		if (is_render_diagram) {
-			if (!struct_obj_render.render_diagram) {
-				if (i_p.GetIsChunking()) {
-					for (int i = 0; i < 4; i++) {
-						ranges limits_;
-						t_t.RangesDecider(i, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
-						i_p.DrawFullVoronoiDiagram(*voronoi_diagrams[i], v_d.GetGridSize(), v_d.GetGrid(i), i, limits_);
-					}
-					struct_obj_render.render_diagram = true;
-					struct_obj_render.render_track = false;
-					false;
-				}
-				else {
-					struct_obj_render.render_diagram = true;
-					struct_obj_render.render_track = false;
-					ranges limits_;
-					t_t.RangesDecider(0, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
-					i_p.DrawFullVoronoiDiagram(*voronoi_diagrams[0], v_d.GetGridSize(), v_d.GetGrid(0), 0, limits_);
-				}
-			}
-		}
-		if (is_render_track) {
-			if (!struct_obj_render.render_track) {
-				if (i_p.GetIsChunking()) {
-					for (int i = 0; i < 4; i++) {
-						ranges limits_;
-						t_t.RangesDecider(i, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
-						i_p.DrawTrack(*voronoi_diagrams[i], v_d.GetGridSize(), v_d.GetNumberOfSites(), v_d.GetGrid(i), i, limits_);
-					}
-					struct_obj_render.render_track = true;
-					struct_obj_render.render_diagram = false;
-				}
-				else {
-					ranges limits_;
-					t_t.RangesDecider(0, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
-					i_p.DrawTrack(*voronoi_diagrams[0], v_d.GetGridSize(), v_d.GetNumberOfSites(), v_d.GetGrid(0), 0, limits_);
-					struct_obj_render.render_track = true;
-					struct_obj_render.render_diagram = false;
-				}
-			}
-		}
-		if (render_height_map_) {
-			if (i_p.GetIsChunking()) {
-				for (int i = 0; i < 4; i++) {
-					window.draw(*distance_maps[i]);
-				}
-			}
-			else {
-				window.draw(*distance_maps[0]);
-				std::cout << "ds\n";
-			}
-		}
-		if (n_render_height_map_) {
-			if (!i_p.GetIsChunking()) {
-				window.draw(*noise_maps[0]);
-			}
-			else {
-				for (int i = 0; i < 4; i++) {
-					window.draw(*noise_maps[i]);
-				}
-			}
-		}
-		if (f_render_height_map_) {//full
-			window.draw(final_map);
-		}
-		if (i_p.GetIsChunking()) {
-			for (int i = 0; i < 4; i++) {
-				window.draw(*voronoi_diagrams[i]);
-			}
-		}
-		else {
-			window.draw(*voronoi_diagrams[0]);
-		}		window.draw(title_name_);
+		r_w.RenderLoop(is_render_diagram, t_t, v_d, i_p, struct_obj_render.render_diagram, struct_obj_render.render_track, is_render_track, voronoi_diagrams, render_height_map_, n_render_height_map_, f_render_height_map_, distance_maps, noise_maps, final_map, window);
+		//if (is_render_diagram) {
+		//	if (!struct_obj_render.render_diagram) {
+		//		if (i_p.GetIsChunking()) {
+		//			for (int i = 0; i < 4; i++) {
+		//				ranges limits_;
+		//				t_t.RangesDecider(i, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
+		//				i_p.DrawFullVoronoiDiagram(*voronoi_diagrams[i], v_d.GetGridSize(), v_d.GetGrid(i), i, limits_);
+		//			}
+		//			struct_obj_render.render_diagram = true;
+		//			struct_obj_render.render_track = false;
+		//			false;
+		//		}
+		//		else {
+		//			struct_obj_render.render_diagram = true;
+		//			struct_obj_render.render_track = false;
+		//			ranges limits_;
+		//			t_t.RangesDecider(0, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
+		//			i_p.DrawFullVoronoiDiagram(*voronoi_diagrams[0], v_d.GetGridSize(), v_d.GetGrid(0), 0, limits_);
+		//		}
+		//	}
+		//}
+		//if (is_render_track) {
+		//	if (!struct_obj_render.render_track) {
+		//		if (i_p.GetIsChunking()) {
+		//			for (int i = 0; i < 4; i++) {
+		//				ranges limits_;
+		//				t_t.RangesDecider(i, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
+		//				i_p.DrawTrack(*voronoi_diagrams[i], v_d.GetGridSize(), v_d.GetNumberOfSites(), v_d.GetGrid(i), i, limits_);
+		//			}
+		//			struct_obj_render.render_track = true;
+		//			struct_obj_render.render_diagram = false;
+		//		}
+		//		else {
+		//			ranges limits_;
+		//			t_t.RangesDecider(0, limits_.x_min, limits_.x_max, limits_.y_min, limits_.y_max, v_d.GetGridSize());
+		//			i_p.DrawTrack(*voronoi_diagrams[0], v_d.GetGridSize(), v_d.GetNumberOfSites(), v_d.GetGrid(0), 0, limits_);
+		//			struct_obj_render.render_track = true;
+		//			struct_obj_render.render_diagram = false;
+		//		}
+		//	}
+		//}
+		//if (render_height_map_) {
+		//	if (i_p.GetIsChunking()) {
+		//		for (int i = 0; i < 4; i++) {
+		//			window.draw(*distance_maps[i]);
+		//		}
+		//	}
+		//	else {
+		//		window.draw(*distance_maps[0]);
+		//		std::cout << "ds\n";
+		//	}
+		//}
+		//if (n_render_height_map_) {
+		//	if (!i_p.GetIsChunking()) {
+		//		window.draw(*noise_maps[0]);
+		//	}
+		//	else {
+		//		for (int i = 0; i < 4; i++) {
+		//			window.draw(*noise_maps[i]);
+		//		}
+		//	}
+		//}
+		//if (f_render_height_map_) {//full
+		//	window.draw(final_map);
+		//}
+		//if (i_p.GetIsChunking()) {
+		//	for (int i = 0; i < 4; i++) {
+		//		window.draw(*voronoi_diagrams[i]);
+		//	}
+		//}
+		//else {
+		//	window.draw(*voronoi_diagrams[0]);
+		//}		
+		window.draw(title_name_);
 		ImGui::SFML::Render(window);
 		window.setView(window.getDefaultView());
 		window.display();
