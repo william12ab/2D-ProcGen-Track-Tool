@@ -478,44 +478,60 @@ void ImageProcessing::ResizeGrid(int grid_size, float scale, int* grid)
 //
 
 //saving functions
-void ImageProcessing::CreateFinalHM(int grid_size, sf::VertexArray& vertexarray, int layers_, const int& chunk_index_) {
+void ImageProcessing::CreateFinalHM(int grid_size, sf::VertexArray& vertexarray, sf::VertexArray& vertexarray1, sf::VertexArray& vertexarray2, sf::VertexArray& vertexarray3, int layers_) {
 	//y=i, x=j
 	for (int i = 0; i < grid_size; i++) {
 		for (int j = 0; j < grid_size; j++) {
 			int i_alpha_two = alpha_channel_[i * grid_size + j];				//int version of alpha
 			float i_alpha_percent = (float)i_alpha_two / 255.0f;				//alpha as value between 0.0 to 1.0
+			for (int index_ = 0; index_ < 4; index_++){
+				int i_c_one = int(distance_heightmaps_vector[index_][i * grid_size + j]);					//int value of c
+				int i_c_two = (noise_maps_vector[index_][i * grid_size + j] / layers_);					//int value of co
 
-			int i_c_one = int(distance_heightmaps_vector[chunk_index_][i * grid_size + j]);					//int value of c
-			int i_c_two = (noise_maps_vector[chunk_index_][i * grid_size + j] / layers_);					//int value of co
+				float i_c_t_a = (float)i_c_two / 255.0f;							//decimal value of co
+				float is = (float)i_c_one / 255.0f;									//decimal value of c
 
-			float i_c_t_a = (float)i_c_two / 255.0f;							//decimal value of co
-			float is = (float)i_c_one / 255.0f;									//decimal value of c
+				float alpha_percent_ = i_alpha_percent + 1.0f * (1.0f - i_alpha_percent);							//alpha_f = alpha_a + alpha_b(1-alpha_a)	(as a decimal value)
+				float final_color_p = (i_c_t_a * i_alpha_percent + is * 1.0f * (1.0f - i_alpha_percent)) / alpha_percent_;		//final_c = (colour_a*alpha_a + colour_b*alpha_b(1-alpha_a))/alpha_final		as a percent
 
-			float alpha_percent_ = i_alpha_percent + 1.0f * (1.0f - i_alpha_percent);							//alpha_f = alpha_a + alpha_b(1-alpha_a)	(as a decimal value)
-			float final_color_p = (i_c_t_a * i_alpha_percent + is * 1.0f * (1.0f - i_alpha_percent)) / alpha_percent_;		//final_c = (colour_a*alpha_a + colour_b*alpha_b(1-alpha_a))/alpha_final		as a percent
+				if (final_color_p < 0.0f)
+				{
+					final_color_p = 0.0;
+					//just to check if its out of bounds
+					//happens for some reason when j=0 to 512 and i = 512
+					//becuase of error in voronoi
+					//fix it
+				}
+				if (final_color_p > 1.0f)
+				{
+					int a = 1;
+					final_color_p = 1.0;
+				}
 
-			if (final_color_p < 0.0f)
-			{
-				final_color_p = 0.0;
-				//just to check if its out of bounds
-				//happens for some reason when j=0 to 512 and i = 512
-				//becuase of error in voronoi
-				//fix it
+				int f_c = 255 * final_color_p;											//need to multiply it by 255 to get as rgb value out of 255 instead of decimal
+				int f_a = 255 * alpha_percent_;
+
+				sf::Uint8 final_c = f_c;
+				sf::Uint8 final_a = f_a;
+				switch (index_){
+				case 0:
+					vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
+					vertexarray[i * grid_size + j].color = sf::Color{ final_c , final_c , final_c, final_a };
+					break;
+				case 1:
+					vertexarray2[i * grid_size + j].position = sf::Vector2f(j, i);
+					vertexarray2[i * grid_size + j].color = sf::Color{ final_c , final_c , final_c, final_a };
+					break;
+				case 2:
+					vertexarray2[i * grid_size + j].position = sf::Vector2f(j, i);
+					vertexarray2[i * grid_size + j].color = sf::Color{ final_c , final_c , final_c, final_a };
+					break;
+				case 3:
+					vertexarray3[i * grid_size + j].position = sf::Vector2f(j, i);
+					vertexarray3[i * grid_size + j].color = sf::Color{ final_c , final_c , final_c, final_a };
+					break;
+				}
 			}
-			if (final_color_p > 1.0f)
-			{
-				int a = 1;
-				final_color_p = 1.0;
-			}
-
-			int f_c = 255 * final_color_p;											//need to multiply it by 255 to get as rgb value out of 255 instead of decimal
-			int f_a = 255 * alpha_percent_;
-
-			sf::Uint8 final_c = f_c;
-			sf::Uint8 final_a = f_a;
-
-			vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-			vertexarray[i * grid_size + j].color = sf::Color{ final_c , final_c , final_c, final_a };
 		}
 	}
 }

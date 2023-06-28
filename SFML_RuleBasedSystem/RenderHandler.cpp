@@ -5,7 +5,7 @@ RenderHandler::RenderHandler() {
 void RenderHandler::RenderLoop(const bool& is_render_diagram, TrackTools& t_t, VoronoiDiagram& v_d, ImageProcessing& i_p,
 	bool&render_diagram,bool&render_track, const bool &is_render_track, std::vector<sf::VertexArray*> voronoi_diagrams, 
 	const bool& render_height_map_,const bool & n_render_height_map_,const bool& f_render_height_map_, 
-	std::vector<sf::VertexArray*> distance_maps, std::vector<sf::VertexArray*> noise_maps,sf::VertexArray final_map,sf::RenderWindow &window) {
+	std::vector<sf::VertexArray*> distance_maps, std::vector<sf::VertexArray*> noise_maps, std::vector<sf::VertexArray*> final_maps,sf::RenderWindow &window) {
 	if (is_render_diagram) {
 		if (!render_diagram) {
 			if (i_p.GetIsChunking()) {
@@ -68,7 +68,14 @@ void RenderHandler::RenderLoop(const bool& is_render_diagram, TrackTools& t_t, V
 		}
 	}
 	if (f_render_height_map_) {//full
-		window.draw(final_map);
+		if (!i_p.GetIsChunking()) {
+			window.draw(*final_maps[0]);
+		}
+		else {
+			for (int i = 0; i < 4; i++) {
+				window.draw(*final_maps[i]);
+			}
+		}
 	}
 	if (i_p.GetIsChunking()) {
 		for (int i = 0; i < 4; i++) {

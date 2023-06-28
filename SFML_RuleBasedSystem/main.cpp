@@ -114,6 +114,10 @@ int main() {
 	sf::VertexArray n_height_map_chunk_2(sf::Points, (v_d.GetGridSize() * v_d.GetGridSize()));
 	sf::VertexArray n_height_map_chunk_3(sf::Points, (v_d.GetGridSize() * v_d.GetGridSize()));
 	sf::VertexArray final_map(sf::Points, (v_d.GetGridSize() * v_d.GetGridSize()));
+	sf::VertexArray final_map1(sf::Points, (v_d.GetGridSize() * v_d.GetGridSize()));
+	sf::VertexArray final_map2(sf::Points, (v_d.GetGridSize() * v_d.GetGridSize()));
+	sf::VertexArray final_map3(sf::Points, (v_d.GetGridSize() * v_d.GetGridSize()));
+	std::vector<sf::VertexArray*>final_maps;
 	std::vector<sf::VertexArray*>noise_maps;
 	std::vector<sf::VertexArray*>voronoi_diagrams;
 	std::vector<sf::VertexArray*>distance_maps;
@@ -131,6 +135,11 @@ int main() {
 	distance_maps.push_back(&height_map_1);
 	distance_maps.push_back(&height_map_2);
 	distance_maps.push_back(&height_map_3);
+	//
+	final_maps.push_back(&final_map);
+	final_maps.push_back(&final_map1);
+	final_maps.push_back(&final_map2);
+	final_maps.push_back(&final_map3);
 	//creates a track initially 
 
 	t_t.Generate(v_d, s_p, *voronoi_diagrams[0], *distance_maps[0], *noise_maps[0], i_p, times_, displacement_, number_, full_random_, track_type_);
@@ -384,16 +393,11 @@ int main() {
 				t_t.Generate(v_d, s_p, *voronoi_diagrams[0], *distance_maps[0], *noise_maps[0], i_p, times_, displacement_, number_, full_random_, track_type_);
 			}
 			if (ImGui::Button("Create Final Heightmap")) {
-				i_p.CreateFinalHM(v_d.GetGridSize(), final_map, layers_, 0);
+				i_p.CreateFinalHM(v_d.GetGridSize(), *final_maps[0], *final_maps[1], *final_maps[2], *final_maps[3], layers_);
 			}
 			if (ImGui::Button("Write to file")) {
-				final_map.resize(v_d.GetGridSize() * v_d.GetGridSize());
-				i_p.CreateFinalHM(v_d.GetGridSize(), final_map, layers_, 0);
-				std::vector<sf::VertexArray> addresses;
-
-				for (int i = 0; i < voronoi_diagrams.size(); i++) {
-					addresses.push_back(*voronoi_diagrams[0]);
-				}
+				final_maps[0]->resize(v_d.GetGridSize() * v_d.GetGridSize());
+				i_p.CreateFinalHM(v_d.GetGridSize(), *final_maps[0], *final_maps[1], *final_maps[2], *final_maps[3],layers_);
 				i_p.WriteToFile(v_d.GetGridSize(), *voronoi_diagrams[0], *voronoi_diagrams[1], *voronoi_diagrams[2], *voronoi_diagrams[3], layers_);
 				s_p.WriteToFile();
 			}
@@ -475,7 +479,8 @@ int main() {
 
 		//render
 		window.clear();
-		r_w.RenderLoop(is_render_diagram, t_t, v_d, i_p, struct_obj_render.render_diagram, struct_obj_render.render_track, is_render_track, voronoi_diagrams, render_height_map_, n_render_height_map_, f_render_height_map_, distance_maps, noise_maps, final_map, window);
+		r_w.RenderLoop(is_render_diagram, t_t, v_d, i_p, struct_obj_render.render_diagram, struct_obj_render.render_track, is_render_track, voronoi_diagrams,
+			render_height_map_, n_render_height_map_, f_render_height_map_, distance_maps, noise_maps, final_maps, window);
 		window.draw(title_name_);
 		ImGui::SFML::Render(window);
 		window.setView(window.getDefaultView());

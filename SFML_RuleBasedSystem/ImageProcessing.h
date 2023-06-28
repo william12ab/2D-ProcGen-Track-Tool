@@ -47,7 +47,7 @@ public:
 	//
 
 	//saving functions
-	void CreateFinalHM(int grid_size, sf::VertexArray& vertexarray, int layers_, const int& chunk_index_);								//creates final heightmap
+	void CreateFinalHM(int grid_size, sf::VertexArray& vertexarray, sf::VertexArray& vertexarray1, sf::VertexArray& vertexarray2, sf::VertexArray& vertexarray3, int layers_);								//creates final heightmap
 	void WriteToFile(int grid_size, sf::VertexArray&track_vertex_arr0, sf::VertexArray& track_vertex_arr1, sf::VertexArray& track_vertex_arr2, sf::VertexArray& track_vertex_arr3, int layers_);									//saves to file
 	void SaveUpScale(int grid_sizez, float scale);																//saves a upscaled image- first version
 	void SaveUpScaledImage(int grid_sizez, sf::VertexArray& vertexarray, float scale);							//saves an upscaled image
