@@ -42,6 +42,8 @@ VoronoiDiagram::VoronoiDiagram() {
 	max_value_height = -1000000;
 	point_pos.clear();
 	is_fail_sp = false;
+	full_grid_chunking = false;
+	local_is_chunking = false;
 }
 
 VoronoiDiagram::~VoronoiDiagram() {

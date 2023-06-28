@@ -14,6 +14,7 @@ ImageProcessing::ImageProcessing() {
 	noise_heightmap_2 = nullptr;
 	noise_heightmap_3 = nullptr;
 	alpha_channel_ = nullptr;
+	is_chunking_ = false;
 }
 
 ImageProcessing::~ImageProcessing(){

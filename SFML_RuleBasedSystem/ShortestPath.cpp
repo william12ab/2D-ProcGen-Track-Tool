@@ -7,8 +7,7 @@
 using namespace concurrency;
 std::vector<sf::Vector2i>ShortestPath::track_points(1);
 
-ShortestPath::ShortestPath()
-{
+ShortestPath::ShortestPath(){
 	found_end = false;				//start as false;
 	count_holder_ = 0;
 	it = 0;
@@ -520,10 +519,8 @@ void ShortestPath::SortControlPoints()
 	}
 }
 
-void ShortestPath::ScaleControlPoints(float scale)
-{
-	for (int i = 0; i < control_points.size(); i++)
-	{
+void ShortestPath::ScaleControlPoints(float scale){
+	for (int i = 0; i < control_points.size(); i++){
 		control_points.at(i).x *= scale;
 		control_points.at(i).y *= scale;
 	}
@@ -534,18 +531,15 @@ void ShortestPath::OrderControlPoints(){
 	for (int i = 0; i < control_points.size(); i++){
 		std::cout << " x " << control_points.at(i).x << " y " << control_points.at(i).y << "\n";
 	}
-
 }
 
-void ShortestPath::SegmentAngles()
-{
+void ShortestPath::SegmentAngles(){
 	angles_.clear();
 	new_angles_.clear();
 	//theta  = inverse tan((m2-m1)/(1+m2*m1)) where m1=(y2-y1)/(x2-x1), m2=(y4-y3)/(x4-x3) where x2,y2==x3,y3
 	//for each turn?
 	int line_iterator = 0;
-	for (int i = 0; i < number_of_turns; i++)
-	{
+	for (int i = 0; i < number_of_turns; i++){
 		float m1 = 0;				//gradient
 		float m2 = 0;				//gradient
 		float y1, y2, y3, y4;
@@ -595,8 +589,7 @@ void ShortestPath::SegmentAngles()
 					//finding angle in better terms				
 		float new_angle = 360 - angles_.back();
 		float final_angle = new_angle - 180;
-		if (final_angle < 0)
-		{
+		if (final_angle < 0){
 			final_angle *= -1;
 		}
 		new_angles_.push_back(final_angle);

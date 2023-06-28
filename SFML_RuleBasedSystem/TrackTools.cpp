@@ -134,8 +134,7 @@ void TrackTools::TerrainLoop(VoronoiDiagram &v_d_p,ShortestPath &s_p_p, sf::Vert
 	} while (v_d_p.GetFailed() || s_p_p.GetFailed());
 }
 
-void TrackTools::WidthSettings(WidthCalculator& w_c, ShortestPath& s_p, VoronoiDiagram& v_d, ImageProcessing& i_p, sf::VertexArray& voronoi_d, const int &layers_, std::vector<sf::Vector2i> &track_)
-{
+void TrackTools::WidthSettings(WidthCalculator& w_c, ShortestPath& s_p, VoronoiDiagram& v_d, ImageProcessing& i_p, sf::VertexArray& voronoi_d, const int &layers_, std::vector<sf::Vector2i> &track_){
 	w_c.Clear();
 	w_c.FindDirectionBetweenCP(s_p.GetControlPoints());
 

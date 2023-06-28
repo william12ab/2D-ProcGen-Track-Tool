@@ -753,8 +753,8 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 	}
 }
 
-void WidthCalculator::FindWidth(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos, const std::vector<int>& lengths_, const std::vector<int> angles_,int* const& noise_grid, const int& grid_size)
-{
+void WidthCalculator::FindWidth(const std::vector<sf::Vector2i>& track_points, const std::vector<sf::Vector2i>& control_points, const std::vector<sf::Vector2i>& points_pos, 
+	const std::vector<int>& lengths_, const std::vector<int> angles_,int* const& noise_grid, const int& grid_size){
 	width_m.w_left = 0.0;
 	width_m.w_right = 0.0;
 	width_m.modi_left = 0.0f;
