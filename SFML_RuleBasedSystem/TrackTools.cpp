@@ -134,33 +134,32 @@ void TrackTools::TerrainLoop(VoronoiDiagram &v_d_p,ShortestPath &s_p_p, sf::Vert
 	} while (v_d_p.GetFailed() || s_p_p.GetFailed());
 }
 
-void TrackTools::WidthSettings(WidthCalculator& w_c, ShortestPath& s_p, VoronoiDiagram& v_d, ImageProcessing& i_p, sf::VertexArray& voronoi_d, const int &layers_, std::vector<sf::Vector2i> &track_){
+void TrackTools::WidthSettings(WidthCalculator& w_c, ShortestPath& s_p, VoronoiDiagram& v_d, ImageProcessing& i_p, sf::VertexArray& voronoi_d, const int &layers_, std::vector<sf::Vector2i> &track_, std::vector<sf::Vector2i> control_points_p, const int& chunk_index){
 	w_c.Clear();
-	w_c.FindDirectionBetweenCP(s_p.GetControlPoints());
+	w_c.FindDirectionBetweenCP(control_points_p);
 
 	if (w_c.GetBoolAngles()){
 		s_p.SegmentAngles();
 	}
-	w_c.FindMinMax(layers_, i_p.GetNoiseMap(0), v_d.GetGridSize());															//min max of image
-	w_c.FindTrackMinMax(track_, v_d.GetGridSize(), layers_, i_p.GetNoiseMap(0));								//min max of track
+	w_c.FindMinMax(layers_, i_p.GetNoiseMap(chunk_index), v_d.GetGridSize());															//min max of image
+	w_c.FindTrackMinMax(track_, v_d.GetGridSize(), layers_, i_p.GetNoiseMap(chunk_index));								//min max of track
 	if (w_c.GetBoolTValues()){
-		w_c.TrackTValues(track_, s_p.GetControlPoints());																					//give t value of lerp
+		w_c.TrackTValues(track_, control_points_p);																					//give t value of lerp
 	}
 	if (w_c.GetBoolIncline()){
-		w_c.FindInclinePoints(s_p.GetControlPoints(), v_d.GetGridSize(), layers_, w_c.GetCPIncline(), i_p.GetNoiseMap(0));		//for the control points
-		w_c.FindInclinePoints(v_d.GetPointPos(), v_d.GetGridSize(), layers_, w_c.GetPointIncline(), i_p.GetNoiseMap(0));		//for the points
+		w_c.FindInclinePoints(control_points_p, v_d.GetGridSize(), layers_, w_c.GetCPIncline(), i_p.GetNoiseMap(chunk_index));		//for the control points
+		w_c.FindInclinePoints(v_d.GetPointPos(), v_d.GetGridSize(), layers_, w_c.GetPointIncline(), i_p.GetNoiseMap(chunk_index));		//for the points
 	}
 	if (w_c.GetBoolFlat()){
 		//do nothing
 	}
 	else{
-		w_c.FindRelatedHeight(i_p.GetNoiseMap(0), v_d.GetGridSize(), layers_, track_, s_p.GetControlPoints());
+		w_c.FindRelatedHeight(i_p.GetNoiseMap(chunk_index), v_d.GetGridSize(), layers_, track_, control_points_p);
 	}
-	
 	w_c.SetModi();
-	w_c.FindWidth(track_, s_p.GetControlPoints(), v_d.GetPointPos(), s_p.GetLengths(), s_p.GetAngles(),i_p.GetNoiseMap(0), v_d.GetGridSize());
+	w_c.FindWidth(track_, control_points_p, v_d.GetPointPos(), s_p.GetLengths(), s_p.GetAngles(),i_p.GetNoiseMap(chunk_index), v_d.GetGridSize());
 	i_p.CreateImage(voronoi_d, v_d.GetGridSize());
-	i_p.DrawWidthTrack(voronoi_d, v_d.GetGridSize(), w_c.GetNewTrack(),0);
+	i_p.DrawWidthTrack(voronoi_d, v_d.GetGridSize(), w_c.GetNewTrack(), chunk_index);
 }
 void TrackTools::RangesDecider(const int& chunk_iter, int& x_min, int& x_max, int& y_min, int& y_max,const int& grid_size) {
 	switch (chunk_iter){

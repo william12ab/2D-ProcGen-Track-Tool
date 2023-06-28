@@ -76,8 +76,7 @@ void WidthCalculator::SetModi()
 	modi_value = float(1)/(float)c;
 }
 
-void WidthCalculator::Clear()
-{
+void WidthCalculator::Clear(){
 	image_max = 0;
 	image_min = 0;
 	track_max = 0;
@@ -88,6 +87,9 @@ void WidthCalculator::Clear()
 	cp_inc_.clear();
 	t_values.clear();
 	max_width_directions.clear();
+	max_width_left = 0;
+	max_width_right = 0;
+	new_track.clear();
 }
 
 void WidthCalculator::FindMinMax(const int& layers_, int* const& noise_grid, const int& grid_size)

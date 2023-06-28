@@ -23,7 +23,8 @@ public:
 
 	void TerrainLoop(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, sf::VertexArray& height_map, ImageProcessing &i_p_p, int number_, int track_type_, const int& index_);
 
-	void WidthSettings(WidthCalculator& w_c, ShortestPath & s_p, VoronoiDiagram&v_d, ImageProcessing&i_p, sf::VertexArray&voronoi_d,const int& layers_, std::vector<sf::Vector2i>& track_);
+	void WidthSettings(WidthCalculator& w_c, ShortestPath & s_p, VoronoiDiagram&v_d, ImageProcessing&i_p, sf::VertexArray&voronoi_d,const int& layers_, 
+		std::vector<sf::Vector2i>& track_,std::vector<sf::Vector2i> control_points_p,const int&chunk_index);
 
 	void HeightLoop(const int& chunk_iter,VoronoiDiagram& v_d, const int& peaks_to_count_, const int& layers_, ImageProcessing& i_p, const int& radius_cutoff, const int& number_, const int& track_type_, ShortestPath& s_p,sf::VertexArray& height_map);
 
