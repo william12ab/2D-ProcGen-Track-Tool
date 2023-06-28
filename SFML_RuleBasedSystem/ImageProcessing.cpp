@@ -41,6 +41,10 @@ void ImageProcessing::InitStructures(int grid_size) {
 	noise_heightmap_3 = new int[grid_size * grid_size];
 	alpha_channel_ = new int[grid_size * grid_size];
 
+	if (!noise_maps_vector.empty()){
+		noise_maps_vector.clear();
+		distance_heightmaps_vector.clear();
+	}
 	noise_maps_vector.push_back(noise_heightmap_);
 	noise_maps_vector.push_back(noise_heightmap_1);
 	noise_maps_vector.push_back(noise_heightmap_2);
@@ -519,15 +523,15 @@ void ImageProcessing::CreateFinalHM(int grid_size, sf::VertexArray& vertexarray,
 					vertexarray[i * grid_size + j].color = sf::Color{ final_c , final_c , final_c, final_a };
 					break;
 				case 1:
-					vertexarray2[i * grid_size + j].position = sf::Vector2f(j, i);
-					vertexarray2[i * grid_size + j].color = sf::Color{ final_c , final_c , final_c, final_a };
+					vertexarray1[i * grid_size + j].position = sf::Vector2f(j+grid_size, i);
+					vertexarray1[i * grid_size + j].color = sf::Color{ final_c , final_c , final_c, final_a };
 					break;
 				case 2:
-					vertexarray2[i * grid_size + j].position = sf::Vector2f(j, i);
+					vertexarray2[i * grid_size + j].position = sf::Vector2f(j, i + grid_size);
 					vertexarray2[i * grid_size + j].color = sf::Color{ final_c , final_c , final_c, final_a };
 					break;
 				case 3:
-					vertexarray3[i * grid_size + j].position = sf::Vector2f(j, i);
+					vertexarray3[i * grid_size + j].position = sf::Vector2f(j + grid_size, i + grid_size);
 					vertexarray3[i * grid_size + j].color = sf::Color{ final_c , final_c , final_c, final_a };
 					break;
 				}
