@@ -222,9 +222,15 @@ int main() {
 			ImGui::SliderInt("Number of Peaks:", &peaks_to_count_, 1, 9);
 			ImGui::SliderInt("Octaves: ", &octaves_, 1, 8);
 			ImGui::SliderFloat("Frequency:,", &frequency_, 0.0, 1.0f);
-			if (ImGui::Button("Change alpha"))
-			{
-				i_p.ChangeAlpha(*noise_maps[0], v_d.GetGridSize(), alpha_);
+			if (ImGui::Button("Change alpha")){
+				if (!i_p.GetIsChunking()){
+					i_p.ChangeAlpha(*noise_maps[0], v_d.GetGridSize(), alpha_);
+				}
+				else {
+					for (int i = 0; i < 4; i++){
+						i_p.ChangeAlpha(*noise_maps[i], v_d.GetGridSize(), alpha_);
+					}
+				}
 			}
 			if (ImGui::Button("Create Noise Image")) {
 				if (!i_p.GetIsChunking()) {
