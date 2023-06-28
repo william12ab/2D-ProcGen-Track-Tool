@@ -60,6 +60,7 @@ float image_scale;
 float step_curve;
 float alpha_cm_;
 
+std::vector<std::vector<sf::Vector2i>>control_points_;//vector of a vector of vector2is, so... control_points_[i][j][xory]
 
 struct render_condition {
 	bool render_diagram;
@@ -67,11 +68,3 @@ struct render_condition {
 }struct_obj_render;
 
 
-//time code
-
-//the_clock::time_point startTime = the_clock::now();
-	//v_d_p->CreateDiagram(v_d_p->GetNumberOfSites(), v_d_p->GetGridSize(),0, v_d_p->GetGridSize());
-	//the_clock::time_point endTime = the_clock::now();
-	//auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-	//std::cout << "time(v d): " << time_taken; std::cout << std::endl;
-	//

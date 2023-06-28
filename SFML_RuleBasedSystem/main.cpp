@@ -280,34 +280,44 @@ int main() {
 				}
 			}
 			ImGui::Text("\n");
-
-			if (ImGui::Button("DeCastelJau"))
-			{
+			if (ImGui::Button("DeCastelJau")){
 				s_p.OrderControlPoints();
 				d_c.CreateCurve(s_p.GetControlPoints(), v_d.GetGridSize(), *voronoi_diagrams[0]);				//draws curve
 			}
-			if (ImGui::Button("CatmullRom"))
-			{
+			if (ImGui::Button("CatmullRom")){
 				s_p.OrderControlPoints();
 				bool looped = false;
-				if (track_type_ == 2)
-				{
+				if (track_type_ == 2){
 					looped = true;
 				}
 				c_r.CreateCurve(s_p.GetControlPoints(), v_d.GetGridSize(), *voronoi_diagrams[0], looped);
 			}
-			if (ImGui::Button("Centripetal CatmullRom"))
-			{
-				i_p.CreateImage(*voronoi_diagrams[0], v_d.GetGridSize());
-				bool looped = false;
-				if (track_type_ == 2)
-				{
-					looped = true;
+			if (ImGui::Button("Centripetal CatmullRom")){
+				if (!i_p.GetIsChunking())				{
+					i_p.CreateImage(*voronoi_diagrams[0], v_d.GetGridSize());
+					bool looped = false;
+					if (track_type_ == 2) {
+						looped = true;
+					}
+					c_r.CreateCurve(v_d.GetGridSize(), *voronoi_diagrams[0], s_p.GetControlPoints(), looped);
+					c_r.RemoveDuplicates();
+					i_p.DrawWidthTrack(*voronoi_diagrams[0], v_d.GetGridSize(), c_r.GetCurve());
+					is_curved_ = true;
 				}
-				c_r.CreateCurve(v_d.GetGridSize(), *voronoi_diagrams[0], s_p.GetControlPoints(), looped);
-				c_r.RemoveDuplicates();
-				i_p.DrawWidthTrack(*voronoi_diagrams[0], v_d.GetGridSize(), c_r.GetCurve());
-				is_curved_ = true;
+				else {
+					for (int i = 0; i < 4; i++){
+						i_p.CreateImage(*voronoi_diagrams[i], v_d.GetGridSize());
+						bool looped = false;
+						if (track_type_ == 2) {
+							looped = true;
+						}
+						c_r.CreateCurve(v_d.GetGridSize(), *voronoi_diagrams[i], control_points_[i], looped);
+						c_r.RemoveDuplicates();
+						i_p.DrawWidthTrack(*voronoi_diagrams[i], v_d.GetGridSize(), c_r.GetCurve());
+						is_curved_ = true;
+					}
+				}
+			
 			}
 			if (ImGui::Button("Draw Control Points"))
 			{
@@ -360,6 +370,7 @@ int main() {
 					points_ = 3;
 					the_clock::time_point startTime = the_clock::now();
 					bool done_ = false;
+					control_points_.clear();
 					for (int i = 0; i < 4; i++) {
 						if (i == 2) {
 							if (!done_) {
@@ -375,6 +386,10 @@ int main() {
 							}
 							done_ = false;
 							i = -1;
+							control_points_.clear();
+						}
+						else {
+							control_points_.push_back(s_p.GetControlPoints());
 						}
 						if (i == 3) {
 							if (!done_) {

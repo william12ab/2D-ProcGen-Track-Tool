@@ -149,8 +149,7 @@ sf::Vector2f CatmullRomSpline::CentripetalCurve(float t, std::vector<sf::Vector2
 }
 
 
-void CatmullRomSpline::CreateCurve(int grid_size, sf::VertexArray& vertexarray, std::vector<sf::Vector2i> control_points, bool is_looped)
-{
+void CatmullRomSpline::CreateCurve(int grid_size, sf::VertexArray& vertexarray, std::vector<sf::Vector2i> control_points, bool is_looped){
 	ResetArray(vertexarray, grid_size);
 	if (!is_looped)
 	{
@@ -190,8 +189,7 @@ int CatmullRomSpline::DistanceSqrt(int x, int y, int x2, int y2)
 	return sqrt((xd * xd) + (yd * yd));
 }
 
-void CatmullRomSpline::RemoveDuplicates()
-{
+void CatmullRomSpline::RemoveDuplicates(){
 	auto end = new_track.end();
 	for (auto it = new_track.begin(); it != end; ++it) {
 		end = std::remove(it + 1, end, *it);
@@ -201,14 +199,6 @@ void CatmullRomSpline::RemoveDuplicates()
 
 
 
-void CatmullRomSpline::ResetArray(sf::VertexArray& vertexarray, int grid_size)
-{
+void CatmullRomSpline::ResetArray(sf::VertexArray& vertexarray, int grid_size){
 	new_track.clear();
-	/*for (int i = 0; i < grid_size; i++)
-	{
-		for (int j = 0; j < grid_size; j++)
-		{
-			vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
-		}
-	}*/
 }

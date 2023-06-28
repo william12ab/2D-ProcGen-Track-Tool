@@ -791,22 +791,17 @@ void ImageProcessing::SaveUpScaledImage(int grid_sizez, sf::VertexArray& vertexa
 }
 
 
-void ImageProcessing::CreateImage(sf::VertexArray& vertexarray, int grid_size)
-{
-	parallel_for(0, grid_size, [&](int i)
-		{
-			for (int j = 0; j < grid_size; j++)
-			{
+void ImageProcessing::CreateImage(sf::VertexArray& vertexarray, int grid_size){
+	parallel_for(0, grid_size, [&](int i){
+			for (int j = 0; j < grid_size; j++){
 				vertexarray[i * grid_size + j].position = sf::Vector2f(j, i);
 				vertexarray[i * grid_size + j].color = sf::Color::Transparent;
 			}
 		});
 }
 
-void ImageProcessing::DrawWidthTrack(sf::VertexArray& vertexarray, int grid_size, const std::vector<sf::Vector2i>& track_)
-{
-	for (int i = 0; i < track_.size(); i++)
-	{
+void ImageProcessing::DrawWidthTrack(sf::VertexArray& vertexarray, int grid_size, const std::vector<sf::Vector2i>& track_){
+	for (int i = 0; i < track_.size(); i++){
 		auto x = track_[i].x;
 		auto y = track_[i].y;
 		vertexarray[y * grid_size + x].position = sf::Vector2f(x, y);
