@@ -364,20 +364,22 @@ int main() {
 				ClearConsoleWin();
 				t_t.SetChunk(i_p.GetIsChunking());
 				if (!is_chunking_) {
-					t_t.HeightLoop(0, is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *distance_maps[0], v_d.GetGridSize());
+					is_curved_ = false; is_widthed_ = false;
+					t_t.HeightLoop(0, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *distance_maps[0]);
 				}
 				else {
 					points_ = 3;
 					the_clock::time_point startTime = the_clock::now();
 					bool done_ = false;
 					control_points_.clear();
+					is_curved_ = false; is_widthed_ = false;
 					for (int i = 0; i < 4; i++) {
 						if (i == 2) {
 							if (!done_) {
 								i = 3;
 							}
 						}
-						t_t.HeightLoop(i, is_curved_, is_widthed_, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *distance_maps[i], v_d.GetGridSize());
+						t_t.HeightLoop(i, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *distance_maps[i]);
 						if (s_p.GetFailed()) {
 							s_p.SetFailed(false);
 							v_d.EmptyAllCircleVec();
@@ -448,16 +450,13 @@ int main() {
 				ImGui::SliderInt("Max Width Value:", &w, 2, 10);
 				w_c.SetMaxWidth(w);
 			}
-			if (ImGui::Button("Create width"))
-			{
+			if (ImGui::Button("Create width")){
 				is_widthed_ = true;
 				//curved code
-				if (w_c.GetBoolCurved())
-				{
+				if (w_c.GetBoolCurved()){
 					t_t.WidthSettings(w_c, s_p, v_d, i_p, *voronoi_diagrams[0], layers_, c_r.GetCurve());
 				}
-				else
-				{
+				else{
 					t_t.WidthSettings(w_c, s_p, v_d, i_p, *voronoi_diagrams[0], layers_, s_p.GetTrackPoints());
 				}
 			}

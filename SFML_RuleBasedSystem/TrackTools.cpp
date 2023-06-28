@@ -190,14 +190,12 @@ void TrackTools::RangesDecider(const int& chunk_iter, int& x_min, int& x_max, in
 	}
 }
 
-void TrackTools::HeightLoop(const int& chunk_iter,bool & is_curved_, bool &is_widthed_,VoronoiDiagram& v_d, const int& peaks_to_count_,const int& layers_, ImageProcessing& i_p,const int&radius_cutoff,const int& number_, const int& track_type_, ShortestPath& s_p, sf::VertexArray& height_map, const int& grid_size) {
-	v_d.SetIsChunking(true);//sets boool
+void TrackTools::HeightLoop(const int& chunk_iter,VoronoiDiagram& v_d, const int& peaks_to_count_,const int& layers_, ImageProcessing& i_p,const int&radius_cutoff,const int& number_, const int& track_type_, ShortestPath& s_p, sf::VertexArray& height_map) {
+	v_d.SetIsChunking(is_chunk);//sets boool
 	if (!is_done_setup) {
 		for (int chunk_index_loc = 0; chunk_index_loc < 4; chunk_index_loc++) {
-			is_curved_ = false;
-			is_widthed_ = false;
 			ranges init;
-			RangesDecider(0, init.x_min, init.x_max, init.y_min, init.y_max, grid_size);
+			RangesDecider(0, init.x_min, init.x_max, init.y_min, init.y_max, v_d.GetGridSize());
 			if (is_chunk) {
 				v_d.ResetSitesForChunking(v_d.GetNumberOfSites());//resets sites array
 				v_d.SetForChunks();//sets vars to default
@@ -217,7 +215,7 @@ void TrackTools::HeightLoop(const int& chunk_iter,bool & is_curved_, bool &is_wi
 					i++;
 				}
 			}
-			RangesDecider(chunk_index_loc, init.x_min, init.x_max, init.y_min, init.y_max, grid_size);//used for adding on 
+			RangesDecider(chunk_index_loc, init.x_min, init.x_max, init.y_min, init.y_max, v_d.GetGridSize());//used for adding on 
 			v_d.AddingCirclesToContainer(init);//adds circles to overall array
 		}
 	}
