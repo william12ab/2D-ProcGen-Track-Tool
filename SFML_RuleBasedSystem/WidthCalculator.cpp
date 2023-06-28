@@ -13,8 +13,7 @@ std::vector<float> WidthCalculator::t_values(1);
 std::vector<sf::Vector2f> WidthCalculator::normailised_direction_(1);
 
 
-WidthCalculator::WidthCalculator()
-{
+WidthCalculator::WidthCalculator(){
 	image_max = 0;
 	image_min = 0;
 	track_max = 0;

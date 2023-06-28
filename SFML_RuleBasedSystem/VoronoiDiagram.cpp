@@ -42,7 +42,7 @@ VoronoiDiagram::VoronoiDiagram() {
 	max_value_height = -1000000;
 	point_pos.clear();
 	is_fail_sp = false;
-	full_grid_chunking = false;
+	full_grid_chunking = nullptr;
 	local_is_chunking = false;
 }
 

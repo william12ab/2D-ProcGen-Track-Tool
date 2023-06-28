@@ -34,6 +34,22 @@ void ClearConsoleWin() {
 	SetConsoleCursorPosition(console, tl);
 }
 
+void ClearMeasurements(){
+	measurements_.control_points_.clear();
+	measurements_.vec_angles.clear();
+	measurements_.vec_new_angles.clear();
+	measurements_.vec_number_of_turns.clear();
+	measurements_.vec_segment_lengths.clear();
+	measurements_.vec_track_points.clear();
+}
+void AddMeasurements(ShortestPath&s_p) {
+	measurements_.control_points_.push_back(s_p.GetControlPoints());
+	measurements_.vec_new_angles.push_back(s_p.GetAngles());
+	measurements_.vec_number_of_turns.push_back(s_p.GetNumberOfTurns());
+	measurements_.vec_segment_lengths.push_back(s_p.GetLengths());
+	measurements_.vec_track_points.push_back(s_p.GetTrackPoints());
+}
+
 void Init(sf::RenderWindow& window) {
 	font.loadFromFile("DefaultAriel.ttf");
 	//text setting
@@ -311,7 +327,7 @@ int main() {
 						if (track_type_ == 2) {
 							looped = true;
 						}
-						c_r.CreateCurve(v_d.GetGridSize(), *voronoi_diagrams[i], control_points_[i], looped);
+						c_r.CreateCurve(v_d.GetGridSize(), *voronoi_diagrams[i], measurements_.control_points_[i], looped);
 						c_r.RemoveDuplicates();
 						i_p.DrawWidthTrack(*voronoi_diagrams[i], v_d.GetGridSize(), c_r.GetCurve(), i);
 						is_curved_ = true;
@@ -371,7 +387,7 @@ int main() {
 					points_ = 3;
 					the_clock::time_point startTime = the_clock::now();
 					bool done_ = false;
-					control_points_.clear();
+					ClearMeasurements();
 					is_curved_ = false; is_widthed_ = false;
 					for (int i = 0; i < 4; i++) {
 						if (i == 2) {
@@ -388,10 +404,11 @@ int main() {
 							}
 							done_ = false;
 							i = -1;
-							control_points_.clear();
+							ClearMeasurements();
 						}
 						else {
-							control_points_.push_back(s_p.GetControlPoints());
+							//measurements_.control_points_.push_back(s_p.GetControlPoints());
+							AddMeasurements(s_p);
 						}
 						if (i == 3) {
 							if (!done_) {
