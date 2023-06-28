@@ -145,6 +145,13 @@ sf::Vector2f CatmullRomSpline::CentripetalCurve(float t, std::vector<sf::Vector2
 	segment.d = (sf::Vector2f)control_points[p1];
 
 	sf::Vector2f point = segment.a * t * t * t +segment.b * t * t +segment.c * t +segment.d;
+
+	if (point.x < 0) {
+		point.x = 0;
+	}
+	if (point.y < 0) {
+		point.y = 0;
+	}
 	return point;
 }
 
@@ -169,10 +176,8 @@ void CatmullRomSpline::CreateCurve(int grid_size, sf::VertexArray& vertexarray, 
 			control_points.insert(it, control_points[0]);
 		}
 	}
-	for (int j = 0; j < control_points.size(); j++)
-	{
-		for (float i = 0; i < 1; i += step_size)
-		{
+	for (int j = 0; j < control_points.size(); j++){
+		for (float i = 0; i < 1; i += step_size){
 			sf::Vector2f point = CentripetalCurve(i, control_points,j, is_looped);
 			sf::Vector2i point_ = (sf::Vector2i)point;
 			new_track.push_back(point_);

@@ -824,7 +824,6 @@ void ImageProcessing::DrawWidthTrack(sf::VertexArray& vertexarray, int grid_size
 				y += grid_size;
 				break;
 			case 3:
-				
 				y += grid_size;
 				break;
 			}
