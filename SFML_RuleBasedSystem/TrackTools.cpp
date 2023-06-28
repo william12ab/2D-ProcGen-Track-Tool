@@ -111,7 +111,9 @@ void TrackTools::GenerateTerrainMethod(VoronoiDiagram &v_d_p, sf::VertexArray& v
 		v_d_p.TerrainSites();							//this takes no time
 		v_d_p.DiagramAMP(chunk_index);
 		v_d_p.SetEdges(chunk_index);
-		v_d_p.DivideChunks();
+		if (is_chunk){
+			v_d_p.DivideChunks();
+		}
 	}
 	is_done_setup = true;
 	RangesDecider(chunk_index, init.x_min, init.x_max, init.y_min, init.y_max, v_d_p.GetGridSize());
@@ -192,8 +194,12 @@ void TrackTools::RangesDecider(const int& chunk_iter, int& x_min, int& x_max, in
 
 void TrackTools::HeightLoop(const int& chunk_iter,VoronoiDiagram& v_d, const int& peaks_to_count_,const int& layers_, ImageProcessing& i_p,const int&radius_cutoff,const int& number_, const int& track_type_, ShortestPath& s_p, sf::VertexArray& height_map) {
 	v_d.SetIsChunking(is_chunk);//sets boool
+	int index_=1;
+	if (is_chunk){
+		index_ = 4;
+	}
 	if (!is_done_setup) {
-		for (int chunk_index_loc = 0; chunk_index_loc < 4; chunk_index_loc++) {
+		for (int chunk_index_loc = 0; chunk_index_loc < index_; chunk_index_loc++) {
 			ranges init;
 			RangesDecider(0, init.x_min, init.x_max, init.y_min, init.y_max, v_d.GetGridSize());
 			if (is_chunk) {

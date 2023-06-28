@@ -931,7 +931,6 @@ void VoronoiDiagram::AddingCirclesToContainer(const ranges& init) {
 	for (int i = 0; i < circles_.size(); i++) {
 		circles_[i].point.x += x_addition;
 		circles_[i].point.y += y_addition;
-
 		all_circles_vector.push_back(circles_[i]);
 	}
 }
