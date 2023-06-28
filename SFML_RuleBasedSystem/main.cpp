@@ -425,7 +425,10 @@ int main() {
 			if (ImGui::Button("Regenerate")) {
 				is_curved_ = false;
 				is_widthed_ = false;
+				is_chunking_ = false;
+				i_p.SetIsChunking(false);
 				t_t.SetChunk(i_p.GetIsChunking());
+				v_d.SetIsChunking(i_p.GetIsChunking());
 				ClearConsoleWin();
 				t_t.ClearStructs(v_d, *voronoi_diagrams[0], *noise_maps[0], *distance_maps[0], i_p, track_type_, resolution_, sites_, points_);
 				t_t.Generate(v_d, s_p, *voronoi_diagrams[0], *distance_maps[0], *noise_maps[0], i_p, times_, displacement_, number_, full_random_, track_type_);
