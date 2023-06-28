@@ -800,11 +800,37 @@ void ImageProcessing::CreateImage(sf::VertexArray& vertexarray, int grid_size){
 		});
 }
 
-void ImageProcessing::DrawWidthTrack(sf::VertexArray& vertexarray, int grid_size, const std::vector<sf::Vector2i>& track_){
+void ImageProcessing::DrawWidthTrack(sf::VertexArray& vertexarray, int grid_size, const std::vector<sf::Vector2i>& track_, const int& chunk_index){
 	for (int i = 0; i < track_.size(); i++){
 		auto x = track_[i].x;
 		auto y = track_[i].y;
-		vertexarray[y * grid_size + x].position = sf::Vector2f(x, y);
-		vertexarray[y * grid_size + x].color = sf::Color::White;
+		if (x < grid_size &&y<grid_size){
+			if (x < 0) {
+				x = track_[i + 1].x;
+			}
+			if (y < 0) {
+				y = track_[i + 1].y;
+			}
+			auto y_it = y;
+			auto x_it = x;
+			switch (chunk_index){
+			case 0:
+				break;
+			case 1:
+				x += grid_size;
+				break;
+			case 2:
+				x += grid_size;
+				y += grid_size;
+				break;
+			case 3:
+				
+				y += grid_size;
+				break;
+			}
+			
+			vertexarray[y_it * grid_size + x_it].position = sf::Vector2f(x, y);
+			vertexarray[y_it * grid_size + x_it].color = sf::Color::White;
+		}
 	}
 }

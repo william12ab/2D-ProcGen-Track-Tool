@@ -151,10 +151,8 @@ sf::Vector2f CatmullRomSpline::CentripetalCurve(float t, std::vector<sf::Vector2
 
 void CatmullRomSpline::CreateCurve(int grid_size, sf::VertexArray& vertexarray, std::vector<sf::Vector2i> control_points, bool is_looped){
 	ResetArray(vertexarray, grid_size);
-	if (!is_looped)
-	{
-		if (alpha_==0.5f)
-		{
+	if (!is_looped){
+		if (alpha_==0.5f){
 			auto first_ = control_points[0];
 			auto second_ = control_points[control_points.size() - 1];
 

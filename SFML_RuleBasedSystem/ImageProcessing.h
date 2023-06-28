@@ -30,7 +30,7 @@ public:
 	void DrawVoronoiNoise(sf::VertexArray& vertextarray, const int& grid_size, const int& num_sites, const int& num_,int * const &grid_distance,const int& chunk_index, const ranges& init);				//draws the voronoi noise "worely noise" etc
 	void DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_, const float &frequency, const int& chunk_);									//draws the perlin noise
 	void DrawFBM(sf::VertexArray& vertexarray, int grid_size, int octaves_, const float& frequency);									//draws the fbm
-	void DrawWidthTrack(sf::VertexArray& vertexarray, int grid_size, const std::vector<sf::Vector2i>& track_);
+	void DrawWidthTrack(sf::VertexArray& vertexarray, int grid_size, const std::vector<sf::Vector2i>& track, const int&chunk_index);
 	void CreateImage(sf::VertexArray& vertexarray, int grid_size);
 	//
 

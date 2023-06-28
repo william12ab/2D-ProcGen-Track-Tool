@@ -301,7 +301,7 @@ int main() {
 					}
 					c_r.CreateCurve(v_d.GetGridSize(), *voronoi_diagrams[0], s_p.GetControlPoints(), looped);
 					c_r.RemoveDuplicates();
-					i_p.DrawWidthTrack(*voronoi_diagrams[0], v_d.GetGridSize(), c_r.GetCurve());
+					i_p.DrawWidthTrack(*voronoi_diagrams[0], v_d.GetGridSize(), c_r.GetCurve(),0);
 					is_curved_ = true;
 				}
 				else {
@@ -313,7 +313,7 @@ int main() {
 						}
 						c_r.CreateCurve(v_d.GetGridSize(), *voronoi_diagrams[i], control_points_[i], looped);
 						c_r.RemoveDuplicates();
-						i_p.DrawWidthTrack(*voronoi_diagrams[i], v_d.GetGridSize(), c_r.GetCurve());
+						i_p.DrawWidthTrack(*voronoi_diagrams[i], v_d.GetGridSize(), c_r.GetCurve(), i);
 						is_curved_ = true;
 					}
 				}
