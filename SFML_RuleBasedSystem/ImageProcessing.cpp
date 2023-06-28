@@ -555,13 +555,22 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& track_vertex_a
 	sf::Image track_output1;
 	sf::Image track_output2;
 	sf::Image track_output3;
+	sf::Image final_i;
+	sf::Image final_i1;
+	sf::Image final_i2;
+	sf::Image final_i3;
 	std::vector<sf::Image> noise_output_vector;
 	std::vector<sf::Image> voronoi_output_vector;
 	std::vector<sf::Image> track_output_vector;
+	std::vector<sf::Image> final_image_vector;
 	voronoi_output_vector.push_back(voronoi_output3);
 	voronoi_output_vector.push_back(voronoi_output1);
 	voronoi_output_vector.push_back(voronoi_output2);
 	voronoi_output_vector.push_back(voronoi_output3);
+	final_image_vector.push_back(final_i);
+	final_image_vector.push_back(final_i2);
+	final_image_vector.push_back(final_i2);
+	final_image_vector.push_back(final_i3);
 	noise_output_vector.push_back(noise_output);
 	noise_output_vector.push_back(noise_output_1);
 	noise_output_vector.push_back(noise_output_2);
@@ -570,22 +579,21 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& track_vertex_a
 	track_output_vector.push_back(track_output1);
 	track_output_vector.push_back(track_output2);
 	track_output_vector.push_back(track_output3);
-	sf::Image final_i;
 	
 	if (!is_chunking_) {
 		noise_output_vector[0].create(grid_size, grid_size);
 		voronoi_output_vector[0].create(grid_size, grid_size);
 		track_output_vector[0].create(grid_size, grid_size);
+		final_image_vector[0].create(grid_size, grid_size);
 	}
 	else {
 		for (int i = 0; i < 4; i++) {
 			voronoi_output_vector[i].create(grid_size, grid_size);
 			noise_output_vector[i].create(grid_size, grid_size);
 			track_output_vector[i].create(grid_size, grid_size);
+			final_image_vector[i].create(grid_size, grid_size);
 		}
 	}
-	final_i.create(grid_size, grid_size);
-
 
 	//parallel_for(0, dimensions_, [&](int i) {
 	for (int i = 0; i < dimensions_; i++) {
@@ -659,18 +667,19 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& track_vertex_a
 				noise_output_vector[0].setPixel(j, i, sf::Color{ noise_color[0] , noise_color[0] , noise_color[0],a });
 				voronoi_output_vector[0].setPixel(j, i, sf::Color{ distance_heightmap_color[0] , distance_heightmap_color[0] , distance_heightmap_color[0] });
 				track_output_vector[0].setPixel(j, i, sf::Color{ track_vertex_arr0[i * grid_size + j].color.r,track_vertex_arr0[i * grid_size + j].color.g,track_vertex_arr0[i * grid_size + j].color.b });
+				final_image_vector[0].setPixel(j, i, sf::Color{ final_c,final_c,final_c ,final_a });
 			}
 			else {
 				for (int chunk_it = 0; chunk_it < 4; chunk_it++) {
 					noise_output_vector[chunk_it].setPixel(j, i, sf::Color{ noise_color[chunk_it] , noise_color[chunk_it] , noise_color[chunk_it],a });
 					voronoi_output_vector[chunk_it].setPixel(j, i, sf::Color{ distance_heightmap_color[chunk_it] , distance_heightmap_color[chunk_it] , distance_heightmap_color[chunk_it] });
+					final_image_vector[chunk_it].setPixel(j, i, sf::Color{ final_c,final_c,final_c ,final_a });
 				}
 				track_output_vector[0].setPixel(j, i, sf::Color{ track_vertex_arr0[i * grid_size + j].color.r,track_vertex_arr0[i * grid_size + j].color.g,track_vertex_arr0[i * grid_size + j].color.b });
 				track_output_vector[1].setPixel(j, i, sf::Color{ track_vertex_arr1[i * grid_size + j].color.r,track_vertex_arr1[i * grid_size + j].color.g,track_vertex_arr1[i * grid_size + j].color.b });
 				track_output_vector[2].setPixel(j, i, sf::Color{ track_vertex_arr2[i * grid_size + j].color.r,track_vertex_arr2[i * grid_size + j].color.g,track_vertex_arr2[i * grid_size + j].color.b });
 				track_output_vector[3].setPixel(j, i, sf::Color{ track_vertex_arr3[i * grid_size + j].color.r,track_vertex_arr3[i * grid_size + j].color.g,track_vertex_arr3[i * grid_size + j].color.b });
 			}
-			final_i.setPixel(j, i, sf::Color{ final_c,final_c,final_c ,final_a });			
 		}
 		//});
 	}
@@ -678,6 +687,7 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& track_vertex_a
 		noise_output_vector[0].saveToFile("0noise_layer.png");
 		voronoi_output_vector[0].saveToFile("0voronoi_layer.png");
 		track_output_vector[0].saveToFile("0track_image.png");
+		final_image_vector[0].saveToFile("0final.png");
 	}
 	else {
 		for (int c_i = 0; c_i < 4; c_i++) {
@@ -693,9 +703,13 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& track_vertex_a
 			c = "track_image.png";
 			s += c;
 			track_output_vector[c_i].saveToFile(s);
+			s = std::to_string(c_i);
+			c = "0final.png";
+			s += c;
+			final_image_vector[c_i].saveToFile(s);
 		}
 	}
-	final_i.saveToFile("final.png");
+	
 	
 }
 void ImageProcessing::SaveUpScale(int grid_size, float scale)
