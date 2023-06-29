@@ -34,7 +34,7 @@ void ClearConsoleWin() {
 	SetConsoleCursorPosition(console, tl);
 }
 
-void ClearMeasurements(){
+void ClearMeasurements() {
 	measurements_.control_points_.clear();
 	measurements_.vec_angles.clear();
 	measurements_.vec_new_angles.clear();
@@ -42,15 +42,33 @@ void ClearMeasurements(){
 	measurements_.vec_segment_lengths.clear();
 	measurements_.vec_track_points.clear();
 	measurements_.vec_new_track_points.clear();
+	measurements_.vec_curve_points.clear();
 }
-void AddMeasurements(ShortestPath&s_p) {
+void AddMeasurements(ShortestPath& s_p) {
 	measurements_.control_points_.push_back(s_p.GetControlPoints());
 	measurements_.vec_new_angles.push_back(s_p.GetAngles());
 	measurements_.vec_number_of_turns.push_back(s_p.GetNumberOfTurns());
 	measurements_.vec_segment_lengths.push_back(s_p.GetLengths());
 	measurements_.vec_track_points.push_back(s_p.GetTrackPoints());
 }
+void WidthDecider(WidthCalculator& w_c, TrackTools& t_t, ShortestPath& s_p, VoronoiDiagram& v_d, ImageProcessing& i_p, CatmullRomSpline& c_r, 
+	std::vector<sf::VertexArray*>voronoi_diagrams,std::vector<sf::Vector2i> track_points) {
 
+	if (!is_chunking_) {
+		t_t.WidthSettings(w_c, s_p, v_d, i_p, *voronoi_diagrams[0], layers_, track_points, s_p.GetControlPoints(), 0);
+	}
+	else {
+		for (int i = 0; i < 4; i++) {
+			if (is_curved_){
+				t_t.WidthSettings(w_c, s_p, v_d, i_p, *voronoi_diagrams[i], layers_, measurements_.vec_curve_points[i], measurements_.control_points_[i], i);
+			}
+			else {
+				t_t.WidthSettings(w_c, s_p, v_d, i_p, *voronoi_diagrams[i], layers_, measurements_.vec_track_points[i], measurements_.control_points_[i], i);
+			}
+			measurements_.vec_new_track_points.push_back(w_c.GetNewTrack());
+		}
+	}
+}
 void Init(sf::RenderWindow& window) {
 	font.loadFromFile("DefaultAriel.ttf");
 	//text setting
@@ -239,12 +257,12 @@ int main() {
 			ImGui::SliderInt("Number of Peaks:", &peaks_to_count_, 1, 9);
 			ImGui::SliderInt("Octaves: ", &octaves_, 1, 8);
 			ImGui::SliderFloat("Frequency:,", &frequency_, 0.0, 1.0f);
-			if (ImGui::Button("Change alpha")){
-				if (!i_p.GetIsChunking()){
+			if (ImGui::Button("Change alpha")) {
+				if (!i_p.GetIsChunking()) {
 					i_p.ChangeAlpha(*noise_maps[0], v_d.GetGridSize(), alpha_);
 				}
 				else {
-					for (int i = 0; i < 4; i++){
+					for (int i = 0; i < 4; i++) {
 						i_p.ChangeAlpha(*noise_maps[i], v_d.GetGridSize(), alpha_);
 					}
 				}
@@ -297,20 +315,20 @@ int main() {
 				}
 			}
 			ImGui::Text("\n");
-			if (ImGui::Button("DeCastelJau")){
+			if (ImGui::Button("DeCastelJau")) {
 				s_p.OrderControlPoints();
 				d_c.CreateCurve(s_p.GetControlPoints(), v_d.GetGridSize(), *voronoi_diagrams[0]);				//draws curve
 			}
-			if (ImGui::Button("CatmullRom")){
+			if (ImGui::Button("CatmullRom")) {
 				s_p.OrderControlPoints();
 				bool looped = false;
-				if (track_type_ == 2){
+				if (track_type_ == 2) {
 					looped = true;
 				}
 				c_r.CreateCurve(s_p.GetControlPoints(), v_d.GetGridSize(), *voronoi_diagrams[0], looped);
 			}
-			if (ImGui::Button("Centripetal CatmullRom")){
-				if (!i_p.GetIsChunking())				{
+			if (ImGui::Button("Centripetal CatmullRom")) {
+				if (!i_p.GetIsChunking()) {
 					i_p.CreateImage(*voronoi_diagrams[0], v_d.GetGridSize());
 					bool looped = false;
 					if (track_type_ == 2) {
@@ -318,11 +336,11 @@ int main() {
 					}
 					c_r.CreateCurve(v_d.GetGridSize(), *voronoi_diagrams[0], s_p.GetControlPoints(), looped);
 					c_r.RemoveDuplicates();
-					i_p.DrawWidthTrack(*voronoi_diagrams[0], v_d.GetGridSize(), c_r.GetCurve(),0);
+					i_p.DrawWidthTrack(*voronoi_diagrams[0], v_d.GetGridSize(), c_r.GetCurve(), 0);
 					is_curved_ = true;
 				}
 				else {
-					for (int i = 0; i < 4; i++){
+					for (int i = 0; i < 4; i++) {
 						i_p.CreateImage(*voronoi_diagrams[i], v_d.GetGridSize());
 						bool looped = false;
 						if (track_type_ == 2) {
@@ -332,9 +350,11 @@ int main() {
 						c_r.RemoveDuplicates();
 						i_p.DrawWidthTrack(*voronoi_diagrams[i], v_d.GetGridSize(), c_r.GetCurve(), i);
 						is_curved_ = true;
+						measurements_.vec_curve_points.push_back(c_r.GetCurve());
 					}
-				}			}
-			if (ImGui::Button("Draw Control Points")){
+				}
+			}
+			if (ImGui::Button("Draw Control Points")) {
 				s_p.OrderControlPoints();
 				c_r.DrawControlPoints(s_p.GetControlPoints(), v_d.GetGridSize(), *voronoi_diagrams[0]);
 			}
@@ -439,32 +459,32 @@ int main() {
 			}
 			if (ImGui::Button("Write to file")) {
 				final_maps[0]->resize(v_d.GetGridSize() * v_d.GetGridSize());
-				i_p.CreateFinalHM(v_d.GetGridSize(), *final_maps[0], *final_maps[1], *final_maps[2], *final_maps[3],layers_);
+				i_p.CreateFinalHM(v_d.GetGridSize(), *final_maps[0], *final_maps[1], *final_maps[2], *final_maps[3], layers_);
 				i_p.WriteToFile(v_d.GetGridSize(), *voronoi_diagrams[0], *voronoi_diagrams[1], *voronoi_diagrams[2], *voronoi_diagrams[3], layers_);
 				s_p.WriteToFile();
 			}
 			if (ImGui::Button("Write Track Points")) {
-				if (!is_chunking_){
-					s_p.WriteTrackPoints(w_c.GetNewTrack(), is_curved_, is_widthed_,0,s_p.GetControlPoints(),s_p.GetTrackPoints());
+				if (!is_chunking_) {
+					s_p.WriteTrackPoints(w_c.GetNewTrack(), is_curved_, is_widthed_, 0, s_p.GetControlPoints(), s_p.GetTrackPoints());
 				}
 				else {
-					if (measurements_.vec_new_track_points.empty()){
-						for (int i = 0; i < 4; i++){
+					if (measurements_.vec_new_track_points.empty()) {
+						for (int i = 0; i < 4; i++) {
 							measurements_.vec_new_track_points.push_back(w_c.GetNewTrack());
 						}
 					}
-					for (int i = 0; i < 4; i++){
-						s_p.WriteTrackPoints(measurements_.vec_new_track_points[i], is_curved_, is_widthed_,i,measurements_.control_points_[i],measurements_.vec_track_points[i]);
+					for (int i = 0; i < 4; i++) {
+						s_p.WriteTrackPoints(measurements_.vec_new_track_points[i], is_curved_, is_widthed_, i, measurements_.control_points_[i], measurements_.vec_track_points[i]);
 					}
 				}
 			}
 			if (ImGui::Button("Write Curve Points")) {
-				s_p.WriteTrackPoints(c_r.GetCurve(), is_curved_, is_widthed_, 0, s_p.GetControlPoints(),s_p.GetTrackPoints());
+				s_p.WriteTrackPoints(c_r.GetCurve(), is_curved_, is_widthed_, 0, s_p.GetControlPoints(), s_p.GetTrackPoints());
 			}
 		}
 		ImGui::Text("\n");
-		if (ImGui::CollapsingHeader("Width Options")){
-			if (ImGui::CollapsingHeader("Options")){
+		if (ImGui::CollapsingHeader("Width Options")) {
+			if (ImGui::CollapsingHeader("Options")) {
 				ImGui::Checkbox("Flat?", &w_c.GetBoolFlat());
 				ImGui::Checkbox("Curved?", &w_c.GetBoolCurved());
 				ImGui::Checkbox("Length?", &w_c.GetBoolLength());
@@ -478,22 +498,14 @@ int main() {
 				ImGui::SliderInt("Max Width Value:", &w, 2, 10);
 				w_c.SetMaxWidth(w);
 			}
-			if (ImGui::Button("Create width")){
+			if (ImGui::Button("Create width")) {
 				is_widthed_ = true;
 				//curved code
-				if (w_c.GetBoolCurved()){
-					t_t.WidthSettings(w_c, s_p, v_d, i_p, *voronoi_diagrams[0], layers_, c_r.GetCurve(),s_p.GetControlPoints(),0);
+				if (w_c.GetBoolCurved()) {
+					WidthDecider(w_c, t_t, s_p, v_d, i_p, c_r, voronoi_diagrams, c_r.GetCurve());
 				}
-				else{
-					if (!is_chunking_){
-						t_t.WidthSettings(w_c, s_p, v_d, i_p, *voronoi_diagrams[0], layers_, s_p.GetTrackPoints(), s_p.GetControlPoints(),0);
-					}
-					else {
-						for (int i = 0; i < 4; i++){
-							t_t.WidthSettings(w_c, s_p, v_d, i_p, *voronoi_diagrams[i], layers_, measurements_.vec_track_points[i], measurements_.control_points_[i],i);
-							measurements_.vec_new_track_points.push_back(w_c.GetNewTrack());
-						}
-					}
+				else {
+					WidthDecider(w_c, t_t, s_p, v_d, i_p, c_r, voronoi_diagrams, s_p.GetTrackPoints());
 				}
 			}
 		}

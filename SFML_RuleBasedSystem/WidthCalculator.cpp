@@ -729,7 +729,9 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 							//skip
 						}
 						else{
-							CheckAngle(angles_[iter_control_points-1]);				//angle between control points
+							if (iter_control_points<=angles_.size()){
+								CheckAngle(angles_[iter_control_points - 1]);				//angle between control points
+							}
 						}
 					}
 				}
