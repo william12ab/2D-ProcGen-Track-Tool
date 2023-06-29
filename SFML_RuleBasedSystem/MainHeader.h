@@ -67,7 +67,7 @@ struct measurements_chunked {
 	std::vector<std::vector<int>> vec_new_angles;
 	std::vector<std::vector<int>> vec_segment_lengths;
 	std::vector<std::vector<sf::Vector2i>> vec_track_points;
-	
+	std::vector<std::vector<sf::Vector2i>> vec_new_track_points;
 }measurements_;
 
 struct render_condition {

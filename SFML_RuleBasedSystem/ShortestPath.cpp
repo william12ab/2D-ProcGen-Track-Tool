@@ -597,11 +597,12 @@ void ShortestPath::SegmentAngles(){
 	}
 }
 
-void ShortestPath::WriteTrackPoints(std::vector<sf::Vector2i>& track_, const bool& is_curved_, const bool& is_width_)
-{
+void ShortestPath::WriteTrackPoints(std::vector<sf::Vector2i>& track_, const bool& is_curved_, const bool& is_width_, const int& index_,const std::vector<sf::Vector2i>&control_points_p,const std::vector<sf::Vector2i>track_points_p){
+	std::string s = std::to_string(index_);
 	std::ofstream results_;
 	char const* c = "track_points.txt";
-	results_.open(c);
+	s += c;
+	results_.open(s);
 
 	if (is_curved_ || is_width_) {
 		results_ << "t.p\n";
@@ -611,8 +612,8 @@ void ShortestPath::WriteTrackPoints(std::vector<sf::Vector2i>& track_, const boo
 	}
 
 	if (track_.size() > 5) {
-		for (size_t i = 0; i < control_points.size(); i++) {
-			results_ << control_points[i].x << " " << control_points[i].y << "\n";
+		for (size_t i = 0; i < control_points_p.size(); i++) {
+			results_ << control_points_p[i].x << " " << control_points_p[i].y << "\n";
 		}
 		results_ << "end\n";
 		for (size_t i = 0; i < track_.size(); i++) {
@@ -620,19 +621,19 @@ void ShortestPath::WriteTrackPoints(std::vector<sf::Vector2i>& track_, const boo
 		}
 	}
 	else {
-		for (size_t i = 0; i < control_points.size(); i++) {
-			results_ << control_points[i].x << " " << control_points[i].y << "\n";
+		for (size_t i = 0; i < control_points_p.size(); i++) {
+			results_ << control_points_p[i].x << " " << control_points_p[i].y << "\n";
 		}
 		results_ << "end\n";
-		for (size_t i = 0; i < track_points.size(); i++) {
-			results_ << track_points[i].x << " " << track_points[i].y << "\n";
+		for (size_t i = 0; i < track_points_p.size(); i++) {
+			results_ << track_points_p[i].x << " " << track_points_p[i].y << "\n";
 		}
 	}
 	results_.close();
 }
 
-void ShortestPath::WriteToFile()
-{
+void ShortestPath::WriteToFile(){
+	
 	SegmentAngles();
 	std::ofstream results_;
 

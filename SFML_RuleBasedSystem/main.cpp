@@ -41,6 +41,7 @@ void ClearMeasurements(){
 	measurements_.vec_number_of_turns.clear();
 	measurements_.vec_segment_lengths.clear();
 	measurements_.vec_track_points.clear();
+	measurements_.vec_new_track_points.clear();
 }
 void AddMeasurements(ShortestPath&s_p) {
 	measurements_.control_points_.push_back(s_p.GetControlPoints());
@@ -443,10 +444,22 @@ int main() {
 				s_p.WriteToFile();
 			}
 			if (ImGui::Button("Write Track Points")) {
-				s_p.WriteTrackPoints(w_c.GetNewTrack(), is_curved_, is_widthed_);
+				if (!is_chunking_){
+					s_p.WriteTrackPoints(w_c.GetNewTrack(), is_curved_, is_widthed_,0,s_p.GetControlPoints(),s_p.GetTrackPoints());
+				}
+				else {
+					if (measurements_.vec_new_track_points.empty()){
+						for (int i = 0; i < 4; i++){
+							measurements_.vec_new_track_points.push_back(w_c.GetNewTrack());
+						}
+					}
+					for (int i = 0; i < 4; i++){
+						s_p.WriteTrackPoints(measurements_.vec_new_track_points[i], is_curved_, is_widthed_,i,measurements_.control_points_[i],measurements_.vec_track_points[i]);
+					}
+				}
 			}
 			if (ImGui::Button("Write Curve Points")) {
-				s_p.WriteTrackPoints(c_r.GetCurve(), is_curved_, is_widthed_);
+				s_p.WriteTrackPoints(c_r.GetCurve(), is_curved_, is_widthed_, 0, s_p.GetControlPoints(),s_p.GetTrackPoints());
 			}
 		}
 		ImGui::Text("\n");
@@ -478,6 +491,7 @@ int main() {
 					else {
 						for (int i = 0; i < 4; i++){
 							t_t.WidthSettings(w_c, s_p, v_d, i_p, *voronoi_diagrams[i], layers_, measurements_.vec_track_points[i], measurements_.control_points_[i],i);
+							measurements_.vec_new_track_points.push_back(w_c.GetNewTrack());
 						}
 					}
 				}
