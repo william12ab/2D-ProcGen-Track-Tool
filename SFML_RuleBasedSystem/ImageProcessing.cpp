@@ -1,6 +1,6 @@
 #include "ImageProcessing.h"
 #include <ppl.h>
-#include <SFML/Graphics/Image.hpp>
+
 using namespace concurrency;
 
 ImageProcessing::ImageProcessing() {
@@ -540,6 +540,36 @@ void ImageProcessing::CreateFinalHM(int grid_size, sf::VertexArray& vertexarray,
 		}
 	}
 }
+void ImageProcessing::FinalImageLoop(const int& i, const int&j, const int&grid_size, const int&layers_, const int&index_,sf::Image &return_val) {
+	int i_alpha_two = alpha_channel_[i * grid_size + j];				//int version of alpha
+	float i_alpha_percent = (float)i_alpha_two / 255.0f;				//alpha as value between 0.0 to 1.0
+	int i_c_one = int(distance_heightmaps_vector[index_][i * grid_size + j]);					//int value of c
+	int i_c_two = (noise_maps_vector[index_][i * grid_size + j] / layers_);					//int value of co
+	float i_c_t_a = (float)i_c_two / 255.0f;							//decimal value of co
+	float is = (float)i_c_one / 255.0f;									//decimal value of c
+	float alpha_percent_ = i_alpha_percent + 1.0f * (1.0f - i_alpha_percent);							//alpha_f = alpha_a + alpha_b(1-alpha_a)	(as a decimal value)
+	float final_color_p = (i_c_t_a * i_alpha_percent + is * 1.0f * (1.0f - i_alpha_percent)) / alpha_percent_;		//final_c = (colour_a*alpha_a + colour_b*alpha_b(1-alpha_a))/alpha_final		as a percent
+	//
+	if (final_color_p < 0.0f) {
+		final_color_p = 0.0;
+	}
+	if (final_color_p > 1.0f) {
+		final_color_p = 1.0;
+	}
+	//this is the premultiplied
+	float i_c_f_t = i_c_t_a + is * (1.0f - i_alpha_percent);
+	if (i_c_f_t > 1.0f) {
+		i_c_f_t = 1.0f;
+	}
+	int premultiplied_version_colour = i_c_f_t * 255;
+	int premultiplied_version_alpha = 255 * alpha_percent_;
+	int f_c = 255 * final_color_p;											//need to multiply it by 255 to get as rgb value out of 255 instead of decimal
+	int f_a = 255 * alpha_percent_;
+	sf::Uint8 final_c = f_c;
+	sf::Uint8 final_a = f_a;
+
+	return_val.setPixel(j, i, sf::Color{ final_c,final_c,final_c ,final_a });
+}
 
 void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& track_vertex_arr0, sf::VertexArray& track_vertex_arr1, sf::VertexArray& track_vertex_arr2, sf::VertexArray& track_vertex_arr3, int layers_) {
 	const int dimensions_ = grid_size;
@@ -595,7 +625,6 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& track_vertex_a
 		}
 	}
 
-	//parallel_for(0, dimensions_, [&](int i) {
 	for (int i = 0; i < dimensions_; i++) {
 		for (int j = 0; j < dimensions_; j++) {
 			sf::Uint8 co, co_1, co_2, co_3;
@@ -610,70 +639,24 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& track_vertex_a
 			noise_color.push_back(co_1);
 			noise_color.push_back(co_2);
 			noise_color.push_back(co_3);
+			sf::Uint8 a = alpha_channel_[i * grid_size + j];					//alpha colour value of noise
 			if (!is_chunking_) {
 				noise_color[0] = (noise_maps_vector[0][i * grid_size + j] / layers_);					//noise colour
 				distance_heightmap_color[0] = int(distance_heightmaps_vector[0][i * grid_size + j]);					//the voronoidiagram colour
+
+				noise_output_vector[0].setPixel(j, i, sf::Color{ noise_color[0] , noise_color[0] , noise_color[0],a });
+				voronoi_output_vector[0].setPixel(j, i, sf::Color{ distance_heightmap_color[0] , distance_heightmap_color[0] , distance_heightmap_color[0] });
+				track_output_vector[0].setPixel(j, i, sf::Color{ track_vertex_arr0[i * grid_size + j].color.r,track_vertex_arr0[i * grid_size + j].color.g,track_vertex_arr0[i * grid_size + j].color.b });
+				FinalImageLoop(i, j, grid_size, layers_, 0, final_image_vector[0]);
 			}
 			else {
 				for (int iterator_chunk = 0; iterator_chunk < 4; iterator_chunk++) {
 					noise_color[iterator_chunk] = (noise_maps_vector[iterator_chunk][i * grid_size + j] / layers_);					//noise colour
 					distance_heightmap_color[iterator_chunk] = int(distance_heightmaps_vector[iterator_chunk][i * grid_size + j]);					//the voronoidiagram colour
-				}
-			}
-			sf::Uint8 a = alpha_channel_[i * grid_size + j];					//alpha colour value of noise
 
-			int i_alpha_two = alpha_channel_[i * grid_size + j];				//int version of alpha
-			float i_alpha_percent = (float)i_alpha_two / 255.0f;				//alpha as value between 0.0 to 1.0
-			int i_c_one = int(distance_heightmaps_vector[0][i * grid_size + j]);					//int value of c
-			int i_c_two = (noise_maps_vector[0][i * grid_size + j] / layers_);					//int value of co
-
-
-			float i_c_t_a = (float)i_c_two / 255.0f;							//decimal value of co
-			float is = (float)i_c_one / 255.0f;									//decimal value of c
-
-			float alpha_percent_ = i_alpha_percent + 1.0f * (1.0f - i_alpha_percent);							//alpha_f = alpha_a + alpha_b(1-alpha_a)	(as a decimal value)
-			float final_color_p = (i_c_t_a * i_alpha_percent + is * 1.0f * (1.0f - i_alpha_percent)) / alpha_percent_;		//final_c = (colour_a*alpha_a + colour_b*alpha_b(1-alpha_a))/alpha_final		as a percent
-			//
-
-			if (final_color_p < 0.0f) {
-				final_color_p = 0.0;
-				//just to check if its out of bounds
-				//happens for some reason when j=0 to 512 and i = 512
-				//becuase of error in voronoi
-				//fix it
-			}
-			if (final_color_p > 1.0f) {
-				final_color_p = 1.0;
-			}
-
-			//this is the premultiplied
-			float i_c_f_t = i_c_t_a + is * (1.0f - i_alpha_percent);
-			if (i_c_f_t > 1.0f) {
-				i_c_f_t = 1.0f;
-			}
-
-			int premultiplied_version_colour = i_c_f_t * 255;
-			int premultiplied_version_alpha = 255 * alpha_percent_;
-
-			int f_c = 255 * final_color_p;											//need to multiply it by 255 to get as rgb value out of 255 instead of decimal
-			int f_a = 255 * alpha_percent_;
-
-			sf::Uint8 final_c = f_c;
-			sf::Uint8 final_a = f_a;
-
-
-			//setting the pixels of the output images
-			if (!is_chunking_) {
-				noise_output_vector[0].setPixel(j, i, sf::Color{ noise_color[0] , noise_color[0] , noise_color[0],a });
-				voronoi_output_vector[0].setPixel(j, i, sf::Color{ distance_heightmap_color[0] , distance_heightmap_color[0] , distance_heightmap_color[0] });
-				track_output_vector[0].setPixel(j, i, sf::Color{ track_vertex_arr0[i * grid_size + j].color.r,track_vertex_arr0[i * grid_size + j].color.g,track_vertex_arr0[i * grid_size + j].color.b });
-				final_image_vector[0].setPixel(j, i, sf::Color{ final_c,final_c,final_c ,final_a });
-			}
-			else {
-				for (int chunk_it = 0; chunk_it < 4; chunk_it++) {
-					noise_output_vector[chunk_it].setPixel(j, i, sf::Color{ noise_color[chunk_it] , noise_color[chunk_it] , noise_color[chunk_it],a });
-					voronoi_output_vector[chunk_it].setPixel(j, i, sf::Color{ distance_heightmap_color[chunk_it] , distance_heightmap_color[chunk_it] , distance_heightmap_color[chunk_it] });
-					final_image_vector[chunk_it].setPixel(j, i, sf::Color{ final_c,final_c,final_c ,final_a });
+					noise_output_vector[iterator_chunk].setPixel(j, i, sf::Color{ noise_color[iterator_chunk] , noise_color[iterator_chunk] , noise_color[iterator_chunk],a });
+					voronoi_output_vector[iterator_chunk].setPixel(j, i, sf::Color{ distance_heightmap_color[iterator_chunk] , distance_heightmap_color[iterator_chunk] , distance_heightmap_color[iterator_chunk] });
+					FinalImageLoop(i, j, grid_size, layers_, iterator_chunk, final_image_vector[iterator_chunk]);
 				}
 				track_output_vector[0].setPixel(j, i, sf::Color{ track_vertex_arr0[i * grid_size + j].color.r,track_vertex_arr0[i * grid_size + j].color.g,track_vertex_arr0[i * grid_size + j].color.b });
 				track_output_vector[1].setPixel(j, i, sf::Color{ track_vertex_arr1[i * grid_size + j].color.r,track_vertex_arr1[i * grid_size + j].color.g,track_vertex_arr1[i * grid_size + j].color.b });
@@ -683,7 +666,7 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& track_vertex_a
 		}
 		//});
 	}
-	if (!is_chunking_) {
+	if(!is_chunking_) {
 		noise_output_vector[0].saveToFile("0noise_layer.png");
 		voronoi_output_vector[0].saveToFile("0voronoi_layer.png");
 		track_output_vector[0].saveToFile("0track_image.png");
@@ -704,7 +687,7 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& track_vertex_a
 			s += c;
 			track_output_vector[c_i].saveToFile(s);
 			s = std::to_string(c_i);
-			c = "0final.png";
+			c = "final.png";
 			s += c;
 			final_image_vector[c_i].saveToFile(s);
 		}
