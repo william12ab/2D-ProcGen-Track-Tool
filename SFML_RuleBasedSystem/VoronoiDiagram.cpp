@@ -373,15 +373,13 @@ void VoronoiDiagram::PlacePoint(int x, int y, int i, bool& found_, const int& ch
 	}
 }
 
-void VoronoiDiagram::ThreePoints(const float values_[12], const int& chunk_index)
-{
+void VoronoiDiagram::ThreePoints(const float values_[12], const int& chunk_index){
 	int x_pos_one;
 	int x_pos_two;
 	int y_pos_one;
 	int y_pos_two;
 	SetPointModi(x_pos_one, x_pos_two, y_pos_one, y_pos_two, values_[0], values_[1], values_[2], values_[3]);
-	for (int i = 0; i < num_of_points; i++)
-	{
+	for (int i = 0; i < num_of_points; i++){
 		bool found = false;
 		int counter = 0;
 		while (!found)

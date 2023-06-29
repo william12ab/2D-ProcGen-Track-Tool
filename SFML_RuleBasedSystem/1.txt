@@ -1,38 +1,31 @@
-total length: 301
-number of turns: 6
-number of segments: 8
-shortest distance(euclidean distance): 399
+total length: 283
+number of turns: 5
+number of segments: 6
+shortest distance(euclidean distance): 285
 
-length 1: 0
-length 2: 25
-length 3: 34
-length 4: 130
-length 5: 37
-length 6: 20
-length 7: 9
-length 8: 62
+length 1: 7
+length 2: 23
+length 3: 88
+length 4: 15
+length 5: 120
+length 6: 42
 
-angle 1: 263
-angle 2: 188
-angle 3: 96
-angle 4: 196
-angle 5: 152
-angle 6: 220
+angle 1: 253
+angle 2: 211
+angle 3: 132
+angle 4: 239
+angle 5: 263
 
-angles for turn 1: 83
-angles for turn 2: 8
-angles for turn 3: 84
-angles for turn 4: 16
-angles for turn 5: 28
-angles for turn 6: 40
+angles for turn 1: 73
+angles for turn 2: 31
+angles for turn 3: 48
+angles for turn 4: 59
+angles for turn 5: 83
 
-Control-points 1: (5, 256)
-Control-points 2: (30, 258)
-Control-points 3: (64, 266)
-Control-points 4: (108, 143)
-Control-points 5: (130, 113)
-Control-points 6: (133, 93)
-Control-points 7: (140, 87)
-Control-points 8: (141, 25)
-Control-points 9: (0, 0)
-Control-points 10: (0, 0)
+Control-points 1: (67, 276)
+Control-points 2: (63, 270)
+Control-points 3: (78, 252)
+Control-points 4: (162, 223)
+Control-points 5: (168, 209)
+Control-points 6: (288, 194)
+Control-points 7: (298, 235)

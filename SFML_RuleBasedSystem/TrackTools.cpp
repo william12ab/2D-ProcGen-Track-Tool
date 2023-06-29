@@ -118,7 +118,13 @@ void TrackTools::GenerateTerrainMethod(VoronoiDiagram &v_d_p, sf::VertexArray& v
 	is_done_setup = true;
 	RangesDecider(chunk_index, init.x_min, init.x_max, init.y_min, init.y_max, v_d_p.GetGridSize());
 	i_p_p.DrawVoronoiNoise(vertex_array, v_d_p.GetGridSize(), v_d_p.GetNumberOfSites(), number_, v_d_p.GetGridDistance(chunk_index), chunk_index, init);
-	v_d_p.SetPoint(3, chunk_index);
+	if (is_chunk){
+		v_d_p.SetPoint(3, chunk_index);
+	}
+	else {
+		v_d_p.SetPoint(track_track_, chunk_index);
+	}
+	
 }
 
 void TrackTools::TerrainLoop(VoronoiDiagram &v_d_p,ShortestPath &s_p_p, sf::VertexArray&height_map,ImageProcessing&i_p_p, int number_, int track_type_, const int& index_){
