@@ -159,7 +159,7 @@ void ImageProcessing::DrawVoronoiNoise(sf::VertexArray& vertextarray, const int&
 		index_y += 1;
 	}
 }
-void ImageProcessing::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_, const float& frequency, const int& chunk_) {
+void ImageProcessing::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_, const float& frequency, const int& chunk_, const int& seed_) {
 	int start_x = 0;
 	int end_x = grid_size;
 	int start_y = 0;
@@ -193,7 +193,8 @@ void ImageProcessing::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int
 	const float scale = 100.0f / (float)grid_size;
 	float low_ = 0.01f;
 	float high_ = 0.020f;
-	float r3 = low_ + static_cast <float>(0.1f);//<float> (rand()) / (static_cast <float> (RAND_MAX / (high_ - low_)));				//the frequency of the noise between low and high
+	float r3 = low_ + static_cast <float>(0.1f);
+	// (rand()) / (static_cast <float> (RAND_MAX / (high_ - low_)));				//the frequency of the noise between low and high
 	float e2 = r3;
 
 	float min_ = INT_MAX;
@@ -209,7 +210,7 @@ void ImageProcessing::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int
 		for (int i = start_y; i < end_y; i++) {
 			x_iter = 0;
 			for (int j = start_x; j < end_x; j++) {
-				float height = (float)perlin_.noise(j, i, (r3 * scale)) * pHeightRange;
+				float height = (float)perlin_.noise(j+ seed_, i+ seed_, (r3 * scale)) * pHeightRange;
 				float new_value_ = (((height - (-1)) * new_range_) / old_range_) + 0;
 				height = 0.5f * (height + 1.0f);				//keeps the value between 0-1 instead of the -1 to 1 range it is in initially
 				int co = int(new_value_ * 255);						//geets as rgb value

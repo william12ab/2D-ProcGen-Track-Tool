@@ -1,5 +1,7 @@
 #include "SimplexNoise.h"
 #include <cstdint>
+#include <chrono>
+#include <random>
 
 //https://github.com/stegu/perlin-noise/blob/master/src/simplexnoise1234.c
 //https://mylearningspace.abertay.ac.uk/d2l/le/content/16924/viewContent/222818/View
@@ -24,16 +26,13 @@ static const uint8_t permuationTable[256] = {
 };
 
 
-static inline uint8_t hash(int32_t i)
-{
+static inline uint8_t hash(int32_t i){
 	return permuationTable[static_cast<uint8_t>(i)];
-
 }
 
 
 //compute gradient dot vectors 2d
-static float grad(int32_t hash, float x, float y)
-{
+static float grad(int32_t hash, float x, float y){
 	int32_t h = hash & 0x3F;
 	float u = h < 4 ? x : y;
 	float v = h < 4 ? y : x;
@@ -46,13 +45,22 @@ static float grad(int32_t hash, float x, float y)
 
 SimplexNoise::SimplexNoise()
 {
-
+	
 }
 
 
 SimplexNoise::~SimplexNoise()
 {
 }
+int SimplexNoise::ReturnSeed() {
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::default_random_engine generator(seed);
+	std::uniform_int_distribution<int> distribution(-5000, 5000);
+	int seed_to_return = distribution(generator);
+	return seed_to_return;
+}
+
+
 
 //2d noise
 float SimplexNoise::noise(float x, float y, float frequency)

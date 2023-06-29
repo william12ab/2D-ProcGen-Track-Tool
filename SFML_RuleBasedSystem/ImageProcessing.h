@@ -28,7 +28,7 @@ public:
 	void DrawTrack(sf::VertexArray& vertexarray, int grid_size, int num_sites, int* grid, const int& chunk_index, const ranges& limits_);									//draws the track
 	void DrawFullVoronoiDiagram(sf::VertexArray& vertexarray, int grid_size, int* grid, const int& chunk_index, const ranges&limits_);									//draws the voronoi diagram
 	void DrawVoronoiNoise(sf::VertexArray& vertextarray, const int& grid_size, const int& num_sites, const int& num_,int * const &grid_distance,const int& chunk_index, const ranges& init);				//draws the voronoi noise "worely noise" etc
-	void DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_, const float &frequency, const int& chunk_);									//draws the perlin noise
+	void DrawNoise(sf::VertexArray& vertexarray, int grid_size, int layers_, const float &frequency, const int& chunk_, const int&seed_);									//draws the perlin noise
 	void DrawFBM(sf::VertexArray& vertexarray, int grid_size, int octaves_, const float& frequency);									//draws the fbm
 	void DrawWidthTrack(sf::VertexArray& vertexarray, int grid_size, const std::vector<sf::Vector2i>& track, const int&chunk_index);
 	void CreateImage(sf::VertexArray& vertexarray, int grid_size);
@@ -52,6 +52,8 @@ public:
 	void SaveUpScale(int grid_sizez, float scale);																//saves a upscaled image- first version
 	void SaveUpScaledImage(int grid_sizez, sf::VertexArray& vertexarray, float scale);							//saves an upscaled image
 	void FinalImageLoop(const int& i, const int& j, const int& grid_size, const int& layers_, const int& index_,sf::Image &return_val);
+
+	
 private:
 	SimplexNoise perlin_;
 

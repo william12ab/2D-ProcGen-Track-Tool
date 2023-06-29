@@ -105,6 +105,7 @@ void Init(sf::RenderWindow& window) {
 	is_chunking_ = false;
 	struct_obj_render.render_diagram = false;
 	struct_obj_render.render_track = false;
+	noise_seed = 0;
 }
 
 int main() {
@@ -257,6 +258,12 @@ int main() {
 			ImGui::SliderInt("Number of Peaks:", &peaks_to_count_, 1, 9);
 			ImGui::SliderInt("Octaves: ", &octaves_, 1, 8);
 			ImGui::SliderFloat("Frequency:,", &frequency_, 0.0, 1.0f);
+			if (ImGui::Button("Generate Seed")){
+				SimplexNoise* temp = new SimplexNoise;
+				noise_seed = temp->ReturnSeed();
+				delete temp;
+			}
+			ImGui::Text("Seed: %i",noise_seed);
 			if (ImGui::Button("Change alpha")) {
 				if (!i_p.GetIsChunking()) {
 					i_p.ChangeAlpha(*noise_maps[0], v_d.GetGridSize(), alpha_);
@@ -270,7 +277,9 @@ int main() {
 			if (ImGui::Button("Create Noise Image")) {
 				if (!i_p.GetIsChunking()) {
 					t_t.ClearStructs(v_d, *voronoi_diagrams[0], *noise_maps[0], *distance_maps[0], i_p, track_type_, resolution_, sites_, points_);
-					i_p.DrawNoise(*noise_maps[0], v_d.GetGridSize(), layers_, frequency_, 0);
+					
+					i_p.DrawNoise(*noise_maps[0], v_d.GetGridSize(), layers_, frequency_, 0, noise_seed);
+					
 				}
 				else {
 					t_t.ClearStructs(v_d, *voronoi_diagrams[0], *noise_maps[0], *distance_maps[0], i_p, track_type_, resolution_, sites_, points_);
@@ -278,9 +287,8 @@ int main() {
 						noise_maps[i]->clear();
 						noise_maps[i]->resize(resolution_ * resolution_);
 					}
-
 					for (int i = 0; i < 4; i++) {
-						i_p.DrawNoise(*noise_maps[i], v_d.GetGridSize(), layers_, frequency_, i);
+						i_p.DrawNoise(*noise_maps[i], v_d.GetGridSize(), layers_, frequency_, i, noise_seed);
 					}
 				}
 			}

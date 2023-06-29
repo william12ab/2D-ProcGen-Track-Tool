@@ -60,6 +60,9 @@ float image_scale;
 float step_curve;
 float alpha_cm_;
 
+int noise_seed;
+
+
 struct measurements_chunked {
 	std::vector<std::vector<sf::Vector2i>>control_points_;//vector of a vector of vector2is, so... control_points_[i][j][xory]
 	std::vector<int> vec_number_of_turns;
