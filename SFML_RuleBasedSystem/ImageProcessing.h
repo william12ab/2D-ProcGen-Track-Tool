@@ -3,6 +3,7 @@
 #include "SimplexNoise.h"
 #include "VoronoiDiagram.h"
 #include "StructRanges.h"
+#include <fstream>
 #include <SFML/Graphics/Image.hpp>
 class ImageProcessing
 {
@@ -52,7 +53,7 @@ public:
 	void SaveUpScale(int grid_sizez, float scale);																//saves a upscaled image- first version
 	void SaveUpScaledImage(int grid_sizez, sf::VertexArray& vertexarray, float scale);							//saves an upscaled image
 	void FinalImageLoop(const int& i, const int& j, const int& grid_size, const int& layers_, const int& index_,sf::Image &return_val);
-
+	void WriteMetaFile();
 	
 private:
 	SimplexNoise perlin_;

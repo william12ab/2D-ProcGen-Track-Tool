@@ -693,8 +693,6 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& track_vertex_a
 			final_image_vector[c_i].saveToFile(s);
 		}
 	}
-	
-	
 }
 void ImageProcessing::SaveUpScale(int grid_size, float scale)
 {
@@ -831,4 +829,17 @@ void ImageProcessing::DrawWidthTrack(sf::VertexArray& vertexarray, int grid_size
 			vertexarray[y_it * grid_size + x_it].color = sf::Color::White;
 		}
 	}
+}
+
+void ImageProcessing::WriteMetaFile() {
+	std::ofstream meta_;
+	char const* c = "meta.txt";
+	meta_.open(c);
+	if (is_chunking_){
+		meta_ << "true";
+	}
+	else {
+		meta_ << "false";
+	}
+	meta_.close();
 }

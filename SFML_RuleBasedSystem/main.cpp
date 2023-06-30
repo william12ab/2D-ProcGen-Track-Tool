@@ -470,6 +470,7 @@ int main() {
 				i_p.CreateFinalHM(v_d.GetGridSize(), *final_maps[0], *final_maps[1], *final_maps[2], *final_maps[3], layers_);
 				i_p.WriteToFile(v_d.GetGridSize(), *voronoi_diagrams[0], *voronoi_diagrams[1], *voronoi_diagrams[2], *voronoi_diagrams[3], layers_);
 				s_p.WriteToFile();
+				i_p.WriteMetaFile();
 			}
 			if (ImGui::Button("Write Track Points")) {
 				if (!is_chunking_) {
