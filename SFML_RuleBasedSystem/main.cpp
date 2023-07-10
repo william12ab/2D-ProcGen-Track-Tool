@@ -482,6 +482,15 @@ int main() {
 							measurements_.vec_new_track_points.push_back(w_c.GetNewTrack());
 						}
 					}
+					auto temp = measurements_.vec_new_track_points[2];
+					measurements_.vec_new_track_points[3].swap(temp);//now 3 contains , temp contains 3
+					measurements_.vec_new_track_points[2].swap(temp);
+					auto temp_ = measurements_.vec_track_points[2];
+					measurements_.vec_track_points[3].swap(temp_);//now 3 contains , temp contains 3
+					measurements_.vec_track_points[2].swap(temp_);
+					auto temp_cp = measurements_.control_points_[2];
+					measurements_.control_points_[3].swap(temp_cp);
+					measurements_.control_points_[2].swap(temp_cp);
 					for (int i = 0; i < 4; i++) {
 						s_p.WriteTrackPoints(measurements_.vec_new_track_points[i], is_curved_, is_widthed_, i, measurements_.control_points_[i], measurements_.vec_track_points[i]);
 					}

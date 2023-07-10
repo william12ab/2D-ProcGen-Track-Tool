@@ -939,17 +939,17 @@ void VoronoiDiagram::DivideChunks() {
 	int local_grid_size = grid_size_x * 2;
 	for (size_t j = 0; j < local_grid_size; j++) {
 		for (int i = 0; i < local_grid_size; i++) {
-			if (i < 400 && j < 400) {
+			if (i < grid_size_x && j < grid_size_x) {
 				grid_vector[0][(j * grid_size_x) + i] = full_grid_chunking[(j * local_grid_size) + i];
 			}
-			else if (i >= 400 && j < 400) {
-				grid_vector[1][(j * grid_size_x) + (i - 400)] = full_grid_chunking[(j * local_grid_size) + i];
+			else if (i >= grid_size_x && j < grid_size_x) {
+				grid_vector[1][(j * grid_size_x) + (i - grid_size_x)] = full_grid_chunking[(j * local_grid_size) + i];
 			}
-			else if (i < 400 && j >= 400) {
-				grid_vector[2][((j - 400) * grid_size_x) + i] = full_grid_chunking[(j * local_grid_size) + i];
+			else if (i < grid_size_x && j >= grid_size_x) {
+				grid_vector[2][((j - grid_size_x) * grid_size_x) + i] = full_grid_chunking[(j * local_grid_size) + i];
 			}
-			else if (i >= 400 && j >= 400) {
-				grid_vector[3][((j - 400) * grid_size_x) + (i - 400)] = full_grid_chunking[(j * local_grid_size) + i];
+			else if (i >= grid_size_x && j >= grid_size_x) {
+				grid_vector[3][((j - grid_size_x) * grid_size_x) + (i - grid_size_x)] = full_grid_chunking[(j * local_grid_size) + i];
 			}
 		}
 	}
