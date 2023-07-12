@@ -277,9 +277,7 @@ int main() {
 			if (ImGui::Button("Create Noise Image")) {
 				if (!i_p.GetIsChunking()) {
 					t_t.ClearStructs(v_d, *voronoi_diagrams[0], *noise_maps[0], *distance_maps[0], i_p, track_type_, resolution_, sites_, points_);
-					
 					i_p.DrawNoise(*noise_maps[0], v_d.GetGridSize(), layers_, frequency_, 0, noise_seed);
-					
 				}
 				else {
 					t_t.ClearStructs(v_d, *voronoi_diagrams[0], *noise_maps[0], *distance_maps[0], i_p, track_type_, resolution_, sites_, points_);
