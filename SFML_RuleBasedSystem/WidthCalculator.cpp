@@ -704,8 +704,7 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 
 	int length_iter = 0;
 	
-	for (const sf::Vector2i& i : track_points)
-	{
+	for (const sf::Vector2i& i : track_points){
 		width_m.modi_left = 0.0f;
 		width_m.modi_right = 0.0f;
 		if (bool_obj.is_length_){
@@ -748,8 +747,14 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 				if (bool_obj.is_global_){
 					int avr = (track_max + track_min) / 2;	
 					CheckHeight(noise_grid, grid_size, i, avr);
-				}		
-				DefaultWidth(i, track_points.size(), count, iter_control_points);		//calcs the width
+				}	
+				if (count<5){
+					new_track.push_back(i);
+				}
+				else {
+					DefaultWidth(i, track_points.size(), count, iter_control_points);		//calcs the width
+				}
+				
 			}
 		}
 		count++;
