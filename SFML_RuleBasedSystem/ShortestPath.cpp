@@ -492,15 +492,15 @@ void ShortestPath::PhaseTwo(const int& grid_size, int* grid, int end_n){
 	//re orderers the vector to follow thje correct order - also fixes issue with multiple points.
 
 	std::reverse(temp_vec_c_p.begin(), temp_vec_c_p.end());
-	for (int i = 0; i < temp_vec_c_p.size(); i++)
-	{
+	for (int i = 0; i < temp_vec_c_p.size(); i++){
 		control_points.emplace_back(temp_vec_c_p[i]);
 	}
 	std::reverse(temp_vec_t_p.begin(), temp_vec_t_p.end());
-	for (int i = 0; i < temp_vec_t_p.size(); i++)
-	{
+	for (int i = 0; i < temp_vec_t_p.size(); i++){
 		track_points.emplace_back(temp_vec_t_p[i]);
 	}
+	std::reverse(line_positions.begin(), line_positions.end());
+	std::reverse(segment_lengths_.begin(), segment_lengths_.end());
 }
 
 void ShortestPath::ReOrderArrays() {
@@ -633,12 +633,9 @@ void ShortestPath::WriteTrackPoints(std::vector<sf::Vector2i>& track_, const boo
 }
 
 void ShortestPath::WriteToFile(){
-	
 	SegmentAngles();
 	std::ofstream results_;
-
 	std::string s = std::to_string(number);
-
 	char const* c = ".txt";
 	s += c;
 	char const* pchar = s.c_str();
@@ -651,23 +648,19 @@ void ShortestPath::WriteToFile(){
 	results_ << "number of segments: " << segment_lengths_.size() << "\n";
 	results_ << "shortest distance(euclidean distance): " << DistanceSqrt(start_p.x, start_p.y, end_p.x, end_p.y) << "\n";
 	results_ << "\n";
-	for (int i = 0; i < segment_lengths_.size(); i++)
-	{
+	for (int i = 0; i < segment_lengths_.size(); i++){
 		results_ << "length " << i + 1 << ": " << segment_lengths_[i] << "\n";
 	}
 	results_ << "\n";
-	for (int i = 0; i < angles_.size(); i++)
-	{
+	for (int i = 0; i < angles_.size(); i++){
 		results_ << "angle " << i + 1 << ": " << angles_[i] << "\n";
 	}
 	results_ << "\n";
-	for (int i = 0; i < angles_.size(); i++)
-	{
+	for (int i = 0; i < angles_.size(); i++){
 		results_ << "angles for turn " << i + 1 << ": " << new_angles_[i] << "\n";
 	}
 	results_ << "\n";
-	for (int i = 0; i < control_points.size(); i++)
-	{
+	for (int i = 0; i < control_points.size(); i++){
 		results_ << "Control-points " << i + 1 << ": (" << control_points[i].x << ", " << control_points[i].y << ")\n";
 	}
 	results_.close();
