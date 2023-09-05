@@ -401,6 +401,8 @@ void ShortestPath::FindCompassPoss(const int& compass, int* grid, const int& gri
 void ShortestPath::PhaseTwo(const int& grid_size, int* grid, int end_n){
 	std::vector<sf::Vector2i> temp_vec_c_p;
 	std::vector<sf::Vector2i> temp_vec_t_p;
+	std::vector<sf::Vector2i> temp_vec_line_points;
+	std::vector<int> temp_vec_segment_points;
 	bool found_start = false;
 	first_position.x = x_holder_;
 	first_position.y = y_holder_;
@@ -458,9 +460,9 @@ void ShortestPath::PhaseTwo(const int& grid_size, int* grid, int end_n){
 				if (*it.first != *it_old.first || *it.second != *it_old.second)						//checks if theres a difference hence a new cell.
 				{
 					number_of_turns++;
-					segment_lengths_.push_back(DistanceSqrt(first_position.x, first_position.y, x_holder_, y_holder_));			//finds length of segment
-					line_positions.emplace_back(first_position.x, first_position.y);											//pushes back first position of segment
-					line_positions.emplace_back(x_holder_, y_holder_);															//pushes second position
+					temp_vec_segment_points.emplace_back(DistanceSqrt(first_position.x, first_position.y, x_holder_, y_holder_));			//finds length of segment
+					temp_vec_line_points.emplace_back(first_position.x, first_position.y);											//pushes back first position of segment
+					temp_vec_line_points.emplace_back(x_holder_, y_holder_);															//pushes second position
 					temp_vec_c_p.emplace_back(x_holder_, y_holder_);															//current c.p
 					first_position.x = x_holder_;
 					first_position.y = y_holder_;
@@ -499,8 +501,14 @@ void ShortestPath::PhaseTwo(const int& grid_size, int* grid, int end_n){
 	for (int i = 0; i < temp_vec_t_p.size(); i++){
 		track_points.emplace_back(temp_vec_t_p[i]);
 	}
-	std::reverse(line_positions.begin(), line_positions.end());
-	std::reverse(segment_lengths_.begin(), segment_lengths_.end());
+	std::reverse(temp_vec_line_points.begin(), temp_vec_line_points.end());
+	for (int i = 0; i < temp_vec_line_points.size(); i++) {
+		line_positions.emplace_back(temp_vec_line_points[i]);
+	}
+	std::reverse(temp_vec_segment_points.begin(), temp_vec_segment_points.end());
+	for (int i = 0; i < temp_vec_segment_points.size(); i++) {
+		segment_lengths_.emplace_back(temp_vec_segment_points[i]);
+	}
 }
 
 void ShortestPath::ReOrderArrays() {
