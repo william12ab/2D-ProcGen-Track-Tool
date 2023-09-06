@@ -469,6 +469,7 @@ int main() {
 				i_p.WriteToFile(v_d.GetGridSize(), *voronoi_diagrams[0], *voronoi_diagrams[1], *voronoi_diagrams[2], *voronoi_diagrams[3], layers_);
 				s_p.WriteToFile();
 				i_p.WriteMetaFile();
+				t_t.WritePacenoteInfo(s_p, w_c, is_widthed_);
 			}
 			if (ImGui::Button("Write Track Points")) {
 				if (!is_chunking_) {
