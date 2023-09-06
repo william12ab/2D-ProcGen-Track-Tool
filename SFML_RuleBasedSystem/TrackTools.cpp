@@ -256,4 +256,7 @@ void TrackTools::WritePacenoteInfo(ShortestPath&s_p, WidthCalculator& w_c, const
 			results_ << w_c.GetWidthAcrossTrack()[i] << "\n";
 		}
 	}
+	else {
+		results_ << "non\n";
+	}
 }
