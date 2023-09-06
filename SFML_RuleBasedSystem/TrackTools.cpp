@@ -232,3 +232,28 @@ void TrackTools::HeightLoop(const int& chunk_iter,VoronoiDiagram& v_d, const int
 	v_d.SetStopL(false);
 	v_d.SetStopH(false);
 }
+
+void TrackTools::WritePacenoteInfo(ShortestPath&s_p, WidthCalculator& w_c, const bool& is_withd){
+	std::ofstream results_;
+	char const* c = "pacenote_info.txt";
+	results_.open(c);
+
+	results_ << "a\n";
+	for (int i = 0; i < s_p.GetAngles().size(); i++){
+		results_ << s_p.GetAngles()[i] << "\n";
+	}
+	results_ << "l\n";
+	for (int i = 0; i < s_p.GetLengths().size(); i++) {
+		results_ << s_p.GetLengths()[i] << "\n";
+	}
+	if (is_withd){
+		results_ << "inc\n";
+		for (size_t i = 0; i < w_c.GetCPIncline().size(); i++){
+			results_ << w_c.GetCPIncline()[i] << "\n";
+		}
+		results_ << "w\n";
+		for (size_t i = 0; i < w_c.GetWidthAcrossTrack().size(); i++){
+			results_ << w_c.GetWidthAcrossTrack()[i] << "\n";
+		}
+	}
+}

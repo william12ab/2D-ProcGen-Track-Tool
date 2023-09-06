@@ -28,6 +28,7 @@ public:
 	std::vector<int>& GetCPIncline() { return cp_inc_; }
 	std::vector<int>& GetPointIncline() { return point_inc_; }
 	std::vector<sf::Vector2i>& GetNewTrack() { return new_track; }
+	std::vector<int>& GetWidthAcrossTrack() { return width_across_track; }
 
 	bool& GetBoolAngles() { return bool_obj.is_angles_; }
 	bool& GetBoolCurved() { return bool_obj.is_curved_; }
@@ -105,7 +106,7 @@ private:
 	static std::vector<sf::Vector2f> normalised_opposite_direction;			//normalised direction (-1 to 1) of the opposite of the curent segment. so perpendicular direction,
 	static std::vector<sf::Vector2i> max_width_directions;					//the max direction for left and right. .X is LEFT. .Y is RIGHT.
 	static std::vector<sf::Vector2f> normailised_direction_;				//the normalised direction for the current segment
-
+	static std::vector<int> width_across_track;
 
 	static std::vector<float> t_values;				//stores t values
 	static std::vector<sf::Vector2i> new_track;		//stores the track]

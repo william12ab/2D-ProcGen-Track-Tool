@@ -516,12 +516,9 @@ void ShortestPath::ReOrderArrays() {
 	std::reverse(segment_lengths_.begin(), segment_lengths_.end());
 }
 
-void ShortestPath::SortControlPoints()
-{
-	for (int i = 0; i < control_points.size() - 1; i++)
-	{
-		if (control_points[i].x == control_points[i + 1].x && control_points[i].y == control_points[i + 1].y)
-		{
+void ShortestPath::SortControlPoints(){
+	for (int i = 0; i < control_points.size() - 1; i++){
+		if (control_points[i].x == control_points[i + 1].x && control_points[i].y == control_points[i + 1].y){
 			control_points.erase(control_points.begin() + i);
 		}
 	}

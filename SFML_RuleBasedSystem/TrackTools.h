@@ -29,6 +29,8 @@ public:
 	void HeightLoop(const int& chunk_iter,VoronoiDiagram& v_d, const int& peaks_to_count_, const int& layers_, ImageProcessing& i_p, const int& radius_cutoff, const int& number_, const int& track_type_, ShortestPath& s_p,sf::VertexArray& height_map);
 
 	void RangesDecider(const int& chunk_iter, int&x_min, int&x_max, int&y_min, int&y_max, const int& grid_size);
+
+	void WritePacenoteInfo(ShortestPath& s_p, WidthCalculator& w_c, const bool& is_withd);
 private:
 
 	bool is_chunk;

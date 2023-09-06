@@ -11,7 +11,7 @@ std::vector<sf::Vector2i> WidthCalculator::max_width_directions(1);
 std::vector<sf::Vector2i> WidthCalculator::new_track(1);
 std::vector<float> WidthCalculator::t_values(1);
 std::vector<sf::Vector2f> WidthCalculator::normailised_direction_(1);
-
+std::vector<int>WidthCalculator::width_across_track(1);
 
 WidthCalculator::WidthCalculator(){
 	image_max = 0;
@@ -90,6 +90,7 @@ void WidthCalculator::Clear(){
 	max_width_left = 0;
 	max_width_right = 0;
 	new_track.clear();
+	width_across_track.clear();
 }
 
 void WidthCalculator::FindMinMax(const int& layers_, int* const& noise_grid, const int& grid_size)
@@ -451,7 +452,7 @@ void WidthCalculator::DefaultWidth(const sf::Vector2i& track_point, const int& s
 	std::vector<sf::Vector2i> temp_vec;
 	WidthDirectionDecider(count_c_p, track_point, temp_vec);			//applies this to the correct places
 	std::cout << "Current Width: " << width_m.w_left<<" "<< width_m.w_right<<"\n";
-
+	width_across_track.push_back(width_m.w_left + width_m.w_right);
 	auto iterator_ = new_track.begin();
 	//find difference in size
 	int size_difference = new_track.size() - size_;
@@ -821,8 +822,5 @@ void WidthCalculator::RemoveDups()
 	for (auto it = new_track.begin(); it != end; ++it) {
 		end = std::remove(it + 1, end, *it);
 	}
-
 	new_track.erase(end, new_track.end());
-
-
 }
