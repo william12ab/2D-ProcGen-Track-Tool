@@ -242,6 +242,10 @@ void TrackTools::WritePacenoteInfo(ShortestPath&s_p, WidthCalculator& w_c, const
 	for (int i = 0; i < s_p.GetAngles().size(); i++){
 		results_ << s_p.GetAngles()[i] << "\n";
 	}
+	results_ << "d\n";
+	for (size_t i = 0; i < s_p.GetDirections().size(); i++){
+		results_ << s_p.GetDirections()[i] << "\n";
+	}
 	results_ << "l\n";
 	for (int i = 0; i < s_p.GetLengths().size(); i++) {
 		results_ << s_p.GetLengths()[i] << "\n";

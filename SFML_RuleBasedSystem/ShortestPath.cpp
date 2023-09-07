@@ -538,6 +538,31 @@ void ShortestPath::OrderControlPoints(){
 	}
 }
 
+sf::Vector2i lerp(sf::Vector2i p1, sf::Vector2i p2, float t) {
+	auto a = p2 - p1;
+	auto b = sf::Vector2i(a.x * t, a.y * t);
+	auto c = p1 + b;
+	return c;
+}
+void ShortestPath::LeftOrRight() {
+	for (size_t i = 1; i < control_points.size(); i++){
+		auto p1 = control_points[i];
+		auto p2 = lerp(control_points[i - 1], p1,2.f);
+		auto p3 = control_points[i+1];
+
+		float d = ((p3.x - p1.x)*(p2.y - p1.y)) - ((p3.y - p1.y)*(p2.x - p1.x));
+		if (d>0){
+			directions_.push_back(-1);
+		}
+		if (d<0){
+			directions_.push_back(1);
+		}
+		if (d==0){
+			directions_.push_back(0);
+		}
+	}
+}
+
 void ShortestPath::SegmentAngles(){
 	angles_.clear();
 	new_angles_.clear();
@@ -639,6 +664,7 @@ void ShortestPath::WriteTrackPoints(std::vector<sf::Vector2i>& track_, const boo
 
 void ShortestPath::WriteToFile(){
 	SegmentAngles();
+	LeftOrRight();
 	std::ofstream results_;
 	std::string s = std::to_string(number);
 	char const* c = ".txt";
