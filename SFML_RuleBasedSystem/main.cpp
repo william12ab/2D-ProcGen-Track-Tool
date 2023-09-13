@@ -469,6 +469,23 @@ int main() {
 				final_maps[0]->resize(v_d.GetGridSize() * v_d.GetGridSize());
 				i_p.CreateFinalHM(v_d.GetGridSize(), *final_maps[0], *final_maps[1], *final_maps[2], *final_maps[3], layers_);
 				i_p.WriteToFile(v_d.GetGridSize(), *voronoi_diagrams[0], *voronoi_diagrams[1], *voronoi_diagrams[2], *voronoi_diagrams[3], layers_);
+				if (v_d.GetNumberOfPoints()>=3){
+					int index_point = 1;
+					auto temp_controlpoints = s_p.GetControlPoints();
+					auto pointpos = v_d.GetPointPos();
+					for (size_t i = 0; i < temp_controlpoints.size(); i++){
+						if (index_point<(v_d.GetNumberOfPoints()-1)){
+							if (temp_controlpoints[i] == v_d.GetPointPos()[index_point]) {
+								auto it = temp_controlpoints.begin() + i;
+								temp_controlpoints.erase(it);
+								it = temp_controlpoints.begin() + i;
+								temp_controlpoints.erase(it);
+								index_point++;
+							}
+						}
+					}
+					s_p.SetControlPoints(temp_controlpoints);
+				}
 				s_p.WriteToFile();
 				i_p.WriteMetaFile();
 				t_t.WritePacenoteInfo(s_p, w_c, is_widthed_);

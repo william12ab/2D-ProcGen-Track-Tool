@@ -37,6 +37,7 @@ public:
 	bool GetStopH() const{ return stop_high_; }
 	bool GetStopL() const { return stop_low_; }
 	bool GetFailSP() const { return is_fail_sp; }
+	
 
 	std::vector<sf::Vector2i> GetPointPos() { return point_pos; }
 	//

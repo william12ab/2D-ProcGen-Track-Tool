@@ -370,6 +370,7 @@ void VoronoiDiagram::PlacePoint(int x, int y, int i, bool& found_, const int& ch
 		found_ = true;
 		grid_vector[chunk_index][(y * grid_size_x) + x] = 2000 + i;
 		point_pos.push_back(sf::Vector2i(x, y));
+		std::cout << "point loc: " << x << ", " << y << "\n";
 	}
 }
 
