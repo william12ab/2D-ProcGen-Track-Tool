@@ -340,9 +340,11 @@ int main() {
 					if (track_type_ == 2) {
 						looped = true;
 					}
+					auto temp_cp = s_p.GetControlPoints();
 					c_r.CreateCurve(v_d.GetGridSize(), *voronoi_diagrams[0], s_p.GetControlPoints(), looped);
 					c_r.RemoveDuplicates();
 					i_p.DrawWidthTrack(*voronoi_diagrams[0], v_d.GetGridSize(), c_r.GetCurve(), 0);
+					s_p.SetControlPoints(temp_cp);
 					is_curved_ = true;
 				}
 				else {
