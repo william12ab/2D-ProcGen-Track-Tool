@@ -716,6 +716,7 @@ void ShortestPath::WriteToFile(){
 		results_ << "angles for turn " << i + 1 << ": " << new_angles_[i] << "\n";
 	}
 	results_ << "\n";
+	
 	for (int i = 0; i < control_points.size(); i++){
 		results_ << "Control-points " << i + 1 << ": (" << control_points[i].x << ", " << control_points[i].y << ")\n";
 	}
