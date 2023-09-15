@@ -1,66 +1,68 @@
-total length: 551
-number of turns: 13
+total length: 571
+number of turns: 14
 number of segments: 15
-shortest distance(euclidean distance): 323
+shortest distance(euclidean distance): 301
 
-length 1: 56
-length 2: 1
-length 3: 44
-length 4: 6
-length 5: 89
-length 6: 31
-length 7: 88
-length 8: 48
-length 9: 7
-length 10: 1
-length 11: 85
-length 12: 20
-length 13: 33
-length 14: 61
-length 15: 14
+length 1: 77
+length 2: 50
+length 3: 38
+length 4: 31
+length 5: 2
+length 6: 27
+length 7: 60
+length 8: 2
+length 9: 21
+length 10: 6
+length 11: 46
+length 12: 25
+length 13: 89
+length 14: 95
+length 15: 58
 
-angle 1: 180
-angle 2: 100
-angle 3: 214
-angle 4: 165
-angle 5: 232
-angle 6: 239
-angle 7: 263
-angle 8: 262
-angle 9: 185
-angle 10: 115
-angle 11: 129
-angle 12: 234
-angle 13: 124
+angle 1: 205
+angle 2: 205
+angle 3: 139
+angle 4: 178
+angle 5: 145
+angle 6: 180
+angle 7: 146
+angle 8: 148
+angle 9: 237
+angle 10: 236
+angle 11: 171
+angle 12: 106
+angle 13: 249
+angle 14: 102
 
-angles for turn 1: 0
-angles for turn 2: 80
-angles for turn 3: 34
-angles for turn 4: 15
-angles for turn 5: 52
-angles for turn 6: 59
-angles for turn 7: 83
-angles for turn 8: 82
-angles for turn 9: 5
-angles for turn 10: 65
-angles for turn 11: 51
-angles for turn 12: 54
-angles for turn 13: 56
+angles for turn 1: 25
+angles for turn 2: 25
+angles for turn 3: 41
+angles for turn 4: 2
+angles for turn 5: 35
+angles for turn 6: 0
+angles for turn 7: 34
+angles for turn 8: 32
+angles for turn 9: 57
+angles for turn 10: 56
+angles for turn 11: 9
+angles for turn 12: 74
+angles for turn 13: 69
+angles for turn 14: 78
 
-Control-points 1: (58, 94)
-Control-points 2: (107, 123)
-Control-points 3: (108, 124)
-Control-points 4: (145, 99)
-Control-points 5: (151, 99)
-Control-points 6: (237, 76)
-Control-points 7: (262, 95)
-Control-points 8: (252, 183)
-Control-points 9: (252, 184)
-Control-points 10: (246, 232)
-Control-points 11: (252, 237)
-Control-points 12: (253, 238)
-Control-points 13: (334, 210)
-Control-points 14: (341, 191)
-Control-points 15: (373, 182)
-Control-points 16: (393, 124)
-Control-points 17: (380, 118)
+Control-points 1: (5, 130)
+Control-points 2: (76, 100)
+Control-points 3: (113, 135)
+Control-points 4: (127, 171)
+Control-points 5: (155, 186)
+Control-points 6: (157, 187)
+Control-points 7: (217, 180)
+Control-points 8: (219, 180)
+Control-points 9: (237, 169)
+Control-points 10: (243, 172)
+Control-points 11: (249, 218)
+Control-points 12: (256, 242)
+Control-points 13: (345, 244)
+Control-points 14: (302, 159)
+Control-points 15: (359, 144)
+Control-points 16: (370, 152)
+Control-points 17: (370, 152)

@@ -398,7 +398,8 @@ void ShortestPath::FindCompassPoss(const int& compass, int* grid, const int& gri
 
 //same here remove the north and all that
 //from phase one you use the x and y holder vars and count holder and end
-void ShortestPath::PhaseTwo(const int& grid_size, int* grid, int end_n){
+//num points is the number of points making up the track from shortest path, current point is the point you are finding 
+void ShortestPath::PhaseTwo(const int& grid_size, int* grid, int end_n, const int& num_points, const int& currernt_point, const sf::Vector2i& pointpos, const sf::Vector2i& prevpointpos){
 	std::vector<sf::Vector2i> temp_vec_c_p;
 	std::vector<sf::Vector2i> temp_vec_t_p;
 	std::vector<sf::Vector2i> temp_vec_line_points;
@@ -406,7 +407,10 @@ void ShortestPath::PhaseTwo(const int& grid_size, int* grid, int end_n){
 	bool found_start = false;
 	first_position.x = x_holder_;
 	first_position.y = y_holder_;
-	temp_vec_c_p.emplace_back(first_position.x, first_position.y);
+	if (currernt_point == (num_points-1) ) {//if at last point, add end point as one of control points,
+		temp_vec_c_p.emplace_back(first_position.x, first_position.y);
+	}
+	
 
 	while (!found_start && !end_){
 		int how_many = 0;						//checks for error
@@ -459,13 +463,19 @@ void ShortestPath::PhaseTwo(const int& grid_size, int* grid, int end_n){
 
 				if (*it.first != *it_old.first || *it.second != *it_old.second)						//checks if theres a difference hence a new cell.
 				{
-					number_of_turns++;
-					temp_vec_segment_points.emplace_back(DistanceSqrt(first_position.x, first_position.y, x_holder_, y_holder_));			//finds length of segment
-					temp_vec_line_points.emplace_back(first_position.x, first_position.y);											//pushes back first position of segment
-					temp_vec_line_points.emplace_back(x_holder_, y_holder_);															//pushes second position
-					temp_vec_c_p.emplace_back(x_holder_, y_holder_);															//current c.p
-					first_position.x = x_holder_;
-					first_position.y = y_holder_;
+						if (first_position== prevpointpos&&num_points>2&&currernt_point<(num_points-1)){
+							//dont add segment, line, but add cp
+						}
+						else {
+							number_of_turns++;
+							temp_vec_segment_points.emplace_back(DistanceSqrt(first_position.x, first_position.y, x_holder_, y_holder_));
+							temp_vec_line_points.emplace_back(first_position.x, first_position.y);											//pushes back first position of segment
+							temp_vec_line_points.emplace_back(x_holder_, y_holder_);															//pushes second position
+						}
+						temp_vec_c_p.emplace_back(x_holder_, y_holder_);															//current c.p
+						first_position.x = x_holder_;
+						first_position.y = y_holder_;
+
 				}
 				old_occurances.clear();										//clear the vectors so that when it comes to checking a new poosition theres nothjing there
 				occurances.clear();
@@ -479,11 +489,13 @@ void ShortestPath::PhaseTwo(const int& grid_size, int* grid, int end_n){
 			}
 		}
 
-		if (count_holder_ <= end_n){
-			segment_lengths_.push_back(DistanceSqrt(x_holder_, y_holder_, first_position.x, first_position.y));			//finds the length of the final segment 
-			line_positions.emplace_back(first_position.x, first_position.y);					//final segment coords
-			line_positions.emplace_back(x_holder_, y_holder_);									//last coord
-			temp_vec_c_p.emplace_back(x_holder_, y_holder_);						//last c.p
+		if (count_holder_ <= end_n){//if found the end
+			if (currernt_point == (0)) {
+				segment_lengths_.push_back(DistanceSqrt(x_holder_, y_holder_, first_position.x, first_position.y));			//finds the length of the final segment 
+				line_positions.emplace_back(first_position.x, first_position.y);					//final segment coords
+				line_positions.emplace_back(x_holder_, y_holder_);									//last coord
+				temp_vec_c_p.emplace_back(x_holder_, y_holder_);						//last c.p
+			}
 			temp_vec_t_p.push_back(sf::Vector2i(x_holder_, y_holder_));
 			number_of_segments = segment_lengths_.size();
 			found_start = true;
@@ -531,6 +543,17 @@ void ShortestPath::ScaleControlPoints(float scale){
 	}
 }
 
+void ShortestPath::FixLengthsAndLinePos() {
+	line_positions.clear();
+	segment_lengths_.clear();
+	for (size_t i = 0; i < (control_points.size()-1); i++){
+		line_positions.push_back(control_points[i]);
+		line_positions.push_back(control_points[i+1]);
+		segment_lengths_.push_back(DistanceSqrt(control_points[i].x, control_points[i].y, control_points[i + 1].x, control_points[i + 1].y));
+	}
+	number_of_segments = segment_lengths_.size();
+	number_of_turns = number_of_segments - 1;
+}
 
 void ShortestPath::OrderControlPoints(){
 	for (int i = 0; i < control_points.size(); i++){
@@ -571,7 +594,7 @@ void ShortestPath::SegmentAngles(){
 	//theta  = inverse tan((m2-m1)/(1+m2*m1)) where m1=(y2-y1)/(x2-x1), m2=(y4-y3)/(x4-x3) where x2,y2==x3,y3
 	//for each turn?
 	int line_iterator = 0;
-	for (int i = 0; i < number_of_turns; i++){
+	for (int i = 0; i < (segment_lengths_.size()-1); i++){
 		float m1 = 0;				//gradient
 		float m2 = 0;				//gradient
 		float y1, y2, y3, y4;
@@ -665,7 +688,6 @@ void ShortestPath::WriteTrackPoints(std::vector<sf::Vector2i>& track_, const boo
 }
 
 void ShortestPath::WriteToFile(){
-	
 	SegmentAngles();
 	LeftOrRight();
 	std::ofstream results_;

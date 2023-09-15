@@ -12,7 +12,7 @@ public:
 	ShortestPath();
 	void Initgrid(const int &grid_size, int*grid, const int &num_points);																				//inits the grid to the correct numbers
 	void PhaseOne(const int &grid_size, int *grid, int end_n, int start_p, int end_p);	//finds the distances between start and end
-	void PhaseTwo(const int &grid_size, int *grid, int end_n);							//finds a pathway between start and end
+	void PhaseTwo(const int &grid_size, int *grid, int end_n,const int&num_points, const int&currernt_point, const sf::Vector2i& pointpos, const sf::Vector2i& prevpointpos);							//finds a pathway between start and end
 
 	void CleanGrid(const int &grid_size, int* grid);																							//removes numbers found by phase 1
 	void ChangePoint(const int &grid_size, int* grid, int point, int new_point);																//changes the point passed in
@@ -44,6 +44,7 @@ public:
 	void SetTesting(bool f) { do_testing_ = f; }
 
 	void SortControlPoints();
+	void FixLengthsAndLinePos();
 
 	int DistanceSqrt(int x, int y, int x2, int y2);
 	void SegmentAngles();
