@@ -452,7 +452,7 @@ void WidthCalculator::DefaultWidth(const sf::Vector2i& track_point, const int& s
 	std::vector<sf::Vector2i> temp_vec;
 	WidthDirectionDecider(count_c_p, track_point, temp_vec);			//applies this to the correct places
 	std::cout << "Current Width: " << width_m.w_left<<" "<< width_m.w_right<<"\n";
-	width_across_track.push_back(width_m.w_left + width_m.w_right);
+
 	auto iterator_ = new_track.begin();
 	//find difference in size
 	int size_difference = new_track.size() - size_;
@@ -751,6 +751,7 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 				}	
 				if (count<5){
 					new_track.push_back(i);
+					
 				}
 				else {
 					DefaultWidth(i, track_points.size(), count, iter_control_points);		//calcs the width
@@ -759,6 +760,7 @@ void WidthCalculator::TrackLoop(const std::vector<sf::Vector2i>& track_points, c
 			}
 		}
 		count++;
+		width_across_track.push_back(width_m.w_left + width_m.w_right);
 	}
 }
 
