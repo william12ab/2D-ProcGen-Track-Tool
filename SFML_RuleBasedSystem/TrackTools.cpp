@@ -260,9 +260,6 @@ void TrackTools::WritePacenoteInfo(ShortestPath&s_p, WidthCalculator& w_c, const
 			results_ << w_c.GetWidthAcrossTrack()[i] << "\n";
 		}
 		results_ << "c\n";
-		int sizetp = s_p.GetTrackPoints().size();
-		int sizewt = w_c.GetWidthAcrossTrack().size();
-		auto asd= w_c.GetWidthAcrossTrack();
 		for (size_t i = 0; i < s_p.GetTrackPoints().size(); i++) {
 			for (size_t j = 0; j < s_p.GetControlPoints().size(); j++) {
 				if (s_p.GetControlPoints()[j] == s_p.GetTrackPoints()[i]) {

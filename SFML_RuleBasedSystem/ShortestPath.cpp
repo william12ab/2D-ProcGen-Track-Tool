@@ -570,21 +570,66 @@ sf::Vector2i lerp(sf::Vector2i p1, sf::Vector2i p2, float t) {
 void ShortestPath::LeftOrRight() {
 	for (size_t i = 1; i < control_points.size(); i++){
 		if (i + 1 < control_points.size()) {
-			auto p1 = control_points[i];
-			auto p2 = lerp(control_points[i - 1], p1, 2.f);
-			auto p3 = control_points[i + 1];
+			auto p1 = control_points[i];//current point
+			auto p2 = lerp(control_points[i - 1], p1, 2.f);//striaght line ahead of current point
+			auto p3 = control_points[i + 1];//next point, point to see if left or right
 
-			float d = ((p3.x - p1.x) * (p2.y - p1.y)) - ((p3.y - p1.y) * (p2.x - p1.x));
+			//d = (x-x1)(y2-y1)-(y-y1)(x2-x1) where (x,y) is point youre identifying, (x1,y1) p1, (x2,y2)p2
+			float d = ((p3.x - p1.x) * (p2.y - p1.y)) - ((p3.y - p1.y) * (p2.x - p1.x));//tells you if its left or right
 			if (d > 0) {
-				directions_.push_back(-1);
+				directions_.push_back(-1);//is left
 			}
 			if (d < 0) {
-				directions_.push_back(1);
+				directions_.push_back(1);//is right
 			}
 			if (d == 0) {
-				directions_.push_back(0);
+				directions_.push_back(0);//on point
 			}
 		}
+	}
+}
+
+void ShortestPath::PerpendicularLeftOrRight() {
+	std::vector<int> oppo_;
+	for (size_t i = 1; i < control_points.size(); i++){
+		if (i + 1 < control_points.size()) {
+			auto p1 = control_points[i - 1];//previous point, not used in equations, just there to work out p4,5
+			auto p2 = control_points[i];//current point
+			auto p3 = lerp(p1, p2, 2.f);//striaght line ahead of current point
+			auto p6 = control_points[i + 1];//next/point to see
+
+			float d_first_line = ((p6.x - p2.x) * (p3.y - p2.y)) - ((p6.y - p2.y) * (p3.x - p2.x));
+
+			//slope of current cp and lerped cp
+			float top = (p3.y - p2.y);
+			float bot = (p3.x - p2.x);
+			float m1 = (top / bot);
+			float negative_reciprocal = (-1.f / m1);
+
+			//x1,y1 =p2?
+			//y-y1 = m(x-x1)
+			//y=m(-x1)+y1
+			int y = negative_reciprocal *(-p2.x) + p2.y;
+			int x = 0;
+			sf::Vector2i perpendicular_point = sf::Vector2i(x, y);
+			auto new_perp = lerp(perpendicular_point, p2, 0.8f);
+			float d_perpendicular_line = ((p6.x - p2.x) * (perpendicular_point.y - p2.y)) - ((p6.y - p2.y) * (perpendicular_point.x - p2.x));
+			if (d_perpendicular_line>0){
+				int hte = 123;
+				int index_happened = i;
+	
+			}
+			if (d_perpendicular_line<0)
+			{
+				int test = 1;
+				//if negative actually the case
+				oppo_.push_back(i);
+			}
+			
+		}
+	}
+	for (size_t i = 0; i < oppo_.size(); i++){
+		std::cout << oppo_[i] << "\n";
 	}
 }
 
