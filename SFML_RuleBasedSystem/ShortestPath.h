@@ -52,7 +52,7 @@ public:
 	void PerpendicularLeftOrRight();
 	void WriteToFile();
 	void WriteTrackPoints(std::vector<sf::Vector2i>& track_, const bool& is_curved_, const bool& is_width_, const int& index_, const std::vector<sf::Vector2i>& control_points_p, const std::vector<sf::Vector2i>track_points_p);
-
+	void FindTriangleAngles();
 
 	void OrderControlPoints();
 	void ScaleControlPoints(float scale);

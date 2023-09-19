@@ -487,7 +487,6 @@ int main() {
 				temp_controlpoints.emplace(temp_controlpoints.end(), pointpos[v_d.GetNumberOfPoints() - 1]);//above removes bad controol points
 				s_p.SetControlPoints(temp_controlpoints);
 				s_p.FixLengthsAndLinePos();
-				s_p.PerpendicularLeftOrRight();
 				s_p.WriteToFile();
 				i_p.WriteMetaFile();
 				t_t.WritePacenoteInfo(s_p, w_c, is_widthed_);

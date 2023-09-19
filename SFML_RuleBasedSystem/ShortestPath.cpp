@@ -589,48 +589,25 @@ void ShortestPath::LeftOrRight() {
 	}
 }
 
-void ShortestPath::PerpendicularLeftOrRight() {
-	std::vector<int> oppo_;
+void ShortestPath::FindTriangleAngles() {
+	new_angles_.clear();
 	for (size_t i = 1; i < control_points.size(); i++){
 		if (i + 1 < control_points.size()) {
-			auto p1 = control_points[i - 1];//previous point, not used in equations, just there to work out p4,5
-			auto p2 = control_points[i];//current point
-			auto p3 = lerp(p1, p2, 2.f);//striaght line ahead of current point
-			auto p6 = control_points[i + 1];//next/point to see
-
-			float d_first_line = ((p6.x - p2.x) * (p3.y - p2.y)) - ((p6.y - p2.y) * (p3.x - p2.x));
-
-			//slope of current cp and lerped cp
-			float top = (p3.y - p2.y);
-			float bot = (p3.x - p2.x);
-			float m1 = (top / bot);
-			float negative_reciprocal = (-1.f / m1);
-
-			//x1,y1 =p2?
-			//y-y1 = m(x-x1)
-			//y=m(-x1)+y1
-			int y = negative_reciprocal *(-p2.x) + p2.y;
-			int x = 0;
-			sf::Vector2i perpendicular_point = sf::Vector2i(x, y);
-			auto new_perp = lerp(perpendicular_point, p2, 0.8f);
-			float d_perpendicular_line = ((p6.x - p2.x) * (perpendicular_point.y - p2.y)) - ((p6.y - p2.y) * (perpendicular_point.x - p2.x));
-			if (d_perpendicular_line>0){
-				int hte = 123;
-				int index_happened = i;
-	
-			}
-			if (d_perpendicular_line<0)
-			{
-				int test = 1;
-				//if negative actually the case
-				oppo_.push_back(i);
-			}
+			auto length_a = segment_lengths_[i - 1];
+			auto length_b = segment_lengths_[i];
+			int length_c = DistanceSqrt(control_points[i - 1].x, control_points[i - 1].y, control_points[i + 1].x, control_points[i + 1].y);
 			
+			if ((length_a+length_b)<length_c){
+				length_c = (length_a + length_b) - 1;
+			}
+			float top = ((length_a * length_a) + (length_b * length_b) - (length_c * length_c));
+			float bot = (2.f * length_a * length_b);
+			float angle_c = acosf(top / bot);
+			angle_c *= (180.0f / 3.14159f);
+			new_angles_.push_back(angle_c);
 		}
 	}
-	for (size_t i = 0; i < oppo_.size(); i++){
-		std::cout << oppo_[i] << "\n";
-	}
+	int h = 1;
 }
 
 void ShortestPath::SegmentAngles(){
@@ -652,34 +629,25 @@ void ShortestPath::SegmentAngles(){
 		x2 = line_positions[line_iterator + 1].x;
 		x3 = x2;
 		x4 = line_positions[line_iterator + 3].x;
-
-
-		if ((y2 - y1) == 0 || (x2 - x1) == 0)								//if the result of y2-1 or x2-x1 is going to be 0 - set the gradient(m1) to 0 because you cant divide by 0
-		{
+		if ((y2 - y1) == 0 || (x2 - x1) == 0)				{
 			m1 = 0;
-			if ((y4 - y3) == 0 || (x4 - x3) == 0)					//check if m2 is going to be 0 and set to 0
-			{
+			if ((y4 - y3) == 0 || (x4 - x3) == 0)				{
 				m2 = 0;
 			}
-			else
-			{
+			else	{
 				m2 = (y4 - y3) / (x4 - x3);							//or just calculate the m normally
 			}
 		}
-		else if ((y4 - y3) == 0 || (x4 - x3) == 0)					//same here
-		{
+		else if ((y4 - y3) == 0 || (x4 - x3) == 0){
 			m2 = 0;
-			if ((y2 - y1) == 0 || (x2 - x1) == 0)
-			{
+			if ((y2 - y1) == 0 || (x2 - x1) == 0){
 				m1 = 0;
 			}
-			else
-			{
+			else{
 				m1 = (y2 - y1) / (x2 - x1);
 			}
 		}
-		else
-		{
+		else{
 			m1 = (y2 - y1) / (x2 - x1);								//or calculat normally		
 			m2 = (y4 - y3) / (x4 - x3);
 		}
@@ -692,7 +660,7 @@ void ShortestPath::SegmentAngles(){
 		if (final_angle < 0){
 			final_angle *= -1;
 		}
-		new_angles_.push_back(final_angle);
+		angles_[i]=(final_angle);
 		line_iterator += 2;			//go to next set of lines
 	}
 }
@@ -734,6 +702,7 @@ void ShortestPath::WriteTrackPoints(std::vector<sf::Vector2i>& track_, const boo
 
 void ShortestPath::WriteToFile(){
 	SegmentAngles();
+	FindTriangleAngles();
 	LeftOrRight();
 	std::ofstream results_;
 	std::string s = std::to_string(number);
@@ -754,10 +723,10 @@ void ShortestPath::WriteToFile(){
 	}
 	results_ << "\n";
 	for (int i = 0; i < angles_.size(); i++){
-		results_ << "angle " << i + 1 << ": " << angles_[i] << "\n";
+		results_ << "old " << i + 1 << ": " << angles_[i] << "\n";
 	}
 	results_ << "\n";
-	for (int i = 0; i < angles_.size(); i++){
+	for (int i = 0; i < new_angles_.size(); i++){
 		results_ << "angles for turn " << i + 1 << ": " << new_angles_[i] << "\n";
 	}
 	results_ << "\n";

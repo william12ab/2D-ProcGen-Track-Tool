@@ -78,6 +78,7 @@ void TrackTools::CreateTrack(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, const i
 	}
 	else{
 		for (int i = 0; i < (v_d_p.GetNumberOfPoints() - 1) && !s_p_p.GetFailed(); i++){
+			auto test = v_d_p.GetPointPos();
 			s_p_p.PhaseOne(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), -3, 0, v_d_p.GetGridSize());
 			s_p_p.PhaseTwo(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), 0, v_d_p.GetNumberOfPoints(), i, v_d_p.GetPointPos()[i], v_d_p.GetPointPos()[i+1]);
 			//changes start point first then the end point to start point, and second end point to 1st end point
