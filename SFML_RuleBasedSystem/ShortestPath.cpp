@@ -334,7 +334,7 @@ void ShortestPath::CleanGrid(const int& grid_size, int* grid){
 		});
 }
 
-int ShortestPath::DistanceSqrt(int x, int y, int x2, int y2)
+float ShortestPath::DistanceSqrt(int x, int y, int x2, int y2)
 {
 	int xd = x2 - x;
 	int yd = y2 - y;
@@ -463,19 +463,18 @@ void ShortestPath::PhaseTwo(const int& grid_size, int* grid, int end_n, const in
 
 				if (*it.first != *it_old.first || *it.second != *it_old.second)						//checks if theres a difference hence a new cell.
 				{
-						if (first_position== prevpointpos&&num_points>2&&currernt_point<(num_points-1)){
+					if (first_position== prevpointpos&&num_points>2&&currernt_point<(num_points-1)){
 							//dont add segment, line, but add cp
-						}
-						else {
-							number_of_turns++;
-							temp_vec_segment_points.emplace_back(DistanceSqrt(first_position.x, first_position.y, x_holder_, y_holder_));
-							temp_vec_line_points.emplace_back(first_position.x, first_position.y);											//pushes back first position of segment
-							temp_vec_line_points.emplace_back(x_holder_, y_holder_);															//pushes second position
-						}
-						temp_vec_c_p.emplace_back(x_holder_, y_holder_);															//current c.p
-						first_position.x = x_holder_;
-						first_position.y = y_holder_;
-
+					}
+					else {
+						number_of_turns++;
+						temp_vec_segment_points.emplace_back(DistanceSqrt(first_position.x, first_position.y, x_holder_, y_holder_));
+						temp_vec_line_points.emplace_back(first_position.x, first_position.y);											//pushes back first position of segment
+						temp_vec_line_points.emplace_back(x_holder_, y_holder_);															//pushes second position
+					}
+					temp_vec_c_p.emplace_back(x_holder_, y_holder_);															//current c.p
+					first_position.x = x_holder_;
+					first_position.y = y_holder_;
 				}
 				old_occurances.clear();										//clear the vectors so that when it comes to checking a new poosition theres nothjing there
 				occurances.clear();
@@ -595,7 +594,7 @@ void ShortestPath::FindTriangleAngles() {
 		if (i + 1 < control_points.size()) {
 			auto length_a = segment_lengths_[i - 1];
 			auto length_b = segment_lengths_[i];
-			int length_c = DistanceSqrt(control_points[i - 1].x, control_points[i - 1].y, control_points[i + 1].x, control_points[i + 1].y);
+			float length_c = DistanceSqrt(control_points[i - 1].x, control_points[i - 1].y, control_points[i + 1].x, control_points[i + 1].y);
 			
 			if ((length_a+length_b)<length_c){
 				length_c = (length_a + length_b) - 1;
@@ -743,4 +742,12 @@ void ShortestPath::SetOldToNew(int* grid, const int& grid_size) {
 			grid[(i * grid_size) + j] = old_num[(i * grid_size) + j];
 		}
 	}
+}
+
+std::vector<int> ShortestPath::GetLengths() {
+	std::vector<int> vec;
+	for (size_t i = 0; i < segment_lengths_.size(); i++){
+		vec.push_back(round(segment_lengths_[i]));
+	}
+	return vec;
 }

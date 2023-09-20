@@ -35,7 +35,7 @@ public:
 	std::vector<sf::Vector2i> GetControlPoints() { return control_points; }
 	std::vector<sf::Vector2i> &GetTrackPoints() { return track_points; }
 	std::vector<int> GetAngles() { return new_angles_;}
-	std::vector<int> GetLengths() { return segment_lengths_; }
+	std::vector<int> GetLengths();
 	std::vector<int> GetDirections() { return directions_; }
 
 	void SetControlPoints(std::vector<sf::Vector2i> temp_) { control_points = temp_; }
@@ -46,10 +46,9 @@ public:
 	void SortControlPoints();
 	void FixLengthsAndLinePos();
 
-	int DistanceSqrt(int x, int y, int x2, int y2);
+	float DistanceSqrt(int x, int y, int x2, int y2);
 	void SegmentAngles();
 	void LeftOrRight();
-	void PerpendicularLeftOrRight();
 	void WriteToFile();
 	void WriteTrackPoints(std::vector<sf::Vector2i>& track_, const bool& is_curved_, const bool& is_width_, const int& index_, const std::vector<sf::Vector2i>& control_points_p, const std::vector<sf::Vector2i>track_points_p);
 	void FindTriangleAngles();
@@ -93,7 +92,7 @@ private:
 	std::vector<int> occurances;			//used
 	std::vector<int> old_occurances;		//used
 	sf::Vector2i first_position;			//used		takes first position in track
-	std::vector<int> segment_lengths_;		//used
+	std::vector<float> segment_lengths_;		//used
 	std::vector<int> angles_;				//used
 	std::vector<int> new_angles_;
 	std::vector<int> directions_;		//used, -1 for right 1, left
