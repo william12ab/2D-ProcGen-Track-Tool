@@ -63,7 +63,7 @@ int reso_;
 int noise_seed;
 
 int points_min;
-
+bool is_points_changed;
 
 struct measurements_chunked {
 	std::vector<std::vector<sf::Vector2i>>control_points_;//vector of a vector of vector2is, so... control_points_[i][j][xory]

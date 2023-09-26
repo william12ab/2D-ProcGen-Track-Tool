@@ -448,7 +448,7 @@ void VoronoiDiagram::SetPoint(int type, const int& chunk_index) {
 }
 
 void VoronoiDiagram::SetSitesForLarge(std::default_random_engine gen_, std::uniform_int_distribution<int> dist_) {
-	std::uniform_int_distribution<int> distribution((400), (int)(400));
+	std::uniform_int_distribution<int> distribution((0), (int)(400));
 	int iter = grid_size_x / num_of_points;//200
 	iter -= (iter) / 2;//100
 	int start = 1;
@@ -476,8 +476,8 @@ void VoronoiDiagram::SetSitesForLarge(std::default_random_engine gen_, std::unif
 				y += 400;
 			}
 			else {
-				int x = rand() % iter + start;
-				int y = dist_(gen_);
+				 x = rand() % iter + start;
+				 y = dist_(gen_);
 			}
 			
 			PlacePoint(x, y, i, found, 0);//if point generated lies on grid, add to points vector, change grid array to point position, found = true;

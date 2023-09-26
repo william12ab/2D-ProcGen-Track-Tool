@@ -107,6 +107,7 @@ void Init(sf::RenderWindow& window) {
 	struct_obj_render.render_track = false;
 	noise_seed = 0;
 	points_min = 2;
+	is_points_changed = false;
 }
 
 int main() {
@@ -239,11 +240,15 @@ int main() {
 			if (reso_==1){
 				resolution_ = 400;
 				points_min = 2;
+				is_points_changed = false;
 			}
 			else {
 				resolution_ = 800;
 				points_min = 4;
-				points_ = 4;
+				if (!is_points_changed){
+					points_= 4;
+					is_points_changed = true;
+				}
 			}
 			ImGui::SliderInt("Sites", &sites_, 5, 100);
 			ImGui::SliderInt("Iterations of Displacement", &times_, 1, 32);
