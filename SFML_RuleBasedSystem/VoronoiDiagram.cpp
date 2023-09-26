@@ -437,12 +437,56 @@ void VoronoiDiagram::SetPoint(int type, const int& chunk_index) {
 		ThreePoints(arr, chunk_index);
 	}  break;
 	case 3: {
-		if (chunk_index == 0) {
+		SetSitesForLarge(generator, distribution);
+	/*	if (chunk_index == 0) {
 			SetPointDefault(chunk_index, generator, distribution, 1);
 		}
-		SetPointHeightExtented(chunk_index, generator, distribution);
+		SetPointHeightExtented(chunk_index, generator, distribution);*/
 		break;
 	}
+	}
+}
+
+void VoronoiDiagram::SetSitesForLarge(std::default_random_engine gen_, std::uniform_int_distribution<int> dist_) {
+	std::uniform_int_distribution<int> distribution((400), (int)(400));
+	int iter = grid_size_x / num_of_points;//200
+	iter -= (iter) / 2;//100
+	int start = 1;
+	int x_plus=400;
+	int y_plus = 400;
+	for (int i = 0; i < (num_of_points); i++) {
+		bool found = false;
+		if (start + iter > grid_size_x) {//iif out of bounds
+			int difference_ = (start + iter) - grid_size_x;
+			start -= difference_;
+		}
+		int counter = 0;
+		while (!found) {
+			counter++;
+			//so first is between 0 and grid_size/numpoints, second is iter and iter+iter, etc
+			int x, y;
+			if (i == 0) {
+				x = distribution(gen_);
+				y = distribution(gen_);
+			}
+			else if (i==(num_of_points-1)){
+				x = distribution(gen_);
+				y = distribution(gen_);
+				x += 400;
+				y += 400;
+			}
+			else {
+				int x = rand() % iter + start;
+				int y = dist_(gen_);
+			}
+			
+			PlacePoint(x, y, i, found, 0);//if point generated lies on grid, add to points vector, change grid array to point position, found = true;
+			if (counter > 200) {
+				failed_ = true;
+				break;
+				std::cout << "didnt set a point\n";
+			}
+		}
 	}
 }
 void VoronoiDiagram::SetPointDefault(const int& chunk_index, std::default_random_engine gen_, std::uniform_int_distribution<int> dist_, const int& used_if_chunked) {

@@ -106,6 +106,7 @@ void Init(sf::RenderWindow& window) {
 	struct_obj_render.render_diagram = false;
 	struct_obj_render.render_track = false;
 	noise_seed = 0;
+	points_min = 2;
 }
 
 int main() {
@@ -237,15 +238,18 @@ int main() {
 			ImGui::SliderInt("Resolution", &reso_, 1, 2);
 			if (reso_==1){
 				resolution_ = 400;
+				points_min = 2;
 			}
 			else {
 				resolution_ = 800;
+				points_min = 4;
+				points_ = 4;
 			}
 			ImGui::SliderInt("Sites", &sites_, 5, 100);
 			ImGui::SliderInt("Iterations of Displacement", &times_, 1, 32);
 			ImGui::SliderInt("Displacement at Each Displacement", &displacement_, 1, 200);
 			ImGui::Checkbox("Random or Equal+Random?", &full_random_);
-			ImGui::SliderInt("Points", &points_, 2, 5);
+			ImGui::SliderInt("Points", &points_, points_min, 5);
 			ImGui::SliderInt("Track Type", &track_type_, 0, 2);
 			ImGui::Text("0 = triangular\n1 = point to point\n2 = loop");
 		}
@@ -416,6 +420,7 @@ int main() {
 					t_t.HeightLoop(0, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *distance_maps[0]);
 				}
 				else {
+					
 					t_t.HeightLoop(0, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *distance_maps[0]);
 				}
 			}

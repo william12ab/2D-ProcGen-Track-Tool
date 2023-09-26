@@ -83,6 +83,7 @@ public:
 	void SetFirstPoint();
 	void PushFirstPoint(const int& chunk_index);
 	//
+	void SetSitesForLarge(std::default_random_engine gen_, std::uniform_int_distribution<int> dist_);
 	//
 	//this annoying is here
 	void ResizeGrid(float scale);																//resizes the grid
