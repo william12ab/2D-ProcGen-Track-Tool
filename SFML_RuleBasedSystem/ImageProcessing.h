@@ -55,6 +55,9 @@ public:
 	void FinalImageLoop(const int& i, const int& j, const int& grid_size, const int& layers_, const int& index_,sf::Image &return_val);
 	void WriteMetaFile();
 	
+
+	//split up
+	void SplitImage(const int& grid_size, sf::VertexArray& vertexarray, sf::VertexArray& vertexarray1, sf::VertexArray& vertexarray2, sf::VertexArray& vertexarray3);
 private:
 	SimplexNoise perlin_;
 

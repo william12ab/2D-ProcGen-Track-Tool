@@ -449,6 +449,10 @@ int main() {
 				i_p.CreateFinalHM(v_d.GetGridSize(), *final_maps[0], *final_maps[1], *final_maps[2], *final_maps[3], layers_);
 			}
 			if (ImGui::Button("Write to file")) {
+				if (resolution_==800){
+					i_p.SplitImage(v_d.GetGridSize(),*noise_maps[0], *noise_maps[1], *noise_maps[2], *noise_maps[3]);
+				}
+
 				final_maps[0]->resize(v_d.GetGridSize() * v_d.GetGridSize());
 				i_p.CreateFinalHM(v_d.GetGridSize(), *final_maps[0], *final_maps[1], *final_maps[2], *final_maps[3], layers_);
 				i_p.WriteToFile(v_d.GetGridSize(), *voronoi_diagrams[0], *voronoi_diagrams[1], *voronoi_diagrams[2], *voronoi_diagrams[3], layers_);
@@ -476,24 +480,55 @@ int main() {
 				t_t.WritePacenoteInfo(s_p, w_c, is_widthed_);
 			}
 			if (ImGui::Button("Write Track Points")) {
-				if (!is_chunking_) {
+				if (resolution_==400) {
 					s_p.WriteTrackPoints(w_c.GetNewTrack(), is_curved_, is_widthed_, 0, s_p.GetControlPoints(), s_p.GetTrackPoints());
 				}
 				else {
-					if (measurements_.vec_new_track_points.empty()) {
-						for (int i = 0; i < 4; i++) {
-							measurements_.vec_new_track_points.push_back(w_c.GetNewTrack());
+					measurements_.vec_track_points.resize(4);
+					measurements_.control_points_.resize(4);
+					measurements_.vec_new_track_points.resize(4);
+					auto temp_points = s_p.GetTrackPoints();
+					if (is_widthed_){
+						temp_points = w_c.GetNewTrack();
+					}
+					for (size_t i = 0; i < temp_points.size(); i++){
+						auto x = temp_points[i].x;
+						auto y = temp_points[i].y;
+						if (x < 400 && y < 400) {
+							measurements_.vec_track_points[0].push_back(temp_points[i]);
+						}
+						else if (x >= 400 && y < 400) {
+							measurements_.vec_track_points[1].push_back(temp_points[i]);
+						}
+						else if (x < 400 && y >= 400) {
+							measurements_.vec_track_points[2].push_back(temp_points[i]);
+						}
+						else if (x >= 400 && y >= 400) {
+							measurements_.vec_track_points[3].push_back(temp_points[i]);
 						}
 					}
-					auto temp = measurements_.vec_new_track_points[2];
-					measurements_.vec_new_track_points[3].swap(temp);//now 3 contains , temp contains 3
-					measurements_.vec_new_track_points[2].swap(temp);
-					auto temp_ = measurements_.vec_track_points[2];
-					measurements_.vec_track_points[3].swap(temp_);//now 3 contains , temp contains 3
-					measurements_.vec_track_points[2].swap(temp_);
-					auto temp_cp = measurements_.control_points_[2];
-					measurements_.control_points_[3].swap(temp_cp);
-					measurements_.control_points_[2].swap(temp_cp);
+					
+					if (is_widthed_) {
+						for (size_t i = 0; i < 4; i++) {
+							measurements_.vec_new_track_points[i] = measurements_.vec_track_points[i];
+						}
+					}
+					for (size_t i = 0; i < s_p.GetControlPoints().size(); i++) {
+						auto x = s_p.GetControlPoints()[i].x;
+						auto y = s_p.GetControlPoints()[i].y;
+						if (x < 400 && y < 400) {
+							measurements_.control_points_[0].push_back(s_p.GetControlPoints()[i]);
+						}
+						else if (x >= 400 && y < 400) {
+							measurements_.control_points_[1].push_back(s_p.GetControlPoints()[i]);
+						}
+						else if (x < 400 && y >= 400) {
+							measurements_.control_points_[2].push_back(s_p.GetControlPoints()[i]);
+						}
+						else if (x >= 400 && y >= 400) {
+							measurements_.control_points_[3].push_back(s_p.GetControlPoints()[i]);
+						}
+					}
 					for (int i = 0; i < 4; i++) {
 						s_p.WriteTrackPoints(measurements_.vec_new_track_points[i], is_curved_, is_widthed_, i, measurements_.control_points_[i], measurements_.vec_track_points[i]);
 					}

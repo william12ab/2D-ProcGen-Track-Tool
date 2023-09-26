@@ -73,6 +73,36 @@ void ImageProcessing::DrawCurve(sf::VertexArray& vertexarray, int grid_size, int
 	}
 }
 
+void ImageProcessing::SplitImage(const int& grid_size, sf::VertexArray& vertexarray, sf::VertexArray& vertexarray1, sf::VertexArray& vertexarray2, sf::VertexArray& vertexarray3) {
+	auto temp_verextarry = vertexarray;
+	auto temp_vector = noise_maps_vector[0];
+	InitStructures(grid_size / 2);
+	vertexarray.resize(400 * 400);
+	vertexarray1.resize(400 * 400);
+	vertexarray2.resize(400 * 400);
+	vertexarray3.resize(400 * 400);
+	for (size_t y = 0; y < 400; y++){
+		for (size_t x = 0; x < 400; x++) {
+			if (x < 400 && y < 400) {
+				noise_maps_vector[0][(y * 400) + x] = temp_vector[(y * grid_size) + x];
+				vertexarray[(y * 400) + x] = temp_verextarry[(y * grid_size) + x];
+			}
+			else if (x >= 400 && y < 400) {
+				noise_maps_vector[1][(y * 400) + (x - 400)] = temp_vector[(y * grid_size) + x];
+				vertexarray1[(y * 400) + x] = temp_verextarry[(y * grid_size) + x];
+			}
+			else if (x < 400 && y >= 400) {
+				noise_maps_vector[2][((y - 400) * 400) + x] = temp_vector[(y * grid_size) + x];
+				vertexarray2[(y * 400) + x] = temp_verextarry[(y * grid_size) + x];
+			}
+			else if (x >= 400 && y >= 400) {
+				noise_maps_vector[3][((y - 400) * 400) + (x - 400)] = temp_vector[(y * grid_size) + x];
+				vertexarray3[(y * 400) + x] = temp_verextarry[(y * grid_size) + x];
+			}
+		}
+	}
+}
+
 void ImageProcessing::DrawTrack(sf::VertexArray& vertexarray, int grid_size, int num_sites, int* grid, const int&chunk_index, const ranges& limits_) {
 	int x_index = 0;
 	int y_index = 0;
