@@ -451,11 +451,17 @@ int main() {
 			if (ImGui::Button("Write to file")) {
 				if (resolution_==800){
 					i_p.SplitImage(v_d.GetGridSize(),*noise_maps[0], *noise_maps[1], *noise_maps[2], *noise_maps[3]);
+					i_p.SplitTrackImage(v_d.GetGridSize(), *voronoi_diagrams[0], *voronoi_diagrams[1], *voronoi_diagrams[2], *voronoi_diagrams[3]);
 				}
 
 				final_maps[0]->resize(v_d.GetGridSize() * v_d.GetGridSize());
+				v_d.SetGridSize(400);
 				i_p.CreateFinalHM(v_d.GetGridSize(), *final_maps[0], *final_maps[1], *final_maps[2], *final_maps[3], layers_);
+				v_d.SetGridSize(400);
+				i_p.SetIsChunking(true);
 				i_p.WriteToFile(v_d.GetGridSize(), *voronoi_diagrams[0], *voronoi_diagrams[1], *voronoi_diagrams[2], *voronoi_diagrams[3], layers_);
+				i_p.SetIsChunking(false);
+				v_d.SetGridSize(800);
 				auto temp_controlpoints = s_p.GetControlPoints();
 				auto pointpos = v_d.GetPointPos();
 				if (v_d.GetNumberOfPoints()>=3){

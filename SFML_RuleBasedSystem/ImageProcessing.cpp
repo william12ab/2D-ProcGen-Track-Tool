@@ -73,6 +73,29 @@ void ImageProcessing::DrawCurve(sf::VertexArray& vertexarray, int grid_size, int
 	}
 }
 
+void ImageProcessing::SplitTrackImage(const int& grid_size, sf::VertexArray& vertexarray, sf::VertexArray& vertexarray1, sf::VertexArray& vertexarray2, sf::VertexArray& vertexarray3) {
+	auto temp_verextarry = vertexarray;
+	vertexarray.resize(400 * 400);
+	vertexarray1.resize(400 * 400);
+	vertexarray2.resize(400 * 400);
+	vertexarray3.resize(400 * 400);
+	for (size_t y = 0; y < grid_size; y++) {
+		for (size_t x = 0; x < grid_size; x++) {
+			if (x < 400 && y < 400) {
+				vertexarray[(y * 400) + x] = temp_verextarry[(y * grid_size) + x];
+			}
+			else if (x >= 400 && y < 400) {
+				vertexarray1[(y * 400) + (x - 400)] = temp_verextarry[(y * grid_size) + x];
+			}
+			else if (x < 400 && y >= 400) {
+				vertexarray2[((y - 400) * 400) + x] = temp_verextarry[(y * grid_size) + x];
+			}
+			else if (x >= 400 && y >= 400) {
+				vertexarray3[((y - 400) * 400) + (x - 400)] = temp_verextarry[(y * grid_size) + x];
+			}
+		}
+	}
+}
 void ImageProcessing::SplitImage(const int& grid_size, sf::VertexArray& vertexarray, sf::VertexArray& vertexarray1, sf::VertexArray& vertexarray2, sf::VertexArray& vertexarray3) {
 	auto temp_verextarry = vertexarray;
 	auto temp_vector = noise_maps_vector[0];
@@ -81,23 +104,23 @@ void ImageProcessing::SplitImage(const int& grid_size, sf::VertexArray& vertexar
 	vertexarray1.resize(400 * 400);
 	vertexarray2.resize(400 * 400);
 	vertexarray3.resize(400 * 400);
-	for (size_t y = 0; y < 400; y++){
-		for (size_t x = 0; x < 400; x++) {
+	for (size_t y = 0; y < grid_size; y++){
+		for (size_t x = 0; x < grid_size; x++) {
 			if (x < 400 && y < 400) {
 				noise_maps_vector[0][(y * 400) + x] = temp_vector[(y * grid_size) + x];
 				vertexarray[(y * 400) + x] = temp_verextarry[(y * grid_size) + x];
 			}
 			else if (x >= 400 && y < 400) {
 				noise_maps_vector[1][(y * 400) + (x - 400)] = temp_vector[(y * grid_size) + x];
-				vertexarray1[(y * 400) + x] = temp_verextarry[(y * grid_size) + x];
+				vertexarray1[(y * 400) + (x - 400)]= temp_verextarry[(y * grid_size) + x];
 			}
 			else if (x < 400 && y >= 400) {
 				noise_maps_vector[2][((y - 400) * 400) + x] = temp_vector[(y * grid_size) + x];
-				vertexarray2[(y * 400) + x] = temp_verextarry[(y * grid_size) + x];
+				vertexarray2[((y - 400) * 400) + x]= temp_verextarry[(y * grid_size) + x];
 			}
 			else if (x >= 400 && y >= 400) {
 				noise_maps_vector[3][((y - 400) * 400) + (x - 400)] = temp_vector[(y * grid_size) + x];
-				vertexarray3[(y * 400) + x] = temp_verextarry[(y * grid_size) + x];
+				vertexarray3[((y - 400) * 400) + (x - 400)]= temp_verextarry[(y * grid_size) + x];
 			}
 		}
 	}
@@ -516,11 +539,12 @@ void ImageProcessing::ResizeGrid(int grid_size, float scale, int* grid)
 //saving functions
 void ImageProcessing::CreateFinalHM(int grid_size, sf::VertexArray& vertexarray, sf::VertexArray& vertexarray1, sf::VertexArray& vertexarray2, sf::VertexArray& vertexarray3, int layers_) {
 	//y=i, x=j
+	int index_ = 0;
 	for (int i = 0; i < grid_size; i++) {
 		for (int j = 0; j < grid_size; j++) {
 			int i_alpha_two = alpha_channel_[i * grid_size + j];				//int version of alpha
 			float i_alpha_percent = (float)i_alpha_two / 255.0f;				//alpha as value between 0.0 to 1.0
-			for (int index_ = 0; index_ < 4; index_++){
+			//for (int index_ = 0; index_ < 4; index_++){
 				int i_c_one = int(distance_heightmaps_vector[index_][i * grid_size + j]);					//int value of c
 				int i_c_two = (noise_maps_vector[index_][i * grid_size + j] / layers_);					//int value of co
 
@@ -567,7 +591,7 @@ void ImageProcessing::CreateFinalHM(int grid_size, sf::VertexArray& vertexarray,
 					vertexarray3[i * grid_size + j].color = sf::Color{ final_c , final_c , final_c, final_a };
 					break;
 				}
-			}
+			//}
 		}
 	}
 }
