@@ -190,7 +190,7 @@ void ImageProcessing::DrawNoise(sf::VertexArray& vertexarray, int grid_size, int
 			noise_maps_vector[chunk_][(i * grid_size) + j] = 0;
 		}
 	}
-	const float scale = 100.0f / (float)grid_size;
+	const float scale = 100.0f / (float)400.f;
 	float low_ = 0.01f;
 	float high_ = 0.020f;
 	float r3 = low_ + static_cast <float>(0.1f);

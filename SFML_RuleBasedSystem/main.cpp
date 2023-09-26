@@ -99,7 +99,7 @@ void Init(sf::RenderWindow& window) {
 	do_testing_ = true;
 	step_curve = 0.01f;
 	alpha_cm_ = 0.5f;
-
+	reso_ = 1;
 	is_curved_ = false;
 	is_widthed_ = false;
 	is_chunking_ = false;
@@ -233,7 +233,14 @@ int main() {
 		ImGui::Begin("Options");
 		ImGui::Text("\n");
 		if (ImGui::CollapsingHeader("Track Variables")) {
-			ImGui::SliderInt("Resolution", &resolution_, 100, 800);
+
+			ImGui::SliderInt("Resolution", &reso_, 1, 2);
+			if (reso_==1){
+				resolution_ = 400;
+			}
+			else {
+				resolution_ = 800;
+			}
 			ImGui::SliderInt("Sites", &sites_, 5, 100);
 			ImGui::SliderInt("Iterations of Displacement", &times_, 1, 32);
 			ImGui::SliderInt("Displacement at Each Displacement", &displacement_, 1, 200);
@@ -404,53 +411,17 @@ int main() {
 			if (ImGui::Button("Renerate (Noise Method)")) {
 				ClearConsoleWin();
 				t_t.SetChunk(i_p.GetIsChunking());
-				if (!is_chunking_) {
+				if (resolution_==400) {
 					is_curved_ = false; is_widthed_ = false;
 					t_t.HeightLoop(0, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *distance_maps[0]);
 				}
 				else {
-					points_ = 3;
-					the_clock::time_point startTime = the_clock::now();
-					bool done_ = false;
-					ClearMeasurements();
-					is_curved_ = false; is_widthed_ = false;
-					for (int i = 0; i < 4; i++) {
-						if (i == 2) {
-							if (!done_) {
-								i = 3;
-							}
-						}
-						t_t.HeightLoop(i, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *distance_maps[i]);
-						if (s_p.GetFailed()) {
-							s_p.SetFailed(false);
-							v_d.EmptyAllCircleVec();
-							for (int j = 0; j < 4; j++) {
-								t_t.ResetVars(v_d, s_p, *voronoi_diagrams[j], *distance_maps[j]);
-							}
-							done_ = false;
-							i = -1;
-							ClearMeasurements();
-						}
-						else {
-							AddMeasurements(s_p);
-							s_p.SegmentAngles();
-						}
-						if (i == 3) {
-							if (!done_) {
-								i = 1;
-								done_ = true;
-							}
-						}
-						if (i == 2) {
-							i = 3;
-						}
-					}
-					the_clock::time_point endTime = the_clock::now();
-					auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
-					std::cout << "time(phase 1): " << time_taken; std::cout << std::endl;
+					t_t.HeightLoop(0, v_d, peaks_to_count_, layers_, i_p, radius_cutoff, number_, track_type_, s_p, *distance_maps[0]);
 				}
 			}
 			if (ImGui::Button("Regenerate")) {
+				the_clock::time_point startTime = the_clock::now();
+
 				is_curved_ = false;
 				is_widthed_ = false;
 				is_chunking_ = false;
@@ -460,6 +431,9 @@ int main() {
 				ClearConsoleWin();
 				t_t.ClearStructs(v_d, *voronoi_diagrams[0], *noise_maps[0], *distance_maps[0], i_p, track_type_, resolution_, sites_, points_);
 				t_t.Generate(v_d, s_p, *voronoi_diagrams[0], *distance_maps[0], *noise_maps[0], i_p, times_, displacement_, number_, full_random_, track_type_);
+				the_clock::time_point endTime = the_clock::now();
+				auto time_taken = duration_cast<milliseconds>(endTime - startTime).count();
+				std::cout << "time(phase 1): " << time_taken; std::cout << std::endl;
 			}
 			if (ImGui::Button("Create Final Heightmap")) {
 				i_p.CreateFinalHM(v_d.GetGridSize(), *final_maps[0], *final_maps[1], *final_maps[2], *final_maps[3], layers_);

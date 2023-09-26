@@ -89,7 +89,6 @@ void TrackTools::CreateTrack(VoronoiDiagram &v_d_p, ShortestPath &s_p_p, const i
 				s_p_p.ChangePoint(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index), start - i, -3);
 			}
 			s_p_p.CleanGrid(v_d_p.GetGridSize(), v_d_p.GetGrid(chunk_index));
-
 		}
 	}
 }

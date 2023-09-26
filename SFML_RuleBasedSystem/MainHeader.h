@@ -59,7 +59,7 @@ bool do_testing_;
 float image_scale;
 float step_curve;
 float alpha_cm_;
-
+int reso_;
 int noise_seed;
 
 
