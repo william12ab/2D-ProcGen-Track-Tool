@@ -925,11 +925,11 @@ void ImageProcessing::DrawWidthTrack(sf::VertexArray& vertexarray, int grid_size
 	}
 }
 
-void ImageProcessing::WriteMetaFile() {
+void ImageProcessing::WriteMetaFile(const int& grid_size) {
 	std::ofstream meta_;
 	char const* c = "meta.txt";
 	meta_.open(c);
-	if (is_chunking_){
+	if (grid_size==800){
 		meta_ << "true";
 	}
 	else {
