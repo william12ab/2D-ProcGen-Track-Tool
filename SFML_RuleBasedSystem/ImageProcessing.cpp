@@ -723,6 +723,43 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& track_vertex_a
 		}
 		//});
 	}
+	if (dimensions_==800){
+		is_chunking_ = true;
+		int half_size = grid_size / 2;
+		auto noise_image = noise_output_vector[0];
+		auto track_image = track_output_vector[0];
+
+		for (int i = 0; i < 4; i++) {
+			noise_output_vector[i].create(half_size, half_size);
+			track_output_vector[i].create(half_size, half_size);
+		}
+		for (size_t y = 0; y < (dimensions_ ); y++) {
+			for (size_t x = 0; x < (dimensions_ ); x++) {
+				if (x < half_size && y < half_size) {
+					noise_output_vector[0].setPixel(x, y, noise_image.getPixel(x, y));
+					track_output_vector[0].setPixel(x, y, track_image.getPixel(x, y));
+				}
+				else if (x >= half_size && y < half_size) {
+					auto p_x = x - 400;
+					noise_output_vector[1].setPixel(p_x, y, noise_image.getPixel(x, y));
+					track_output_vector[1].setPixel(p_x, y, track_image.getPixel(x, y));
+				}
+				else if (x < half_size && y >= half_size) {
+					auto p_y = y - 400;
+					noise_output_vector[2].setPixel(x, p_y, noise_image.getPixel(x, y));
+					track_output_vector[2].setPixel(x, p_y, track_image.getPixel(x, y));
+				}
+				else if (x >= half_size && y >= half_size) {
+					auto p_x = x - 400;
+					auto p_y = y - 400;
+					track_output_vector[3].setPixel(p_x, p_y, noise_image.getPixel(x, y));
+					noise_output_vector[3].setPixel(p_x, p_y, track_image.getPixel(x, y));
+				}
+			}
+		}
+	}
+	
+
 	if(!is_chunking_) {
 		noise_output_vector[0].saveToFile("0noise_layer.png");
 		voronoi_output_vector[0].saveToFile("0voronoi_layer.png");
@@ -735,20 +772,21 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& track_vertex_a
 			char const* c = "noise_layer.png";
 			s += c;
 			noise_output_vector[c_i].saveToFile(s);
-			s = std::to_string(c_i);
+	/*		s = std::to_string(c_i);
 			c = "voronoi_layer.png";
 			s += c;
-			voronoi_output_vector[c_i].saveToFile(s);
+			voronoi_output_vector[c_i].saveToFile(s);*/
 			s = std::to_string(c_i);
 			c = "track_image.png";
 			s += c;
 			track_output_vector[c_i].saveToFile(s);
-			s = std::to_string(c_i);
-			c = "final.png";
-			s += c;
-			final_image_vector[c_i].saveToFile(s);
+			//s = std::to_string(c_i);
+			//c = "final.png";
+			//s += c;
+			//final_image_vector[c_i].saveToFile(s);
 		}
 	}
+	is_chunking_ = false;
 }
 void ImageProcessing::SaveUpScale(int grid_size, float scale)
 {

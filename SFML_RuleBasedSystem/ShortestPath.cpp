@@ -351,10 +351,10 @@ void ShortestPath::SetNESW(const int& grid_size, std::vector<int>& occ){
 	if (x_holder_-1>=0){
 		west_site = old_num[(y_holder_ * grid_size) + (x_holder_ - 1)];
 	}
-	if (x_holder_+1<400){
+	if (x_holder_+1< grid_size){
 		east_site = old_num[(y_holder_ * grid_size) + (x_holder_ + 1)];
 	}
-	if (y_holder_+1<400){
+	if (y_holder_+1< grid_size){
 		south_site = old_num[((y_holder_ + 1) * grid_size) + (x_holder_)];
 		south_e_site = old_num[((y_holder_ + 1) * grid_size) + (x_holder_ + 1)];
 		south_w_site = old_num[((y_holder_ + 1) * grid_size) + (x_holder_ - 1)];

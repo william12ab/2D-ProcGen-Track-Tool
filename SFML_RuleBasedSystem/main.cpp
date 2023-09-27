@@ -452,21 +452,9 @@ int main() {
 				i_p.CreateFinalHM(v_d.GetGridSize(), *final_maps[0], *final_maps[1], *final_maps[2], *final_maps[3], layers_);
 			}
 			if (ImGui::Button("Write to file")) {
-				sf::VertexArray temp_noise(sf::Points, (v_d.GetGridSize()* v_d.GetGridSize()));;
-				sf::VertexArray temp_track(sf::Points, (v_d.GetGridSize()* v_d.GetGridSize()));;
-				if (resolution_==800){
-					temp_noise = *i_p.SplitImage(v_d.GetGridSize(),*noise_maps[0], *noise_maps[1], *noise_maps[2], *noise_maps[3]);
-					temp_track = *i_p.SplitTrackImage(v_d.GetGridSize(), *voronoi_diagrams[0], *voronoi_diagrams[1], *voronoi_diagrams[2], *voronoi_diagrams[3]);
-				}
-				is_written = true;
 				final_maps[0]->resize(v_d.GetGridSize() * v_d.GetGridSize());
-				v_d.SetGridSize(400);
 				i_p.CreateFinalHM(v_d.GetGridSize(), *final_maps[0], *final_maps[1], *final_maps[2], *final_maps[3], layers_);
-				v_d.SetGridSize(400);
-				i_p.SetIsChunking(true);
 				i_p.WriteToFile(v_d.GetGridSize(), *voronoi_diagrams[0], *voronoi_diagrams[1], *voronoi_diagrams[2], *voronoi_diagrams[3], layers_);
-				i_p.SetIsChunking(false);
-				v_d.SetGridSize(800);
 				auto temp_controlpoints = s_p.GetControlPoints();
 				auto pointpos = v_d.GetPointPos();
 				if (v_d.GetNumberOfPoints()>=3){
@@ -489,12 +477,6 @@ int main() {
 				s_p.WriteToFile();
 				i_p.WriteMetaFile();
 				t_t.WritePacenoteInfo(s_p, w_c, is_widthed_);
-				noise_maps[0]->clear();
-				voronoi_diagrams[0]->clear();
-				noise_maps[0]->resize(resolution_* resolution_);
-				voronoi_diagrams[0]->resize(resolution_* resolution_);
-				*noise_maps[0] = temp_noise;
-				*voronoi_diagrams[0] = temp_track;
 			}
 			if (ImGui::Button("Write Track Points")) {
 				if (resolution_==400) {
@@ -515,12 +497,16 @@ int main() {
 							measurements_.vec_track_points[0].push_back(temp_points[i]);
 						}
 						else if (x >= 400 && y < 400) {
+							temp_points[i].x -= 400;
 							measurements_.vec_track_points[1].push_back(temp_points[i]);
 						}
 						else if (x < 400 && y >= 400) {
+							temp_points[i].y -= 400;
 							measurements_.vec_track_points[2].push_back(temp_points[i]);
 						}
 						else if (x >= 400 && y >= 400) {
+							temp_points[i].x -= 400;
+							temp_points[i].y -= 400;
 							measurements_.vec_track_points[3].push_back(temp_points[i]);
 						}
 					}
@@ -530,6 +516,7 @@ int main() {
 							measurements_.vec_new_track_points[i] = measurements_.vec_track_points[i];
 						}
 					}
+					auto c = s_p.GetControlPoints();
 					for (size_t i = 0; i < s_p.GetControlPoints().size(); i++) {
 						auto x = s_p.GetControlPoints()[i].x;
 						auto y = s_p.GetControlPoints()[i].y;
@@ -537,13 +524,20 @@ int main() {
 							measurements_.control_points_[0].push_back(s_p.GetControlPoints()[i]);
 						}
 						else if (x >= 400 && y < 400) {
-							measurements_.control_points_[1].push_back(s_p.GetControlPoints()[i]);
+							auto point = s_p.GetControlPoints()[i];
+							point.x -= 400;
+							measurements_.control_points_[1].push_back(point);
 						}
 						else if (x < 400 && y >= 400) {
-							measurements_.control_points_[2].push_back(s_p.GetControlPoints()[i]);
+							auto point = s_p.GetControlPoints()[i];
+							point.y -= 400;
+							measurements_.control_points_[2].push_back(point);
 						}
 						else if (x >= 400 && y >= 400) {
-							measurements_.control_points_[3].push_back(s_p.GetControlPoints()[i]);
+							auto point = s_p.GetControlPoints()[i];
+							point.x -= 400;
+							point.y -= 400;
+							measurements_.control_points_[3].push_back(point);
 						}
 					}
 					for (int i = 0; i < 4; i++) {
@@ -606,7 +600,7 @@ int main() {
 			ImGui::Text("Number of Turns = %d", s_p.GetNumberOfTurns());
 			ImGui::Text("Number of Segments = %d", s_p.GetNumberOfSegments());
 		}
-		if (ImGui::Button("Clear Console"))																	//https://stackoverflow.com/questions/5866529/how-do-we-clear-the-console-in-assembly/5866648#5866648
+		if (ImGui::Button("Clear Console"))		//https://stackoverflow.com/questions/5866529/how-do-we-clear-the-console-in-assembly/5866648#5866648
 		{
 			ClearConsoleWin();
 		}
