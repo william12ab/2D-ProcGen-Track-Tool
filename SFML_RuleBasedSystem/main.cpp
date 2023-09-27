@@ -108,6 +108,7 @@ void Init(sf::RenderWindow& window) {
 	noise_seed = 0;
 	points_min = 2;
 	is_points_changed = false;
+	is_written = false;
 }
 
 int main() {
@@ -290,6 +291,7 @@ int main() {
 				}
 			}
 			if (ImGui::Button("Create Noise Image")) {
+				is_written = false;
 				if (!i_p.GetIsChunking()) {
 					t_t.ClearStructs(v_d, *voronoi_diagrams[0], *noise_maps[0], *distance_maps[0], i_p, track_type_, resolution_, sites_, points_);
 					i_p.DrawNoise(*noise_maps[0], v_d.GetGridSize(), layers_, frequency_, 0, noise_seed);
@@ -419,6 +421,7 @@ int main() {
 		if (ImGui::CollapsingHeader("Generate Options")) {
 			if (ImGui::Button("Renerate (Noise Method)")) {
 				ClearConsoleWin();
+				is_written = false;
 				t_t.SetChunk(i_p.GetIsChunking());
 				if (resolution_==400) {
 					is_curved_ = false; is_widthed_ = false;
@@ -431,7 +434,7 @@ int main() {
 			}
 			if (ImGui::Button("Regenerate")) {
 				the_clock::time_point startTime = the_clock::now();
-
+				is_written = false;
 				is_curved_ = false;
 				is_widthed_ = false;
 				is_chunking_ = false;
@@ -449,11 +452,13 @@ int main() {
 				i_p.CreateFinalHM(v_d.GetGridSize(), *final_maps[0], *final_maps[1], *final_maps[2], *final_maps[3], layers_);
 			}
 			if (ImGui::Button("Write to file")) {
+				sf::VertexArray temp_noise(sf::Points, (v_d.GetGridSize()* v_d.GetGridSize()));;
+				sf::VertexArray temp_track(sf::Points, (v_d.GetGridSize()* v_d.GetGridSize()));;
 				if (resolution_==800){
-					i_p.SplitImage(v_d.GetGridSize(),*noise_maps[0], *noise_maps[1], *noise_maps[2], *noise_maps[3]);
-					i_p.SplitTrackImage(v_d.GetGridSize(), *voronoi_diagrams[0], *voronoi_diagrams[1], *voronoi_diagrams[2], *voronoi_diagrams[3]);
+					temp_noise = *i_p.SplitImage(v_d.GetGridSize(),*noise_maps[0], *noise_maps[1], *noise_maps[2], *noise_maps[3]);
+					temp_track = *i_p.SplitTrackImage(v_d.GetGridSize(), *voronoi_diagrams[0], *voronoi_diagrams[1], *voronoi_diagrams[2], *voronoi_diagrams[3]);
 				}
-
+				is_written = true;
 				final_maps[0]->resize(v_d.GetGridSize() * v_d.GetGridSize());
 				v_d.SetGridSize(400);
 				i_p.CreateFinalHM(v_d.GetGridSize(), *final_maps[0], *final_maps[1], *final_maps[2], *final_maps[3], layers_);
@@ -484,6 +489,12 @@ int main() {
 				s_p.WriteToFile();
 				i_p.WriteMetaFile();
 				t_t.WritePacenoteInfo(s_p, w_c, is_widthed_);
+				noise_maps[0]->clear();
+				voronoi_diagrams[0]->clear();
+				noise_maps[0]->resize(resolution_* resolution_);
+				voronoi_diagrams[0]->resize(resolution_* resolution_);
+				*noise_maps[0] = temp_noise;
+				*voronoi_diagrams[0] = temp_track;
 			}
 			if (ImGui::Button("Write Track Points")) {
 				if (resolution_==400) {
@@ -574,8 +585,7 @@ int main() {
 		ImGui::Text("\n");
 		ImGui::Text("\n");
 		ImGui::Text("\n");
-		if (ImGui::CollapsingHeader("Keyboard Controls"))
-		{
+		if (ImGui::CollapsingHeader("Keyboard Controls")){
 			ImGui::TextWrapped("Press A to display diagram");
 			ImGui::TextWrapped("Press S to display distance map");
 			ImGui::TextWrapped("Press D to hide distance map");
@@ -585,15 +595,13 @@ int main() {
 			ImGui::TextWrapped("Press X to final heightmap");
 			ImGui::TextWrapped("Press F to display track");
 		}
-		if (ImGui::CollapsingHeader("How-to/Guide"))
-		{
+		if (ImGui::CollapsingHeader("How-to/Guide")){
 			ImGui::TextWrapped("Set the factors before generation and then select 'regenerate'");
 			ImGui::TextWrapped("If want to use displacement, select a square number of sites, eg: 25, 49, 81 etc...");
 			ImGui::TextWrapped("To use noise method select factors like before and generate noise image first, selecting and changing alpha too. Then select 'generate (noise method)'");
 			ImGui::TextWrapped("Please Ignore 'Testing Options'");
 		}
-		if (ImGui::CollapsingHeader("Measurements"))
-		{
+		if (ImGui::CollapsingHeader("Measurements")){
 			ImGui::Text("Total Length= %d", s_p.GetTotalDistance());
 			ImGui::Text("Number of Turns = %d", s_p.GetNumberOfTurns());
 			ImGui::Text("Number of Segments = %d", s_p.GetNumberOfSegments());
@@ -609,9 +617,12 @@ int main() {
 		input_manager.Zoom();
 
 		//render
-		window.clear();
-		r_w.RenderLoop(is_render_diagram, t_t, v_d, i_p, struct_obj_render.render_diagram, struct_obj_render.render_track, is_render_track, voronoi_diagrams,
-			render_height_map_, n_render_height_map_, f_render_height_map_, distance_maps, noise_maps, final_maps, window);
+
+		if (!is_written){
+			window.clear();
+			r_w.RenderLoop(is_render_diagram, t_t, v_d, i_p, struct_obj_render.render_diagram, struct_obj_render.render_track, is_render_track, voronoi_diagrams,
+				render_height_map_, n_render_height_map_, f_render_height_map_, distance_maps, noise_maps, final_maps, window);
+		}
 		window.draw(title_name_);
 		ImGui::SFML::Render(window);
 		window.setView(window.getDefaultView());

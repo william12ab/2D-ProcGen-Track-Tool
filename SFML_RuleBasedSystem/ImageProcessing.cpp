@@ -73,7 +73,7 @@ void ImageProcessing::DrawCurve(sf::VertexArray& vertexarray, int grid_size, int
 	}
 }
 
-void ImageProcessing::SplitTrackImage(const int& grid_size, sf::VertexArray& vertexarray, sf::VertexArray& vertexarray1, sf::VertexArray& vertexarray2, sf::VertexArray& vertexarray3) {
+sf::VertexArray* ImageProcessing::SplitTrackImage(const int& grid_size, sf::VertexArray& vertexarray, sf::VertexArray& vertexarray1, sf::VertexArray& vertexarray2, sf::VertexArray& vertexarray3) {
 	auto temp_verextarry = vertexarray;
 	vertexarray.resize(400 * 400);
 	vertexarray1.resize(400 * 400);
@@ -95,8 +95,9 @@ void ImageProcessing::SplitTrackImage(const int& grid_size, sf::VertexArray& ver
 			}
 		}
 	}
+	return &temp_verextarry;
 }
-void ImageProcessing::SplitImage(const int& grid_size, sf::VertexArray& vertexarray, sf::VertexArray& vertexarray1, sf::VertexArray& vertexarray2, sf::VertexArray& vertexarray3) {
+sf::VertexArray* ImageProcessing::SplitImage(const int& grid_size, sf::VertexArray& vertexarray, sf::VertexArray& vertexarray1, sf::VertexArray& vertexarray2, sf::VertexArray& vertexarray3) {
 	auto temp_verextarry = vertexarray;
 	auto temp_vector = noise_maps_vector[0];
 	InitStructures(grid_size / 2);
@@ -124,6 +125,7 @@ void ImageProcessing::SplitImage(const int& grid_size, sf::VertexArray& vertexar
 			}
 		}
 	}
+	return &temp_verextarry;
 }
 
 void ImageProcessing::DrawTrack(sf::VertexArray& vertexarray, int grid_size, int num_sites, int* grid, const int&chunk_index, const ranges& limits_) {

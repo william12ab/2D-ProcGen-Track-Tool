@@ -79,6 +79,7 @@ void RenderHandler::RenderLoop(const bool& is_render_diagram, TrackTools& t_t, V
 	}
 	if (i_p.GetIsChunking()) {
 		for (int i = 0; i < 4; i++) {
+			
 			window.draw(*voronoi_diagrams[i]);
 		}
 	}

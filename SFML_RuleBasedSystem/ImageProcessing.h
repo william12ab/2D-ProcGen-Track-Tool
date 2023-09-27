@@ -57,8 +57,8 @@ public:
 	
 
 	//split up
-	void SplitTrackImage(const int& grid_size, sf::VertexArray& vertexarray, sf::VertexArray& vertexarray1, sf::VertexArray& vertexarray2, sf::VertexArray& vertexarray3);
-	void SplitImage(const int& grid_size, sf::VertexArray& vertexarray, sf::VertexArray& vertexarray1, sf::VertexArray& vertexarray2, sf::VertexArray& vertexarray3);
+	sf::VertexArray* SplitTrackImage(const int& grid_size, sf::VertexArray& vertexarray, sf::VertexArray& vertexarray1, sf::VertexArray& vertexarray2, sf::VertexArray& vertexarray3);
+	sf::VertexArray* SplitImage(const int& grid_size, sf::VertexArray& vertexarray, sf::VertexArray& vertexarray1, sf::VertexArray& vertexarray2, sf::VertexArray& vertexarray3);
 private:
 	SimplexNoise perlin_;
 
