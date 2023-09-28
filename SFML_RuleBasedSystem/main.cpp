@@ -475,7 +475,7 @@ int main() {
 				s_p.SetControlPoints(temp_controlpoints);
 				s_p.FixLengthsAndLinePos();
 				s_p.WriteToFile();
-				i_p.WriteMetaFile(resolution_);
+				i_p.WriteMetaFile(resolution_,v_d.GetPointPos());
 				t_t.WritePacenoteInfo(s_p, w_c, is_widthed_);
 			}
 			if (ImGui::Button("Write Track Points")) {

@@ -925,15 +925,17 @@ void ImageProcessing::DrawWidthTrack(sf::VertexArray& vertexarray, int grid_size
 	}
 }
 
-void ImageProcessing::WriteMetaFile(const int& grid_size) {
+void ImageProcessing::WriteMetaFile(const int& grid_size, const std::vector<sf::Vector2i>& point_pos) {
 	std::ofstream meta_;
 	char const* c = "meta.txt";
 	meta_.open(c);
 	if (grid_size==800){
-		meta_ << "true";
+		meta_ << "true" << "\n";
 	}
 	else {
-		meta_ << "false";
+		meta_ << "false" << "\n";
 	}
+	meta_ << point_pos[0].x << point_pos[0].y<<"\n";
+	meta_ << point_pos[point_pos.size() - 1].x << point_pos[point_pos.size()-1].y << "\n";
 	meta_.close();
 }
