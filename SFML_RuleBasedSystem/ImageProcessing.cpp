@@ -935,7 +935,7 @@ void ImageProcessing::WriteMetaFile(const int& grid_size, const std::vector<sf::
 	else {
 		meta_ << "false" << "\n";
 	}
-	meta_ << point_pos[0].x << point_pos[0].y<<"\n";
-	meta_ << point_pos[point_pos.size() - 1].x << point_pos[point_pos.size()-1].y << "\n";
+	meta_ << point_pos[0].x <<" "<< point_pos[0].y<<"\n";
+	meta_ << point_pos[point_pos.size() - 1].x <<" "<< point_pos[point_pos.size()-1].y << "\n";
 	meta_.close();
 }
