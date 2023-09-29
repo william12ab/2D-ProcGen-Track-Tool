@@ -752,8 +752,8 @@ void ImageProcessing::WriteToFile(int grid_size, sf::VertexArray& track_vertex_a
 				else if (x >= half_size && y >= half_size) {
 					auto p_x = x - 400;
 					auto p_y = y - 400;
-					track_output_vector[3].setPixel(p_x, p_y, noise_image.getPixel(x, y));
-					noise_output_vector[3].setPixel(p_x, p_y, track_image.getPixel(x, y));
+					noise_output_vector[3].setPixel(p_x, p_y, noise_image.getPixel(x, y));
+					track_output_vector[3].setPixel(p_x, p_y, track_image.getPixel(x, y));
 				}
 			}
 		}
