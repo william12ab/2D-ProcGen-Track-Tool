@@ -925,7 +925,7 @@ void ImageProcessing::DrawWidthTrack(sf::VertexArray& vertexarray, int grid_size
 	}
 }
 
-void ImageProcessing::WriteMetaFile(const int& grid_size, const std::vector<sf::Vector2i>& point_pos) {
+void ImageProcessing::WriteMetaFile(const int& grid_size, const std::vector<sf::Vector2i>& point_pos, const int& length, const int& num_turns) {
 	std::ofstream meta_;
 	char const* c = "meta.txt";
 	meta_.open(c);
@@ -937,5 +937,7 @@ void ImageProcessing::WriteMetaFile(const int& grid_size, const std::vector<sf::
 	}
 	meta_ << point_pos[0].x <<" "<< point_pos[0].y<<"\n";
 	meta_ << point_pos[point_pos.size() - 1].x <<" "<< point_pos[point_pos.size()-1].y << "\n";
+	meta_ << length << "\n";
+	meta_ << num_turns;
 	meta_.close();
 }
